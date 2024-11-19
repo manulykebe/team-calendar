@@ -47,13 +47,13 @@ function AppContent() {
   }, [token]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-gray-900 dark:to-gray-800 transition-colors duration-200">
       <ThemeToggle isDark={isDark} toggle={toggle} />
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
+          <div className="bg-gray-100 dark:bg-gray-900 rounded-2xl shadow-xl p-8">
             <div className="flex items-center justify-center mb-8">
-              <Server className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
+              <Server className="w-12 h-12 text-blue-600 dark:text-blue-400" />
             </div>
             
             <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-white mb-8">
@@ -73,9 +73,6 @@ function AppContent() {
               )}
             </div>
 
-            <div className="text-center text-gray-600 dark:text-gray-400">
-              <p>Edit <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">src/App.tsx</code> to get started</p>
-            </div>
           </div>
         </div>
       </div>
