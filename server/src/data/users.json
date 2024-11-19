@@ -7,6 +7,14 @@
       "email": "admin@example.com",
       "sites": ["main"],
       "roles": ["admin"]
+    },
+    {
+      "id": "2",
+      "login": "manu",
+      "password": "$2a$10$gmIkrXvEntciZcIt7KagB.By6zqlq0SuiHMNmNCiGaxsgkjcdkjNy",
+      "email": "admin@example.com",
+      "sites": ["main"],
+      "roles": ["team-member"]
     }
   ]
 }

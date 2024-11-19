@@ -57,3 +57,26 @@
 .fc-theme-custom .fc-button-active {
   @apply bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 border-blue-300 dark:border-blue-600;
 }
+
+/* Striped effect for desired events - light and dark modes */
+.fc-event.desired-event {
+  @apply border-amber-500 dark:border-amber-600;
+  background: repeating-linear-gradient(
+    45deg,
+    #F59E0B,
+    #F59E0B 5px,
+    #F59E0BCA 5px,
+    #F59E0BCA 10px
+  ) !important;
+}
+
+/* Dark mode override */
+.dark .fc-event.desired-event {
+  background: repeating-linear-gradient(
+    45deg,
+    #f5590b,
+    #f5590b 5px,
+    #f5590bca 5px,
+    #f5590bca 10px
+  ) !important;
+}

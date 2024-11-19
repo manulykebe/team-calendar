@@ -2,10 +2,10 @@
 import bcrypt from 'bcryptjs';
 
 async function generateHash() {
-    const password = 'admin';
+    const password = 'manu';
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
-    console.log('Hash for password "admin":', hash);
+    console.log(`Hash for password "${password}":`, hash);
 }
 
 generateHash();

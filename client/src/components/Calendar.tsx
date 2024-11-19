@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -6,6 +6,8 @@ import multiMonthPlugin from '@fullcalendar/multimonth';
 import interactionPlugin from '@fullcalendar/interaction';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { EventClickArg } from '@fullcalendar/core';
 
 interface Event {
   id: string;
@@ -15,6 +17,7 @@ interface Event {
   status: 'unavailable' | 'desired' | 'available';
   private: boolean;
   color?: string;
+  className?: string;
 }
 
 type CalendarView = 'timeGridDay' | 'timeGridWeek' | 'dayGridMonth' | 'multiMonthYear';
@@ -25,12 +28,30 @@ interface EventModalProps {
   onSave: (event: Partial<Event>) => void;
   startDate: Date;
   endDate: Date;
+  isTeamMember: boolean;
+  event?: Event;
 }
 
-const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSave, startDate, endDate }) => {
-  const [title, setTitle] = useState('');
-  const [status, setStatus] = useState<Event['status']>('available');
-  const [isPrivate, setIsPrivate] = useState(false);
+const EventModal: React.FC<EventModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  onSave, 
+  startDate, 
+  endDate, 
+  isTeamMember,
+  event 
+}) => {
+  const [title, setTitle] = useState(event?.title || '');
+  const [status, setStatus] = useState<Event['status']>(event?.status || 'desired');
+  const [isPrivate, setIsPrivate] = useState(event?.private || false);
+
+  useEffect(() => {
+    if (event) {
+      setTitle(event.title);
+      setStatus(event.status);
+      setIsPrivate(event.private);
+    }
+  }, [event]);
 
   if (!isOpen) return null;
 
@@ -42,7 +63,8 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSave, startD
       private: isPrivate,
       start: startDate,
       end: endDate,
-      color: status === 'unavailable' ? '#EF4444' : status === 'desired' ? '#F59E0B' : '#10B981'
+      color: status === 'unavailable' ? '#EF4444' : status === 'desired' ? undefined : '#10B981',
+      className: status === 'desired' ? 'desired-event' : undefined
     });
     onClose();
   };
@@ -65,6 +87,7 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSave, startD
               value={status}
               onChange={(e) => setStatus(e.target.value as Event['status'])}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+              //disabled={isTeamMember}
             >
               <option value="available">Available</option>
               <option value="desired">Desired</option>
@@ -95,10 +118,14 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSave, startD
 };
 
 export const Calendar: React.FC = () => {
-  const [view, setView] = useState<CalendarView>('timeGridWeek');
+  const { user } = useAuth();
+  const isTeamMember = user?.roles.includes('team-member') ?? false;
+  const [view, setView] = useState<CalendarView>(isTeamMember ? 'dayGridMonth' : 'timeGridWeek');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDates, setSelectedDates] = useState<{ start: Date; end: Date }>({ start: new Date(), end: new Date() });
+  const [title, setTitle] = useState('');
+  const [status, setStatus] = useState<'desired' | 'available' | 'confirmed'>('desired');
   const calendarRef = useRef<FullCalendar>(null);
 
   const handleViewChange = (newView: CalendarView) => {
@@ -117,8 +144,15 @@ export const Calendar: React.FC = () => {
     }
   };
 
-  const handleEventClick = (info: any) => {
-    alert(`Event: ${info.event.title}`);
+  const handleEventClick = (info: EventClickArg) => {
+    const event = info.event;
+    setTitle(event.title);
+    setStatus(event.extendedProps.status || 'available');
+    setSelectedDates({
+      start: event.start || new Date(),
+      end: event.end || new Date()
+    });
+    setIsModalOpen(true);
   };
 
   const handleDateSelect = (selectInfo: any) => {
@@ -216,7 +250,7 @@ export const Calendar: React.FC = () => {
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
           initialView={view}
           headerToolbar={false}
-          editable={true}
+          editable={!isTeamMember}
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
@@ -250,6 +284,7 @@ export const Calendar: React.FC = () => {
         onSave={handleEventSave}
         startDate={selectedDates.start}
         endDate={selectedDates.end}
+        isTeamMember={isTeamMember}
       />
     </div>
   );
