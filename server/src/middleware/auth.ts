@@ -11,7 +11,6 @@ const auth = (req: AuthRequest, res: Response, next: NextFunction): void => {
       res.status(401).json({ message: 'No auth token found' });
       return;
     }
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as UserPayload;
     req.user = decoded;
     next();

@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "login": "admin",
+      "password": "$2a$10$D7c0q8XIBVFBx6tX6E9Zb.HzoB3DYSqk.o3uwzKyQ3OvmUOIFX1D6",
+      "email": "admin@example.com",
+      "sites": ["main"],
+      "roles": ["admin"]
+    }
+  ]
+}

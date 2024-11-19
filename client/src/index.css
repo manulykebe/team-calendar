@@ -1,3 +1,59 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --fc-border-color: theme('colors.gray.200');
+  --fc-today-bg-color: theme('colors.blue.50');
+  --fc-event-bg-color: theme('colors.blue.500');
+  --fc-event-border-color: theme('colors.blue.600');
+  --fc-now-indicator-color: theme('colors.red.500');
+}
+
+.dark {
+  --fc-border-color: theme('colors.gray.700');
+  --fc-today-bg-color: theme('colors.blue.900');
+  --fc-event-bg-color: theme('colors.blue.600');
+  --fc-event-border-color: theme('colors.blue.700');
+  --fc-page-bg-color: theme('colors.gray.900');
+  --fc-neutral-bg-color: theme('colors.gray.800');
+  --fc-neutral-text-color: theme('colors.gray.100');
+  --fc-now-indicator-color: theme('colors.red.500');
+}
+
+.fc-theme-custom .fc-timegrid-slot {
+  height: 48px !important;
+}
+
+.fc-theme-custom .fc-timegrid-slot-label {
+  font-size: 0.875rem;
+  color: theme('colors.gray.500');
+}
+
+.fc-theme-custom .fc-col-header-cell {
+  padding: 8px;
+  font-weight: 600;
+}
+
+.fc-theme-custom .fc-event {
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 0.875rem;
+}
+
+.fc-theme-custom .fc-event-main {
+  padding: 2px 4px;
+}
+
+.fc-theme-custom .fc-toolbar-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.fc-theme-custom .fc-button {
+  @apply bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+}
+
+.fc-theme-custom .fc-button-active {
+  @apply bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 border-blue-300 dark:border-blue-600;
+}
