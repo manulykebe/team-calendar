@@ -1,8 +1,9 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import auth from './middleware/auth.js';
+import { AuthRequest } from './types/index.js';
 
 dotenv.config();
 
@@ -13,20 +14,19 @@ app.use(cors());
 app.use(express.json());
 
 // Public routes
-app.post('/api/login', (req, res) => {
-  // Demo login - in production, verify credentials against database
-  const token = jwt.sign({ id: 'user123' }, process.env.JWT_SECRET, {
+app.post('/api/login', (req: Request, res: Response) => {
+  const token = jwt.sign({ id: 'user123' }, process.env.JWT_SECRET!, {
     expiresIn: '1h',
   });
   res.json({ token });
 });
 
 // Protected routes
-app.get('/api/health', auth, (req, res) => {
+app.get('/api/health', auth, (req: AuthRequest, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
-app.get('/api/greeting', auth, (req, res) => {
+app.get('/api/greeting', auth, (req: AuthRequest, res: Response) => {
   res.json({ message: 'Hello from the server!' });
 });
 
