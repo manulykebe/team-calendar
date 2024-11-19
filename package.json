@@ -8,7 +8,7 @@
     "audit:all": "npm audit fix && cd client && npm audit fix && cd ../server && npm audit fix",
     "client": "cd client && npm run dev",
     "server": "cd server && npm run dev",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"yellow,blue\" \"npm run server\" \"npm run client\"",
     "build": "cd client && npm run build",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
