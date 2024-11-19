@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+import auth from './middleware/auth.js';
 
 dotenv.config();
 
@@ -10,13 +12,21 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
+// Public routes
+app.post('/api/login', (req, res) => {
+  // Demo login - in production, verify credentials against database
+  const token = jwt.sign({ id: 'user123' }, process.env.JWT_SECRET, {
+    expiresIn: '1h',
+  });
+  res.json({ token });
+});
+
+// Protected routes
+app.get('/api/health', auth, (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
-// Example API endpoint
-app.get('/api/greeting', (req, res) => {
+app.get('/api/greeting', auth, (req, res) => {
   res.json({ message: 'Hello from the server!' });
 });
 

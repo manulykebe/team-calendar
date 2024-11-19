@@ -1,16 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Server } from 'lucide-react';
+import Cookies from 'js-cookie';
 
 function App() {
   const [serverMessage, setServerMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [token, setToken] = useState(Cookies.get('token') || '');
+
+  const login = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/login');
+      const newToken = response.data.token;
+      Cookies.set('token', newToken, { expires: 1 }); // Expires in 1 day
+      setToken(newToken);
+    } catch (err) {
+      setError('Login failed');
+    }
+  };
 
   useEffect(() => {
     const fetchGreeting = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/greeting');
+        if (!token) {
+          await login();
+          return;
+        }
+
+        const response = await axios.get('http://localhost:5000/api/greeting', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setServerMessage(response.data.message);
         setLoading(false);
       } catch (err) {
@@ -20,7 +40,7 @@ function App() {
     };
 
     fetchGreeting();
-  }, []);
+  }, [token]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100">
