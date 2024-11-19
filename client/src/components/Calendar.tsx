@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -15,12 +15,19 @@ interface Event {
   color?: string;
 }
 
-export const Calendar: React.FC = () => {
-  const [view, setView] = useState<'timeGridDay' | 'timeGridWeek' | 'multiMonthYear'>('timeGridWeek');
-  const [currentDate, setCurrentDate] = useState(new Date());
+type CalendarView = 'timeGridDay' | 'timeGridWeek' | 'multiMonthYear';
 
-  const handleViewChange = (newView: 'timeGridDay' | 'timeGridWeek' | 'multiMonthYear') => {
-    setView(newView);
+export const Calendar: React.FC = () => {
+  const [view, setView] = useState<CalendarView>('timeGridWeek');
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const calendarRef = useRef<FullCalendar>(null);
+
+  const handleViewChange = (newView: CalendarView) => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (calendarApi) {
+      calendarApi.changeView(newView);
+      setView(newView);
+    }
   };
 
   const handleDateChange = (direction: 'prev' | 'next') => {
@@ -30,8 +37,6 @@ export const Calendar: React.FC = () => {
       setCurrentDate(calendarApi.getDate());
     }
   };
-
-  const calendarRef = React.useRef<any>(null);
 
   const handleEventClick = (info: any) => {
     alert(`Event: ${info.event.title}`);
@@ -138,7 +143,11 @@ export const Calendar: React.FC = () => {
           slotMaxTime="20:00:00"
           allDaySlot={false}
           nowIndicator={true}
-          className="fc-theme-custom"
+          views={{
+            timeGridDay: { buttonText: 'Day' },
+            timeGridWeek: { buttonText: 'Week' },
+            multiMonthYear: { buttonText: 'Year' }
+          }}
         />
       </div>
     </div>

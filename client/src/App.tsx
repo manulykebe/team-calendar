@@ -11,6 +11,7 @@ import { useTheme } from './context/ThemeContext';
 
 function AppContent() {
   const { user, isLoading } = useAuth();
+  const { isDark, toggle } = useTheme();
 
   if (isLoading) {
     return (
@@ -22,7 +23,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
-      <ThemeToggle />
+      <ThemeToggle isDark={isDark} toggle={toggle} />
       {user ? <Calendar /> : <LoginModal />}
     </div>
   );
