@@ -129,3 +129,27 @@ export const deleteUser = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const getColleagues = async (req: AuthRequest, res: Response) => {
+  try {
+    const currentUserId = req.user?.id;
+    const currentUserSites = req.user?.sites || [];
+
+    const { users } = await getUsers();
+
+    const colleagues = users
+      .filter(user => 
+        user.id !== currentUserId &&
+        user.isDeleted !== true &&
+        user.sites.some(site => currentUserSites.includes(site))
+      )
+      .map(user => ({
+        id: user.id,
+        login: user.login
+      }));
+
+    res.json({ colleagues });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};

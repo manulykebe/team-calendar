@@ -7,7 +7,7 @@ import { login } from './controllers/auth.js';
 import { getEvents, createEvent, updateEvent, deleteEvent } from './controllers/events.js';
 import { getBankHolidays } from './controllers/bankHolidays.js';
 import { AuthRequest } from './types/index.js';
-import { getAllUsers, createUser, updateUser, deleteUser } from './controllers/users.js';
+import { getAllUsers, createUser, updateUser, deleteUser, getColleagues } from './controllers/users.js';
 
 dotenv.config();
 
@@ -47,6 +47,7 @@ app.get('/api/users', auth, getAllUsers);
 app.post('/api/users', auth, createUser);
 app.put('/api/users/:id', auth, updateUser);
 app.delete('/api/users/:id', auth, deleteUser);
+app.get('/api/colleagues', auth, getColleagues);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

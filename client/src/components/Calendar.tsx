@@ -396,7 +396,7 @@ export const Calendar: React.FC = () => {
     const date = args.date;
     const currentView = calendarRef.current?.getApi().view.type;
     
-    if (currentView === 'dayGridMonth') {
+    if (currentView === 'dayGridMonth' ||currentView === 'multiMonthYear') {
       return args.text; // Use default for month view
     }
 
