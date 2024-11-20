@@ -5,8 +5,12 @@
       "login": "admin",
       "password": "$2a$10$D7c0q8XIBVFBx6tX6E9Zb.HzoB3DYSqk.o3uwzKyQ3OvmUOIFX1D6",
       "email": "admin@example.com",
-      "sites": ["main"],
-      "roles": ["admin"],
+      "sites": [
+        "main"
+      ],
+      "roles": [
+        "admin"
+      ],
       "country": "Belgium"
     },
     {
@@ -14,9 +18,27 @@
       "login": "manu",
       "password": "$2a$10$gmIkrXvEntciZcIt7KagB.By6zqlq0SuiHMNmNCiGaxsgkjcdkjNy",
       "email": "admin@example.com",
-      "sites": ["main"],
-      "roles": ["team-member"],
+      "sites": [
+        "main"
+      ],
+      "roles": [
+        "team-member"
+      ],
       "country": "Belgium"
+    },
+    {
+      "id": "2",
+      "login": "katrien",
+      "email": "admin@example.com",
+      "sites": [
+        "main"
+      ],
+      "roles": [
+        "team-member"
+      ],
+      "country": "Belgium",
+      "password": "$2a$10$W5BkMgUPMfU8ZR26.YNLUeuXXUSpHFj9hk8u5umSxilUkQQYQ3Nom",
+      "isDeleted": false
     }
   ]
 }

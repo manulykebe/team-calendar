@@ -22,6 +22,7 @@ export interface User {
   email: string;
   sites: string[];
   roles: UserRole[];
+  isDeleted?: boolean;
 }
 
 export interface CalendarEvent {

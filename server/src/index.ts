@@ -7,6 +7,7 @@ import { login } from './controllers/auth.js';
 import { getEvents, createEvent, updateEvent, deleteEvent } from './controllers/events.js';
 import { getBankHolidays } from './controllers/bankHolidays.js';
 import { AuthRequest } from './types/index.js';
+import { getAllUsers, createUser, updateUser, deleteUser } from './controllers/users.js';
 
 dotenv.config();
 
@@ -40,6 +41,12 @@ app.delete('/api/sites/:site/events/:year/:eventId', auth, deleteEvent);
 
 // Bank holidays routes
 app.get('/api/bank-holidays/:country/:year', auth, getBankHolidays);
+
+// User management routes
+app.get('/api/users', auth, getAllUsers);
+app.post('/api/users', auth, createUser);
+app.put('/api/users/:id', auth, updateUser);
+app.delete('/api/users/:id', auth, deleteUser);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
