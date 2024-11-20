@@ -16,6 +16,7 @@ const port = process.env.PORT || 5000;
 
 app.use(cors({
   origin: [
+    'https://lavish-burst-production.up.railway.app',
     'https://team-calendar-two.vercel.app/',
     'http://localhost:3000'
   ],
