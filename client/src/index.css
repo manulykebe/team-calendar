@@ -8,6 +8,8 @@
   --fc-event-bg-color: theme('colors.blue.500');
   --fc-event-border-color: theme('colors.blue.600');
   --fc-now-indicator-color: theme('colors.red.500');
+  --toast-bg: theme('colors.white');
+  --toast-color: theme('colors.gray.900');
 }
 
 .dark {
@@ -19,6 +21,8 @@
   --fc-neutral-bg-color: theme('colors.gray.800');
   --fc-neutral-text-color: theme('colors.gray.100');
   --fc-now-indicator-color: theme('colors.red.500');
+  --toast-bg: theme('colors.gray.800');
+  --toast-color: theme('colors.gray.100'); 
 }
 
 .fc-theme-custom .fc-timegrid-slot {
@@ -163,4 +167,71 @@
 
 .fc-timegrid-col-header {
   @apply h-[4rem];
+}
+
+/* Base event styles */
+.fc-event {
+  @apply border-l-4;
+  background-color: var(--user-color, theme('colors.gray.200')) !important;
+}
+
+/* User color variations */
+.user-color-1 {
+  --user-color: theme('colors.amber.400');
+  --user-border: theme('colors.amber.500');
+  border-left-color: var(--user-border) !important;
+}
+
+.user-color-2 {
+  --user-color: theme('colors.emerald.400');
+  --user-border: theme('colors.emerald.500');
+  border-left-color: var(--user-border) !important;
+}
+
+.user-color-3 {
+  --user-color: theme('colors.blue.400');
+  --user-border: theme('colors.blue.500');
+  border-left-color: var(--user-border) !important;
+}
+
+.user-color-4 {
+  --user-color: theme('colors.violet.400');
+  --user-border: theme('colors.violet.500');
+  border-left-color: var(--user-border) !important;
+}
+
+.user-color-5 {
+  --user-color: theme('colors.pink.400');
+  --user-border: theme('colors.pink.500');
+  border-left-color: var(--user-border) !important;
+}
+
+/* Dark mode variations */
+.dark .fc-event {
+  background-color: var(--user-color-dark, theme('colors.gray.700')) !important;
+}
+
+.dark .user-color-1 {
+  --user-color-dark: theme('colors.amber.900');
+  --user-border: theme('colors.amber.500');
+}
+
+.dark .user-color-2 {
+  --user-color-dark: theme('colors.emerald.900');
+  --user-border: theme('colors.emerald.500');
+}
+
+.dark .user-color-3 {
+  --user-color-dark: theme('colors.blue.900');
+  --user-border: theme('colors.blue.500');
+}
+
+.dark .user-color-4 {
+  --user-color-dark: theme('colors.violet.900');
+  --user-border: theme('colors.violet.500');
+}
+
+.dark .user-color-5 {
+  --user-color-dark: theme('colors.pink.900');
+  --user-border: theme('colors.pink.500');
 }

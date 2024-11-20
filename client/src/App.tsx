@@ -35,14 +35,18 @@ function App() {
     <AuthProvider>
       <ThemeProvider>
         <AppContent />
-        <Toaster position="bottom-right" toastOptions={{
-          className: 'dark:bg-gray-800 dark:text-white',
-          duration: 3000,
-          style: {
-            background: 'var(--toast-bg)',
-            color: 'var(--toast-color)',
-          },
-        }} />
+        <Toaster 
+          position="bottom-right"
+          toastOptions={{
+            className: 'dark:bg-gray-800 dark:text-white',
+            duration: 3000,
+            style: {
+              // Use CSS variables for dynamic theming
+              background: 'var(--toast-bg)', 
+              color: 'var(--toast-color)'
+            }
+          }}
+        />
       </ThemeProvider>
     </AuthProvider>
   );

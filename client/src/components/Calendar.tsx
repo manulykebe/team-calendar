@@ -650,17 +650,23 @@ export const Calendar: React.FC = () => {
           }}
           events={events}
           dayHeaderContent={customDayHeader}
-          eventContent={(eventInfo) => (
-            <div className={`fc-event-main-frame ${getUserColorClass(eventInfo.event.extendedProps.userId)}`}>
-              <div className="fc-event-time">12:00 - 11:59</div>
-              <div className="fc-event-title-container">
-                <div className="fc-event-title fc-sticky">{eventInfo.event.title}
-
-                </div>
-                </div>
-                </div>
-
-          )}
+          eventClassNames={(eventInfo) => {
+            return [getUserColorClass(eventInfo.event.extendedProps.userId)];
+          }}
+          // eventContent={(eventInfo) => {          
+          //   return (
+          //     <div className="fc-event-main-frame">
+          //       <div className="fc-event-time">
+          //         {eventInfo.timeText || '12:00 - 11:59'}
+          //       </div>
+          //       <div className="fc-event-title-container">
+          //         <div className="fc-event-title fc-sticky">
+          //           {eventInfo.event.title}
+          //         </div>
+          //       </div>
+          //     </div>
+          //   );
+          // }}
         />
       </div>
       <EventModal
