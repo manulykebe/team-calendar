@@ -9,6 +9,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeToggle } from './components/ThemeToggle';
 import { useTheme } from './context/ThemeContext';
+import { Toaster } from 'react-hot-toast';
 
 function AppContent() {
   const { user, isLoading } = useAuth();
@@ -34,6 +35,14 @@ function App() {
     <AuthProvider>
       <ThemeProvider>
         <AppContent />
+        <Toaster position="bottom-right" toastOptions={{
+          className: 'dark:bg-gray-800 dark:text-white',
+          duration: 3000,
+          style: {
+            background: 'var(--toast-bg)',
+            color: 'var(--toast-color)',
+          },
+        }} />
       </ThemeProvider>
     </AuthProvider>
   );

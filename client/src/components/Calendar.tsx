@@ -10,9 +10,11 @@ import { useAuth } from '../context/AuthContext';
 import { EventClickArg } from '@fullcalendar/core';
 import api from '../api/axios';
 import { isAxiosError } from 'axios';
+import toast from 'react-hot-toast';
 
 interface Event {
   id: string;
+  userId: string;
   title: string;
   start: Date | string;
   end: Date | string;
@@ -21,6 +23,10 @@ interface Event {
   color?: string;
   className?: string;
   allDay?: boolean;
+  extendedProps?: {
+    colleagueId?: string;
+    [key: string]: any;
+  }
 }
 
 interface EventModalProps {
@@ -228,6 +234,13 @@ const serverApi = {
   }
 };
 
+const getUserColorClass = (userId: string) => {
+  // Map user ID to a color number 1-5
+  if (!userId || userId === '') return '';
+  const colorIndex = (parseInt(userId, 16) % 5) + 1;
+  return `user-color-${colorIndex}`;
+};
+
 export const Calendar: React.FC = () => {
   const { user } = useAuth();
   const isTeamMember = user?.roles.includes('team-member') ?? false;
@@ -244,6 +257,77 @@ export const Calendar: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const calendarRef = useRef<FullCalendar>(null);
+
+  const [isColleaguesPanelOpen, setIsColleaguesPanelOpen] = useState(false);
+  const [colleagues, setColleagues] = useState<{ id: string; login: string }[]>([]);
+  const [selectedColleagues, setSelectedColleagues] = useState<string[]>([]);
+  const [allColleaguesSelected, setAllColleaguesSelected] = useState(false);
+
+  const toggleColleaguesPanel = () => {
+    setIsColleaguesPanelOpen(!isColleaguesPanelOpen);
+  };
+
+  useEffect(() => {
+    if (isColleaguesPanelOpen && colleagues.length === 0) {
+      api.get('/api/colleagues')
+        .then(response => {
+          setColleagues(response.data.colleagues);
+        })
+        .catch(error => {
+          console.error('Failed to fetch colleagues:', error);
+        });
+    }
+  }, [isColleaguesPanelOpen]);
+
+  const handleColleagueToggle = (colleagueId: string, isSelected: boolean) => {
+    let updatedSelectedColleagues;
+    if (isSelected) {
+      updatedSelectedColleagues = [...selectedColleagues, colleagueId];
+      fetchColleagueEvents(colleagueId);
+    } else {
+      updatedSelectedColleagues = selectedColleagues.filter(id => id !== colleagueId);
+      removeColleagueEvents(colleagueId);
+    }
+    setSelectedColleagues(updatedSelectedColleagues);
+    setAllColleaguesSelected(updatedSelectedColleagues.length === colleagues.length);
+  };
+
+  const handleToggleAllColleagues = () => {
+    if (allColleaguesSelected) {
+      setSelectedColleagues([]);
+      setAllColleaguesSelected(false);
+      colleagues.forEach(colleague => removeColleagueEvents(colleague.id));
+    } else {
+      const allIds = colleagues.map(colleague => colleague.id);
+      setSelectedColleagues(allIds);
+      setAllColleaguesSelected(true);
+      colleagues.forEach(colleague => fetchColleagueEvents(colleague.id));
+    }
+  };
+
+  const fetchColleagueEvents = (colleagueId: string) => {
+    const site = user?.sites[0] || 'main';
+    const year = format(currentDate, 'yyyy');
+    api.get(`/api/sites/${site}/events/${year}?userId=${colleagueId}`)
+      .then(response => {
+        const colleagueEvents = response.data.events.map((event: Event) => ({
+          ...event,
+          id: `${colleagueId}-${event.id}`, // Make the ID unique
+          extendedProps: {
+            ...event.extendedProps,
+            colleagueId,
+          },
+        }));
+        setEvents(prevEvents => [...prevEvents, ...colleagueEvents]);
+      })
+      .catch(error => {
+        console.error('Failed to fetch colleague events:', error);
+      });
+  };
+
+  const removeColleagueEvents = (colleagueId: string) => {
+    setEvents(prevEvents => prevEvents.filter(event => event.extendedProps?.colleagueId !== colleagueId));
+  };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -302,6 +386,7 @@ export const Calendar: React.FC = () => {
     const event = info.event;
     setSelectedEvent({
       id: event.id,
+      userId: event.extendedProps.userId || '',
       title: event.title,
       start: event.start || new Date(),
       end: event.end || new Date(),
@@ -318,6 +403,7 @@ export const Calendar: React.FC = () => {
   };
 
   const handleDateSelect = (selectInfo: any) => {
+    // New events are always allowed since they'll be owned by current user
     setSelectedEvent(undefined);
     setSelectedDates({
       start: selectInfo.start,
@@ -327,6 +413,11 @@ export const Calendar: React.FC = () => {
   };
 
   const handleEventSave = async (eventData: Partial<Event>) => {
+    if (selectedEvent && !canModifyEvent(selectedEvent)) {
+      toast.error('You can only modify your own events');
+      return;
+    }
+    
     setIsSaving(true);
     const fullCalendarApi = calendarRef.current?.getApi();
     
@@ -358,9 +449,10 @@ export const Calendar: React.FC = () => {
           end: savedEvent.end
         });
       }
+      toast.success('Event saved successfully');
     } catch (error) {
       console.error('Failed to save event:', error);
-      // You could add a toast notification here
+      toast.error('Failed to save event');
     } finally {
       setIsSaving(false);
       setSelectedEvent(undefined);
@@ -368,6 +460,12 @@ export const Calendar: React.FC = () => {
   };
 
   const handleEventDelete = async (eventId: string) => {
+    const event = events.find(e => e.id === eventId);
+    if (!event || !canModifyEvent(event)) {
+      toast.error('You can only delete your own events');
+      return;
+    }
+
     setIsSaving(true);
     try {
       const year = format(selectedDates.start, 'yyyy');
@@ -382,13 +480,21 @@ export const Calendar: React.FC = () => {
           existingEvent.remove();
         }
       }
+      toast.success('Event deleted successfully');
     } catch (error) {
       console.error('Failed to delete event:', error);
+      toast.error('Failed to delete event');
     } finally {
       setIsSaving(false);
       setSelectedEvent(undefined);
       setIsModalOpen(false);
     }
+  };
+
+  const canModifyEvent = (event: Event): boolean => {
+    const isAdmin = user?.roles.includes('admin');
+    const isOwner = event.userId === user?.id;
+    return isAdmin || isOwner;
   };
 
   // Update customDayHeader to handle day view
@@ -424,10 +530,12 @@ export const Calendar: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col bg-white dark:bg-gray-900">
-      <div className="border-b border-gray-200 dark:border-gray-700 p-4">
+      <div className="border-b border-gray-200 dark:border-gray-700 p-4 relative">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-4">
-            <CalendarIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+            <button onClick={toggleColleaguesPanel} className="relative">
+              <CalendarIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+            </button>
             <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
               Team Calendar
             </h1>
@@ -492,6 +600,29 @@ export const Calendar: React.FC = () => {
             </button>
           </div>
         </div>
+        {isColleaguesPanelOpen && (
+          <div className="absolute top-16 left-4 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-50">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Colleagues</h2>
+              <button onClick={handleToggleAllColleagues} className="text-sm text-blue-600 hover:underline">
+                {allColleaguesSelected ? 'Deselect All' : 'Select All'}
+              </button>
+            </div>
+            <div className="max-h-64 overflow-y-auto">
+              {colleagues.map(colleague => (
+                <div key={colleague.id} className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedColleagues.includes(colleague.id)}
+                    onChange={(e) => handleColleagueToggle(colleague.id, e.target.checked)}
+                    className="mr-2"
+                  />
+                  <span className="text-gray-800 dark:text-white">{colleague.login}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
       <div className="flex-1 overflow-auto">
         <FullCalendar
@@ -519,6 +650,17 @@ export const Calendar: React.FC = () => {
           }}
           events={events}
           dayHeaderContent={customDayHeader}
+          eventContent={(eventInfo) => (
+            <div className={`fc-event-main-frame ${getUserColorClass(eventInfo.event.extendedProps.userId)}`}>
+              <div className="fc-event-time">12:00 - 11:59</div>
+              <div className="fc-event-title-container">
+                <div className="fc-event-title fc-sticky">{eventInfo.event.title}
+
+                </div>
+                </div>
+                </div>
+
+          )}
         />
       </div>
       <EventModal
