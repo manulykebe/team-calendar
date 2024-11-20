@@ -19,7 +19,7 @@
       "password": "$2a$10$gmIkrXvEntciZcIt7KagB.By6zqlq0SuiHMNmNCiGaxsgkjcdkjNy",
       "email": "admin@example.com",
       "sites": [
-        "main"
+        "AZJP"
       ],
       "roles": [
         "team-member"
@@ -31,13 +31,26 @@
       "login": "katrien",
       "email": "admin@example.com",
       "sites": [
-        "main"
+        "AZJP"
       ],
       "roles": [
         "team-member"
       ],
       "country": "Belgium",
       "password": "$2a$10$W5BkMgUPMfU8ZR26.YNLUeuXXUSpHFj9hk8u5umSxilUkQQYQ3Nom",
+      "isDeleted": false
+    },
+    {
+      "id": "1732092878846",
+      "login": "quinten",
+      "email": "quinten@lyke.be",
+      "password": "$2a$10$km3j75.2oT4kLv4N.3vgfOwWyk8irnD61edzpR9eYEfUhHwNuo8AO",
+      "sites": [
+        "main"
+      ],
+      "roles": [
+        "team-member"
+      ],
       "isDeleted": false
     }
   ]
