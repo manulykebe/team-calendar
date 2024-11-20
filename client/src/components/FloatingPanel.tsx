@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { User, Settings, X, Key, Globe, Mail, Building, LogOut } from 'lucide-react';
+import { User, Settings, X, Key, Globe, Mail, Building, LogOut, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserManagement } from './UserManagement';
 import Cookies from 'js-cookie';
+// Add useTheme import
+import { useTheme } from '../context/ThemeContext';
 
 interface PanelProps {
   isOpen: boolean;
@@ -118,11 +120,25 @@ export const FloatingPanel: React.FC = () => {
   const [isUserPanelOpen, setIsUserPanelOpen] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const { user } = useAuth();
+  const { isDark, toggle } = useTheme(); // Add theme context
   const isAdmin = user?.roles.includes('admin');
 
   return (
     <>
       <div className="fixed left-4 top-1/2 -translate-y-1/2 flex flex-col space-y-2 z-50">
+        {/* Add theme toggle button */}
+        <button
+          onClick={toggle}
+          className="p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+          title="Toggle Theme"
+        >
+          {isDark ? (
+            <Sun className="w-5 h-5 text-yellow-500" />
+          ) : (
+            <Moon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+          )}
+        </button>
+
         <button
           onClick={() => {
             setIsUserPanelOpen(true);
