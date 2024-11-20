@@ -391,6 +391,28 @@ export const Calendar: React.FC = () => {
     }
   };
 
+  // In Calendar.tsx, add customization for the dayHeaderContent
+  const customDayHeader = (args: any) => {
+    const date = args.date;
+    const holiday = events.find(event => 
+      event.className === 'bank-holiday' && 
+      new Date(event.start).toDateString() === date.toDateString()
+    );
+
+    return (
+      <div className="day-header">
+        <div className="day-title">
+          {args.text}
+        </div>
+        {holiday && (
+          <div className="bank-holiday-label">
+            {holiday.title}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="h-screen flex flex-col bg-white dark:bg-gray-900">
       <div className="border-b border-gray-200 dark:border-gray-700 p-4">
@@ -487,6 +509,7 @@ export const Calendar: React.FC = () => {
             multiMonthYear: { buttonText: 'Year' }
           }}
           events={events}
+          dayHeaderContent={customDayHeader}
         />
       </div>
       <EventModal
