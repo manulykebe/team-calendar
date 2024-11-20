@@ -17,10 +17,14 @@ const port = process.env.PORT || 5000;
 app.use(cors({
   origin: [
     'https://lavish-burst-production.up.railway.app',
-    'https://team-calendar-two.vercel.app/',
+    'https://team-calendar-two.vercel.app',
     'http://localhost:3000'
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Authorization'],
+  maxAge: 86400 // Cache preflight requests for 24 hours
 }));
 app.use(express.json());
 
