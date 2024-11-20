@@ -391,18 +391,27 @@ export const Calendar: React.FC = () => {
     }
   };
 
-  // In Calendar.tsx, add customization for the dayHeaderContent
+  // Update customDayHeader to handle day view
   const customDayHeader = (args: any) => {
     const date = args.date;
+    const currentView = calendarRef.current?.getApi().view.type;
+    
+    if (currentView === 'dayGridMonth') {
+      return args.text; // Use default for month view
+    }
+
+    // For day and week views, show enhanced format with holidays
     const holiday = events.find(event => 
       event.className === 'bank-holiday' && 
       new Date(event.start).toDateString() === date.toDateString()
     );
 
+    const dayText = format(date, 'EEE d');
+
     return (
       <div className="day-header">
         <div className="day-title">
-          {args.text}
+          {dayText}
         </div>
         {holiday && (
           <div className="bank-holiday-label">

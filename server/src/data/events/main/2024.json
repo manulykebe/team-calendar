@@ -47,6 +47,18 @@
       "userId": "1",
       "createdAt": "2024-11-20T06:35:18.760Z",
       "updatedAt": "2024-11-20T06:35:18.760Z"
+    },
+    {
+      "title": "",
+      "status": "desired",
+      "private": false,
+      "start": "2024-11-14T23:00:00.000Z",
+      "end": "2024-11-15T22:59:59.000Z",
+      "className": "desired-event",
+      "id": "1732089558079",
+      "userId": "1",
+      "createdAt": "2024-11-20T07:59:18.079Z",
+      "updatedAt": "2024-11-20T07:59:18.079Z"
     }
   ]
 }
