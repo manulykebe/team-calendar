@@ -4,10 +4,11 @@ import Cookies from 'js-cookie';
 
 interface User {
   id: string;
-  login: string;
+  name: string;
   email: string;
-  sites: string[];
   roles: string[];
+  country: string;
+  sites: string[];
 }
 
 interface AuthContextType {

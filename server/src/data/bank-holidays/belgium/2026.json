@@ -1,0 +1,64 @@
+{
+  "holidays": [
+    {
+      "id": "be-2026-01",
+      "title": "New Year's Day",
+      "date": "2026-01-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2026-02",
+      "title": "Easter Monday",
+      "date": "2026-04-06",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2026-03",
+      "title": "Labour Day",
+      "date": "2026-05-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2026-04",
+      "title": "Ascension Day",
+      "date": "2026-05-14",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2026-05",
+      "title": "Whit Monday",
+      "date": "2026-05-25",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2026-06",
+      "title": "Belgian National Day",
+      "date": "2026-07-21",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2026-07",
+      "title": "Assumption of Mary",
+      "date": "2026-08-15",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2026-08",
+      "title": "All Saints' Day",
+      "date": "2026-11-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2026-09",
+      "title": "Armistice Day",
+      "date": "2026-11-11",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2026-10",
+      "title": "Christmas Day",
+      "date": "2026-12-25",
+      "type": "bank-holiday"
+    }
+  ]
+}

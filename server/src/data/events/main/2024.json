@@ -1,0 +1,52 @@
+{
+  "events": [
+    {
+      "title": "",
+      "status": "desired",
+      "private": false,
+      "start": "2024-11-20T23:00:00.000Z",
+      "end": "2024-11-21T22:59:59.000Z",
+      "className": "desired-event",
+      "id": "1732084497541",
+      "userId": "1",
+      "createdAt": "2024-11-20T06:34:57.541Z",
+      "updatedAt": "2024-11-20T06:34:57.541Z"
+    },
+    {
+      "title": "",
+      "status": "desired",
+      "private": false,
+      "start": "2024-11-12T23:00:00.000Z",
+      "end": "2024-11-13T22:59:59.000Z",
+      "className": "desired-event",
+      "id": "1732084511054",
+      "userId": "1",
+      "createdAt": "2024-11-20T06:35:11.054Z",
+      "updatedAt": "2024-11-20T06:35:11.054Z"
+    },
+    {
+      "title": "",
+      "status": "desired",
+      "private": false,
+      "start": "2024-11-14T06:00:00.000Z",
+      "end": "2024-11-14T11:00:00.000Z",
+      "className": "desired-event",
+      "id": "1732084514280",
+      "userId": "1",
+      "createdAt": "2024-11-20T06:35:14.280Z",
+      "updatedAt": "2024-11-20T06:35:14.280Z"
+    },
+    {
+      "title": "",
+      "status": "desired",
+      "private": false,
+      "start": "2024-11-14T11:00:00.000Z",
+      "end": "2024-11-14T16:00:00.000Z",
+      "className": "desired-event",
+      "id": "1732084518760",
+      "userId": "1",
+      "createdAt": "2024-11-20T06:35:18.760Z",
+      "updatedAt": "2024-11-20T06:35:18.760Z"
+    }
+  ]
+}

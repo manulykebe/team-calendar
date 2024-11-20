@@ -23,3 +23,23 @@ export interface User {
   sites: string[];
   roles: UserRole[];
 }
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  status: 'unavailable' | 'desired' | 'available';
+  private: boolean;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BankHoliday {
+  id: string;
+  title: string;
+  date: string;
+  type: 'bank-holiday' | 'regional-holiday';
+  region?: string;
+}

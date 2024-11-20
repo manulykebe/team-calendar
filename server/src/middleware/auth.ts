@@ -8,7 +8,7 @@ const auth = (req: AuthRequest, res: Response, next: NextFunction): void => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (!token) {
-      res.status(401).json({ message: 'No auth token found' });
+      res.status(401).json({ message: 'No authorization token found' });
       return;
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as UserPayload;

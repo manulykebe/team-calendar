@@ -1,0 +1,64 @@
+{
+  "holidays": [
+    {
+      "id": "be-2025-01",
+      "title": "New Year's Day",
+      "date": "2025-01-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2025-02",
+      "title": "Easter Monday",
+      "date": "2025-04-21",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2025-03",
+      "title": "Labour Day",
+      "date": "2025-05-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2025-04",
+      "title": "Ascension Day",
+      "date": "2025-05-29",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2025-05",
+      "title": "Whit Monday",
+      "date": "2025-06-09",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2025-06",
+      "title": "Belgian National Day",
+      "date": "2025-07-21",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2025-07",
+      "title": "Assumption of Mary",
+      "date": "2025-08-15",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2025-08",
+      "title": "All Saints' Day",
+      "date": "2025-11-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2025-09",
+      "title": "Armistice Day",
+      "date": "2025-11-11",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2025-10",
+      "title": "Christmas Day",
+      "date": "2025-12-25",
+      "type": "bank-holiday"
+    }
+  ]
+}

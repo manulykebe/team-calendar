@@ -1,0 +1,64 @@
+{
+  "holidays": [
+    {
+      "id": "be-2024-01",
+      "title": "New Year's Day",
+      "date": "2024-01-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2024-02",
+      "title": "Easter Monday",
+      "date": "2024-04-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2024-03",
+      "title": "Labour Day",
+      "date": "2024-05-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2024-04",
+      "title": "Ascension Day",
+      "date": "2024-05-09",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2024-05",
+      "title": "Whit Monday",
+      "date": "2024-05-20",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2024-06",
+      "title": "Belgian National Day",
+      "date": "2024-07-21",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2024-07",
+      "title": "Assumption of Mary",
+      "date": "2024-08-15",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2024-08",
+      "title": "All Saints' Day",
+      "date": "2024-11-01",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2024-09",
+      "title": "Armistice Day",
+      "date": "2024-11-11",
+      "type": "bank-holiday"
+    },
+    {
+      "id": "be-2024-10",
+      "title": "Christmas Day",
+      "date": "2024-12-25",
+      "type": "bank-holiday"
+    }
+  ]
+}
