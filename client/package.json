@@ -18,6 +18,7 @@
     "@fullcalendar/timegrid": "^6.1.10",
     "@headlessui/react": "^1.7.18",
     "axios": "^1.6.7",
+    "crypto-js": "^4.2.0",
     "date-fns": "^3.3.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.344.0",
