@@ -11,6 +11,8 @@ import { EventClickArg } from '@fullcalendar/core';
 import api from '../api/axios';
 import { isAxiosError } from 'axios';
 import toast from 'react-hot-toast';
+import Cookies from 'js-cookie';
+import CryptoJS from 'crypto-js';
 
 interface Event {
   id: string;
@@ -382,8 +384,28 @@ export const Calendar: React.FC = () => {
     }
   };
 
+  const isOwnedEvent = (event: Event): boolean => {
+    return event.userId === user?.id;
+  };
+
   const handleEventClick = (info: EventClickArg) => {
     const event = info.event;
+    if (!isOwnedEvent({ 
+      id: event.id,
+      userId: event.extendedProps.userId,
+      title: event.title,
+      start: event.start || new Date(),
+      end: event.end || new Date(),
+      status: event.extendedProps.status,
+      private: event.extendedProps.private,
+      color: event.backgroundColor,
+      className: event.classNames[0],
+      allDay: event.allDay,
+      extendedProps: event.extendedProps
+    })) {
+      return; // Early return for events not owned by user
+    }
+
     setSelectedEvent({
       id: event.id,
       userId: event.extendedProps.userId || '',
@@ -417,44 +439,60 @@ export const Calendar: React.FC = () => {
       toast.error('You can only modify your own events');
       return;
     }
-    
+
     setIsSaving(true);
-    const fullCalendarApi = calendarRef.current?.getApi();
-    
+
     try {
       const year = format(selectedDates.start, 'yyyy');
       const site = user?.sites[0] || 'main';
 
-      let savedEvent;
-      if (selectedEvent?.id) {
-        // Update existing event
-        savedEvent = await serverApi.updateEvent(site, year, selectedEvent.id, eventData);
-      } else {
-        // Create new event
-        savedEvent = await serverApi.createEvent(site, year, eventData);
+      const encryptKey = Cookies.get('encryptKey');
+
+      // Encrypt the event title if it's private and an encryption key is available
+      if (eventData.private && encryptKey) {
+        const encryptedTitle = CryptoJS.AES.encrypt(eventData.title || '', encryptKey).toString();
+        eventData.title = encryptedTitle;
       }
 
-      if (fullCalendarApi) {
-        if (selectedEvent) {
-          const existingEvent = fullCalendarApi.getEventById(selectedEvent.id);
+      let savedEvent;
+
+      if (selectedEvent) {
+        savedEvent = await serverApi.updateEvent(site, year, selectedEvent.id, eventData);
+        // Update event in calendar
+        const calendarApi = calendarRef.current?.getApi();
+        if (calendarApi) {
+          const existingEvent = calendarApi.getEventById(selectedEvent.id);
           if (existingEvent) {
-            existingEvent.remove();
+            existingEvent.setProp('title', eventData.title);
+            existingEvent.setExtendedProp('private', eventData.private);
+            existingEvent.setExtendedProp('userId', user?.id);
+            if (eventData.start) {
+              existingEvent.setStart(eventData.start);
+            }
+            if (eventData.end) {
+              existingEvent.setEnd(eventData.end);
+            }
           }
         }
-        
-        fullCalendarApi.addEvent({
-          id: savedEvent.id,
-          ...eventData,
-          start: savedEvent.start,
-          end: savedEvent.end
-        });
+      } else {
+        savedEvent = await serverApi.createEvent(site, year, eventData);
+        // Add event to calendar
+        const calendarApi = calendarRef.current?.getApi();
+        if (calendarApi) {
+          calendarApi.addEvent({
+            ...savedEvent,
+            title: eventData.title,
+          });
+        }
       }
+
       toast.success('Event saved successfully');
     } catch (error) {
       console.error('Failed to save event:', error);
       toast.error('Failed to save event');
     } finally {
       setIsSaving(false);
+      setIsModalOpen(false);
       setSelectedEvent(undefined);
     }
   };
@@ -526,6 +564,18 @@ export const Calendar: React.FC = () => {
         )}
       </div>
     );
+  };
+
+  const handleEventUpdate = async (updatedEvent: Partial<Event>) => {
+    try {
+      const year = format(updatedEvent.start || new Date(), 'yyyy');
+      const site = user?.sites[0] || 'main';
+      await serverApi.updateEvent(site, year, updatedEvent.id!, updatedEvent);
+      toast.success('Event updated successfully');
+    } catch (error) {
+      console.error('Failed to update event:', error);
+      toast.error('Failed to update event');
+    }
   };
 
   return (
@@ -630,7 +680,7 @@ export const Calendar: React.FC = () => {
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
           initialView={view}
           headerToolbar={false}
-          editable={!isTeamMember}
+          editable={true}
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
@@ -642,6 +692,55 @@ export const Calendar: React.FC = () => {
           slotMaxTime="20:00:00"
           allDaySlot={false}
           nowIndicator={true}
+          eventAllow={(dropInfo, draggedEvent) => {
+            // Only allow dragging owned events
+            return isOwnedEvent({
+              id: draggedEvent?.id || '',
+              userId: draggedEvent?.extendedProps.userId || '',
+              title: draggedEvent?.title || '',
+              start: draggedEvent?.start || new Date(),
+              end: draggedEvent?.end || new Date(),
+              status: draggedEvent?.extendedProps.status || 'available',
+              private: draggedEvent?.extendedProps.private || false,
+              color: draggedEvent?.backgroundColor || '',
+              className: draggedEvent?.classNames[0] || '',
+              allDay: draggedEvent?.allDay || false,
+              extendedProps: draggedEvent?.extendedProps || {}
+            });
+          }}
+          eventDrop={(info) => {
+            // Handle the event drop
+            const updatedEvent = {
+              id: info.event.id,
+              start: info.event.start || undefined,
+              end: info.event.end || undefined
+            };
+            
+            // Call your update function here
+            handleEventUpdate(updatedEvent);
+          }}
+          eventDidMount={(info) => {
+            // Existing mount handler code...
+            // Add visual cue for non-selectable events
+            if (!isOwnedEvent({ 
+              id: info.event.id,
+              userId: info.event.extendedProps.userId,
+              title: info.event.title,
+              start: info.event.start || new Date(),
+              end: info.event.end || new Date(),
+              status: info.event.extendedProps.status,
+              private: info.event.extendedProps.private,
+              color: info.event.backgroundColor,
+              className: info.event.classNames[0],
+              allDay: info.event.allDay,
+              extendedProps: info.event.extendedProps
+            })) {
+              info.el.style.cursor = 'default';
+              info.el.style.opacity = '0.5';
+            } else {
+              info.el.style.cursor = 'pointer';
+            }
+          }}
           views={{
             timeGridDay: { buttonText: 'Day' },
             timeGridWeek: { buttonText: 'Week' },

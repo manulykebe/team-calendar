@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 :root {
+  -webkit-user-select: none;
+  user-select: none;
   --fc-border-color: theme('colors.gray.200');
   --fc-today-bg-color: theme('colors.blue.50');
   --fc-event-bg-color: theme('colors.blue.500');
