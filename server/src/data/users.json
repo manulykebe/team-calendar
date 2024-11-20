@@ -5,52 +5,35 @@
       "login": "admin",
       "password": "$2a$10$D7c0q8XIBVFBx6tX6E9Zb.HzoB3DYSqk.o3uwzKyQ3OvmUOIFX1D6",
       "email": "admin@example.com",
-      "sites": [
-        "main"
-      ],
-      "roles": [
-        "admin"
-      ],
+      "sites": ["main"],
+      "roles": ["admin"],
       "country": "Belgium"
     },
     {
-      "id": "2",
+      "id": "1732098919129",
       "login": "manu",
-      "password": "$2a$10$gmIkrXvEntciZcIt7KagB.By6zqlq0SuiHMNmNCiGaxsgkjcdkjNy",
-      "email": "admin@example.com",
-      "sites": [
-        "AZJP"
-      ],
-      "roles": [
-        "team-member"
-      ],
-      "country": "Belgium"
-    },
-    {
-      "id": "2",
-      "login": "katrien",
-      "email": "admin@example.com",
-      "sites": [
-        "AZJP"
-      ],
-      "roles": [
-        "team-member"
-      ],
-      "country": "Belgium",
-      "password": "$2a$10$W5BkMgUPMfU8ZR26.YNLUeuXXUSpHFj9hk8u5umSxilUkQQYQ3Nom",
+      "email": "manu@lyke.be",
+      "password": "$2a$10$7kGFLAABAQEkWCbB/lfV7.qz07X0kYuBVN0fwCmVVbQeK94Bxj2T6",
+      "sites": ["AZJP"],
+      "roles": ["team-member"],
       "isDeleted": false
     },
     {
-      "id": "1732092878846",
+      "id": "1732098934922",
+      "login": "katrien",
+      "email": "katrien@lyke.be",
+      "password": "$2a$10$qe0A0zlTyLdR0LHBRKIGGO6f4MWXEkUBBhgQ.kvJHdO6pVlMBS1Ta",
+      "sites": ["AZJP"],
+      "roles": ["team-member"],
+      "isDeleted": false
+    },
+    {
+      "id": "1732098949803",
       "login": "quinten",
       "email": "quinten@lyke.be",
-      "password": "$2a$10$km3j75.2oT4kLv4N.3vgfOwWyk8irnD61edzpR9eYEfUhHwNuo8AO",
-      "sites": [
-        "main"
-      ],
-      "roles": [
-        "team-member"
-      ],
+      "password": "$2a$10$.ftMyTzQtccAK4nHlRqsHuTzdDtGmL4x8mcEeGHpuU.3dH62I3KIm",
+      "sites": ["AZJP"],
+      "roles": ["team-member"],
       "isDeleted": false
     }
   ]
