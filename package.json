@@ -9,7 +9,11 @@
     "client": "cd client && npm run dev",
     "server": "cd server && npm run dev",
     "dev": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"yellow,blue\" \"npm run server\" \"npm run client\"",
-    "build": "cd client && npm run build",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "deploy:client": "cd client && vercel --prod",
+    "deploy:server": "cd server && railway up",
+    "build": "npm run build:server && npm run build:client && npm run deploy:server && npm run deploy:client",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "prepare": "husky install"

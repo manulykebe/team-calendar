@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const token = Cookies.get('token');
       if (token) {
         try {
-          const response = await axios.get('http://localhost:5000/api/user', {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/user`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           setUser(response.data.user);
@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (login: string, password: string) => {
-    const response = await axios.post('http://localhost:5000/api/login', {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, {
       login,
       password,
     });
