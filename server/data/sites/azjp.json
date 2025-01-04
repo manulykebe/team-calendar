@@ -6,10 +6,11 @@
 			"lastName": "Vanneste",
 			"email": "admin@lyke.be",
 			"mobile": "+32 494 11 58 25",
-			"password": "",
+			"password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
 			"site": "azjp",
 			"role": "admin",
 			"status": "active",
+			"createdAt": "2025-01-04T14:23:29.975Z",
 			"updatedAt": "2025-01-04T14:23:29.975Z"
 		},
 		{
@@ -18,40 +19,13 @@
 			"lastName": "de Jongh",
 			"email": "katrien@lyke.be",
 			"mobile": "+32 494 11 58 25",
-			"password": "",
+			"password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
 			"site": "azjp",
 			"role": "admin",
 			"status": "active",
+			"createdAt": "2025-01-04T14:23:29.975Z",
 			"updatedAt": "2025-01-04T14:23:29.975Z"
 		}
 	],
-	"events": [
-		{
-			"id": "fed6ea32-2405-4ffb-b3b8-e932cbbd11dd",
-			"userId": "1",
-			"title": "verlof",
-			"description": "",
-			"date": "2025-01-08",
-			"createdAt": "2025-01-04T14:21:46.861Z",
-			"updatedAt": "2025-01-04T14:21:46.861Z"
-		},
-		{
-			"id": "1074a8d8-b911-4f9c-a665-048a59feccb5",
-			"userId": "1",
-			"title": "verlof",
-			"description": "",
-			"date": "2025-01-09",
-			"createdAt": "2025-01-04T14:21:51.555Z",
-			"updatedAt": "2025-01-04T14:21:51.555Z"
-		},
-		{
-			"id": "1f4de5c3-db19-4913-a493-bde1650eeadb",
-			"userId": "1",
-			"title": "verlof",
-			"description": "",
-			"date": "2025-01-10",
-			"createdAt": "2025-01-04T14:21:57.592Z",
-			"updatedAt": "2025-01-04T14:21:57.592Z"
-		}
-	]
+	"events": []
 }
