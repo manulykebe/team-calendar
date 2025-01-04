@@ -11,11 +11,11 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T21:44:19.162Z",
+      "updatedAt": "2025-01-04T21:51:22.131Z",
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#a50026",
+            "color": "#d73027",
             "abbrev": "ADM"
           },
           "2": {
@@ -36,15 +36,15 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T21:42:19.576Z",
+      "updatedAt": "2025-01-04T21:56:37.222Z",
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#313695",
+            "color": "#4575b4",
             "abbrev": "Q"
           },
           "2": {
-            "color": "#a50026",
+            "color": "#313695",
             "abbrev": "KDJ"
           }
         }

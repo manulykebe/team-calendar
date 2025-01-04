@@ -7,14 +7,13 @@ interface EventCardProps {
     description: string;
     userId: string;
   };
-  user?: User;
   userSettings?: User['settings'];
 }
 
-export function EventCard({ event, user, userSettings }: EventCardProps) {
+export function EventCard({ event, userSettings }: EventCardProps) {
   const colleagueSettings = userSettings?.colleagues?.[event.userId];
   const backgroundColor = colleagueSettings?.color || '#e2e8f0';
-  const displayText = colleagueSettings?.abbrev || event.description || event.title;
+  const prefix = colleagueSettings?.abbrev ? `[${colleagueSettings.abbrev}] ` : '';
 
   return (
     <div
@@ -24,7 +23,7 @@ export function EventCard({ event, user, userSettings }: EventCardProps) {
         color: backgroundColor === '#fee090' || backgroundColor === '#e0f3f8' ? '#1a202c' : 'white'
       }}
     >
-      {displayText}
+      {prefix}{event.title}
     </div>
   );
 }
