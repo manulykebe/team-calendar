@@ -1,54 +1,14 @@
 const API_URL = 'http://localhost:3000/api';
-const TIMEOUT_MS = 5000;
-
-const fetchWithTimeout = async (url: string, options: RequestInit) => {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
-
-  try {
-    const response = await fetch(url, {
-      ...options,
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-    return response;
-  } catch (error) {
-    clearTimeout(timeout);
-    throw error;
-  }
-};
 
 export async function login(email: string, password: string, site: string) {
-  try {
-    const response = await fetchWithTimeout(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, site }),
-      credentials: 'include'
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Login failed');
-    }
-
-    const data = await response.json();
-    if (!data.token) {
-      throw new Error('No token received');
-    }
-    return data;
-  } catch (error) {
-    if (error instanceof Error) {
-      if (error.name === 'AbortError') {
-        throw new Error('Request timeout. Please try again.');
-      }
-      if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
-        throw new Error('Cannot connect to server. Please check your connection.');
-      }
-      throw error;
-    }
-    throw new Error('An unexpected error occurred');
-  }
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, site })
+  });
+  
+  if (!response.ok) throw new Error('Login failed');
+  return response.json();
 }
 
 export async function register(userData: {

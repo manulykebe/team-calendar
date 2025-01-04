@@ -1,18 +1,15 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
-export const useAuth = () => useContext(AuthContext);
 interface AuthContextType {
   token: string | null;
   login: (token: string) => void;
   logout: () => void;
-  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   token: null,
   login: () => {},
   logout: () => {},
-  isAuthenticated: false,
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -21,7 +18,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   const login = (newToken: string) => {
-    if (!newToken) return;
     setToken(newToken);
     localStorage.setItem('token', newToken);
   };
@@ -31,17 +27,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('token');
   };
 
-  const value = {
-    token,
-    login,
-    logout,
-    isAuthenticated: !!token,
-  };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
+export const useAuth = () => useContext(AuthContext);

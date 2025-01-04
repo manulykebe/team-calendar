@@ -11,24 +11,15 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [site, setSite] = useState('london');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
-
     try {
       const { token } = await login(email, password, site);
-      if (!token) {
-        throw new Error('No token received');
-      }
       setAuth(token);
-      navigate('/', { replace: true });
+      navigate('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Invalid credentials');
-    } finally {
-      setIsLoading(false);
+      setError('Invalid credentials');
     }
   };
 
@@ -100,12 +91,9 @@ export function Login() {
           <div>
             <button
               type="submit"
-              disabled={isLoading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-                isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              Sign in
             </button>
           </div>
 

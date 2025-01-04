@@ -1,13 +1,34 @@
 {
-  "users": [{
-    "id": "1",
-    "firstName": "Manu",
-    "lastName": "Vanneste",
-    "email": "admin@lyke.be",
-    "mobile": "+32 494 11 58 25",
-    "password": "$2a$10$8XKE0Y5JLfn3YfKlS.Xh8O2r8yZUOgKZ5VZCzH9M5eP8HW.DDq9Ky",
-    "site": "london",
-    "role": "admin"
-  }],
-  "events": []
+  "users": [
+    {
+      "id": "1",
+      "firstName": "Manu",
+      "lastName": "Vanneste",
+      "email": "admin@lyke.be",
+      "mobile": "+32 494 11 58 25",
+      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+      "site": "london",
+      "role": "admin"
+    }
+  ],
+  "events": [
+    {
+      "id": "677324e2-927b-4982-93b6-75d5179c2bb1",
+      "userId": "1",
+      "title": "TEST",
+      "description": "",
+      "date": "2025-01-04",
+      "createdAt": "2025-01-04T13:34:40.401Z",
+      "updatedAt": "2025-01-04T13:34:40.401Z"
+    },
+    {
+      "id": "fbe7c7ac-e28c-454c-a936-92d748d580db",
+      "userId": "1",
+      "title": "TEST",
+      "description": "",
+      "date": "2025-01-05",
+      "createdAt": "2025-01-04T13:34:48.182Z",
+      "updatedAt": "2025-01-04T13:34:48.182Z"
+    }
+  ]
 }
