@@ -1,37 +1,44 @@
-import { useState, useEffect } from 'react';
-import { addMonths, subMonths, format } from 'date-fns';
-import { LogOut } from 'lucide-react';
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { LogOut, Plus } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { getEvents, createEvent } from '../../lib/api';
 import { EventModal } from '../EventModal';
 import { UserManagement } from '../users/UserManagement';
 import { CalendarHeader } from './CalendarHeader';
 import { CalendarGrid } from './CalendarGrid';
+import { useCalendarEvents } from '../../hooks/useCalendarEvents';
 
 export function Calendar() {
   const { token, logout } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const { events, isLoading, error, createNewEvent } = useCalendarEvents();
 
-  useEffect(() => {
-    if (token) {
-      loadEvents();
-    }
-  }, [token, currentDate]);
+  const handleCreateEvent = async (eventData: { title: string; description: string }) => {
+    if (!selectedDate) return;
 
-  const loadEvents = async () => {
     try {
-      const data = await getEvents(token!);
-      setEvents(data);
+      await createNewEvent({
+        ...eventData,
+        date: format(selectedDate, 'yyyy-MM-dd')
+      });
+      setSelectedDate(null);
     } catch (error) {
-      console.error('Failed to load events:', error);
+      console.error('Event creation error:', error);
+      throw error;
     }
   };
 
-  const handlePrevMonth = () => setCurrentDate(subMonths(currentDate, 1));
-  const handleNextMonth = () => setCurrentDate(addMonths(currentDate, 1));
-  
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="bg-red-50 p-4 rounded-md">
+          <p className="text-red-700">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex justify-between items-center mb-8">
@@ -48,32 +55,33 @@ export function Calendar() {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-white rounded-lg shadow">
         <CalendarHeader
           currentDate={currentDate}
-          onPrevMonth={handlePrevMonth}
-          onNextMonth={handleNextMonth}
+          onPrevMonth={() => setCurrentDate(prev => new Date(prev.setMonth(prev.getMonth() - 1)))}
+          onNextMonth={() => setCurrentDate(prev => new Date(prev.setMonth(prev.getMonth() + 1)))}
         />
         <CalendarGrid
           currentDate={currentDate}
           events={events}
+          isLoading={isLoading}
           onDateClick={setSelectedDate}
         />
       </div>
+
+      <button
+        onClick={() => setSelectedDate(new Date())}
+        className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-colors"
+        aria-label="Add event"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
 
       {selectedDate && (
         <EventModal
           date={selectedDate}
           onClose={() => setSelectedDate(null)}
-          onSubmit={async (data) => {
-            try {
-              await createEvent(token!, { ...data, date: format(selectedDate, 'yyyy-MM-dd') });
-              await loadEvents();
-              setSelectedDate(null);
-            } catch (error) {
-              console.error('Failed to create event:', error);
-            }
-          }}
+          onSubmit={handleCreateEvent}
         />
       )}
     </div>

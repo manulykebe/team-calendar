@@ -6,27 +6,27 @@ export async function getEvents(site: string) {
   return data.events;
 }
 
-export async function createEvent(eventData: {
+export async function createEvent(params: {
   title: string;
   description: string;
   date: string;
   userId: string;
   site: string;
 }) {
-  const data = await readSiteData(eventData.site);
+  const data = await readSiteData(params.site);
   
   const newEvent: Event = {
     id: crypto.randomUUID(),
-    userId: eventData.userId,
-    title: eventData.title,
-    description: eventData.description,
-    date: eventData.date,
+    userId: params.userId,
+    title: params.title,
+    description: params.description,
+    date: params.date,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
 
   data.events.push(newEvent);
-  await writeSiteData(eventData.site, data);
+  await writeSiteData(params.site, data);
   return newEvent;
 }
 
@@ -41,8 +41,12 @@ export async function updateEvent(params: {
   const data = await readSiteData(params.site);
   
   const event = data.events.find((e: Event) => e.id === params.id);
-  if (!event || event.userId !== params.userId) {
-    throw new Error('Not authorized');
+  if (!event) {
+    throw new Error('Event not found');
+  }
+  
+  if (event.userId !== params.userId) {
+    throw new Error('Not authorized to update this event');
   }
 
   Object.assign(event, {
@@ -64,8 +68,12 @@ export async function deleteEvent(params: {
   const data = await readSiteData(params.site);
   
   const eventIndex = data.events.findIndex((e: Event) => e.id === params.id);
-  if (eventIndex === -1 || data.events[eventIndex].userId !== params.userId) {
-    throw new Error('Not authorized');
+  if (eventIndex === -1) {
+    throw new Error('Event not found');
+  }
+  
+  if (data.events[eventIndex].userId !== params.userId) {
+    throw new Error('Not authorized to delete this event');
   }
 
   data.events.splice(eventIndex, 1);

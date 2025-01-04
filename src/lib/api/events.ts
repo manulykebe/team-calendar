@@ -3,46 +3,45 @@ import type { EventData } from './types';
 
 export async function getEvents(token: string) {
   const response = await fetch(`${API_URL}/events`, {
-    headers: { 'Authorization': `Bearer ${token}` }
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
   });
   
-  if (!response.ok) throw new Error('Failed to fetch events');
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to fetch events' }));
+    throw new Error(error.message || 'Failed to fetch events');
+  }
   return response.json();
 }
 
 export async function createEvent(token: string, eventData: EventData) {
+  if (!eventData.title?.trim()) {
+    throw new Error('Event title is required');
+  }
+
+  if (!eventData.date) {
+    throw new Error('Event date is required');
+  }
+
   const response = await fetch(`${API_URL}/events`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify(eventData)
+    body: JSON.stringify({
+      title: eventData.title.trim(),
+      description: eventData.description?.trim() || '',
+      date: eventData.date
+    })
   });
-  
-  if (!response.ok) throw new Error('Failed to create event');
-  return response.json();
-}
 
-export async function updateEvent(token: string, eventId: string, eventData: EventData) {
-  const response = await fetch(`${API_URL}/events/${eventId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify(eventData)
-  });
-  
-  if (!response.ok) throw new Error('Failed to update event');
-  return response.json();
-}
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ message: 'Failed to create event' }));
+    throw new Error(errorData.message || 'Failed to create event');
+  }
 
-export async function deleteEvent(token: string, eventId: string) {
-  const response = await fetch(`${API_URL}/events/${eventId}`, {
-    method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${token}` }
-  });
-  
-  if (!response.ok) throw new Error('Failed to delete event');
+  return response.json();
 }

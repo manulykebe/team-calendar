@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/health', healthRouter);
+app.use('/', healthRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/events', eventRouter);
 app.use('/api/users', userRouter);

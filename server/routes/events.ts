@@ -1,44 +1,78 @@
 import { Router } from 'express';
 import { AuthRequest, authenticateToken } from '../middleware/auth';
 import { getEvents, createEvent, updateEvent, deleteEvent } from '../services/events';
+import { z } from 'zod';
 
 const router = Router();
 
 router.use(authenticateToken);
+
+// Event validation schema
+const eventSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(100),
+  description: z.string().max(500).optional().default(''),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD')
+});
 
 router.get('/', async (req: AuthRequest, res) => {
   try {
     const events = await getEvents(req.user!.site);
     res.json(events);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch events' });
+    res.status(500).json({ 
+      message: error instanceof Error ? error.message : 'Failed to fetch events' 
+    });
   }
 });
 
 router.post('/', async (req: AuthRequest, res) => {
   try {
+    // Validate request body
+    const validatedData = eventSchema.parse(req.body);
+    
     const event = await createEvent({
-      ...req.body,
+      ...validatedData,
       userId: req.user!.id,
       site: req.user!.site
     });
-    res.json(event);
+    
+    res.status(201).json(event);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to create event' });
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ 
+        message: 'Validation error', 
+        errors: error.errors 
+      });
+    } else {
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : 'Failed to create event' 
+      });
+    }
   }
 });
 
 router.put('/:id', async (req: AuthRequest, res) => {
   try {
+    const validatedData = eventSchema.parse(req.body);
+    
     const event = await updateEvent({
       id: req.params.id,
-      ...req.body,
+      ...validatedData,
       userId: req.user!.id,
       site: req.user!.site
     });
     res.json(event);
   } catch (error) {
-    res.status(403).json({ message: error instanceof Error ? error.message : 'Not authorized' });
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ 
+        message: 'Validation error', 
+        errors: error.errors 
+      });
+    } else {
+      res.status(403).json({ 
+        message: error instanceof Error ? error.message : 'Not authorized' 
+      });
+    }
   }
 });
 
@@ -51,7 +85,9 @@ router.delete('/:id', async (req: AuthRequest, res) => {
     });
     res.sendStatus(204);
   } catch (error) {
-    res.status(403).json({ message: error instanceof Error ? error.message : 'Not authorized' });
+    res.status(403).json({ 
+      message: error instanceof Error ? error.message : 'Not authorized' 
+    });
   }
 });
 
