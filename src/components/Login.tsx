@@ -16,6 +16,7 @@ export function Login() {
     e.preventDefault();
     try {
       const { token } = await login(email, password, site);
+      localStorage.setItem('userEmail', email);
       setAuth(token);
       navigate('/');
     } catch (err) {

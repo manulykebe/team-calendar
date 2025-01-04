@@ -6,19 +6,19 @@
       "lastName": "Vanneste",
       "email": "admin@lyke.be",
       "mobile": "+32 494 11 58 25",
-      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+      "password": "$2a$10$KC.DPBz.zitmDSEY4e2rU.fLV3IeAkE3i1Ew91.EH8YEGtzQtcDr.",
       "site": "azjp",
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T14:23:29.975Z",
+      "updatedAt": "2025-01-04T20:47:18.061Z",
       "settings": {
         "colleagues": {
           "1": {
             "color": "#a50026"
           },
           "2": {
-            "color": "#d73027"
+            "color": "#313695"
           }
         }
       }
@@ -29,16 +29,17 @@
       "lastName": "de Jongh",
       "email": "katrien@lyke.be",
       "mobile": "+32 494 11 58 25",
-      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+      "password": "$2a$10$/2v2RLDtgN.CWvlvLvaxqegUwPv1vK7QA1Ausd8guWiXDusG6QT1K",
       "site": "azjp",
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T14:23:29.975Z",
+      "updatedAt": "2025-01-04T20:35:53.789Z",
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#a50026"
+            "color": "#313695",
+            "abbrev": "Q"
           },
           "2": {
             "color": "#d73027"
