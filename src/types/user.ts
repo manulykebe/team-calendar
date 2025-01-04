@@ -7,6 +7,13 @@ export interface User {
   role: 'admin' | 'user';
   status: 'active' | 'inactive';
   site: string;
+  settings?: {
+    colleagues?: {
+      [userId: string]: {
+        color: string;
+      };
+    };
+  };
   createdAt: string;
   updatedAt: string;
 }

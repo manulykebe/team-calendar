@@ -11,7 +11,17 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T14:23:29.975Z"
+      "updatedAt": "2025-01-04T14:23:29.975Z",
+      "settings": {
+        "colleagues": {
+          "1": {
+            "color": "#a50026"
+          },
+          "2": {
+            "color": "#d73027"
+          }
+        }
+      }
     },
     {
       "id": "2",
@@ -24,7 +34,17 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T14:23:29.975Z"
+      "updatedAt": "2025-01-04T14:23:29.975Z",
+      "settings": {
+        "colleagues": {
+          "1": {
+            "color": "#a50026"
+          },
+          "2": {
+            "color": "#d73027"
+          }
+        }
+      }
     }
   ],
   "events": [
@@ -72,6 +92,15 @@
       "date": "2025-01-05",
       "createdAt": "2025-01-04T15:06:55.159Z",
       "updatedAt": "2025-01-04T15:06:55.159Z"
+    },
+    {
+      "id": "86e3c583-0e2a-419e-b2e4-b2e4796a95b2",
+      "userId": "1",
+      "title": "zzz",
+      "description": "",
+      "date": "2025-01-04",
+      "createdAt": "2025-01-04T15:38:08.491Z",
+      "updatedAt": "2025-01-04T15:38:08.491Z"
     }
   ]
 }
