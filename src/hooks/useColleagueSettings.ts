@@ -2,6 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getUsers, updateUser } from '../lib/api';
 import { User } from '../types/user';
+import { EventEmitter } from '../utils/eventEmitter';
+
+// Create an event emitter for user settings updates
+export const userSettingsEmitter = new EventEmitter();
 
 export const DEFAULT_COLORS = [
   '#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090',
@@ -24,7 +28,6 @@ export function useColleagueSettings() {
       
       if (current) {
         setCurrentUser(current);
-        // Put current user first, then all other users
         setColleagues([current, ...users.filter(u => u.id !== current.id)]);
       } else {
         throw new Error('Current user not found');
@@ -58,9 +61,12 @@ export function useColleagueSettings() {
     };
 
     try {
-      // Only send the settings update
       await updateUser(token, currentUser.id, { settings: newSettings });
       setCurrentUser(prev => prev ? { ...prev, settings: newSettings } : null);
+      
+      // Emit event to notify other components
+      userSettingsEmitter.emit('settingsUpdated', { userId: currentUser.id, settings: newSettings });
+      
     } catch (err) {
       setError('Failed to update settings');
       throw err;

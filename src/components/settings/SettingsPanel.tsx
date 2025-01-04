@@ -4,6 +4,8 @@ import { ColleagueSettings } from './colleagues/ColleagueSettings';
 import { useAuth } from '../../context/AuthContext';
 import { getUsers } from '../../lib/api';
 import { User } from '../../types/user';
+import { ColleagueAvatar } from './colleagues/ColleagueAvatar';
+import { userSettingsEmitter } from '../../hooks/useColleagueSettings';
 
 interface SettingsPanelProps {
   className?: string;
@@ -31,6 +33,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ className }) => {
     };
 
     fetchCurrentUser();
+
+    // Listen for settings updates
+    const handleSettingsUpdate = ({ userId, settings }: { userId: string; settings: any }) => {
+      setCurrentUser(prev => prev && prev.id === userId ? { ...prev, settings } : prev);
+    };
+
+    userSettingsEmitter.on('settingsUpdated', handleSettingsUpdate);
+
+    return () => {
+      userSettingsEmitter.off('settingsUpdated', handleSettingsUpdate);
+    };
   }, [token]);
 
   const handleLogout = () => {
@@ -116,10 +129,13 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ className }) => {
           {currentUser && (
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium">
-                  {currentUser.firstName[0]}
-                  {currentUser.lastName[0]}
-                </div>
+                <ColleagueAvatar
+                  firstName={currentUser.firstName}
+                  lastName={currentUser.lastName}
+                  color={currentUser.settings?.colleagues?.[currentUser.id]?.color || '#a50026'}
+                  abbreviation={currentUser.settings?.colleagues?.[currentUser.id]?.abbrev}
+                  size="sm"
+                />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-900">
                     {currentUser.firstName} {currentUser.lastName}
