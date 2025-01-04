@@ -9,7 +9,7 @@ export function Login() {
   const { login: setAuth } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [site, setSite] = useState('london');
+  const [site, setSite] = useState('azjp');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {

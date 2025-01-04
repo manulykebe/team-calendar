@@ -13,7 +13,7 @@ export function Register() {
     email: '',
     mobile: '',
     password: '',
-    site: 'london'
+    site: 'azjp'
   });
   const [error, setError] = useState('');
 
