@@ -11,11 +11,11 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T21:51:22.131Z",
+      "updatedAt": "2025-01-04T22:06:36.959Z",
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#d73027",
+            "color": "#fee090",
             "abbrev": "ADM"
           },
           "2": {
@@ -116,13 +116,13 @@
       "updatedAt": "2025-01-04T21:44:33.369Z"
     },
     {
-      "id": "ff6ba4b6-153d-482e-927b-2b5f47b76cb3",
+      "id": "70a39720-0366-4be5-a724-02bf6f14dbf4",
       "userId": "2",
-      "title": "2115",
+      "title": "q",
       "description": "",
-      "date": "2025-01-12",
-      "createdAt": "2025-01-04T22:07:25.896Z",
-      "updatedAt": "2025-01-04T22:07:25.896Z"
+      "date": "2025-01-11",
+      "createdAt": "2025-01-04T22:10:17.365Z",
+      "updatedAt": "2025-01-04T22:10:17.365Z"
     }
   ]
 }

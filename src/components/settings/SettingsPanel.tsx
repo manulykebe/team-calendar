@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, X, Users, LogOut } from 'lucide-react';
 import { ColleagueSettings } from './colleagues/ColleagueSettings';
+import { UserManagement } from '../users/UserManagement';
 import { useAuth } from '../../context/AuthContext';
 import { getUsers } from '../../lib/api';
 import { User } from '../../types/user';
@@ -15,6 +16,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ className }) => {
   const { token, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showColleagueSettings, setShowColleagueSettings] = useState(false);
+  const [showUserManagement, setShowUserManagement] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -90,13 +92,22 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ className }) => {
           <div className="space-y-6">
             <div>
               <h3 className="text-sm font-medium text-gray-900 mb-2">Colleagues</h3>
-              <button
-                onClick={() => setShowColleagueSettings(true)}
-                className="flex items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-              >
-                <Users className="w-4 h-4 mr-2" />
-                Manage Colleague Display
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => setShowUserManagement(true)}
+                  className="flex items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Manage Users
+                </button>
+                <button
+                  onClick={() => setShowColleagueSettings(true)}
+                  className="flex items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Manage Colleague Display
+                </button>
+              </div>
             </div>
 
             <div>
@@ -157,6 +168,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ className }) => {
 
       {showColleagueSettings && (
         <ColleagueSettings onClose={() => setShowColleagueSettings(false)} />
+      )}
+
+      {showUserManagement && (
+        <UserManagement onClose={() => setShowUserManagement(false)} />
       )}
     </div>
   );

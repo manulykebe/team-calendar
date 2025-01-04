@@ -6,15 +6,18 @@ import { DeleteConfirmation } from './DeleteConfirmation';
 import { useAuth } from '../../context/AuthContext';
 import { User } from '../../types/user';
 
-export function UserManagement() {
+interface UserManagementProps {
+  onClose?: () => void;
+}
+
+export function UserManagement({ onClose }: UserManagementProps) {
   const { token } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(true);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [deleteUser, setDeleteUser] = useState<User | null>(null);
 
   const handleEdit = (user: User) => {
     setSelectedUser(user);
-    setIsModalOpen(true);
   };
 
   const handleDelete = (user: User) => {
@@ -23,19 +26,11 @@ export function UserManagement() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedUser(null);
+    onClose?.();
   };
 
   return (
     <>
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
-        aria-label="Manage Users"
-      >
-        <Users className="w-6 h-6" />
-      </button>
-
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
