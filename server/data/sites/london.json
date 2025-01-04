@@ -1,0 +1,13 @@
+{
+  "users": [{
+    "id": "1",
+    "firstName": "Manu",
+    "lastName": "Vanneste",
+    "email": "admin@lyke.be",
+    "mobile": "+32 494 11 58 25",
+    "password": "$2a$10$8XKE0Y5JLfn3YfKlS.Xh8O2r8yZUOgKZ5VZCzH9M5eP8HW.DDq9Ky",
+    "site": "london",
+    "role": "admin"
+  }],
+  "events": []
+}

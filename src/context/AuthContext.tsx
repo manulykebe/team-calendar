@@ -1,45 +1,47 @@
-import React, { createContext, useContext, useState } from 'react';
-import { User, AuthState } from '../types/user';
-import users from '../data/users.json';
+import { createContext, useContext, useState } from 'react';
 
-interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<boolean>;
+export const useAuth = () => useContext(AuthContext);
+interface AuthContextType {
+  token: string | null;
+  login: (token: string) => void;
   logout: () => void;
+  isAuthenticated: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+  token: null,
+  login: () => {},
+  logout: () => {},
+  isAuthenticated: false,
+});
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [authState, setAuthState] = useState<AuthState>({
-    user: null,
-    isAuthenticated: false,
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem('token');
   });
 
-  const login = async (email: string, password: string) => {
-    // In a real app, this would be an API call
-    const user = users.users.find(u => u.email === email);
-    if (user) {
-      setAuthState({ user, isAuthenticated: true });
-      return true;
-    }
-    return false;
+  const login = (newToken: string) => {
+    if (!newToken) return;
+    setToken(newToken);
+    localStorage.setItem('token', newToken);
   };
 
   const logout = () => {
-    setAuthState({ user: null, isAuthenticated: false });
+    setToken(null);
+    localStorage.removeItem('token');
+  };
+
+  const value = {
+    token,
+    login,
+    logout,
+    isAuthenticated: !!token,
   };
 
   return (
-    <AuthContext.Provider value={{ ...authState, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
