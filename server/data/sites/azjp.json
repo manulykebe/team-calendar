@@ -11,16 +11,16 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T22:06:36.959Z",
+      "updatedAt": "2025-01-04T22:22:29.900Z",
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#fee090",
-            "abbrev": "ADM"
+            "color": "#d73027",
+            "initials": "ADM"
           },
           "2": {
-            "color": "#313695",
-            "abbrev": "KDJ"
+            "color": "#4575b4",
+            "initials": "KDJ"
           }
         }
       }
@@ -36,16 +36,16 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T21:56:37.222Z",
+      "updatedAt": "2025-01-04T22:28:18.445Z",
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#4575b4",
-            "abbrev": "Q"
+            "color": "#74add1",
+            "initials": "ADM"
           },
           "2": {
-            "color": "#313695",
-            "abbrev": "KDJ"
+            "color": "#4575b4",
+            "initials": "KDJ"
           }
         }
       }
@@ -123,6 +123,15 @@
       "date": "2025-01-11",
       "createdAt": "2025-01-04T22:10:17.365Z",
       "updatedAt": "2025-01-04T22:10:17.365Z"
+    },
+    {
+      "id": "aebce620-e8d1-4bdd-9da3-02e31af0462b",
+      "userId": "2",
+      "title": "ww",
+      "description": "",
+      "date": "2025-01-12",
+      "createdAt": "2025-01-04T22:25:37.942Z",
+      "updatedAt": "2025-01-04T22:25:37.943Z"
     }
   ]
 }

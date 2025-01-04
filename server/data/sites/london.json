@@ -1,52 +1,52 @@
 {
-  "users": [
-    {
-      "id": "1",
-      "firstName": "Manu",
-      "lastName": "Vanneste",
-      "email": "admin@lyke.be",
-      "mobile": "+32 494 11 58 25",
-      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
-      "site": "london",
-      "role": "admin",
-      "settings": {
-        "colleagues": {
-          "1": {
-            "color": "#313695",
-            "abbrev": "MV2"
-          }
-        }
-      },
-      "updatedAt": "2025-01-04T21:11:39.876Z"
-    }
-  ],
-  "events": [
-    {
-      "id": "677324e2-927b-4982-93b6-75d5179c2bb1",
-      "userId": "1",
-      "title": "TEST",
-      "description": "",
-      "date": "2025-01-04",
-      "createdAt": "2025-01-04T13:34:40.401Z",
-      "updatedAt": "2025-01-04T13:34:40.401Z"
-    },
-    {
-      "id": "fbe7c7ac-e28c-454c-a936-92d748d580db",
-      "userId": "1",
-      "title": "TEST",
-      "description": "",
-      "date": "2025-01-05",
-      "createdAt": "2025-01-04T13:34:48.182Z",
-      "updatedAt": "2025-01-04T13:34:48.182Z"
-    },
-    {
-      "id": "43688d59-7268-4140-ad79-675c8bf2d0a2",
-      "userId": "1",
-      "title": "q",
-      "description": "",
-      "date": "2025-01-20",
-      "createdAt": "2025-01-04T21:06:21.561Z",
-      "updatedAt": "2025-01-04T21:06:21.561Z"
-    }
-  ]
+	"users": [
+		{
+			"id": "1",
+			"firstName": "Manu",
+			"lastName": "Vanneste",
+			"email": "admin@lyke.be",
+			"mobile": "+32 494 11 58 25",
+			"password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+			"site": "london",
+			"role": "admin",
+			"settings": {
+				"colleagues": {
+					"1": {
+						"color": "#313695",
+						"initials": "MV2"
+					}
+				}
+			},
+			"updatedAt": "2025-01-04T21:11:39.876Z"
+		}
+	],
+	"events": [
+		{
+			"id": "677324e2-927b-4982-93b6-75d5179c2bb1",
+			"userId": "1",
+			"title": "TEST",
+			"description": "",
+			"date": "2025-01-04",
+			"createdAt": "2025-01-04T13:34:40.401Z",
+			"updatedAt": "2025-01-04T13:34:40.401Z"
+		},
+		{
+			"id": "fbe7c7ac-e28c-454c-a936-92d748d580db",
+			"userId": "1",
+			"title": "TEST",
+			"description": "",
+			"date": "2025-01-05",
+			"createdAt": "2025-01-04T13:34:48.182Z",
+			"updatedAt": "2025-01-04T13:34:48.182Z"
+		},
+		{
+			"id": "43688d59-7268-4140-ad79-675c8bf2d0a2",
+			"userId": "1",
+			"title": "q",
+			"description": "",
+			"date": "2025-01-20",
+			"createdAt": "2025-01-04T21:06:21.561Z",
+			"updatedAt": "2025-01-04T21:06:21.561Z"
+		}
+	]
 }

@@ -8,6 +8,7 @@ import { UserManagement } from "./users/UserManagement";
 import { SettingsPanel } from "./settings/SettingsPanel";
 import { EventCard } from "./calendar/EventCard";
 import { User } from "../types/user";
+import { userSettingsEmitter } from "../hooks/useColleagueSettings";
 
 interface Event {
   id: string;
@@ -18,7 +19,7 @@ interface Event {
 }
 
 export function Calendar() {
-  const { token, logout } = useAuth(); // Added logout from useAuth
+  const { token, logout } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showModal, setShowModal] = useState(false);
@@ -38,6 +39,17 @@ export function Calendar() {
           setCurrentUser(user);
         }
       }).catch(console.error);
+
+      // Listen for settings updates
+      const handleSettingsUpdate = ({ userId, settings }: { userId: string; settings: any }) => {
+        setCurrentUser(prev => prev && prev.id === userId ? { ...prev, settings } : prev);
+      };
+
+      userSettingsEmitter.on('settingsUpdated', handleSettingsUpdate);
+
+      return () => {
+        userSettingsEmitter.off('settingsUpdated', handleSettingsUpdate);
+      };
     }
   }, [token]);
 
