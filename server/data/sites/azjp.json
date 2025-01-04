@@ -6,12 +6,12 @@
       "lastName": "Vanneste",
       "email": "admin@lyke.be",
       "mobile": "+32 494 11 58 25",
-      "password": "$2a$10$KC.DPBz.zitmDSEY4e2rU.fLV3IeAkE3i1Ew91.EH8YEGtzQtcDr.",
+      "password": "$2a$10$sp6HMInL224xvf3LQaWereY5CL/tPHFZPurhM9.Vn/BTwZSpB7aTq",
       "site": "azjp",
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T20:47:18.061Z",
+      "updatedAt": "2025-01-04T20:44:46.644Z",
       "settings": {
         "colleagues": {
           "1": {

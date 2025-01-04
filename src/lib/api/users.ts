@@ -24,14 +24,21 @@ export async function createUser(token: string, userData: UserFormData) {
   return response.json();
 }
 
-export async function updateUser(token: string, userId: string, userData: UserFormData) {
+export async function updateUser(token: string, userId: string, userData: Partial<UserFormData & { settings?: any }>) {
+  // If only settings are being updated, send only the settings
+  const isSettingsOnlyUpdate = Object.keys(userData).length === 1 && 'settings' in userData;
+  
+  const body = isSettingsOnlyUpdate
+    ? { settings: userData.settings }
+    : userData;
+
   const response = await fetch(`${API_URL}/users/${userId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify(userData)
+    body: JSON.stringify(body)
   });
   
   if (!response.ok) throw new Error('Failed to update user');

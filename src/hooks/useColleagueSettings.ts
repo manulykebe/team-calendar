@@ -58,10 +58,8 @@ export function useColleagueSettings() {
     };
 
     try {
-      await updateUser(token, currentUser.id, {
-        ...currentUser,
-        settings: newSettings
-      });
+      // Only send the settings update
+      await updateUser(token, currentUser.id, { settings: newSettings });
       setCurrentUser(prev => prev ? { ...prev, settings: newSettings } : null);
     } catch (err) {
       setError('Failed to update settings');
