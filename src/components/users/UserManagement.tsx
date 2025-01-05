@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { Users } from 'lucide-react';
 import { UserList } from './UserList';
 import { UserModal } from './UserModal';
 import { DeleteConfirmation } from './DeleteConfirmation';
-import { useAuth } from '../../context/AuthContext';
 import { User } from '../../types/user';
 
 interface UserManagementProps {
@@ -11,8 +9,7 @@ interface UserManagementProps {
 }
 
 export function UserManagement({ onClose }: UserManagementProps) {
-  const { token } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [deleteUser, setDeleteUser] = useState<User | null>(null);
 
