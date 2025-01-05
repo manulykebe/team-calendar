@@ -1,6 +1,7 @@
 import { DayCell } from './DayCell';
 import { getCalendarDays } from '../../utils/calendar';
 import { Event } from '../../types/event';
+import { User } from '../../types/user';
 
 interface CalendarGridProps {
   currentMonth: Date;
@@ -8,6 +9,8 @@ interface CalendarGridProps {
   onDateClick: (date: Date) => void;
   weekStartsOn: string;
   userSettings?: any;
+  onEventDelete?: (eventId: string) => void;
+  currentUser?: User | null;
 }
 
 export function CalendarGrid({ 
@@ -15,7 +18,9 @@ export function CalendarGrid({
   events, 
   onDateClick,
   weekStartsOn,
-  userSettings 
+  userSettings,
+  onEventDelete,
+  currentUser
 }: CalendarGridProps) {
   const { days, emptyDays, weekDays } = getCalendarDays(currentMonth, weekStartsOn as any);
 
@@ -44,6 +49,8 @@ export function CalendarGrid({
             events={events}
             onDateClick={onDateClick}
             userSettings={userSettings}
+            onEventDelete={onEventDelete}
+            currentUser={currentUser}
           />
         ))}
       </div>

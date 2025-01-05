@@ -20,6 +20,16 @@ export function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
+  const fetchEvents = async () => {
+    if (!token) return;
+    try {
+      const eventsData = await getEvents(token);
+      setEvents(eventsData);
+    } catch (error) {
+      console.error('Failed to fetch events:', error);
+    }
+  };
+
   useEffect(() => {
     if (token) {
       Promise.all([
@@ -56,6 +66,10 @@ export function Calendar() {
     } catch (error) {
       console.error("Failed to create event:", error);
     }
+  };
+
+  const handleEventDelete = (eventId: string) => {
+    setEvents(events.filter(event => event.id !== eventId));
   };
 
   return (
@@ -105,6 +119,8 @@ export function Calendar() {
           }}
           weekStartsOn={weekStartsOn}
           userSettings={currentUser?.settings}
+          onEventDelete={handleEventDelete}
+          currentUser={currentUser}
         />
       </div>
 

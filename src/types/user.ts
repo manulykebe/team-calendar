@@ -17,6 +17,15 @@ export interface User {
   };
   app?: {
     weekStartsOn: string;
+    color: {
+      Sunday: string;
+      Monday: string;
+      Tuesday: string;
+      Wednesday: string;
+      Thursday: string;
+      Friday: string;
+      Saturday: string;
+    };
   };
   createdAt: string;
   updatedAt: string;

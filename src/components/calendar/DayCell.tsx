@@ -2,27 +2,52 @@ import { memo } from 'react';
 import { format } from 'date-fns';
 import { EventCard } from './EventCard';
 import { useFilteredEvents } from '../../hooks/useFilteredEvents';
+import { useCalendarColors } from '../../hooks/useCalendarColors';
 import { Event } from '../../types/event';
+import { useAuth } from '../../context/AuthContext';
+import { deleteEvent } from '../../lib/api';
+import { User } from '../../types/user';
 
 interface DayCellProps {
   date: Date;
   events: Event[];
   onDateClick: (date: Date) => void;
   userSettings?: any;
+  onEventDelete?: (eventId: string) => void;
+  currentUser?: User | null;
 }
 
 export const DayCell = memo(function DayCell({ 
   date, 
   events, 
   onDateClick,
-  userSettings 
+  userSettings,
+  onEventDelete,
+  currentUser
 }: DayCellProps) {
+  const { token } = useAuth();
+  const { getColumnColor } = useCalendarColors(currentUser);
   const formattedDate = format(date, 'yyyy-MM-dd');
   const dayEvents = useFilteredEvents(events, formattedDate);
+  const backgroundColor = getColumnColor(date);
+
+  const handleEventDelete = async (eventId: string) => {
+    if (!token) return;
+    
+    try {
+      await deleteEvent(token, eventId);
+      if (onEventDelete) {
+        onEventDelete(eventId);
+      }
+    } catch (error) {
+      console.error('Failed to delete event:', error);
+    }
+  };
 
   return (
     <div
-      className="min-h-[120px] bg-white p-2"
+      className="min-h-[120px] p-2 hover:bg-opacity-90 transition-colors"
+      style={{ backgroundColor }}
       onClick={() => onDateClick(date)}
     >
       <div className="flex justify-between items-start">
@@ -41,6 +66,8 @@ export const DayCell = memo(function DayCell({
             key={event.id}
             event={event}
             userSettings={userSettings}
+            onDelete={handleEventDelete}
+            currentUser={currentUser}
           />
         ))}
         {dayEvents.length > 2 && (
