@@ -14,9 +14,9 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-05T12:59:34.035Z",
+      "updatedAt": "2025-01-05T13:02:50.281Z",
       "app": {
-        "weekStartsOn": "Monday"
+        "weekStartsOn": "Saturday"
       },
       "settings": {
         "colleagues": {

@@ -11,8 +11,12 @@ export interface User {
     colleagues?: {
       [userId: string]: {
         color: string;
+        initials: string;
       };
     };
+  };
+  app?: {
+    weekStartsOn: string;
   };
   createdAt: string;
   updatedAt: string;

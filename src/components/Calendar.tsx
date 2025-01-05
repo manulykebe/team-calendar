@@ -8,16 +8,17 @@ import { SettingsPanel } from "./settings/SettingsPanel";
 import { CalendarGrid } from "./calendar/CalendarGrid";
 import { User } from "../types/user";
 import { userSettingsEmitter } from "../hooks/useColleagueSettings";
+import { useCalendarSettings } from "../hooks/useCalendarSettings";
 import { format } from "date-fns";
 
 export function Calendar() {
   const { token, logout } = useAuth();
+  const { weekStartsOn } = useCalendarSettings();
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [weekStartsOn, setWeekStartsOn] = useState('Sunday');
 
   useEffect(() => {
     if (token) {
@@ -30,12 +31,6 @@ export function Calendar() {
         const user = users.find(u => u.email === userEmail);
         if (user) {
           setCurrentUser(user);
-          // Set week start preference from user -> site -> app defaults
-          setWeekStartsOn(
-            user.app?.weekStartsOn || 
-            user.site?.app?.weekStartsOn || 
-            'Sunday'
-          );
         }
       }).catch(console.error);
 

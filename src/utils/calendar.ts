@@ -13,7 +13,7 @@ const WEEKDAYS = {
 
 type WeekDay = keyof typeof WEEKDAYS;
 
-export function getCalendarDays(currentMonth: Date, weekStartsOn: WeekDay = 'Sunday') {
+export function getCalendarDays(currentMonth: Date, weekStartsOn: WeekDay = 'Monday') {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
