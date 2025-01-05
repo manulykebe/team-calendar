@@ -43,7 +43,7 @@ export function CalendarGrid({
 
   return (
     <div className="bg-zinc-200">
-      <CalendarHeader weekDays={weekDays} showWeekNumber={showWeekNumber} />
+      <CalendarHeader weekDays={weekDays} showWeekNumber={showWeekNumber || "none"} />
       <div className={`grid ${
         showWeekNumber === "left" 
           ? "grid-cols-[3rem_1fr]" 
