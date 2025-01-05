@@ -1,0 +1,12 @@
+{
+  "weekStartsOn": "Sunday",
+  "color": {
+    "Sunday":  "#e0e0e0",
+    "Monday": "#bababa",
+    "Tuesday": "#878787",
+    "Wednesday": "#4d4d4d",
+    "Thursday": "#1a1a1a",
+    "Friday": "#e0e0e0",
+    "Saturday": "#e0e0e0"
+  }
+}

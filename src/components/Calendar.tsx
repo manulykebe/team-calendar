@@ -1,67 +1,54 @@
 import { useState, useEffect } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { Plus, LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getEvents, createEvent, getUsers } from "../lib/api";
 import { EventModal } from "./EventModal";
 import { UserManagement } from "./users/UserManagement";
 import { SettingsPanel } from "./settings/SettingsPanel";
-import { EventCard } from "./calendar/EventCard";
+import { CalendarGrid } from "./calendar/CalendarGrid";
 import { User } from "../types/user";
 import { userSettingsEmitter } from "../hooks/useColleagueSettings";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  userId: string;
-}
+import { format } from "date-fns";
 
 export function Calendar() {
   const { token, logout } = useAuth();
-  const [events, setEvents] = useState<Event[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [events, setEvents] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [weekStartsOn, setWeekStartsOn] = useState('Sunday');
 
   useEffect(() => {
     if (token) {
-      // Fetch events
-      getEvents(token).then(setEvents).catch(console.error);
-      
-      // Fetch current user for settings
-      getUsers(token).then(users => {
+      Promise.all([
+        getEvents(token),
+        getUsers(token)
+      ]).then(([eventsData, users]) => {
+        setEvents(eventsData);
         const userEmail = localStorage.getItem('userEmail');
         const user = users.find(u => u.email === userEmail);
         if (user) {
           setCurrentUser(user);
+          // Set week start preference from user -> site -> app defaults
+          setWeekStartsOn(
+            user.app?.weekStartsOn || 
+            user.site?.app?.weekStartsOn || 
+            'Sunday'
+          );
         }
       }).catch(console.error);
 
-      // Listen for settings updates
       const handleSettingsUpdate = ({ userId, settings }: { userId: string; settings: any }) => {
         setCurrentUser(prev => prev && prev.id === userId ? { ...prev, settings } : prev);
       };
 
       userSettingsEmitter.on('settingsUpdated', handleSettingsUpdate);
-
-      return () => {
-        userSettingsEmitter.off('settingsUpdated', handleSettingsUpdate);
-      };
+      return () => userSettingsEmitter.off('settingsUpdated', handleSettingsUpdate);
     }
   }, [token]);
 
-  const days = eachDayOfInterval({
-    start: startOfMonth(currentMonth),
-    end: endOfMonth(currentMonth),
-  });
-
-  const handleCreateEvent = async (eventData: {
-    title: string;
-    description: string;
-  }) => {
+  const handleCreateEvent = async (eventData: { title: string; description: string; }) => {
     if (!token) return;
 
     try {
@@ -100,21 +87,13 @@ export function Calendar() {
           </h2>
           <div className="flex space-x-2">
             <button
-              onClick={() =>
-                setCurrentMonth(
-                  new Date(currentMonth.setMonth(currentMonth.getMonth() - 1))
-                )
-              }
+              onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() - 1)))}
               className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
             >
               Previous
             </button>
             <button
-              onClick={() =>
-                setCurrentMonth(
-                  new Date(currentMonth.setMonth(currentMonth.getMonth() + 1))
-                )
-              }
+              onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() + 1)))}
               className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
             >
               Next
@@ -122,60 +101,16 @@ export function Calendar() {
           </div>
         </div>
 
-        <div className="grid grid-cols-7 gap-px bg-gray-200">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-            <div
-              key={day}
-              className="bg-gray-50 py-2 text-center text-sm font-semibold text-gray-700"
-            >
-              {day}
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-7 gap-px bg-gray-200">
-          {days.map((day) => {
-            const dayEvents = events.filter(
-              (event) => event.date === format(day, "yyyy-MM-dd")
-            );
-
-            return (
-              <div
-                key={day.toString()}
-                className="min-h-[120px] bg-white p-2"
-                onClick={() => {
-                  setSelectedDate(day);
-                  setShowModal(true);
-                }}
-              >
-                <div className="flex justify-between items-start">
-                  <span className="text-sm font-medium text-gray-700">
-                    {format(day, "d")}
-                  </span>
-                  {dayEvents.length > 0 && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {dayEvents.length}
-                    </span>
-                  )}
-                </div>
-                <div className="mt-2 space-y-1">
-                  {dayEvents.slice(0, 2).map((event) => (
-                    <EventCard
-                      key={event.id}
-                      event={event}
-                      userSettings={currentUser?.settings}
-                    />
-                  ))}
-                  {dayEvents.length > 2 && (
-                    <div className="text-xs text-gray-500">
-                      +{dayEvents.length - 2} more
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <CalendarGrid
+          currentMonth={currentMonth}
+          events={events}
+          onDateClick={(date) => {
+            setSelectedDate(date);
+            setShowModal(true);
+          }}
+          weekStartsOn={weekStartsOn}
+          userSettings={currentUser?.settings}
+        />
       </div>
 
       <button

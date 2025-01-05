@@ -1,51 +1,52 @@
-import { format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
+import { DayCell } from './DayCell';
+import { getCalendarDays } from '../../utils/calendar';
+import { Event } from '../../types/event';
 
 interface CalendarGridProps {
-  currentDate: Date;
-  events: Array<{
-    id: string;
-    title: string;
-    date: string;
-  }>;
+  currentMonth: Date;
+  events: Event[];
   onDateClick: (date: Date) => void;
+  weekStartsOn: string;
+  userSettings?: any;
 }
 
-export function CalendarGrid({ currentDate, events, onDateClick }: CalendarGridProps) {
-  const monthStart = startOfMonth(currentDate);
-  const monthEnd = endOfMonth(currentDate);
-  const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
+export function CalendarGrid({ 
+  currentMonth, 
+  events, 
+  onDateClick,
+  weekStartsOn,
+  userSettings 
+}: CalendarGridProps) {
+  const { days, emptyDays, weekDays } = getCalendarDays(currentMonth, weekStartsOn as any);
 
   return (
-    <div className="grid grid-cols-7 gap-1">
-      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-        <div key={day} className="p-2 text-center text-sm font-medium text-gray-500">
-          {day}
-        </div>
-      ))}
-      
-      {days.map((day) => {
-        const dayEvents = events.filter(
-          (event) => event.date === format(day, 'yyyy-MM-dd')
-        );
-        
-        return (
-          <button
-            key={day.toISOString()}
-            onClick={() => onDateClick(day)}
-            className="p-2 border border-gray-200 hover:bg-gray-50 min-h-[80px] flex flex-col"
+    <>
+      <div className="grid grid-cols-7 gap-px bg-gray-200">
+        {weekDays.map((day) => (
+          <div
+            key={day}
+            className="bg-gray-50 py-2 text-center text-sm font-semibold text-gray-700"
           >
-            <span className="text-sm font-medium">{format(day, 'd')}</span>
-            {dayEvents.map((event) => (
-              <div
-                key={event.id}
-                className="mt-1 text-xs p-1 bg-blue-100 text-blue-800 rounded truncate"
-              >
-                {event.title}
-              </div>
-            ))}
-          </button>
-        );
-      })}
-    </div>
+            {day}
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-px bg-gray-200">
+        {Array.from({ length: emptyDays }).map((_, index) => (
+          <div key={`empty-${index}`} className="min-h-[120px] bg-white p-2" />
+        ))}
+        
+        {days.map((day) => (
+          <DayCell
+            key={day.toString()}
+            date={day}
+            events={events}
+            onDateClick={onDateClick}
+            userSettings={userSettings}
+          />
+        ))}
+      </div>
+    </>
   );
 }
