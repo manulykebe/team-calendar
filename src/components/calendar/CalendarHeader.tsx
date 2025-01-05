@@ -1,36 +1,22 @@
-import { format } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { WeekDayHeader } from './WeekDayHeader';
 
 interface CalendarHeaderProps {
-	currentDate: Date;
-	onPrevMonth: () => void;
-	onNextMonth: () => void;
+  weekDays: string[];
+  showWeekNumber: "left" | "right" | "none";
 }
 
-export function CalendarHeader({
-	currentDate,
-	onPrevMonth,
-	onNextMonth,
-}: CalendarHeaderProps) {
-	return (
-		<div className="flex items-center justify-between mb-4">
-			<h2 className="text-xl font-semibold text-zinc-900">
-				{format(currentDate, "MMMM yyyy")}
-			</h2>
-			<div className="flex space-x-2">
-				<button
-					onClick={onPrevMonth}
-					className="p-2 hover:bg-zinc-100 rounded-full"
-				>
-					<ChevronLeft className="w-5 h-5" />
-				</button>
-				<button
-					onClick={onNextMonth}
-					className="p-2 hover:bg-zinc-100 rounded-full"
-				>
-					<ChevronRight className="w-5 h-5" />
-				</button>
-			</div>
-		</div>
-	);
+export function CalendarHeader({ weekDays, showWeekNumber }: CalendarHeaderProps) {
+  return (
+    <div className={`grid ${
+      showWeekNumber === "left" 
+        ? "grid-cols-[3rem_1fr]" 
+        : showWeekNumber === "right" 
+          ? "grid-cols-[1fr_3rem]" 
+          : "grid-cols-1"
+    } gap-px bg-zinc-200`}>
+      {showWeekNumber === "left" && <div className="bg-zinc-50 py-2" />}
+      <WeekDayHeader weekDays={weekDays} />
+      {showWeekNumber === "right" && <div className="bg-zinc-50 py-2" />}
+    </div>
+  );
 }

@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo } from 'react';
 import { format } from "date-fns";
 import { EventCard } from "./EventCard";
 import { useFilteredEvents } from "../../hooks/useFilteredEvents";
@@ -14,6 +14,11 @@ interface DayCellProps {
   userSettings?: any;
   onEventDelete?: (eventId: string) => void;
   currentUser?: User | null;
+  draggedEvent?: Event | null;
+  dragOverDate?: string | null;
+  onEventDrop?: (date: string) => void;
+  onDragOver?: (date: string, e: React.DragEvent) => void;
+  onDragStart?: (event: Event) => void;
 }
 
 export const DayCell = memo(function DayCell({
@@ -23,26 +28,45 @@ export const DayCell = memo(function DayCell({
   userSettings,
   onEventDelete,
   currentUser,
+  draggedEvent,
+  dragOverDate,
+  onEventDrop,
+  onDragOver,
+  onDragStart,
 }: DayCellProps) {
   const { getColumnColor } = useCalendarColors(currentUser);
   const { handleEventDelete } = useEventDeletion();
   const formattedDate = format(date, "yyyy-MM-dd");
   const dayEvents = useFilteredEvents(events, formattedDate);
   const backgroundColor = getColumnColor(date);
+  const isOver = dragOverDate === formattedDate;
 
   const deleteEventHandler = async (eventId: string) => {
     try {
       await handleEventDelete(eventId, onEventDelete);
     } catch (error) {
-      // Error is already logged in useEventDeletion
+      console.error('Failed to delete event:', error);
     }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    onDragOver?.(formattedDate, e);
+  };
+
+  const handleDrop = () => {
+    onEventDrop?.(formattedDate);
   };
 
   return (
     <div
-      className="min-h-[120px] p-2 hover:bg-opacity-90 transition-colors"
+      className={`min-h-[120px] p-2 hover:bg-opacity-90 transition-colors ${
+        isOver ? 'ring-2 ring-blue-500' : ''
+      }`}
       style={{ backgroundColor }}
       onClick={() => onDateClick(date)}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
     >
       <div className="flex justify-between items-start">
         <span className="text-sm font-medium text-zinc-700">
@@ -55,20 +79,17 @@ export const DayCell = memo(function DayCell({
         )}
       </div>
       <div className="mt-2 space-y-1">
-        {dayEvents.slice(0, 2).map((event) => (
+        {dayEvents.map((event) => (
           <EventCard
             key={event.id}
             event={event}
             userSettings={userSettings}
             onDelete={deleteEventHandler}
             currentUser={currentUser}
+            isDragging={draggedEvent?.id === event.id}
+            onDragStart={onDragStart}
           />
         ))}
-        {dayEvents.length > 2 && (
-          <div className="text-xs text-zinc-500">
-            +{dayEvents.length - 2} more
-          </div>
-        )}
       </div>
     </div>
   );

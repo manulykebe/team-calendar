@@ -14,7 +14,7 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-05T18:51:27.928Z",
+      "updatedAt": "2025-01-05T19:24:49.420Z",
       "app": {
         "weekStartsOn": "Saturday"
       },
@@ -28,7 +28,8 @@
             "color": "#4575b4",
             "initials": "KDJ"
           }
-        }
+        },
+        "showWeekNumber": "left"
       }
     },
     {
@@ -42,7 +43,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-05T14:22:04.134Z",
+      "updatedAt": "2025-01-05T19:47:26.309Z",
       "settings": {
         "app": {
           "color": {
@@ -58,10 +59,11 @@
             "color": "#313695",
             "initials": "KDJ"
           }
-        }
+        },
+        "showWeekNumber": "none"
       },
       "app": {
-        "weekStartsOn": "Monday"
+        "weekStartsOn": "Sunday"
       }
     }
   ],
@@ -69,29 +71,11 @@
     {
       "id": "741d49f0-d729-4e20-81d3-50d4768ffefb",
       "userId": "2",
-      "title": "test",
-      "description": "",
-      "date": "2025-01-03",
+      "title": "test 21",
+      "description": "ded kzjb fcjlzfe vilzqujbcdv zqsvzqf",
+      "date": "2025-01-09",
       "createdAt": "2025-01-04T15:06:15.156Z",
-      "updatedAt": "2025-01-04T15:06:15.156Z"
-    },
-    {
-      "id": "07d73570-0445-4da2-9483-cec4204376ad",
-      "userId": "2",
-      "title": "test",
-      "description": "",
-      "date": "2025-01-04",
-      "createdAt": "2025-01-04T15:06:18.697Z",
-      "updatedAt": "2025-01-04T15:06:18.697Z"
-    },
-    {
-      "id": "1788507c-6e55-4497-88b8-96408818e48c",
-      "userId": "1",
-      "title": "admin",
-      "description": "",
-      "date": "2025-01-05",
-      "createdAt": "2025-01-04T15:06:55.159Z",
-      "updatedAt": "2025-01-04T15:06:55.159Z"
+      "updatedAt": "2025-01-05T19:46:35.258Z"
     },
     {
       "id": "e08f22b1-7002-4419-bbdc-e196266bf957",
@@ -100,43 +84,25 @@
       "description": "",
       "date": "2025-01-06",
       "createdAt": "2025-01-04T21:44:33.369Z",
-      "updatedAt": "2025-01-04T21:44:33.369Z"
+      "updatedAt": "2025-01-05T19:45:41.613Z"
     },
     {
       "id": "70a39720-0366-4be5-a724-02bf6f14dbf4",
       "userId": "2",
-      "title": "q",
-      "description": "",
-      "date": "2025-01-11",
+      "title": "qsdds",
+      "description": "sdsds",
+      "date": "2025-01-02",
       "createdAt": "2025-01-04T22:10:17.365Z",
-      "updatedAt": "2025-01-04T22:10:17.365Z"
+      "updatedAt": "2025-01-05T19:46:36.678Z"
     },
     {
       "id": "aebce620-e8d1-4bdd-9da3-02e31af0462b",
       "userId": "2",
       "title": "ww",
       "description": "",
-      "date": "2025-01-12",
+      "date": "2025-01-14",
       "createdAt": "2025-01-04T22:25:37.942Z",
-      "updatedAt": "2025-01-04T22:25:37.943Z"
-    },
-    {
-      "id": "ac3b33d2-1de6-4673-98da-1a0ac0622434",
-      "userId": "2",
-      "title": "kat",
-      "description": "",
-      "date": "2025-01-09",
-      "createdAt": "2025-01-05T18:59:06.275Z",
-      "updatedAt": "2025-01-05T18:59:06.275Z"
-    },
-    {
-      "id": "bff25f09-bc77-4324-80e3-9c665f60cacd",
-      "userId": "1",
-      "title": "dfe",
-      "description": "",
-      "date": "2025-01-21",
-      "createdAt": "2025-01-05T19:00:33.722Z",
-      "updatedAt": "2025-01-05T19:00:33.722Z"
+      "updatedAt": "2025-01-05T19:46:33.929Z"
     }
   ]
 }

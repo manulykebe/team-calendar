@@ -57,7 +57,6 @@ export function useUserSettings() {
       }
     };
 
-    // Remove password from the update payload
     const { password, ...userWithoutPassword } = updatedUser;
 
     try {
@@ -74,8 +73,36 @@ export function useUserSettings() {
     }
   };
 
+  const updateWeekNumberSetting = async (value: "left" | "right" | "none") => {
+    if (!currentUser || !token) return;
+
+    const updatedUser = {
+      ...currentUser,
+      settings: {
+        ...currentUser.settings,
+        showWeekNumber: value
+      }
+    };
+
+    const { password, ...userWithoutPassword } = updatedUser;
+
+    try {
+      await updateUser(token, currentUser.id, userWithoutPassword);
+      setCurrentUser(updatedUser);
+      userSettingsEmitter.emit("settingsUpdated", {
+        userId: currentUser.id,
+        settings: updatedUser.settings,
+        app: updatedUser.app
+      });
+    } catch (error) {
+      console.error("Failed to update week number setting:", error);
+      throw error;
+    }
+  };
+
   return {
     currentUser,
-    updateWorkStartDay
+    updateWorkStartDay,
+    updateWeekNumberSetting
   };
 }
