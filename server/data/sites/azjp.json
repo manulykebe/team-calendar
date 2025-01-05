@@ -14,14 +14,14 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-05T13:02:50.281Z",
+      "updatedAt": "2025-01-05T18:51:27.928Z",
       "app": {
         "weekStartsOn": "Saturday"
       },
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#d73027",
+            "color": "#313695",
             "initials": "ADM"
           },
           "2": {
@@ -85,24 +85,6 @@
       "updatedAt": "2025-01-04T15:06:18.697Z"
     },
     {
-      "id": "d97c2529-645c-4b03-b27c-bca423bef20f",
-      "userId": "1",
-      "title": "admin",
-      "description": "",
-      "date": "2025-01-03",
-      "createdAt": "2025-01-04T15:06:45.855Z",
-      "updatedAt": "2025-01-04T15:06:45.855Z"
-    },
-    {
-      "id": "a16ed957-aed7-4afc-96c5-d786fcfdecde",
-      "userId": "1",
-      "title": "admin",
-      "description": "",
-      "date": "2025-01-04",
-      "createdAt": "2025-01-04T15:06:50.704Z",
-      "updatedAt": "2025-01-04T15:06:50.704Z"
-    },
-    {
       "id": "1788507c-6e55-4497-88b8-96408818e48c",
       "userId": "1",
       "title": "admin",
@@ -110,15 +92,6 @@
       "date": "2025-01-05",
       "createdAt": "2025-01-04T15:06:55.159Z",
       "updatedAt": "2025-01-04T15:06:55.159Z"
-    },
-    {
-      "id": "86e3c583-0e2a-419e-b2e4-b2e4796a95b2",
-      "userId": "1",
-      "title": "zzz",
-      "description": "",
-      "date": "2025-01-04",
-      "createdAt": "2025-01-04T15:38:08.491Z",
-      "updatedAt": "2025-01-04T15:38:08.491Z"
     },
     {
       "id": "e08f22b1-7002-4419-bbdc-e196266bf957",
@@ -148,13 +121,22 @@
       "updatedAt": "2025-01-04T22:25:37.943Z"
     },
     {
-      "id": "115a475c-8e39-452f-b1a2-2d7e01d3be04",
+      "id": "ac3b33d2-1de6-4673-98da-1a0ac0622434",
       "userId": "2",
-      "title": "tesr",
+      "title": "kat",
       "description": "",
-      "date": "2025-01-02",
-      "createdAt": "2025-01-05T11:13:39.230Z",
-      "updatedAt": "2025-01-05T11:13:39.230Z"
+      "date": "2025-01-09",
+      "createdAt": "2025-01-05T18:59:06.275Z",
+      "updatedAt": "2025-01-05T18:59:06.275Z"
+    },
+    {
+      "id": "bff25f09-bc77-4324-80e3-9c665f60cacd",
+      "userId": "1",
+      "title": "dfe",
+      "description": "",
+      "date": "2025-01-21",
+      "createdAt": "2025-01-05T19:00:33.722Z",
+      "updatedAt": "2025-01-05T19:00:33.722Z"
     }
   ]
 }

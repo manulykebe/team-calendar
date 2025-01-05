@@ -27,7 +27,6 @@ router.get('/', async (req: AuthRequest, res) => {
 
 router.post('/', async (req: AuthRequest, res) => {
   try {
-    // Validate request body
     const validatedData = eventSchema.parse(req.body);
     
     const event = await createEvent({
@@ -81,7 +80,8 @@ router.delete('/:id', async (req: AuthRequest, res) => {
     await deleteEvent({
       id: req.params.id,
       userId: req.user!.id,
-      site: req.user!.site
+      site: req.user!.site,
+      userRole: req.user!.role
     });
     res.sendStatus(204);
   } catch (error) {

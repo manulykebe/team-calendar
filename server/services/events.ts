@@ -64,6 +64,7 @@ export async function deleteEvent(params: {
   id: string;
   userId: string;
   site: string;
+  userRole?: string;
 }) {
   const data = await readSiteData(params.site);
   
@@ -72,7 +73,11 @@ export async function deleteEvent(params: {
     throw new Error('Event not found');
   }
   
-  if (data.events[eventIndex].userId !== params.userId) {
+  // Allow deletion if user is admin or owns the event
+  const isAdmin = params.userRole === 'admin';
+  const isOwner = data.events[eventIndex].userId === params.userId;
+  
+  if (!isAdmin && !isOwner) {
     throw new Error('Not authorized to delete this event');
   }
 
