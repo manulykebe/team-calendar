@@ -7,12 +7,13 @@ interface EventModalProps {
   date: Date;
   event?: Event;
   onClose: () => void;
-  onSubmit: (data: { title: string; description: string }) => Promise<void>;
+  onSubmit: (data: { title: string; description: string; endDate?: string }) => Promise<void>;
 }
 
 export function EventModal({ date, event, onClose, onSubmit }: EventModalProps) {
   const [title, setTitle] = useState(event?.title || "");
   const [description, setDescription] = useState(event?.description || "");
+  const [endDate, setEndDate] = useState(event?.endDate || "");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -30,6 +31,7 @@ export function EventModal({ date, event, onClose, onSubmit }: EventModalProps) 
       await onSubmit({
         title: title.trim(),
         description: description.trim(),
+        endDate: endDate || undefined
       });
       onClose();
     } catch (err) {
@@ -95,6 +97,24 @@ export function EventModal({ date, event, onClose, onSubmit }: EventModalProps) 
               rows={3}
               className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               maxLength={500}
+              disabled={loading}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="endDate"
+              className="block text-sm font-medium text-zinc-700"
+            >
+              End Date (Optional)
+            </label>
+            <input
+              type="date"
+              id="endDate"
+              value={endDate}
+              min={format(date, "yyyy-MM-dd")}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               disabled={loading}
             />
           </div>

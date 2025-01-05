@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Event } from '../types/event';
 import { getEvents, createEvent, updateEvent } from '../lib/api';
 import { format } from 'date-fns';
@@ -10,28 +10,48 @@ export function useCalendarState(token: string | null) {
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
-  const fetchEvents = async () => {
-    if (!token) return;
+  const fetchEvents = useCallback(async () => {
+    if (!token) {
+      console.warn('No authentication token available');
+      return;
+    }
+
     try {
       const eventsData = await getEvents(token);
       setEvents(eventsData);
     } catch (error) {
-      console.error("Failed to fetch events:", error);
+      if (error instanceof Error) {
+        console.error("Failed to fetch events:", error.message);
+      } else {
+        console.error("Failed to fetch events: Unknown error");
+      }
     }
-  };
+  }, [token]);
 
-  const handleCreateEvent = async (eventData: { title: string; description: string }) => {
-    if (!token) return;
+  const handleCreateEvent = async (eventData: { 
+    title: string; 
+    description: string;
+    endDate?: string;
+  }) => {
+    if (!token) {
+      console.warn('No authentication token available');
+      return;
+    }
 
     try {
       const newEvent = await createEvent(token, {
         ...eventData,
         date: format(selectedDate, "yyyy-MM-dd"),
       });
-      setEvents([...events, newEvent]);
+      setEvents(prev => [...prev, newEvent]);
       setShowModal(false);
     } catch (error) {
-      console.error("Failed to create event:", error);
+      if (error instanceof Error) {
+        console.error("Failed to create event:", error.message);
+      } else {
+        console.error("Failed to create event: Unknown error");
+      }
+      throw error;
     }
   };
 
@@ -40,7 +60,10 @@ export function useCalendarState(token: string | null) {
   };
 
   const handleEventMove = async (eventId: string, newDate: string) => {
-    if (!token) return;
+    if (!token) {
+      console.warn('No authentication token available');
+      return;
+    }
 
     const event = events.find(e => e.id === eventId);
     if (!event) return;
@@ -50,9 +73,38 @@ export function useCalendarState(token: string | null) {
         ...event,
         date: newDate
       });
-      setEvents(events.map(e => e.id === eventId ? updatedEvent : e));
+      setEvents(prev => prev.map(e => e.id === eventId ? updatedEvent : e));
     } catch (error) {
-      console.error('Failed to move event:', error);
+      if (error instanceof Error) {
+        console.error('Failed to move event:', error.message);
+      } else {
+        console.error('Failed to move event: Unknown error');
+      }
+    }
+  };
+
+  const handleEventResize = async (eventId: string, newDate: string, newEndDate?: string) => {
+    if (!token) {
+      console.warn('No authentication token available');
+      return;
+    }
+
+    const event = events.find(e => e.id === eventId);
+    if (!event) return;
+
+    try {
+      const updatedEvent = await updateEvent(token, eventId, {
+        ...event,
+        date: newDate,
+        endDate: newEndDate
+      });
+      setEvents(prev => prev.map(e => e.id === eventId ? updatedEvent : e));
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Failed to resize event:', error.message);
+      } else {
+        console.error('Failed to resize event: Unknown error');
+      }
     }
   };
 
@@ -69,6 +121,7 @@ export function useCalendarState(token: string | null) {
     fetchEvents,
     handleCreateEvent,
     handleEventDelete,
-    handleEventMove
+    handleEventMove,
+    handleEventResize
   };
 }

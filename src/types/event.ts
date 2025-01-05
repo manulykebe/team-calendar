@@ -4,6 +4,7 @@ export interface Event {
   title: string;
   description: string;
   date: string;
+  endDate?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -23,8 +23,6 @@ export function useCalendarColors(currentUser?: User | null) {
 		if (currentUser?.app?.color) {
 			Object.assign(colors, currentUser.app.color);
 		}
-console.log(currentUser);
-console.log(colors);
 		return {
 			getColumnColor: (date: Date) => {
 				const dayName = format(date, "EEEE") as keyof typeof colors;

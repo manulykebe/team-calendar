@@ -1,22 +1,92 @@
-import { request } from './client';
-import type { User } from '../../types';
-import type { UserUpdateData } from '../../types/api';
+import { User } from '../../types/user';
 
-export async function getUsers(token: string): Promise<User[]> {
-  return request<User[]>('/users', { token });
+const API_URL = 'http://localhost:3000/api';
+
+export async function getUsers(token: string) {
+  if (!token) {
+    throw new Error('Authentication token is required');
+  }
+
+  const response = await fetch(`${API_URL}/users`, {
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to fetch users' }));
+    throw new Error(error.message);
+  }
+  return response.json();
 }
 
-export async function updateUser(token: string, userId: string, data: UserUpdateData): Promise<User> {
-  return request<User>(`/users/${userId}`, {
+export async function createUser(token: string, userData: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  mobile: string;
+  role: 'admin' | 'user';
+  status: 'active' | 'inactive';
+  site: string;
+}) {
+  if (!token) {
+    throw new Error('Authentication token is required');
+  }
+
+  const response = await fetch(`${API_URL}/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(userData)
+  });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to create user' }));
+    throw new Error(error.message);
+  }
+  return response.json();
+}
+
+export async function updateUser(token: string, userId: string, userData: Partial<User>) {
+  if (!token) {
+    throw new Error('Authentication token is required');
+  }
+
+  const response = await fetch(`${API_URL}/users/${userId}`, {
     method: 'PUT',
-    token,
-    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(userData)
   });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to update user' }));
+    throw new Error(error.message);
+  }
+  return response.json();
 }
 
-export async function deleteUser(token: string, userId: string): Promise<void> {
-  return request(`/users/${userId}`, {
+export async function deleteUser(token: string, userId: string) {
+  if (!token) {
+    throw new Error('Authentication token is required');
+  }
+
+  const response = await fetch(`${API_URL}/users/${userId}`, {
     method: 'DELETE',
-    token,
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
   });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to delete user' }));
+    throw new Error(error.message);
+  }
 }
