@@ -123,12 +123,12 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
 		<div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
 			<div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
 				<div className="flex justify-between items-center p-6 border-b">
-					<h2 className="text-xl font-semibold text-gray-900">
+					<h2 className="text-xl font-semibold text-zinc-900">
 						Colleague Settings
 					</h2>
 					<button
 						onClick={onClose}
-						className="text-gray-400 hover:text-gray-500"
+						className="text-zinc-400 hover:text-zinc-500"
 					>
 						<X className="w-6 h-6" />
 					</button>
@@ -145,7 +145,7 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
 							return (
 								<div
 									key={colleague.id}
-									className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+									className="flex items-center justify-between p-4 bg-zinc-50 rounded-lg"
 								>
 									<div className="flex items-center space-x-4">
 										<div
@@ -163,14 +163,14 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
 												{colleague.firstName}{" "}
 												{colleague.lastName}
 											</h3>
-											<p className="text-sm text-gray-500">
+											<p className="text-sm text-zinc-500">
 												{colleague.email}
 											</p>
 										</div>
 									</div>
 									<div className="flex items-center space-x-4">
 										<div>
-											<label className="block text-sm font-medium text-gray-700">
+											<label className="block text-sm font-medium text-zinc-700">
 												Abbreviation
 											</label>
 											<input
@@ -183,12 +183,12 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
 														e.target.value
 													)
 												}
-												className="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+												className="mt-1 block w-20 rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 												placeholder="ABC"
 											/>
 										</div>
 										<div>
-											<label className="block text-sm font-medium text-gray-700">
+											<label className="block text-sm font-medium text-zinc-700">
 												Color
 											</label>
 											<div className="mt-1 flex items-center space-x-2">

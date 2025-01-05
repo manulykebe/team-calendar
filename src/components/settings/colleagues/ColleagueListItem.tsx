@@ -22,7 +22,7 @@ export function ColleagueListItem({
 	onAbbrevChange,
 }: ColleagueListItemProps) {
 	return (
-		<div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+		<div className="flex items-center justify-between p-4 bg-zinc-50 rounded-lg">
 			<div className="flex items-center space-x-4">
 				<ColleagueAvatar
 					firstName={colleague.firstName}
@@ -34,13 +34,13 @@ export function ColleagueListItem({
 					<h3 className="font-medium">
 						{colleague.firstName} {colleague.lastName}
 					</h3>
-					<p className="text-sm text-gray-500">{colleague.email}</p>
+					<p className="text-sm text-zinc-500">{colleague.email}</p>
 				</div>
 			</div>
 
 			<div className="flex items-center space-x-4">
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">
+					<label className="block text-sm font-medium text-zinc-700 mb-1">
 						Abbreviation
 					</label>
 					<AbbreviationInput
@@ -51,7 +51,7 @@ export function ColleagueListItem({
 					/>
 				</div>
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">
+					<label className="block text-sm font-medium text-zinc-700 mb-1">
 						Color
 					</label>
 					<ColorPicker

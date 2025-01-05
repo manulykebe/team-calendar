@@ -13,17 +13,21 @@ interface EventCardProps {
 	currentUser?: User | null;
 }
 
-export function EventCard({ event, userSettings, onDelete, currentUser }: EventCardProps) {
+export function EventCard({
+	event,
+	userSettings,
+	onDelete,
+	currentUser,
+}: EventCardProps) {
 	const colleagueSettings = userSettings?.colleagues?.[event.userId];
 	const backgroundColor = colleagueSettings?.color || "#e2e8f0";
 	const prefix = colleagueSettings?.initials
 		? `[${colleagueSettings.initials}] `
 		: "";
 
-	const canDelete = currentUser && (
-		currentUser.role === 'admin' || 
-		currentUser.id === event.userId
-	);
+	const canDelete =
+		currentUser &&
+		(currentUser.role === "admin" || currentUser.id === event.userId);
 
 	const handleDelete = (e: React.MouseEvent) => {
 		e.stopPropagation(); // Prevent event bubbling
@@ -34,7 +38,7 @@ export function EventCard({ event, userSettings, onDelete, currentUser }: EventC
 
 	return (
 		<div
-			className="flex items-center justify-between text-xs px-1 py-0.5 rounded group hover:ring-1 hover:ring-gray-300"
+			className="flex items-center justify-between text-xs px-1 py-0.5 rounded group hover:ring-1 hover:ring-zinc-300"
 			style={{
 				backgroundColor,
 				color:

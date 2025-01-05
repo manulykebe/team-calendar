@@ -42,11 +42,16 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-05T11:13:29.256Z",
+      "updatedAt": "2025-01-05T14:22:04.134Z",
       "settings": {
+        "app": {
+          "color": {
+            "Tuesday": "#4575b4"
+          }
+        },
         "colleagues": {
           "1": {
-            "color": "#abd9e9",
+            "color": "#4575b4",
             "initials": "ADM"
           },
           "2": {
@@ -54,6 +59,9 @@
             "initials": "KDJ"
           }
         }
+      },
+      "app": {
+        "weekStartsOn": "Monday"
       }
     }
   ],
