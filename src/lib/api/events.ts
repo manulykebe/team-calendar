@@ -1,47 +1,30 @@
-import { API_URL } from './config';
-import type { EventData } from './types';
+import { request } from './client';
+import type { Event } from '../../types';
+import type { EventCreateData, EventUpdateData } from '../../types/api';
 
-export async function getEvents(token: string) {
-  const response = await fetch(`${API_URL}/events`, {
-    headers: { 
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
-  
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Failed to fetch events' }));
-    throw new Error(error.message || 'Failed to fetch events');
-  }
-  return response.json();
+export async function getEvents(token: string): Promise<Event[]> {
+  return request<Event[]>('/events', { token });
 }
 
-export async function createEvent(token: string, eventData: EventData) {
-  if (!eventData.title?.trim()) {
-    throw new Error('Event title is required');
-  }
-
-  if (!eventData.date) {
-    throw new Error('Event date is required');
-  }
-
-  const response = await fetch(`${API_URL}/events`, {
+export async function createEvent(token: string, data: EventCreateData): Promise<Event> {
+  return request<Event>('/events', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      title: eventData.title.trim(),
-      description: eventData.description?.trim() || '',
-      date: eventData.date
-    })
+    token,
+    body: JSON.stringify(data),
   });
+}
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: 'Failed to create event' }));
-    throw new Error(errorData.message || 'Failed to create event');
-  }
+export async function updateEvent(token: string, id: string, data: EventUpdateData): Promise<Event> {
+  return request<Event>(`/events/${id}`, {
+    method: 'PUT',
+    token,
+    body: JSON.stringify(data),
+  });
+}
 
-  return response.json();
+export async function deleteEvent(token: string, id: string): Promise<void> {
+  return request(`/events/${id}`, {
+    method: 'DELETE',
+    token,
+  });
 }

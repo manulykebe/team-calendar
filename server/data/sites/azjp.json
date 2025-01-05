@@ -36,15 +36,15 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-04T22:28:18.445Z",
+      "updatedAt": "2025-01-05T11:13:29.256Z",
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#74add1",
+            "color": "#abd9e9",
             "initials": "ADM"
           },
           "2": {
-            "color": "#4575b4",
+            "color": "#313695",
             "initials": "KDJ"
           }
         }
@@ -132,6 +132,15 @@
       "date": "2025-01-12",
       "createdAt": "2025-01-04T22:25:37.942Z",
       "updatedAt": "2025-01-04T22:25:37.943Z"
+    },
+    {
+      "id": "115a475c-8e39-452f-b1a2-2d7e01d3be04",
+      "userId": "2",
+      "title": "tesr",
+      "description": "",
+      "date": "2025-01-02",
+      "createdAt": "2025-01-05T11:13:39.230Z",
+      "updatedAt": "2025-01-05T11:13:39.230Z"
     }
   ]
 }

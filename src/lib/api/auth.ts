@@ -1,24 +1,16 @@
-import { API_URL } from './config';
-import type { AuthResponse, RegisterData } from './types';
+import { request } from './client';
+import type { AuthResponse, LoginCredentials, RegisterData } from '../../types/api';
 
-export async function login(email: string, password: string, site: string): Promise<AuthResponse> {
-  const response = await fetch(`${API_URL}/auth/login`, {
+export async function login(credentials: LoginCredentials): Promise<AuthResponse> {
+  return request<AuthResponse>('/auth/login', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password, site })
+    body: JSON.stringify(credentials),
   });
-  
-  if (!response.ok) throw new Error('Invalid credentials');
-  return response.json();
 }
 
-export async function register(userData: RegisterData): Promise<AuthResponse> {
-  const response = await fetch(`${API_URL}/auth/register`, {
+export async function register(data: RegisterData): Promise<AuthResponse> {
+  return request<AuthResponse>('/auth/register', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(userData)
+    body: JSON.stringify(data),
   });
-  
-  if (!response.ok) throw new Error('Registration failed');
-  return response.json();
 }
