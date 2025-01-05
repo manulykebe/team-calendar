@@ -1,6 +1,7 @@
 import { memo } from 'react';
-import { format } from "date-fns";
+import { format, isFirstDayOfMonth } from "date-fns";
 import { EventCard } from "./EventCard";
+import { MonthLabel } from "./MonthLabel";
 import { useFilteredEvents } from "../../hooks/useFilteredEvents";
 import { useCalendarColors } from "../../hooks/useCalendarColors";
 import { useEventDeletion } from "../../hooks/useEventDeletion";
@@ -40,6 +41,7 @@ export const DayCell = memo(function DayCell({
   const dayEvents = useFilteredEvents(events, formattedDate);
   const backgroundColor = getColumnColor(date);
   const isOver = dragOverDate === formattedDate;
+  const showMonthLabel = isFirstDayOfMonth(date);
 
   const deleteEventHandler = async (eventId: string) => {
     try {
@@ -60,7 +62,7 @@ export const DayCell = memo(function DayCell({
 
   return (
     <div
-      className={`min-h-[120px] p-2 hover:bg-opacity-90 transition-colors ${
+      className={`relative min-h-[120px] p-2 hover:bg-opacity-90 transition-colors ${
         isOver ? 'ring-2 ring-blue-500' : ''
       }`}
       style={{ backgroundColor }}
@@ -68,6 +70,7 @@ export const DayCell = memo(function DayCell({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
+      {showMonthLabel && <MonthLabel date={date} />}
       <div className="flex justify-between items-start">
         <span className="text-sm font-medium text-zinc-700">
           {format(date, "d")}

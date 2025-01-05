@@ -1,6 +1,14 @@
-import { startOfMonth, endOfMonth, eachDayOfInterval, getDay } from 'date-fns';
+import { 
+  startOfWeek,
+  addWeeks,
+  eachDayOfInterval,
+  getDay,
+  subWeeks,
+  addDays
+} from 'date-fns';
 
 const DAYS_IN_WEEK = 7;
+const WEEKS_TO_SHOW = 5;
 const WEEKDAYS = {
   Sunday: 0,
   Monday: 1,
@@ -13,17 +21,22 @@ const WEEKDAYS = {
 
 type WeekDay = keyof typeof WEEKDAYS;
 
-export function getCalendarDays(currentMonth: Date, weekStartsOn: WeekDay = 'Monday') {
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(currentMonth);
-  const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
-  
+export function getCalendarDays(currentDate: Date, weekStartsOn: WeekDay = 'Monday') {
   const startDay = WEEKDAYS[weekStartsOn];
-  const firstDayIndex = (DAYS_IN_WEEK + getDay(monthStart) - startDay) % DAYS_IN_WEEK;
+  
+  // Find the start of the week for the current date
+  const weekStart = startOfWeek(currentDate, { weekStartsOn: startDay });
+  
+  // Calculate the start date (2 weeks before) and end date (2 weeks after)
+  const calendarStart = subWeeks(weekStart, 2);
+  const calendarEnd = addDays(addWeeks(weekStart, 2), 6);
+
+  // Get all days in the interval
+  const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
 
   return {
     days,
-    emptyDays: firstDayIndex,
+    emptyDays: 0, // No empty days needed since we're showing continuous weeks
     weekDays: getWeekDays(weekStartsOn)
   };
 }
