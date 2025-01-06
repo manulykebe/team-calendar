@@ -18,6 +18,7 @@ interface CalendarGridProps {
   onEventDrop?: (date: string) => void;
   onDragOver?: (date: string, e: React.DragEvent) => void;
   onDragStart?: (event: Event) => void;
+  onEventResize?: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
 }
 
 export function CalendarGrid({
@@ -33,6 +34,7 @@ export function CalendarGrid({
   onEventDrop,
   onDragOver,
   onDragStart,
+  onEventResize,
 }: CalendarGridProps) {
   const { days, emptyDays, weekDays } = getCalendarDays(
     currentMonth,
@@ -43,7 +45,7 @@ export function CalendarGrid({
 
   return (
     <div className="bg-zinc-200">
-      <CalendarHeader weekDays={weekDays} showWeekNumber={showWeekNumber || "none"} />
+      <CalendarHeader weekDays={weekDays} showWeekNumber={showWeekNumber} />
       <div className={`grid ${
         showWeekNumber === "left" 
           ? "grid-cols-[3rem_1fr]" 
@@ -70,6 +72,7 @@ export function CalendarGrid({
               onEventDrop={onEventDrop}
               onDragOver={onDragOver}
               onDragStart={onDragStart}
+              onResize={onEventResize}
             />
           ))}
         </div>

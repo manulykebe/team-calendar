@@ -14,18 +14,18 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-05T20:27:47.896Z",
+      "updatedAt": "2025-01-06T09:41:45.404Z",
       "app": {
         "weekStartsOn": "Monday"
       },
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#a50026",
+            "color": "#4575b4",
             "initials": "ADM"
           },
           "2": {
-            "color": "#d73027",
+            "color": "#313695",
             "initials": "KDJ"
           }
         },
@@ -43,7 +43,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-05T20:24:42.681Z",
+      "updatedAt": "2025-01-05T20:30:11.121Z",
       "settings": {
         "app": {
           "color": {
@@ -60,10 +60,10 @@
             "initials": "KDJ"
           }
         },
-        "showWeekNumber": "left"
+        "showWeekNumber": "none"
       },
       "app": {
-        "weekStartsOn": "Sunday"
+        "weekStartsOn": "Monday"
       }
     }
   ],
@@ -73,9 +73,10 @@
       "userId": "2",
       "title": "test 21",
       "description": "ded kzjb fcjlzfe vilzqujbcdv zqsvzqf",
-      "date": "2025-01-09",
+      "date": "2025-01-01",
+      "endDate": "2025-01-07",
       "createdAt": "2025-01-04T15:06:15.156Z",
-      "updatedAt": "2025-01-05T19:54:50.443Z"
+      "updatedAt": "2025-01-05T20:30:51.903Z"
     },
     {
       "id": "e08f22b1-7002-4419-bbdc-e196266bf957",
@@ -83,6 +84,7 @@
       "title": "azaza",
       "description": "",
       "date": "2025-01-05",
+      "endDate": "2025-01-06",
       "createdAt": "2025-01-04T21:44:33.369Z",
       "updatedAt": "2025-01-05T20:27:33.043Z"
     },
@@ -103,15 +105,6 @@
       "date": "2025-01-14",
       "createdAt": "2025-01-04T22:25:37.942Z",
       "updatedAt": "2025-01-05T19:46:33.929Z"
-    },
-    {
-      "id": "edd4c1cf-a32b-4d4c-b943-b27e032f97c5",
-      "userId": "2",
-      "title": "dssd",
-      "description": "",
-      "date": "2025-01-15",
-      "createdAt": "2025-01-05T19:48:29.923Z",
-      "updatedAt": "2025-01-05T19:53:03.185Z"
     },
     {
       "id": "f1386633-72ec-4e68-972b-cdbf59f32bc0",
