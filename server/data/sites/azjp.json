@@ -47,7 +47,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T12:41:20.064Z",
+      "updatedAt": "2025-01-06T12:59:28.854Z",
       "settings": {
         "app": {
           "color": {
@@ -56,21 +56,32 @@
         },
         "colleagues": {
           "1": {
-            "color": "#74add1",
+            "color": "#d73027",
             "initials": "ADM",
             "visible": true
           },
           "2": {
-            "color": "#d73027",
+            "color": "#a50026",
             "initials": "KDJ"
           },
           "3": {
             "visible": true,
             "initials": "MS",
             "color": "#fdae61"
+          },
+          "4": {
+            "initials": "SD",
+            "color": "#f46d43",
+            "visible": true
           }
         },
-        "showWeekNumber": "none"
+        "showWeekNumber": "none",
+        "colleagueOrder": [
+          "2",
+          "1",
+          "4",
+          "3"
+        ]
       },
       "app": {
         "weekStartsOn": "Monday"

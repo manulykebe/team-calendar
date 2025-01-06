@@ -26,19 +26,35 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
 
   useEffect(() => {
     if (colleagues.length > 0 && currentUser) {
+      // Get saved order from settings or create default order
+      const savedOrder = currentUser.settings?.colleagueOrder || [];
+      const orderedList = [...colleagues];
+      
+      // Sort based on saved order
+      orderedList.sort((a, b) => {
+        const aIndex = savedOrder.indexOf(a.id);
+        const bIndex = savedOrder.indexOf(b.id);
+        
+        // Put items not in saved order at the end
+        if (aIndex === -1 && bIndex === -1) return 0;
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        
+        return aIndex - bIndex;
+      });
+
       // Move current user to top
-      const currentUserIndex = colleagues.findIndex((c) => c.id === currentUser.id);
+      const currentUserIndex = orderedList.findIndex((c) => c.id === currentUser.id);
       if (currentUserIndex !== -1) {
-        const reorderedColleagues = [...colleagues];
-        const [currentUserData] = reorderedColleagues.splice(currentUserIndex, 1);
-        reorderedColleagues.unshift(currentUserData);
-        setOrderedColleagues(reorderedColleagues);
+        const [currentUserData] = orderedList.splice(currentUserIndex, 1);
+        orderedList.unshift(currentUserData);
       }
 
-      // Initialize visibility state from saved settings
+      setOrderedColleagues(orderedList);
+
+      // Initialize visibility state
       const initialVisibility = colleagues.reduce((acc, colleague) => {
         const settings = currentUser.settings?.colleagues?.[colleague.id];
-        // Default to true if no setting exists
         acc[colleague.id] = settings?.visible !== false;
         return acc;
       }, {} as Record<string, boolean>);
@@ -50,7 +66,6 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
     if (!currentUser || colleagueId === currentUser.id) return;
 
     const newVisibility = !visibilityState[colleagueId];
-    
     setVisibilityState((prev) => ({
       ...prev,
       [colleagueId]: newVisibility
@@ -63,7 +78,6 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
         visible: newVisibility
       });
     } catch (err) {
-      // Revert state on error
       setVisibilityState((prev) => ({
         ...prev,
         [colleagueId]: !newVisibility
@@ -72,13 +86,23 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
     }
   };
 
-  const moveColleague = (dragIndex: number, hoverIndex: number) => {
-    if (dragIndex === 0 || hoverIndex === 0) return; // Prevent moving current user
-    const draggedColleague = orderedColleagues[dragIndex];
+  const moveColleague = async (dragIndex: number, hoverIndex: number) => {
+    if (!currentUser || dragIndex === 0 || hoverIndex === 0) return; // Prevent moving current user
+
     const newOrder = [...orderedColleagues];
-    newOrder.splice(dragIndex, 1);
+    const [draggedColleague] = newOrder.splice(dragIndex, 1);
     newOrder.splice(hoverIndex, 0, draggedColleague);
     setOrderedColleagues(newOrder);
+
+    // Save new order to settings
+    const colleagueOrder = newOrder.map(c => c.id);
+    try {
+      await updateSettings('order', { colleagueOrder });
+    } catch (err) {
+      console.error("Failed to save colleague order:", err);
+      // Revert on error
+      setOrderedColleagues([...colleagues]);
+    }
   };
 
   if (loading) {
