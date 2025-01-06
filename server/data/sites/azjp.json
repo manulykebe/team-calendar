@@ -141,7 +141,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T13:09:44.636Z",
+      "updatedAt": "2025-01-06T13:11:32.283Z",
       "settings": {
         "app": {
           "color": {
@@ -150,35 +150,35 @@
         },
         "colleagues": {
           "1": {
-            "color": "#d73027",
+            "color": "#abd9e9",
             "initials": "ADM",
             "visible": true
           },
           "2": {
-            "color": "#f46d43",
+            "color": "#4575b4",
             "initials": "KDJ",
             "visible": true
           },
           "3": {
             "initials": "MS",
-            "color": "#fdae61",
+            "color": "#74add1",
             "visible": true
           },
           "4": {
             "initials": "SD",
-            "color": "#a50026"
+            "color": "#313695"
           }
         },
-        "showWeekNumber": "right",
+        "showWeekNumber": "none",
         "colleagueOrder": [
           "4",
-          "3",
           "2",
+          "3",
           "1"
         ]
       },
       "app": {
-        "weekStartsOn": "Saturday"
+        "weekStartsOn": "Monday"
       }
     }
   ],
@@ -255,7 +255,7 @@
       "description": "",
       "date": "2025-01-01",
       "createdAt": "2025-01-06T12:48:22.519Z",
-      "updatedAt": "2025-01-06T12:48:22.519Z"
+      "updatedAt": "2025-01-06T13:11:09.666Z"
     }
   ]
 }
