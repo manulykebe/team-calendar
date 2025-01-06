@@ -206,78 +206,13 @@
   ],
   "events": [
     {
-      "id": "741d49f0-d729-4e20-81d3-50d4768ffefb",
-      "userId": "2",
-      "title": "test 21",
-      "description": "ded kzjb fcjlzfe vilzqujbcdv zqsvzqf",
-      "date": "2024-12-31",
-      "endDate": "2025-01-07",
-      "createdAt": "2025-01-04T15:06:15.156Z",
-      "updatedAt": "2025-01-06T14:10:00.273Z"
-    },
-    {
-      "id": "e08f22b1-7002-4419-bbdc-e196266bf957",
+      "id": "874b1f0c-7e36-489e-920b-1311cb021ce5",
       "userId": "1",
-      "title": "azaza",
+      "title": "week",
       "description": "",
-      "date": "2025-01-01",
-      "endDate": "2025-01-06",
-      "createdAt": "2025-01-04T21:44:33.369Z",
-      "updatedAt": "2025-01-06T14:07:16.991Z"
-    },
-    {
-      "id": "aebce620-e8d1-4bdd-9da3-02e31af0462b",
-      "userId": "2",
-      "title": "ww",
-      "description": "",
-      "date": "2025-01-14",
-      "createdAt": "2025-01-04T22:25:37.942Z",
-      "updatedAt": "2025-01-06T14:10:07.918Z"
-    },
-    {
-      "id": "f1386633-72ec-4e68-972b-cdbf59f32bc0",
-      "userId": "2",
-      "title": "desd",
-      "description": "",
-      "date": "2025-01-19",
-      "createdAt": "2025-01-05T19:48:47.574Z",
-      "updatedAt": "2025-01-05T19:48:47.574Z"
-    },
-    {
-      "id": "a588ab1a-bb75-48b9-b743-953a1f983f37",
-      "userId": "2",
-      "title": "de",
-      "description": "",
-      "date": "2025-01-30",
-      "createdAt": "2025-01-05T20:08:07.572Z",
-      "updatedAt": "2025-01-05T20:25:06.950Z"
-    },
-    {
-      "id": "61dd4ea3-5432-4077-8fb7-9a7f2f1d2992",
-      "userId": "3",
-      "title": "miek",
-      "description": "",
-      "date": "2025-01-01",
-      "createdAt": "2025-01-06T12:45:21.658Z",
-      "updatedAt": "2025-01-06T12:46:21.710Z"
-    },
-    {
-      "id": "1fb15343-7a52-4ebf-9de1-4e2607257931",
-      "userId": "4",
-      "title": "sofie",
-      "description": "",
-      "date": "2025-01-01",
-      "createdAt": "2025-01-06T12:48:22.519Z",
-      "updatedAt": "2025-01-06T13:11:09.666Z"
-    },
-    {
-      "id": "8221a21e-22dd-4e74-9db6-922ef4ccfcdb",
-      "userId": "1",
-      "title": "sd",
-      "description": "",
-      "date": "2024-12-25",
-      "createdAt": "2025-01-06T14:40:55.139Z",
-      "updatedAt": "2025-01-06T14:41:22.612Z"
+      "date": "2024-12-24",
+      "createdAt": "2025-01-06T14:44:38.823Z",
+      "updatedAt": "2025-01-06T14:44:38.823Z"
     }
   ]
 }
