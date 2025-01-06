@@ -47,7 +47,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T12:59:28.854Z",
+      "updatedAt": "2025-01-06T13:06:33.840Z",
       "settings": {
         "app": {
           "color": {
@@ -57,7 +57,7 @@
         "colleagues": {
           "1": {
             "color": "#d73027",
-            "initials": "ADM",
+            "initials": "MV",
             "visible": true
           },
           "2": {
@@ -141,7 +141,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T12:52:40.348Z",
+      "updatedAt": "2025-01-06T13:09:44.636Z",
       "settings": {
         "app": {
           "color": {
@@ -161,14 +161,21 @@
           },
           "3": {
             "initials": "MS",
-            "color": "#fdae61"
+            "color": "#fdae61",
+            "visible": true
           },
           "4": {
             "initials": "SD",
             "color": "#a50026"
           }
         },
-        "showWeekNumber": "right"
+        "showWeekNumber": "right",
+        "colleagueOrder": [
+          "4",
+          "3",
+          "2",
+          "1"
+        ]
       },
       "app": {
         "weekStartsOn": "Saturday"
