@@ -69,7 +69,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T14:08:18.877Z",
+      "updatedAt": "2025-01-06T16:26:01.341Z",
       "settings": {
         "app": {
           "color": {
@@ -78,30 +78,30 @@
         },
         "colleagues": {
           "1": {
-            "color": "#74add1",
+            "color": "#abd9e9",
             "initials": "MV",
-            "visible": true
+            "visible": false
           },
           "2": {
             "color": "#313695",
             "initials": "KDJ"
           },
           "3": {
-            "visible": true,
+            "visible": false,
             "initials": "MS",
             "color": "#4575b4"
           },
           "4": {
             "initials": "SD",
-            "color": "#abd9e9",
+            "color": "#74add1",
             "visible": true
           }
         },
         "showWeekNumber": "none",
         "colleagueOrder": [
           "2",
-          "4",
           "3",
+          "4",
           "1"
         ]
       },
@@ -206,34 +206,47 @@
   ],
   "events": [
     {
-      "id": "dcfff37c-6820-4a50-9ebb-c860c8037f28",
+      "id": "c9a7d826-ff64-4de3-8769-88541c073204",
       "userId": "2",
-      "title": "s",
+      "type": "requestedHoliday",
+      "title": "",
       "description": "",
       "date": "2024-12-25",
       "endDate": "2024-12-29",
-      "createdAt": "2025-01-06T16:07:55.891Z",
-      "updatedAt": "2025-01-06T16:07:55.891Z"
+      "createdAt": "2025-01-06T16:23:24.780Z",
+      "updatedAt": "2025-01-06T16:23:24.780Z"
     },
     {
-      "id": "b6cb0b35-d323-4468-9c4a-bd23bd1a46dd",
+      "id": "c744a6d8-f55e-4d49-ac98-0e59fcecbbda",
       "userId": "2",
-      "title": "ss",
+      "type": "requestedPeriod",
+      "title": "",
       "description": "",
-      "date": "2025-01-04",
-      "endDate": "2025-01-05",
-      "createdAt": "2025-01-06T16:08:04.988Z",
-      "updatedAt": "2025-01-06T16:08:04.988Z"
+      "date": "2025-01-08",
+      "createdAt": "2025-01-06T16:25:07.457Z",
+      "updatedAt": "2025-01-06T16:25:07.457Z"
     },
     {
-      "id": "2e28240c-5cf1-44f4-b874-9febb12fecd3",
+      "id": "ef8fe3c6-ef11-4249-9464-dc48b3b00842",
       "userId": "2",
-      "title": "s",
+      "type": "requestedHoliday",
+      "title": "",
+      "description": "",
+      "date": "2025-01-15",
+      "endDate": "2025-01-19",
+      "createdAt": "2025-01-06T16:25:27.260Z",
+      "updatedAt": "2025-01-06T16:25:27.261Z"
+    },
+    {
+      "id": "e7110b32-a617-4430-8a37-c182b3e69fc9",
+      "userId": "1",
+      "type": "requestedHoliday",
+      "title": "",
       "description": "",
       "date": "2025-01-01",
       "endDate": "2025-01-05",
-      "createdAt": "2025-01-06T16:09:20.461Z",
-      "updatedAt": "2025-01-06T16:09:20.461Z"
+      "createdAt": "2025-01-06T16:26:23.957Z",
+      "updatedAt": "2025-01-06T16:26:23.957Z"
     }
   ]
 }

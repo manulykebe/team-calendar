@@ -36,11 +36,6 @@ export function EventModal({
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!title.trim()) {
-			setError("Title is required");
-			return;
-		}
-
 		try {
 			setLoading(true);
 			setError("");
@@ -67,13 +62,13 @@ export function EventModal({
 			type === "requestedHolidayMandatory"
 		) {
 			// Set date to the Saturday prior to the start of week (Monday)
-			const weekStart = new Date(date);
-			weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-			date = weekStart;
 			// Set endDate to end of week (Sunday)
 			const weekEnd = new Date(date);
 			weekEnd.setDate(weekEnd.getDate() + (7 - weekEnd.getDay()));
 			setEndDate(format(weekEnd, "yyyy-MM-dd"));
+
+			date = new Date("1/1/2025");
+
 		}
 	}, [type, date]);
 
@@ -128,7 +123,7 @@ export function EventModal({
 							htmlFor="title"
 							className="block text-sm font-medium text-zinc-700"
 						>
-							Title *
+							Title
 						</label>
 						<input
 							type="text"
@@ -136,7 +131,6 @@ export function EventModal({
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 							className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-							required
 							maxLength={100}
 							disabled={loading}
 						/>

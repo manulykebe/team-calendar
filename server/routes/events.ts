@@ -9,7 +9,8 @@ router.use(authenticateToken);
 
 // Event validation schema
 const eventSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(100),
+  type: z.string().optional().default(''),
+  title: z.string().optional().default(''),
   description: z.string().max(500).optional().default(''),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD'),
   endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD').optional()

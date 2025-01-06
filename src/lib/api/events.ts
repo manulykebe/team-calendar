@@ -24,6 +24,7 @@ export async function createEvent(token: string, eventData: {
   description: string;
   date: string;
   endDate?: string;
+  type: string;
 }) {
   if (!token) {
     throw new Error('Authentication token is required');
@@ -50,6 +51,7 @@ export async function updateEvent(token: string, eventId: string, eventData: {
   description: string;
   date: string;
   endDate?: string;
+  type: string;
 }) {
   if (!token) {
     throw new Error('Authentication token is required');
