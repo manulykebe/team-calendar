@@ -14,19 +14,23 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T09:41:45.404Z",
+      "updatedAt": "2025-01-06T12:45:05.306Z",
       "app": {
         "weekStartsOn": "Monday"
       },
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#4575b4",
+            "color": "#313695",
             "initials": "ADM"
           },
           "2": {
-            "color": "#313695",
+            "color": "#74add1",
             "initials": "KDJ"
+          },
+          "3": {
+            "color": "#e0f3f8",
+            "initials": "M"
           }
         },
         "showWeekNumber": "none"
@@ -43,7 +47,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-05T20:30:11.121Z",
+      "updatedAt": "2025-01-06T12:41:20.064Z",
       "settings": {
         "app": {
           "color": {
@@ -53,17 +57,110 @@
         "colleagues": {
           "1": {
             "color": "#74add1",
-            "initials": "ADM"
+            "initials": "ADM",
+            "visible": true
           },
           "2": {
             "color": "#d73027",
             "initials": "KDJ"
+          },
+          "3": {
+            "visible": true,
+            "initials": "MS",
+            "color": "#fdae61"
           }
         },
         "showWeekNumber": "none"
       },
       "app": {
         "weekStartsOn": "Monday"
+      }
+    },
+    {
+      "id": "3",
+      "firstName": "Mieke",
+      "lastName": "Smets",
+      "email": "mieke@lyke.be",
+      "mobile": "+32 494 11 58 25",
+      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+      "site": "azjp",
+      "role": "user",
+      "status": "active",
+      "createdAt": "2025-01-04T14:23:29.975Z",
+      "updatedAt": "2025-01-06T12:47:56.491Z",
+      "settings": {
+        "app": {
+          "color": {
+            "Tuesday": "#4575b4"
+          }
+        },
+        "colleagues": {
+          "1": {
+            "color": "#4575b4",
+            "initials": "ADM",
+            "visible": false
+          },
+          "2": {
+            "color": "#74add1",
+            "initials": "KDJ"
+          },
+          "3": {
+            "initials": "MS",
+            "color": "#313695"
+          },
+          "4": {
+            "initials": "SD",
+            "color": "#abd9e9"
+          }
+        },
+        "showWeekNumber": "right"
+      },
+      "app": {
+        "weekStartsOn": "Saturday"
+      }
+    },
+    {
+      "id": "4",
+      "firstName": "Sofie",
+      "lastName": "",
+      "email": "sofie@lyke.be",
+      "mobile": "+32 494 11 58 25",
+      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+      "site": "azjp",
+      "role": "user",
+      "status": "active",
+      "createdAt": "2025-01-04T14:23:29.975Z",
+      "updatedAt": "2025-01-06T12:52:40.348Z",
+      "settings": {
+        "app": {
+          "color": {
+            "Tuesday": "#4575b4"
+          }
+        },
+        "colleagues": {
+          "1": {
+            "color": "#d73027",
+            "initials": "ADM",
+            "visible": true
+          },
+          "2": {
+            "color": "#f46d43",
+            "initials": "KDJ",
+            "visible": true
+          },
+          "3": {
+            "initials": "MS",
+            "color": "#fdae61"
+          },
+          "4": {
+            "initials": "SD",
+            "color": "#a50026"
+          }
+        },
+        "showWeekNumber": "right"
+      },
+      "app": {
+        "weekStartsOn": "Saturday"
       }
     }
   ],
@@ -123,6 +220,24 @@
       "date": "2025-01-30",
       "createdAt": "2025-01-05T20:08:07.572Z",
       "updatedAt": "2025-01-05T20:25:06.950Z"
+    },
+    {
+      "id": "61dd4ea3-5432-4077-8fb7-9a7f2f1d2992",
+      "userId": "3",
+      "title": "miek",
+      "description": "",
+      "date": "2025-01-01",
+      "createdAt": "2025-01-06T12:45:21.658Z",
+      "updatedAt": "2025-01-06T12:46:21.710Z"
+    },
+    {
+      "id": "1fb15343-7a52-4ebf-9de1-4e2607257931",
+      "userId": "4",
+      "title": "sofie",
+      "description": "",
+      "date": "2025-01-01",
+      "createdAt": "2025-01-06T12:48:22.519Z",
+      "updatedAt": "2025-01-06T12:48:22.519Z"
     }
   ]
 }
