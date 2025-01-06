@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { X } from "lucide-react";
 import { Event } from "../types/event";
 
@@ -10,6 +10,7 @@ interface EventModalProps {
 	onSubmit: (data: {
 		title: string;
 		description: string;
+		date: string;
 		endDate?: string;
 		type: string;
 	}) => Promise<void>;
@@ -39,12 +40,25 @@ export function EventModal({
 		try {
 			setLoading(true);
 			setError("");
-			await onSubmit({
+
+			// Adjust start date for holiday types
+			let startDate = new Date(date);
+			if (type === "requestedHoliday" || type === "requestedHolidayMandatory") {
+				// Find previous Saturday
+				while (startDate.getDay() !== 6) { // 6 is Saturday
+					startDate = subDays(startDate, 1);
+				}
+			}
+
+			const eventData = {
 				title: title.trim(),
 				description: description.trim(),
+				date: format(startDate, "yyyy-MM-dd"),
 				endDate: endDate || undefined,
 				type,
-			});
+			};
+
+			await onSubmit(eventData);
 			onClose();
 		} catch (err) {
 			setError(
@@ -61,14 +75,21 @@ export function EventModal({
 			type === "requestedHoliday" ||
 			type === "requestedHolidayMandatory"
 		) {
-			// Set date to the Saturday prior to the start of week (Monday)
-			// Set endDate to end of week (Sunday)
+			// Find previous Saturday
+			let startDate = new Date(date);
+			while (startDate.getDay() !== 6) { // 6 is Saturday
+				startDate = subDays(startDate, 1);
+			}
+
+			// Set endDate to the following Sunday (7 days later)
 			const weekEnd = new Date(date);
 			weekEnd.setDate(weekEnd.getDate() + (7 - weekEnd.getDay()));
 			setEndDate(format(weekEnd, "yyyy-MM-dd"));
 
-			date = new Date("1/1/2025");
-
+			date = startDate;
+		} else {
+			// Reset endDate when switching to requestedPeriod
+			setEndDate("");
 		}
 	}, [type, date]);
 
