@@ -7,9 +7,11 @@ export async function getEvents(site: string) {
 }
 
 export async function createEvent(params: {
+  type: string;
   title: string;
   description: string;
   date: string;
+  endDate?: string;
   userId: string;
   site: string;
 }) {
@@ -18,9 +20,11 @@ export async function createEvent(params: {
   const newEvent: Event = {
     id: crypto.randomUUID(),
     userId: params.userId,
+    type: params.type,
     title: params.title,
     description: params.description,
     date: params.date,
+    endDate: params.endDate,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
@@ -35,6 +39,7 @@ export async function updateEvent(params: {
   title: string;
   description: string;
   date: string;
+  endDate: string;
   userId: string;
   site: string;
 }) {
@@ -53,6 +58,7 @@ export async function updateEvent(params: {
     title: params.title,
     description: params.description,
     date: params.date,
+    endDate: params.endDate,
     updatedAt: new Date().toISOString()
   });
 
