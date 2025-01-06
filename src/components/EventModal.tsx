@@ -7,19 +7,25 @@ interface EventModalProps {
   date: Date;
   event?: Event;
   onClose: () => void;
-  onSubmit: (data: { title: string; description: string; endDate?: string }) => Promise<void>;
+  onSubmit: (data: { title: string; description: string; endDate?: string; type: string }) => Promise<void>;
 }
 
 export function EventModal({ date, event, onClose, onSubmit }: EventModalProps) {
   const [title, setTitle] = useState(event?.title || "");
   const [description, setDescription] = useState(event?.description || "");
   const [endDate, setEndDate] = useState(event?.endDate || "");
+  const [type, setType] = useState(event?.type || "requestedPeriod");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const eventTypes = {
+    requestedHoliday: { period: "week-Saturday[-1]-Sunday[1]" },
+    requestedHolidayMandatory: { period: "week-Saturday[-1]-Sunday[1]" },
+    requestedPeriod: { period: "day|days[1-7]" }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!title.trim()) {
       setError("Title is required");
       return;
@@ -31,7 +37,8 @@ export function EventModal({ date, event, onClose, onSubmit }: EventModalProps) 
       await onSubmit({
         title: title.trim(),
         description: description.trim(),
-        endDate: endDate || undefined
+        endDate: endDate || undefined,
+        type
       });
       onClose();
     } catch (err) {
@@ -40,6 +47,16 @@ export function EventModal({ date, event, onClose, onSubmit }: EventModalProps) 
       setLoading(false);
     }
   };
+
+  // Update endDate based on event type selection
+  useEffect(() => {
+    if (type === "requestedHoliday" || type === "requestedHolidayMandatory") {
+      // Set endDate to end of week (Sunday)
+      const weekEnd = new Date(date);
+      weekEnd.setDate(weekEnd.getDate() + (7 - weekEnd.getDay()));
+      setEndDate(format(weekEnd, "yyyy-MM-dd"));
+    }
+  }, [type, date]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -65,10 +82,25 @@ export function EventModal({ date, event, onClose, onSubmit }: EventModalProps) 
           )}
 
           <div>
-            <label
-              htmlFor="title"
-              className="block text-sm font-medium text-zinc-700"
+            <label className="block text-sm font-medium text-zinc-700">
+              Event Type *
+            </label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              disabled={loading}
             >
+              {Object.keys(eventTypes).map((typeId) => (
+                <option key={typeId} value={typeId}>
+                  {typeId.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-zinc-700">
               Title *
             </label>
             <input
@@ -84,10 +116,7 @@ export function EventModal({ date, event, onClose, onSubmit }: EventModalProps) 
           </div>
 
           <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-zinc-700"
-            >
+            <label htmlFor="description" className="block text-sm font-medium text-zinc-700">
               Description
             </label>
             <textarea
@@ -101,23 +130,23 @@ export function EventModal({ date, event, onClose, onSubmit }: EventModalProps) 
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="endDate"
-              className="block text-sm font-medium text-zinc-700"
-            >
-              End Date (Optional)
-            </label>
-            <input
-              type="date"
-              id="endDate"
-              value={endDate}
-              min={format(date, "yyyy-MM-dd")}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              disabled={loading}
-            />
-          </div>
+          {type === "requestedPeriod" && (
+            <div>
+              <label htmlFor="endDate" className="block text-sm font-medium text-zinc-700">
+                End Date (Optional)
+              </label>
+              <input
+                type="date"
+                id="endDate"
+                value={endDate}
+                min={format(date, "yyyy-MM-dd")}
+                max={format(new Date(date.getTime() + 6 * 24 * 60 * 60 * 1000), "yyyy-MM-dd")}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                disabled={loading}
+              />
+            </div>
+          )}
 
           <div className="flex justify-end space-x-3">
             <button
