@@ -40,7 +40,7 @@ export const DayCell = memo(function DayCell({
   const { getColumnColor } = useCalendarColors(currentUser);
   const { handleEventDelete } = useEventDeletion();
   const formattedDate = format(date, "yyyy-MM-dd");
-  const dayEvents = useFilteredEvents(events, formattedDate);
+  const dayEvents = useFilteredEvents(events, formattedDate, currentUser);
   const backgroundColor = getColumnColor(date);
   const isOver = dragOverDate === formattedDate;
   const showMonthLabel = isFirstDayOfMonth(date);

@@ -47,7 +47,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T13:06:33.840Z",
+      "updatedAt": "2025-01-06T13:22:46.083Z",
       "settings": {
         "app": {
           "color": {
@@ -56,31 +56,31 @@
         },
         "colleagues": {
           "1": {
-            "color": "#d73027",
+            "color": "#74add1",
             "initials": "MV",
             "visible": true
           },
           "2": {
-            "color": "#a50026",
+            "color": "#313695",
             "initials": "KDJ"
           },
           "3": {
             "visible": true,
             "initials": "MS",
-            "color": "#fdae61"
+            "color": "#4575b4"
           },
           "4": {
             "initials": "SD",
-            "color": "#f46d43",
+            "color": "#abd9e9",
             "visible": true
           }
         },
         "showWeekNumber": "none",
         "colleagueOrder": [
           "2",
+          "3",
           "1",
-          "4",
-          "3"
+          "4"
         ]
       },
       "app": {
@@ -141,7 +141,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T13:11:32.283Z",
+      "updatedAt": "2025-01-06T13:19:55.230Z",
       "settings": {
         "app": {
           "color": {
@@ -191,7 +191,7 @@
       "date": "2025-01-01",
       "endDate": "2025-01-07",
       "createdAt": "2025-01-04T15:06:15.156Z",
-      "updatedAt": "2025-01-05T20:30:51.903Z"
+      "updatedAt": "2025-01-06T13:16:38.817Z"
     },
     {
       "id": "e08f22b1-7002-4419-bbdc-e196266bf957",
@@ -202,15 +202,6 @@
       "endDate": "2025-01-06",
       "createdAt": "2025-01-04T21:44:33.369Z",
       "updatedAt": "2025-01-06T10:13:27.787Z"
-    },
-    {
-      "id": "70a39720-0366-4be5-a724-02bf6f14dbf4",
-      "userId": "2",
-      "title": "qsdds",
-      "description": "sdsds",
-      "date": "2025-01-21",
-      "createdAt": "2025-01-04T22:10:17.365Z",
-      "updatedAt": "2025-01-05T20:05:50.350Z"
     },
     {
       "id": "aebce620-e8d1-4bdd-9da3-02e31af0462b",
