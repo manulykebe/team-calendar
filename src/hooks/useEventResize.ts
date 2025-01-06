@@ -1,69 +1,86 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { addDays, parseISO, format, isBefore } from 'date-fns';
 
 interface UseEventResizeProps {
-  onResize: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
+  eventId: string;
   date: string;
   endDate?: string;
-  eventId: string;
+  onResize: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
 }
 
-export function useEventResize({ onResize, date, endDate, eventId }: UseEventResizeProps) {
+export function useEventResize({ eventId, date, endDate, onResize }: UseEventResizeProps) {
   const [isResizing, setIsResizing] = useState(false);
-  const [initialX, setInitialX] = useState(0);
-  const [initialDate, setInitialDate] = useState<string | null>(null);
-  const [resizeEdge, setResizeEdge] = useState<'start' | 'end' | null>(null);
+  const resizeDataRef = useRef<{
+    startX: number;
+    originalDate: string;
+    originalEndDate?: string;
+    edge: 'start' | 'end';
+  } | null>(null);
 
   const handleResizeStart = useCallback((edge: 'start' | 'end', e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!onResize) return; // Guard against undefined onResize
+
     setIsResizing(true);
-    setResizeEdge(edge);
-    setInitialX(e.clientX);
-    setInitialDate(date);
+    resizeDataRef.current = {
+      startX: e.clientX,
+      originalDate: date,
+      originalEndDate: endDate,
+      edge
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing || !initialDate) return;
+      if (!resizeDataRef.current || !onResize) return;
 
-      const deltaX = e.clientX - initialX;
+      const deltaX = e.clientX - resizeDataRef.current.startX;
       const dayWidth = 100; // Approximate width of a day cell
       const daysDelta = Math.round(deltaX / dayWidth);
-
+      
       if (daysDelta === 0) return;
 
-      const startDate = parseISO(initialDate);
-      const currentEndDate = endDate ? parseISO(endDate) : startDate;
+      const originalDate = parseISO(resizeDataRef.current.originalDate);
+      const originalEndDate = resizeDataRef.current.originalEndDate 
+        ? parseISO(resizeDataRef.current.originalEndDate)
+        : originalDate;
 
-      if (edge === 'start') {
-        const newStartDate = addDays(startDate, daysDelta);
-        // Ensure new start date is not after end date
-        if (endDate && isBefore(newStartDate, parseISO(endDate))) {
-          onResize(eventId, format(newStartDate, 'yyyy-MM-dd'), endDate);
+      try {
+        if (resizeDataRef.current.edge === 'start') {
+          const newStartDate = addDays(originalDate, daysDelta);
+          if (!endDate || isBefore(newStartDate, parseISO(endDate))) {
+            onResize(
+              eventId,
+              format(newStartDate, 'yyyy-MM-dd'),
+              format(originalEndDate, 'yyyy-MM-dd')
+            );
+          }
+        } else {
+          const newEndDate = addDays(originalEndDate, daysDelta);
+          if (isBefore(parseISO(date), newEndDate)) {
+            onResize(
+              eventId,
+              resizeDataRef.current.originalDate,
+              format(newEndDate, 'yyyy-MM-dd')
+            );
+          }
         }
-      } else {
-        const newEndDate = addDays(currentEndDate, daysDelta);
-        // Ensure new end date is not before start date
-        if (isBefore(parseISO(date), newEndDate)) {
-          onResize(eventId, date, format(newEndDate, 'yyyy-MM-dd'));
-        }
+      } catch (error) {
+        console.error('Error during resize:', error);
       }
     };
 
     const handleMouseUp = () => {
       setIsResizing(false);
-      setResizeEdge(null);
-      setInitialX(0);
-      setInitialDate(null);
+      resizeDataRef.current = null;
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-  }, [date, endDate, eventId, isResizing, onResize]);
+  }, [eventId, date, endDate, onResize]);
 
   return {
     isResizing,
-    resizeEdge,
     handleResizeStart
   };
 }

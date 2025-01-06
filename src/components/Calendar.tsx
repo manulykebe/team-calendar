@@ -31,7 +31,8 @@ export function Calendar() {
     fetchEvents,
     handleCreateEvent,
     handleEventDelete,
-    handleEventMove
+    handleEventMove,
+    handleEventResize
   } = useCalendarState(token);
 
   const { 
@@ -128,6 +129,7 @@ export function Calendar() {
           onEventDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragStart={handleDragStart}
+          onEventResize={handleEventResize}
         />
       </div>
 

@@ -20,7 +20,7 @@ interface DayCellProps {
   onEventDrop?: (date: string) => void;
   onDragOver?: (date: string, e: React.DragEvent) => void;
   onDragStart?: (event: Event) => void;
-  onResize?: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
+  onEventResize?: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
 }
 
 export const DayCell = memo(function DayCell({
@@ -35,7 +35,7 @@ export const DayCell = memo(function DayCell({
   onEventDrop,
   onDragOver,
   onDragStart,
-  onResize,
+  onEventResize,
 }: DayCellProps) {
   const { getColumnColor } = useCalendarColors(currentUser);
   const { handleEventDelete } = useEventDeletion();
@@ -94,7 +94,7 @@ export const DayCell = memo(function DayCell({
             currentUser={currentUser}
             isDragging={draggedEvent?.id === event.id}
             onDragStart={onDragStart}
-            onResize={onResize}
+            onResize={onEventResize}
           />
         ))}
       </div>

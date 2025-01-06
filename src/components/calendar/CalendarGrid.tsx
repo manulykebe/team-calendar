@@ -72,7 +72,7 @@ export function CalendarGrid({
               onEventDrop={onEventDrop}
               onDragOver={onDragOver}
               onDragStart={onDragStart}
-              onResize={onEventResize}
+              onEventResize={onEventResize}
             />
           ))}
         </div>
