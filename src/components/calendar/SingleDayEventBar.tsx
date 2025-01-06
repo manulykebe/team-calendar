@@ -5,7 +5,7 @@ import { EventResizeHandle } from "./EventResizeHandle";
 import { useEventResize } from "../../hooks/useEventResize";
 
 interface SingleDayEventBarProps {
-  event: Event;
+  event: Event & { verticalPosition: number };
   userSettings?: User["settings"];
   canModify: boolean;
   isDragging?: boolean;
@@ -43,16 +43,22 @@ export function SingleDayEventBar({
     }
   };
 
+  // Calculate top position based on verticalPosition
+  const topPosition = event.verticalPosition * 24; // Reduced from 28px
+
   return (
     <div
       draggable={canModify && !isResizing}
       onDragStart={onDragStart}
-      className={`relative flex items-center justify-between text-xs px-2 py-0.5 rounded 
+      className={`absolute left-0 right-0 flex items-center justify-between text-xs px-2 rounded 
         ${canModify ? 'cursor-move' : 'cursor-default'} 
         ${isDragging ? 'opacity-50' : ''}`}
       style={{
         backgroundColor,
         color: backgroundColor === "#fee090" || backgroundColor === "#e0f3f8" ? "#1a202c" : "white",
+        top: `${topPosition}px`,
+        height: '20px', // Reduced from 24px
+        zIndex: isResizing ? 20 : 10
       }}
     >
       {canModify && (

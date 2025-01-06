@@ -6,7 +6,7 @@ import { EventResizeHandle } from "./EventResizeHandle";
 import { useEventResize } from "../../hooks/useEventResize";
 
 interface MultiDayEventBarProps {
-  event: Event;
+  event: Event & { verticalPosition: number };
   date: string;
   userSettings?: User["settings"];
   canModify: boolean;
@@ -35,9 +35,12 @@ export function MultiDayEventBar({
   const isLastDay = date === event.endDate;
   const duration = differenceInDays(parseISO(event.endDate!), parseISO(event.date)) + 1;
 
+  // Calculate top position based on verticalPosition
+  const topPosition = event.verticalPosition * 24; // Reduced from 28px
+
   return (
     <div
-      className={`relative flex items-center justify-between h-6 text-xs group
+      className={`absolute left-0 right-0 flex items-center justify-between text-xs
         ${isFirstDay ? 'rounded-l pl-2' : ''}
         ${isLastDay ? 'rounded-r pr-2' : ''}
         ${!isFirstDay && !isLastDay ? 'px-0' : ''}
@@ -46,9 +49,10 @@ export function MultiDayEventBar({
       style={{
         backgroundColor,
         color: backgroundColor === "#fee090" || backgroundColor === "#e0f3f8" ? "#1a202c" : "white",
-        marginLeft: isFirstDay ? '0' : '-10px',
-        marginRight: isLastDay ? '0' : '-10px',
-        position: 'relative',
+        marginLeft: isFirstDay ? '0' : '-8px',
+        marginRight: isLastDay ? '0' : '-8px',
+        top: `${topPosition}px`,
+        height: '20px', // Reduced from 24px
         zIndex: isResizing ? 20 : 10,
         borderLeft: !isFirstDay ? '1px solid rgba(0,0,0,0.1)' : 'none',
       }}

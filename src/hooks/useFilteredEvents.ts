@@ -24,15 +24,34 @@ export function useFilteredEvents(events: Event[], date: string, currentUser?: U
       return colleagues?.[event.userId]?.visible !== false;
     });
 
-    // Create a map for quick order lookup
-    const orderMap = new Map(colleagueOrder.map((id, index) => [id, index]));
+    // Create a map for colleague order positions
+    const orderMap = new Map<string, number>();
+    
+    // First, add current user at position 0
+    orderMap.set(currentUser.id, 0);
+    let position = 1;
 
-    // Sort by colleague order
-    return visibleEvents.sort((a, b) => {
-      const aPosition = orderMap.get(a.userId) ?? Number.MAX_SAFE_INTEGER;
-      const bPosition = orderMap.get(b.userId) ?? Number.MAX_SAFE_INTEGER;
-      return aPosition - bPosition;
+    // Then add ordered colleagues
+    colleagueOrder.forEach(userId => {
+      if (userId !== currentUser.id && !orderMap.has(userId)) {
+        orderMap.set(userId, position++);
+      }
     });
+
+    // Finally, add any remaining colleagues
+    visibleEvents.forEach(event => {
+      if (!orderMap.has(event.userId)) {
+        orderMap.set(event.userId, position++);
+      }
+    });
+
+    // Add vertical position to events based on colleague order
+    return visibleEvents
+      .map(event => ({
+        ...event,
+        verticalPosition: orderMap.get(event.userId) || 0
+      }))
+      .sort((a, b) => a.verticalPosition - b.verticalPosition);
   }, [events, date, currentUser]);
 }
 

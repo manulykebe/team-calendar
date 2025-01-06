@@ -45,6 +45,11 @@ export const DayCell = memo(function DayCell({
   const isOver = dragOverDate === formattedDate;
   const showMonthLabel = isFirstDayOfMonth(date);
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onDateClick(date);
+  };
+
   const deleteEventHandler = async (eventId: string) => {
     try {
       await handleEventDelete(eventId, onEventDelete);
@@ -62,13 +67,22 @@ export const DayCell = memo(function DayCell({
     onEventDrop?.(formattedDate);
   };
 
+  // Calculate cell height based on number of events
+  const maxEvents = Math.max(...events.map(e => (e as any).verticalPosition || 0)) + 1;
+  const minHeight = 100; // Reduced from 120px
+  const heightPerEvent = 24; // Reduced from 28px
+  const cellHeight = Math.max(minHeight, maxEvents * heightPerEvent);
+
   return (
     <div
-      className={`relative min-h-[120px] p-2 hover:bg-opacity-90 transition-colors ${
+      className={`relative p-2 hover:bg-opacity-90 transition-colors ${
         isOver ? 'ring-2 ring-blue-500' : ''
       }`}
-      style={{ backgroundColor }}
-      onClick={() => onDateClick(date)}
+      style={{ 
+        backgroundColor,
+        minHeight: `${cellHeight}px`
+      }}
+      onContextMenu={handleContextMenu}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
@@ -83,7 +97,7 @@ export const DayCell = memo(function DayCell({
           </span>
         )}
       </div>
-      <div className="mt-2 space-y-1">
+      <div className="mt-2 relative">
         {dayEvents.map((event) => (
           <EventCard
             key={event.id}
