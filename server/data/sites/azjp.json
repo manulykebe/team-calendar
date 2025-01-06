@@ -205,14 +205,5 @@
     }
   ],
   "events": [
-    {
-      "id": "874b1f0c-7e36-489e-920b-1311cb021ce5",
-      "userId": "1",
-      "title": "week",
-      "description": "",
-      "date": "2024-12-24",
-      "createdAt": "2025-01-06T14:44:38.823Z",
-      "updatedAt": "2025-01-06T14:44:38.823Z"
-    }
   ]
 }
