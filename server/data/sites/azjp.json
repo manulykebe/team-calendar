@@ -160,7 +160,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T21:51:06.701Z",
+      "updatedAt": "2025-01-09T22:20:15.012Z",
       "settings": {
         "app": {
           "color": {
@@ -200,84 +200,33 @@
           "SjFBqPWVxUVY",
           "tTRjdtgFDDRN"
         ],
-        "availability": [
-          {
-            "weeklySchedule": {
-              "Monday": {
-                "am": true,
-                "pm": true
-              },
-              "Tuesday": {
-                "am": false,
-                "pm": false
-              },
-              "Wednesday": {
-                "am": true,
-                "pm": true
-              },
-              "Thursday": {
-                "am": true,
-                "pm": true
-              },
-              "Friday": {
-                "am": true,
-                "pm": true
-              }
+        "availability": {
+          "weeklySchedule": {
+            "Monday": {
+              "am": true,
+              "pm": true
             },
-            "alternateWeekSchedule": {
-              "Monday": {
-                "am": true,
-                "pm": true
-              },
-              "Tuesday": {
-                "am": true,
-                "pm": true
-              },
-              "Wednesday": {
-                "am": false,
-                "pm": false
-              },
-              "Thursday": {
-                "am": true,
-                "pm": true
-              },
-              "Friday": {
-                "am": true,
-                "pm": true
-              }
+            "Tuesday": {
+              "am": true,
+              "pm": true
             },
-            "startDate": "2000-01-01",
-            "endDate": "2025-01-08",
-            "repeatPattern": "evenodd"
+            "Wednesday": {
+              "am": true,
+              "pm": true
+            },
+            "Thursday": {
+              "am": true,
+              "pm": true
+            },
+            "Friday": {
+              "am": true,
+              "pm": true
+            }
           },
-          {
-            "weeklySchedule": {
-              "Monday": {
-                "am": true,
-                "pm": true
-              },
-              "Tuesday": {
-                "am": false,
-                "pm": false
-              },
-              "Wednesday": {
-                "am": false,
-                "pm": true
-              },
-              "Thursday": {
-                "am": true,
-                "pm": true
-              },
-              "Friday": {
-                "am": true,
-                "pm": true
-              }
-            },
-            "startDate": "2025-01-09",
-            "endDate": "",
-            "repeatPattern": "all"
-          }
-        ]
+          "startDate": "2025-01-09",
+          "endDate": "",
+          "repeatPattern": "all"
+        }
       },
       "app": {
         "weekStartsOn": "Monday"
