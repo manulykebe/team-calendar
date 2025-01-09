@@ -2,6 +2,7 @@
   "app": {
     "weekStartsOn": "Monday",
     "defaultEventType": "requestedPeriod",
+    "location": "BE",
     "eventTypes": [
       {
         "requestedHoliday": {

@@ -1,4 +1,26 @@
 {
+  "app": {
+    "weekStartsOn": "Monday",
+    "defaultEventType": "requestedPeriod",
+    "location": "GB",
+    "eventTypes": [
+      {
+        "requestedHoliday": {
+          "period": "week-Saturday[-1]-Sunday[1]"
+        }
+      },
+      {
+        "requestedHolidayMandatory": {
+          "period": "week-Saturday[-1]-Sunday[1]"
+        }
+      },
+      {
+        "requestedPeriod": {
+          "period": "day|days[1-7]"
+        }
+      }
+    ]
+  },
 	"users": [
 		{
 			"id": "1",
