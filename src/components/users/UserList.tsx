@@ -89,7 +89,7 @@ export function UserList({ onEdit, onDelete }: UserListProps) {
 
 	if (error) {
 		return (
-			<div className="p-4 text-red-600 bg-red-50 rounded">{error}</div>
+			<div className="p-4 text-red-600 bg-red-50 rounded-md">{error}</div>
 		);
 	}
 

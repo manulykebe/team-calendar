@@ -160,7 +160,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T21:41:29.058Z",
+      "updatedAt": "2025-01-09T21:51:06.701Z",
       "settings": {
         "app": {
           "color": {
@@ -261,7 +261,7 @@
                 "pm": false
               },
               "Wednesday": {
-                "am": true,
+                "am": false,
                 "pm": true
               },
               "Thursday": {

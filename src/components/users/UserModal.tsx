@@ -94,7 +94,7 @@ export function UserModal({ user, onClose }: UserModalProps) {
 					className="p-6 space-y-4"
 				>
 					{error && (
-						<div className="p-4 text-red-600 bg-red-50 rounded">
+						<div className="p-4 text-red-600 bg-red-50 rounded-md">
 							{error}
 						</div>
 					)}

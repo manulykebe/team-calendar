@@ -242,7 +242,7 @@ export function AvailabilityModal({
 
 				<div className="p-6 space-y-6">
 					{error && (
-						<div className="p-4 text-red-600 bg-red-50 rounded">
+						<div className="p-4 text-red-600 bg-red-50 rounded-md">
 							{error}
 						</div>
 					)}
