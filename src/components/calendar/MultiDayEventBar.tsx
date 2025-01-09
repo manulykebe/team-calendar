@@ -35,8 +35,7 @@ export function MultiDayEventBar({
   const isLastDay = date === event.endDate;
   const duration = differenceInDays(parseISO(event.endDate!), parseISO(event.date)) + 1;
 
-  // Calculate top position based on verticalPosition
-  const topPosition = event.verticalPosition * 24; // Reduced from 28px
+  const topPosition = event.verticalPosition * 24;
 
   return (
     <div
@@ -44,7 +43,7 @@ export function MultiDayEventBar({
         ${isFirstDay ? 'rounded-l pl-2' : ''}
         ${isLastDay ? 'rounded-r pr-2' : ''}
         ${!isFirstDay && !isLastDay ? 'px-0' : ''}
-        ${canModify && !isResizing ? 'cursor-move' : 'cursor-default'}
+        ${canModify && !isResizing ? 'cursor-pointer' : 'cursor-default'}
       `}
       style={{
         backgroundColor,
@@ -52,7 +51,7 @@ export function MultiDayEventBar({
         marginLeft: isFirstDay ? '0' : '-8px',
         marginRight: isLastDay ? '0' : '-8px',
         top: `${topPosition}px`,
-        height: '20px', // Reduced from 24px
+        height: '20px',
         zIndex: isResizing ? 20 : 10,
         borderLeft: !isFirstDay ? '1px solid rgba(0,0,0,0.1)' : 'none',
       }}

@@ -69,7 +69,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T16:26:01.341Z",
+      "updatedAt": "2025-01-09T11:08:56.414Z",
       "settings": {
         "app": {
           "color": {
@@ -80,14 +80,14 @@
           "1": {
             "color": "#abd9e9",
             "initials": "MV",
-            "visible": false
+            "visible": true
           },
           "2": {
             "color": "#313695",
             "initials": "KDJ"
           },
           "3": {
-            "visible": false,
+            "visible": true,
             "initials": "MS",
             "color": "#4575b4"
           },
@@ -163,7 +163,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T13:19:55.230Z",
+      "updatedAt": "2025-01-09T11:14:47.220Z",
       "settings": {
         "app": {
           "color": {
@@ -191,7 +191,7 @@
             "color": "#313695"
           }
         },
-        "showWeekNumber": "none",
+        "showWeekNumber": "left",
         "colleagueOrder": [
           "4",
           "2",
@@ -211,10 +211,10 @@
       "type": "requestedHoliday",
       "title": "",
       "description": "",
-      "date": "2024-12-25",
+      "date": "2024-12-24",
       "endDate": "2024-12-29",
       "createdAt": "2025-01-06T16:23:24.780Z",
-      "updatedAt": "2025-01-06T16:23:24.780Z"
+      "updatedAt": "2025-01-09T11:05:48.534Z"
     },
     {
       "id": "c744a6d8-f55e-4d49-ac98-0e59fcecbbda",
@@ -222,9 +222,10 @@
       "type": "requestedPeriod",
       "title": "",
       "description": "",
-      "date": "2025-01-08",
+      "date": "2025-01-07",
       "createdAt": "2025-01-06T16:25:07.457Z",
-      "updatedAt": "2025-01-06T16:25:07.457Z"
+      "updatedAt": "2025-01-09T11:04:38.690Z",
+      "endDate": "2025-01-08"
     },
     {
       "id": "ef8fe3c6-ef11-4249-9464-dc48b3b00842",
