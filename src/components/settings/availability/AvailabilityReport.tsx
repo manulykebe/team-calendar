@@ -1,4 +1,4 @@
-import { format, getMonth, getDay, getWeek } from 'date-fns';
+import { format, getMonth, getWeek, getDay } from 'date-fns';
 import { X } from 'lucide-react';
 
 interface AvailabilityReportProps {
@@ -24,6 +24,18 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
+  // Helper to convert Sunday=0 to Monday=0
+  const getMondayBasedDay = (date: Date): number => {
+    const day = getDay(date);
+    return day === 0 ? 6 : day - 1; // Convert Sunday (0) to 6, else subtract 1
+  };
+
+  // Custom week calculation starting from Monday
+  const getCustomWeek = (date: Date): number => {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const daysSinceFirstDay = Math.floor((date.getTime() - firstDayOfYear.getTime()) / (24 * 60 * 60 * 1000));
+    return Math.floor((daysSinceFirstDay + getMondayBasedDay(firstDayOfYear)) / 7) + 1;
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
@@ -91,8 +103,7 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
             {/* Month rows */}
             {months.map((monthName, monthIndex) => {
               const firstDayOfMonth = new Date(parseInt(data.year), monthIndex, 1);
-              const firstDayWeekday = getDay(firstDayOfMonth);
-              const adjustedWeekday = firstDayWeekday === 0 ? 6 : firstDayWeekday - 1;
+              const adjustedWeekday = getMondayBasedDay(firstDayOfMonth);
 
               return (
                 <div key={monthName} className="grid grid-cols-[100px_repeat(37,1fr)] border-b">
@@ -108,8 +119,8 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
 
                     const dateStr = format(currentDate, 'yyyy-MM-dd');
                     const dayData = data.availability[dateStr];
-                    const dayOfWeek = getDay(currentDate);
-                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                    const dayOfWeek = getMondayBasedDay(currentDate);
+                    const isWeekend = dayOfWeek >= 5; // 5=Sat, 6=Sun
                     const weekNumber = getWeek(currentDate);
                     const isEvenWeek = weekNumber % 2 === 0;
 
@@ -117,7 +128,7 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
                       <div
                         key={index}
                         className={`p-1 border-r border-zinc-100 ${
-                          isEvenWeek ? 'bg-zinc-500' : ''
+                          isEvenWeek ? 'bg-zinc-200' : ''
                         }`}
                         title={format(currentDate, 'MMMM d, yyyy')}
                       >
