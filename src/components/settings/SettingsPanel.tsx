@@ -6,6 +6,8 @@ import { useAuth } from "../../context/AuthContext";
 import { ColleagueAvatar } from "./colleagues/ColleagueAvatar";
 import { useUserSettings } from "./hooks/useUserSettings";
 import { DisplaySettings } from "./DisplaySettings";
+import { AvailabilitySettings } from "./AvailabilitySettings";
+import { useColleagueSettings } from "../../hooks/useColleagueSettings";
 
 interface SettingsPanelProps {
   className?: string;
@@ -14,6 +16,7 @@ interface SettingsPanelProps {
 export function SettingsPanel({ className }: SettingsPanelProps) {
   const { logout } = useAuth();
   const { currentUser, updateWorkStartDay, updateWeekNumberSetting } = useUserSettings();
+  const { colleagues } = useColleagueSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [showColleagueSettings, setShowColleagueSettings] = useState(false);
   const [showUserManagement, setShowUserManagement] = useState(false);
@@ -83,6 +86,11 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
               currentUser={currentUser}
               onWorkStartChange={updateWorkStartDay}
               onWeekNumberChange={updateWeekNumberSetting}
+            />
+
+            <AvailabilitySettings
+              currentUser={currentUser}
+              colleagues={colleagues}
             />
           </div>
         </div>

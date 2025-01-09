@@ -32,6 +32,7 @@ export function CalendarGrid({
 }: CalendarGridProps) {
   const [error, setError] = useState<string | null>(null);
   const [holidays, setHolidays] = useState<Holiday[]>([]);
+
   const { days, emptyDays, weekDays } = getCalendarDays(
     currentMonth,
     weekStartsOn as any
@@ -39,14 +40,21 @@ export function CalendarGrid({
 
   useEffect(() => {
     const fetchHolidays = async () => {
-      if (!currentUser?.site) return;
+      if (!currentUser?.site) {
+        console.warn('No site information available for current user');
+        return;
+      }
 
       const year = format(currentMonth, 'yyyy');
       try {
         // Fetch site data to get location
         const siteData = await getSiteData(currentUser.site);
-        const location = siteData.app.location || 'BE';
-        
+        if (!siteData?.app?.location) {
+          console.warn('No location found in site data');
+          return;
+        }
+
+        const location = siteData.app.location;
         const holidayData = await getHolidays(year, location);
         setHolidays(holidayData);
         setError(null);
@@ -55,8 +63,9 @@ export function CalendarGrid({
         setError('Failed to fetch holidays');
       }
     };
+
     fetchHolidays();
-  }, [currentMonth, currentUser]);
+  }, [currentMonth, currentUser?.site]);
 
   const showWeekNumber = currentUser?.settings?.showWeekNumber || "none";
 
