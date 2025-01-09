@@ -59,6 +59,7 @@ router.put('/:id', async (req: AuthRequest, res) => {
     const event = await updateEvent({
       id: req.params.id,
       ...validatedData,
+      endDate: validatedData.endDate || validatedData.date, // Fallback to date if endDate not provided
       userId: req.user!.id,
       site: req.user!.site
     });

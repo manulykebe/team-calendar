@@ -12,8 +12,10 @@ export interface User {
 			[userId: string]: {
 				color: string;
 				initials: string;
+				visible?: boolean; // Add visible property
 			};
 		};
+		colleagueOrder?: string[];
 		showWeekNumber: "none" | "left" | "right";
 	};
 	app?: {
