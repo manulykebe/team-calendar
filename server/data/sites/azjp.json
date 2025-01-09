@@ -32,7 +32,7 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-06T13:59:30.326Z",
+      "updatedAt": "2025-01-09T12:32:13.075Z",
       "app": {
         "weekStartsOn": "Monday"
       },
@@ -43,19 +43,25 @@
             "initials": "ADM"
           },
           "2": {
-            "color": "#4575b4",
+            "color": "#e0f3f8",
             "initials": "KDJ"
           },
           "3": {
-            "color": "#74add1",
+            "color": "#e0f3f8",
             "initials": "MS"
           },
           "4": {
             "initials": "SD",
-            "color": "#abd9e9"
+            "color": "#e0f3f8"
           }
         },
-        "showWeekNumber": "none"
+        "showWeekNumber": "none",
+        "colleagueOrder": [
+          "1",
+          "3",
+          "4",
+          "2"
+        ]
       }
     },
     {
