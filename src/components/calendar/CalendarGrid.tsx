@@ -33,6 +33,14 @@ export function CalendarGrid({
 
   const showWeekNumber = currentUser?.settings?.showWeekNumber || "none";
 
+  // Calculate the number of visible colleagues
+  const visibleColleagues = currentUser?.settings?.colleagues
+    ? Object.values(currentUser.settings.colleagues).filter((c: any) => c.visible !== false).length
+    : 1;
+
+  // Calculate row height: base height (120px) + additional height per colleague (24px)
+  const rowHeight = Math.max(120, 42 + visibleColleagues * 24);
+
   return (
     <div className="bg-zinc-200">
       <CalendarHeader weekDays={weekDays} showWeekNumber={showWeekNumber} />
@@ -44,7 +52,12 @@ export function CalendarGrid({
             : "grid-cols-1"
       } gap-px`}>
         {showWeekNumber === "left" && <WeekColumn days={days} position="left" />}
-        <div className="grid grid-cols-7 auto-rows-[120px] gap-px bg-zinc-200">
+        <div 
+          className="grid grid-cols-7 gap-px bg-zinc-200"
+          style={{ 
+            gridAutoRows: `${rowHeight}px`
+          }}
+        >
           {Array.from({ length: emptyDays }).map((_, index) => (
             <div key={`empty-${index}`} className="bg-white p-2" />
           ))}
