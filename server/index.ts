@@ -5,6 +5,7 @@ import { authRouter } from './routes/auth';
 import { eventRouter } from './routes/events';
 import { userRouter } from './routes/users';
 import { holidaysRouter } from './routes/holidays';
+import { sitesRouter } from './routes/sites';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/events', eventRouter);
 app.use('/api/users', userRouter);
 app.use('/api/holidays', holidaysRouter);
+app.use('/api/sites', sitesRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

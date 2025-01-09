@@ -14,12 +14,15 @@ router.get('/:year', async (req, res) => {
     const holidays = JSON.parse(data);
     
     const year = req.params.year;
-    if (!holidays.BE[year]) {
-      return res.status(404).json({ message: `No holidays found for year ${year}` });
+    const location = req.query.location as string || 'BE';
+    
+    if (!holidays[location] || !holidays[location][year]) {
+      return res.status(404).json({ message: `No holidays found for year ${year} and location ${location}` });
     }
     
-    res.json(holidays.BE[year]);
+    res.json(holidays[location][year]);
   } catch (error) {
+    console.error('Error fetching holidays:', error);
     res.status(500).json({ message: 'Failed to fetch holidays' });
   }
 });

@@ -7,6 +7,7 @@ import { Event } from "../../types/event";
 import { User } from "../../types/user";
 import { Holiday, getHolidays } from "../../lib/api/holidays";
 import { format } from "date-fns";
+import { getSiteData } from "../../lib/api/client";
 
 interface CalendarGridProps {
   currentMonth: Date;
@@ -30,18 +31,23 @@ export function CalendarGrid({
   onEventResize,
 }: CalendarGridProps) {
   const [error, setError] = useState<string | null>(null);
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
   const { days, emptyDays, weekDays } = getCalendarDays(
     currentMonth,
     weekStartsOn as any
   );
 
-  const [holidays, setHolidays] = useState<Holiday[]>([]);
-
   useEffect(() => {
     const fetchHolidays = async () => {
+      if (!currentUser?.site) return;
+
       const year = format(currentMonth, 'yyyy');
       try {
-        const holidayData = await getHolidays(year);
+        // Fetch site data to get location
+        const siteData = await getSiteData(currentUser.site);
+        const location = siteData.app.location || 'BE';
+        
+        const holidayData = await getHolidays(year, location);
         setHolidays(holidayData);
         setError(null);
       } catch (error) {
@@ -50,7 +56,7 @@ export function CalendarGrid({
       }
     };
     fetchHolidays();
-  }, [currentMonth]);
+  }, [currentMonth, currentUser]);
 
   const showWeekNumber = currentUser?.settings?.showWeekNumber || "none";
 
