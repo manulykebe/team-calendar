@@ -11,7 +11,7 @@ interface AvailabilityModalProps {
   onClose: () => void;
 }
 
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as const;
 
 export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps) {
   const { token } = useAuth();
@@ -139,7 +139,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
             </div>
           </div>
 
-          <div className="grid grid-cols-8 gap-4 mt-6">
+          <div className="grid grid-cols-6 gap-4 mt-6">
             <div className="col-span-1"></div>
             {DAYS.map((day) => (
               <div key={day} className="text-center font-medium">

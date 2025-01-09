@@ -65,7 +65,7 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T20:27:07.548Z",
+      "updatedAt": "2025-01-09T20:27:58.028Z",
       "app": {
         "weekStartsOn": "Sunday"
       },
@@ -106,12 +106,12 @@
               "pm": true
             },
             "Tuesday": {
-              "am": false,
-              "pm": false
-            },
-            "Wednesday": {
               "am": true,
               "pm": true
+            },
+            "Wednesday": {
+              "am": false,
+              "pm": false
             },
             "Thursday": {
               "am": true,
@@ -147,7 +147,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T18:49:50.095Z",
+      "updatedAt": "2025-01-09T20:37:05.498Z",
       "settings": {
         "app": {
           "color": {
@@ -186,10 +186,37 @@
           "bhhMvstlpwUG",
           "SjFBqPWVxUVY",
           "tTRjdtgFDDRN"
-        ]
+        ],
+        "availability": {
+          "weeklySchedule": {
+            "Monday": {
+              "am": true,
+              "pm": true
+            },
+            "Tuesday": {
+              "am": false,
+              "pm": false
+            },
+            "Wednesday": {
+              "am": true,
+              "pm": true
+            },
+            "Thursday": {
+              "am": true,
+              "pm": true
+            },
+            "Friday": {
+              "am": true,
+              "pm": true
+            }
+          },
+          "startDate": "2025-01-09",
+          "endDate": "",
+          "repeatPattern": "all"
+        }
       },
       "app": {
-        "weekStartsOn": "Sunday"
+        "weekStartsOn": "Monday"
       }
     },
     {
@@ -351,9 +378,9 @@
       "title": "",
       "description": "",
       "date": "2024-12-24",
-      "endDate": "2025-01-02",
+      "endDate": "2025-01-03",
       "createdAt": "2025-01-06T16:23:24.780Z",
-      "updatedAt": "2025-01-09T11:52:49.617Z"
+      "updatedAt": "2025-01-09T20:39:38.934Z"
     },
     {
       "id": "c744a6d8-f55e-4d49-ac98-0e59fcecbbda",
@@ -363,7 +390,7 @@
       "description": "",
       "date": "2025-01-07",
       "createdAt": "2025-01-06T16:25:07.457Z",
-      "updatedAt": "2025-01-09T11:04:38.690Z",
+      "updatedAt": "2025-01-09T20:38:35.881Z",
       "endDate": "2025-01-08"
     },
     {
