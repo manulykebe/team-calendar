@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Settings as SettingsIcon, X, Users, LogOut } from "lucide-react";
+import { Settings as SettingsIcon, X, Users, LogOut, Clock } from "lucide-react";
 import { ColleagueSettings } from "./colleagues/ColleagueSettings";
 import { UserManagement } from "../users/UserManagement";
 import { useAuth } from "../../context/AuthContext";
 import { ColleagueAvatar } from "./colleagues/ColleagueAvatar";
 import { useUserSettings } from "./hooks/useUserSettings";
 import { DisplaySettings } from "./DisplaySettings";
-import { AvailabilitySettings } from "./AvailabilitySettings";
+import { AvailabilityModal } from "./availability/AvailabilityModal";
 import { useColleagueSettings } from "../../hooks/useColleagueSettings";
 
 interface SettingsPanelProps {
@@ -20,10 +20,17 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showColleagueSettings, setShowColleagueSettings] = useState(false);
   const [showUserManagement, setShowUserManagement] = useState(false);
+  const [showAvailability, setShowAvailability] = useState(false);
+  const [selectedColleague, setSelectedColleague] = useState<User | null>(null);
 
   const handleLogout = () => {
     logout();
     setIsOpen(false);
+  };
+
+  const handleOpenAvailability = () => {
+    setSelectedColleague(currentUser);
+    setShowAvailability(true);
   };
 
   return (
@@ -79,6 +86,13 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
                   <Users className="w-4 h-4 mr-2" />
                   Manage Colleague Display
                 </button>
+                <button
+                  onClick={handleOpenAvailability}
+                  className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+                >
+                  <Clock className="w-4 h-4 mr-2" />
+                  Set Availability
+                </button>
               </div>
             </div>
 
@@ -86,11 +100,6 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
               currentUser={currentUser}
               onWorkStartChange={updateWorkStartDay}
               onWeekNumberChange={updateWeekNumberSetting}
-            />
-
-            <AvailabilitySettings
-              currentUser={currentUser}
-              colleagues={colleagues}
             />
           </div>
         </div>
@@ -131,6 +140,16 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
 
       {showUserManagement && (
         <UserManagement onClose={() => setShowUserManagement(false)} />
+      )}
+
+      {showAvailability && selectedColleague && (
+        <AvailabilityModal
+          colleague={selectedColleague}
+          onClose={() => {
+            setShowAvailability(false);
+            setSelectedColleague(null);
+          }}
+        />
       )}
     </>
   );
