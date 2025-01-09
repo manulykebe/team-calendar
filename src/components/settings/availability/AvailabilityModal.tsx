@@ -45,6 +45,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
       setLoading(true);
       setError("");
 
+      // Only update the settings object with availability
       const updatedSettings = {
         ...colleague.settings,
         availability: {
@@ -55,11 +56,13 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
         }
       };
 
-      await updateUser(token, colleague.id, {
-        ...colleague,
+      // Create update payload with only necessary fields
+      const updatePayload = {
+        id: colleague.id,
         settings: updatedSettings
-      });
+      };
 
+      await updateUser(token, colleague.id, updatePayload);
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save availability");

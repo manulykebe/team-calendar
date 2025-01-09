@@ -1,467 +1,452 @@
 {
-  "app": {
-    "defaultWeeklySchedule": [
-      {
-        "Monday": [
-          "am",
-          "pm"
-        ]
-      },
-      {
-        "Tuesday": [
-          "am",
-          "pm"
-        ]
-      },
-      {
-        "Wednesday": [
-          "am",
-          "pm"
-        ]
-      },
-      {
-        "Thursday": [
-          "am",
-          "pm"
-        ]
-      },
-      {
-        "Friday": [
-          "am",
-          "pm"
-        ]
-      }
-    ],
-    "weekStartsOn": "Monday",
-    "defaultEventType": "requestedPeriod",
-    "location": "GB",
-    "eventTypes": [
-      {
-        "requestedHoliday": {
-          "period": "week-Saturday[-1]-Sunday[1]"
-        }
-      },
-      {
-        "requestedHolidayMandatory": {
-          "period": "week-Saturday[-1]-Sunday[1]"
-        }
-      },
-      {
-        "requestedPeriod": {
-          "period": "day|days[1-7]"
-        }
-      }
-    ]
-  },
-  "users": [
-    {
-      "id": "1",
-      "firstName": "Manu",
-      "lastName": "Vanneste",
-      "email": "admin@lyke.be",
-      "mobile": "+32 494 11 58 25",
-	  "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
-	  "site": "azjp",
-      "role": "admin",
-      "status": "active",
-      "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T20:11:43.110Z",
-      "app": {
-        "weekStartsOn": "Sunday"
-      },
-      "settings": {
-        "colleagues": {
-          "1": {
-            "color": "#a50026",
-            "initials": "ADM"
-          },
-          "2": {
-            "color": "#d73027",
-            "initials": "KDJ"
-          },
-          "3": {
-            "color": "#f46d43",
-            "initials": "MS"
-          },
-          "4": {
-            "initials": "SD",
-            "color": "#fdae61"
-          },
-          "tTRjdtgFDDRN": {
-            "initials": "K",
-            "color": "#fee090"
-          }
-        },
-        "showWeekNumber": "none",
-        "colleagueOrder": [
-          "1",
-          "2",
-          "3",
-          "4"
-        ],
-        "availability": {
-          "weeklySchedule": {
-            "Monday": {
-              "am": true,
-              "pm": true
-            },
-            "Tuesday": {
-              "am": false,
-              "pm": false
-            },
-            "Wednesday": {
-              "am": true,
-              "pm": true
-            },
-            "Thursday": {
-              "am": true,
-              "pm": true
-            },
-            "Friday": {
-              "am": true,
-              "pm": true
-            },
-            "Saturday": {
-              "am": true,
-              "pm": true
-            },
-            "Sunday": {
-              "am": true,
-              "pm": true
-            }
-          },
-          "startDate": "2025-01-09",
-          "endDate": "",
-          "repeatPattern": "all"
-        }
-      }
-    },
-    {
-      "id": "2",
-      "firstName": "Katrien",
-      "lastName": "de Jongh",
-      "email": "katrien@lyke.be",
-      "mobile": "+32 494 11 58 25",
-      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
-      "site": "azjp",
-      "role": "user",
-      "status": "active",
-      "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T18:49:50.095Z",
-      "settings": {
-        "app": {
-          "color": {
-            "Tuesday": "#4575b4"
-          }
-        },
-        "colleagues": {
-          "1": {
-            "color": "#abd9e9",
-            "initials": "MV",
-            "visible": true
-          },
-          "2": {
-            "color": "#313695",
-            "initials": "KDJ"
-          },
-          "3": {
-            "visible": true,
-            "initials": "MS",
-            "color": "#4575b4"
-          },
-          "4": {
-            "initials": "SD",
-            "color": "#74add1",
-            "visible": true
-          },
-          "tTRjdtgFDDRN": {
-            "color": "#e0f3f8",
-            "initials": "KV"
-          }
-        },
-        "showWeekNumber": "left",
-        "colleagueOrder": [
-          "2",
-          "4",
-          "3",
-          "1",
-          "tTRjdtgFDDRN"
-        ]
-      },
-      "app": {
-        "weekStartsOn": "Sunday"
-      }
-    },
-    {
-      "id": "3",
-      "firstName": "Mieke",
-      "lastName": "Smets",
-      "email": "mieke@lyke.be",
-      "mobile": "+32 494 11 58 25",
-      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
-      "site": "azjp",
-      "role": "user",
-      "status": "active",
-      "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T11:51:09.455Z",
-      "settings": {
-        "app": {
-          "color": {
-            "Tuesday": "#4575b4"
-          }
-        },
-        "colleagues": {
-          "1": {
-            "color": "#4575b4",
-            "initials": "ADM",
-            "visible": true
-          },
-          "2": {
-            "color": "#74add1",
-            "initials": "KDJ"
-          },
-          "3": {
-            "initials": "MS",
-            "color": "#313695"
-          },
-          "4": {
-            "initials": "SD",
-            "color": "#abd9e9"
-          }
-        },
-        "showWeekNumber": "right"
-      },
-      "app": {
-        "weekStartsOn": "Saturday"
-      }
-    },
-    {
-      "id": "4",
-      "firstName": "Sofie",
-      "lastName": "",
-      "email": "sofie@lyke.be",
-      "mobile": "+32 494 11 58 25",
-      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
-      "site": "azjp",
-      "role": "user",
-      "status": "active",
-      "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T11:31:50.557Z",
-      "settings": {
-        "app": {
-          "color": {
-            "Tuesday": "#4575b4"
-          }
-        },
-        "colleagues": {
-          "1": {
-            "color": "#fdae61",
-            "initials": "ADM",
-            "visible": true
-          },
-          "2": {
-            "color": "#d73027",
-            "initials": "KDJ",
-            "visible": true
-          },
-          "3": {
-            "initials": "MS",
-            "color": "#f46d43",
-            "visible": true
-          },
-          "4": {
-            "initials": "SD",
-            "color": "#a50026"
-          }
-        },
-        "showWeekNumber": "left",
-        "colleagueOrder": [
-          "4",
-          "2",
-          "3",
-          "1"
-        ]
-      },
-      "app": {
-        "weekStartsOn": "Sunday"
-      }
-    },
-    {
-      "id": "tTRjdtgFDDRN",
-      "firstName": "Kris",
-      "lastName": "",
-      "email": "kris@lyke.be",
-      "mobile": "+32 494 11 58 25",
-      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
-      "site": "azjp",
-      "role": "user",
-      "status": "active",
-      "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T15:09:03.705Z",
-      "settings": {
-        "app": {
-          "color": {
-            "Tuesday": "#4575b4"
-          }
-        },
-        "colleagues": {
-          "1": {
-            "color": "#e0f3f8",
-            "initials": "ADM",
-            "visible": true
-          },
-          "2": {
-            "color": "#74add1",
-            "initials": "KDJ",
-            "visible": true
-          },
-          "3": {
-            "initials": "MS",
-            "color": "#abd9e9",
-            "visible": true
-          },
-          "4": {
-            "initials": "SD",
-            "color": "#4575b4",
-            "visible": true
-          },
-          "tTRjdtgFDDRN": {
-            "color": "#313695",
-            "initials": "KV"
-          }
-        },
-        "showWeekNumber": "left",
-        "colleagueOrder": [
-          "4",
-          "2",
-          "3",
-          "1"
-        ]
-      },
-      "app": {
-        "weekStartsOn": "Monday"
-      }
-    }
-  ],
-  "events": [
-    {
-      "id": "c9a7d826-ff64-4de3-8769-88541c073204",
-      "userId": "2",
-      "type": "requestedHoliday",
-      "title": "",
-      "description": "",
-      "date": "2024-12-24",
-      "endDate": "2025-01-02",
-      "createdAt": "2025-01-06T16:23:24.780Z",
-      "updatedAt": "2025-01-09T11:52:49.617Z"
-    },
-    {
-      "id": "c744a6d8-f55e-4d49-ac98-0e59fcecbbda",
-      "userId": "2",
-      "type": "requestedPeriod",
-      "title": "",
-      "description": "",
-      "date": "2025-01-07",
-      "createdAt": "2025-01-06T16:25:07.457Z",
-      "updatedAt": "2025-01-09T11:04:38.690Z",
-      "endDate": "2025-01-08"
-    },
-    {
-      "id": "ef8fe3c6-ef11-4249-9464-dc48b3b00842",
-      "userId": "2",
-      "type": "requestedHoliday",
-      "title": "",
-      "description": "",
-      "date": "2025-01-14",
-      "endDate": "2025-01-23",
-      "createdAt": "2025-01-06T16:25:27.260Z",
-      "updatedAt": "2025-01-09T11:45:57.769Z"
-    },
-    {
-      "id": "e7110b32-a617-4430-8a37-c182b3e69fc9",
-      "userId": "1",
-      "type": "requestedHoliday",
-      "title": "",
-      "description": "",
-      "date": "2024-12-31",
-      "endDate": "2025-01-03",
-      "createdAt": "2025-01-06T16:26:23.957Z",
-      "updatedAt": "2025-01-09T14:02:49.818Z"
-    },
-    {
-      "id": "5c5b47ad-82f8-4408-81cf-f8ce34c2b247",
-      "userId": "1",
-      "type": "requestedPeriod",
-      "title": "",
-      "description": "",
-      "date": "2024-12-25",
-      "createdAt": "2025-01-09T11:42:29.356Z",
-      "updatedAt": "2025-01-09T14:01:21.385Z",
-      "endDate": "2024-12-30"
-    },
-    {
-      "id": "23368617-cf19-4887-893a-2cd7b3fb9b15",
-      "userId": "4",
-      "type": "requestedPeriod",
-      "title": "",
-      "description": "",
-      "date": "2024-12-24",
-      "createdAt": "2025-01-09T11:49:51.097Z",
-      "updatedAt": "2025-01-09T11:49:51.097Z"
-    },
-    {
-      "id": "d0788c2f-f7dd-42db-8525-33b6f474d76e",
-      "userId": "4",
-      "type": "requestedPeriod",
-      "title": "",
-      "description": "",
-      "date": "2024-12-24",
-      "createdAt": "2025-01-09T11:49:59.688Z",
-      "updatedAt": "2025-01-09T11:49:59.688Z"
-    },
-    {
-      "id": "d0f0da9c-e357-4fcc-b3f2-8aeaba82fc9b",
-      "userId": "4",
-      "type": "requestedHoliday",
-      "title": "",
-      "description": "",
-      "date": "2024-12-28",
-      "endDate": "2025-01-05",
-      "createdAt": "2025-01-09T11:50:16.655Z",
-      "updatedAt": "2025-01-09T11:50:19.616Z"
-    },
-    {
-      "id": "ea0f4e6c-f854-4d5c-8bfa-7414404a0e4d",
-      "userId": "3",
-      "type": "requestedPeriod",
-      "title": "",
-      "description": "",
-      "date": "2024-12-23",
-      "createdAt": "2025-01-09T11:51:34.222Z",
-      "updatedAt": "2025-01-09T11:51:35.871Z",
-      "endDate": "2024-12-26"
-    },
-    {
-      "id": "50132256-bcb8-4f88-a209-1c4179a56b2a",
-      "userId": "1",
-      "type": "requestedHoliday",
-      "title": "",
-      "description": "",
-      "date": "2025-01-06",
-      "endDate": "2025-01-12",
-      "createdAt": "2025-01-09T13:16:02.226Z",
-      "updatedAt": "2025-01-09T14:01:18.966Z"
-    },
-    {
-      "id": "665ee0ed-ef1d-4a45-b251-eead072414d7",
-      "userId": "tTRjdtgFDDRN",
-      "type": "requestedHoliday",
-      "title": "",
-      "description": "",
-      "date": "2024-12-24",
-      "endDate": "2024-12-29",
-      "createdAt": "2025-01-09T14:07:32.393Z",
-      "updatedAt": "2025-01-09T14:07:32.393Z"
-    }
-  ]
+	"app": {
+		"defaultWeeklySchedule": [
+			{
+				"Monday": ["am", "pm"]
+			},
+			{
+				"Tuesday": ["am", "pm"]
+			},
+			{
+				"Wednesday": ["am", "pm"]
+			},
+			{
+				"Thursday": ["am", "pm"]
+			},
+			{
+				"Friday": ["am", "pm"]
+			}
+		],
+		"weekStartsOn": "Monday",
+		"defaultEventType": "requestedPeriod",
+		"location": "GB",
+		"eventTypes": [
+			{
+				"requestedHoliday": {
+					"period": "week-Saturday[-1]-Sunday[1]"
+				}
+			},
+			{
+				"requestedHolidayMandatory": {
+					"period": "week-Saturday[-1]-Sunday[1]"
+				}
+			},
+			{
+				"requestedPeriod": {
+					"period": "day|days[1-7]"
+				}
+			}
+		]
+	},
+	"users": [
+		{
+			"id": "SjFBqPWVxUVY",
+			"firstName": "Manu",
+			"lastName": "Vanneste",
+			"email": "admin@lyke.be",
+			"mobile": "+32 494 11 58 25",
+			"password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+			"site": "azjp",
+			"role": "admin",
+			"status": "active",
+			"createdAt": "2025-01-04T14:23:29.975Z",
+			"updatedAt": "2025-01-09T20:21:57.869Z",
+			"app": {
+				"weekStartsOn": "Sunday"
+			},
+			"settings": {
+				"colleagues": {
+					"SjFBqPWVxUVY": {
+						"color": "#a50026",
+						"initials": "ADM"
+					},
+					"XAefIrqLAeDy": {
+						"color": "#d73027",
+						"initials": "KDJ"
+					},
+					"bhhMvstlpwUG": {
+						"color": "#f46d43",
+						"initials": "MS"
+					},
+					"KTHpbRLreSbC": {
+						"initials": "SD",
+						"color": "#fdae61"
+					},
+					"tTRjdtgFDDRN": {
+						"initials": "K",
+						"color": "#fee090"
+					}
+				},
+				"showWeekNumber": "none",
+				"colleagueOrder": [
+					"SjFBqPWVxUVY",
+					"XAefIrqLAeDy",
+					"bhhMvstlpwUG",
+					"KTHpbRLreSbC"
+				],
+				"availability": {
+					"weeklySchedule": {
+						"Monday": {
+							"am": true,
+							"pm": true
+						},
+						"Tuesday": {
+							"am": true,
+							"pm": true
+						},
+						"Wednesday": {
+							"am": true,
+							"pm": true
+						},
+						"Thursday": {
+							"am": true,
+							"pm": true
+						},
+						"Friday": {
+							"am": true,
+							"pm": true
+						},
+						"Saturday": {
+							"am": true,
+							"pm": true
+						},
+						"Sunday": {
+							"am": true,
+							"pm": true
+						}
+					},
+					"startDate": "2025-01-09",
+					"endDate": "",
+					"repeatPattern": "all"
+				}
+			}
+		},
+		{
+			"id": "XAefIrqLAeDy",
+			"firstName": "Katrien",
+			"lastName": "de Jongh",
+			"email": "katrien@lyke.be",
+			"mobile": "+32 494 11 58 25",
+			"password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+			"site": "azjp",
+			"role": "user",
+			"status": "active",
+			"createdAt": "2025-01-04T14:23:29.975Z",
+			"updatedAt": "2025-01-09T18:49:50.095Z",
+			"settings": {
+				"app": {
+					"color": {
+						"Tuesday": "#4575b4"
+					}
+				},
+				"colleagues": {
+					"SjFBqPWVxUVY": {
+						"color": "#abd9e9",
+						"initials": "MV",
+						"visible": true
+					},
+					"XAefIrqLAeDy": {
+						"color": "#313695",
+						"initials": "KDJ"
+					},
+					"bhhMvstlpwUG": {
+						"visible": true,
+						"initials": "MS",
+						"color": "#4575b4"
+					},
+					"KTHpbRLreSbC": {
+						"initials": "SD",
+						"color": "#74add1",
+						"visible": true
+					},
+					"tTRjdtgFDDRN": {
+						"color": "#e0f3f8",
+						"initials": "KV"
+					}
+				},
+				"showWeekNumber": "left",
+				"colleagueOrder": [
+					"XAefIrqLAeDy",
+					"KTHpbRLreSbC",
+					"bhhMvstlpwUG",
+					"SjFBqPWVxUVY",
+					"tTRjdtgFDDRN"
+				]
+			},
+			"app": {
+				"weekStartsOn": "Sunday"
+			}
+		},
+		{
+			"id": "bhhMvstlpwUG",
+			"firstName": "Mieke",
+			"lastName": "Smets",
+			"email": "mieke@lyke.be",
+			"mobile": "+32 494 11 58 25",
+			"password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+			"site": "azjp",
+			"role": "user",
+			"status": "active",
+			"createdAt": "2025-01-04T14:23:29.975Z",
+			"updatedAt": "2025-01-09T11:51:09.455Z",
+			"settings": {
+				"app": {
+					"color": {
+						"Tuesday": "#4575b4"
+					}
+				},
+				"colleagues": {
+					"SjFBqPWVxUVY": {
+						"color": "#4575b4",
+						"initials": "ADM",
+						"visible": true
+					},
+					"XAefIrqLAeDy": {
+						"color": "#74add1",
+						"initials": "KDJ"
+					},
+					"bhhMvstlpwUG": {
+						"initials": "MS",
+						"color": "#313695"
+					},
+					"KTHpbRLreSbC": {
+						"initials": "SD",
+						"color": "#abd9e9"
+					}
+				},
+				"showWeekNumber": "right"
+			},
+			"app": {
+				"weekStartsOn": "Saturday"
+			}
+		},
+		{
+			"id": "KTHpbRLreSbC",
+			"firstName": "Sofie",
+			"lastName": "",
+			"email": "sofie@lyke.be",
+			"mobile": "+32 494 11 58 25",
+			"password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+			"site": "azjp",
+			"role": "user",
+			"status": "active",
+			"createdAt": "2025-01-04T14:23:29.975Z",
+			"updatedAt": "2025-01-09T11:31:50.557Z",
+			"settings": {
+				"app": {
+					"color": {
+						"Tuesday": "#4575b4"
+					}
+				},
+				"colleagues": {
+					"SjFBqPWVxUVY": {
+						"color": "#fdae61",
+						"initials": "ADM",
+						"visible": true
+					},
+					"XAefIrqLAeDy": {
+						"color": "#d73027",
+						"initials": "KDJ",
+						"visible": true
+					},
+					"bhhMvstlpwUG": {
+						"initials": "MS",
+						"color": "#f46d43",
+						"visible": true
+					},
+					"KTHpbRLreSbC": {
+						"initials": "SD",
+						"color": "#a50026"
+					}
+				},
+				"showWeekNumber": "left",
+				"colleagueOrder": [
+					"KTHpbRLreSbC",
+					"XAefIrqLAeDy",
+					"bhhMvstlpwUG",
+					"SjFBqPWVxUVY"
+				]
+			},
+			"app": {
+				"weekStartsOn": "Sunday"
+			}
+		},
+		{
+			"id": "tTRjdtgFDDRN",
+			"firstName": "Kris",
+			"lastName": "",
+			"email": "kris@lyke.be",
+			"mobile": "+32 494 11 58 25",
+			"password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+			"site": "azjp",
+			"role": "user",
+			"status": "active",
+			"createdAt": "2025-01-04T14:23:29.975Z",
+			"updatedAt": "2025-01-09T15:09:03.705Z",
+			"settings": {
+				"app": {
+					"color": {
+						"Tuesday": "#4575b4"
+					}
+				},
+				"colleagues": {
+					"SjFBqPWVxUVY": {
+						"color": "#e0f3f8",
+						"initials": "ADM",
+						"visible": true
+					},
+					"XAefIrqLAeDy": {
+						"color": "#74add1",
+						"initials": "KDJ",
+						"visible": true
+					},
+					"bhhMvstlpwUG": {
+						"initials": "MS",
+						"color": "#abd9e9",
+						"visible": true
+					},
+					"KTHpbRLreSbC": {
+						"initials": "SD",
+						"color": "#4575b4",
+						"visible": true
+					},
+					"tTRjdtgFDDRN": {
+						"color": "#313695",
+						"initials": "KV"
+					}
+				},
+				"showWeekNumber": "left",
+				"colleagueOrder": [
+					"KTHpbRLreSbC",
+					"XAefIrqLAeDy",
+					"bhhMvstlpwUG",
+					"SjFBqPWVxUVY"
+				]
+			},
+			"app": {
+				"weekStartsOn": "Monday"
+			}
+		}
+	],
+	"events": [
+		{
+			"id": "c9a7d826-ff64-4de3-8769-88541c073204",
+			"userId": "XAefIrqLAeDy",
+			"type": "requestedHoliday",
+			"title": "",
+			"description": "",
+			"date": "2024-12-24",
+			"endDate": "2025-01-02",
+			"createdAt": "2025-01-06T16:23:24.780Z",
+			"updatedAt": "2025-01-09T11:52:49.617Z"
+		},
+		{
+			"id": "c744a6d8-f55e-4d49-ac98-0e59fcecbbda",
+			"userId": "XAefIrqLAeDy",
+			"type": "requestedPeriod",
+			"title": "",
+			"description": "",
+			"date": "2025-01-07",
+			"createdAt": "2025-01-06T16:25:07.457Z",
+			"updatedAt": "2025-01-09T11:04:38.690Z",
+			"endDate": "2025-01-08"
+		},
+		{
+			"id": "ef8fe3c6-ef11-4249-9464-dc48b3b00842",
+			"userId": "XAefIrqLAeDy",
+			"type": "requestedHoliday",
+			"title": "",
+			"description": "",
+			"date": "2025-01-14",
+			"endDate": "2025-01-23",
+			"createdAt": "2025-01-06T16:25:27.260Z",
+			"updatedAt": "2025-01-09T11:45:57.769Z"
+		},
+		{
+			"id": "e7110b32-a617-4430-8a37-c182b3e69fc9",
+			"userId": "SjFBqPWVxUVY",
+			"type": "requestedHoliday",
+			"title": "",
+			"description": "",
+			"date": "2024-12-31",
+			"endDate": "2025-01-03",
+			"createdAt": "2025-01-06T16:26:23.957Z",
+			"updatedAt": "2025-01-09T14:02:49.818Z"
+		},
+		{
+			"id": "5c5b47ad-82f8-4408-81cf-f8ce34c2b247",
+			"userId": "SjFBqPWVxUVY",
+			"type": "requestedPeriod",
+			"title": "",
+			"description": "",
+			"date": "2024-12-25",
+			"createdAt": "2025-01-09T11:42:29.356Z",
+			"updatedAt": "2025-01-09T14:01:21.385Z",
+			"endDate": "2024-12-30"
+		},
+		{
+			"id": "23368617-cf19-4887-893a-2cd7b3fb9b15",
+			"userId": "KTHpbRLreSbC",
+			"type": "requestedPeriod",
+			"title": "",
+			"description": "",
+			"date": "2024-12-24",
+			"createdAt": "2025-01-09T11:49:51.097Z",
+			"updatedAt": "2025-01-09T11:49:51.097Z"
+		},
+		{
+			"id": "d0788c2f-f7dd-42db-8525-33b6f474d76e",
+			"userId": "KTHpbRLreSbC",
+			"type": "requestedPeriod",
+			"title": "",
+			"description": "",
+			"date": "2024-12-24",
+			"createdAt": "2025-01-09T11:49:59.688Z",
+			"updatedAt": "2025-01-09T11:49:59.688Z"
+		},
+		{
+			"id": "d0f0da9c-e357-4fcc-b3f2-8aeaba82fc9b",
+			"userId": "KTHpbRLreSbC",
+			"type": "requestedHoliday",
+			"title": "",
+			"description": "",
+			"date": "2024-12-28",
+			"endDate": "2025-01-05",
+			"createdAt": "2025-01-09T11:50:16.655Z",
+			"updatedAt": "2025-01-09T11:50:19.616Z"
+		},
+		{
+			"id": "ea0f4e6c-f854-4d5c-8bfa-7414404a0e4d",
+			"userId": "bhhMvstlpwUG",
+			"type": "requestedPeriod",
+			"title": "",
+			"description": "",
+			"date": "2024-12-23",
+			"createdAt": "2025-01-09T11:51:34.222Z",
+			"updatedAt": "2025-01-09T11:51:35.871Z",
+			"endDate": "2024-12-26"
+		},
+		{
+			"id": "50132256-bcb8-4f88-a209-1c4179a56b2a",
+			"userId": "SjFBqPWVxUVY",
+			"type": "requestedHoliday",
+			"title": "",
+			"description": "",
+			"date": "2025-01-06",
+			"endDate": "2025-01-12",
+			"createdAt": "2025-01-09T13:16:02.226Z",
+			"updatedAt": "2025-01-09T14:01:18.966Z"
+		},
+		{
+			"id": "665ee0ed-ef1d-4a45-b251-eead072414d7",
+			"userId": "tTRjdtgFDDRN",
+			"type": "requestedHoliday",
+			"title": "",
+			"description": "",
+			"date": "2024-12-24",
+			"endDate": "2024-12-29",
+			"createdAt": "2025-01-09T14:07:32.393Z",
+			"updatedAt": "2025-01-09T14:07:32.393Z"
+		}
+	]
 }
