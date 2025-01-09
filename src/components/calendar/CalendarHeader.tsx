@@ -14,9 +14,9 @@ export function CalendarHeader({ weekDays, showWeekNumber }: CalendarHeaderProps
           ? "grid-cols-[1fr_3rem]" 
           : "grid-cols-1"
     } gap-px bg-zinc-200`}>
-      {showWeekNumber === "left" && <div className="bg-zinc-50 py-2" />}
+      {showWeekNumber === "left" && <div className="bg-zinc-50 py-2 border-b border-zinc-200" />}
       <WeekDayHeader weekDays={weekDays} />
-      {showWeekNumber === "right" && <div className="bg-zinc-50 py-2" />}
+      {showWeekNumber === "right" && <div className="bg-zinc-50 py-2 border-b border-zinc-200" />}
     </div>
   );
 }
