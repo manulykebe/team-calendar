@@ -1,9 +1,12 @@
+import { useState, useEffect } from "react";
 import { DayCell } from "./DayCell";
 import { CalendarHeader } from "./CalendarHeader";
 import { WeekColumn } from "./WeekColumn";
 import { getCalendarDays } from "../../utils/calendar";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
+import { Holiday, getHolidays } from "../../lib/api/holidays";
+import { format } from "date-fns";
 
 interface CalendarGridProps {
   currentMonth: Date;
@@ -30,6 +33,21 @@ export function CalendarGrid({
     currentMonth,
     weekStartsOn as any
   );
+
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+
+  useEffect(() => {
+    const fetchHolidays = async () => {
+      const year = format(currentMonth, 'yyyy');
+      try {
+        const holidayData = await getHolidays(year);
+        setHolidays(holidayData);
+      } catch (error) {
+        console.error('Failed to fetch holidays:', error);
+      }
+    };
+    fetchHolidays();
+  }, [currentMonth]);
 
   const showWeekNumber = currentUser?.settings?.showWeekNumber || "none";
 
@@ -61,18 +79,24 @@ export function CalendarGrid({
           {Array.from({ length: emptyDays }).map((_, index) => (
             <div key={`empty-${index}`} className="bg-white p-2" />
           ))}
-          {days.map((day) => (
-            <DayCell
-              key={day.toISOString()}
-              date={day}
-              events={events}
-              onDateClick={onDateClick}
-              userSettings={userSettings}
-              onEventDelete={onEventDelete}
-              currentUser={currentUser}
-              onEventResize={onEventResize}
-            />
-          ))}
+          {days.map((day) => {
+            const formattedDate = format(day, 'yyyy-MM-dd');
+            const holiday = holidays.find(h => h.date === formattedDate);
+            
+            return (
+              <DayCell
+                key={day.toISOString()}
+                date={day}
+                events={events}
+                onDateClick={onDateClick}
+                userSettings={userSettings}
+                onEventDelete={onEventDelete}
+                currentUser={currentUser}
+                onEventResize={onEventResize}
+                holiday={holiday}
+              />
+            );
+          })}
         </div>
         {showWeekNumber === "right" && <WeekColumn days={days} position="right" rowHeight={rowHeight} />}
       </div>

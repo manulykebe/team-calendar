@@ -228,7 +228,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T14:08:13.385Z",
+      "updatedAt": "2025-01-09T15:09:03.705Z",
       "settings": {
         "app": {
           "color": {
@@ -253,7 +253,8 @@
           },
           "4": {
             "initials": "SD",
-            "color": "#4575b4"
+            "color": "#4575b4",
+            "visible": true
           },
           "tTRjdtgFDDRN": {
             "color": "#313695",
@@ -269,7 +270,7 @@
         ]
       },
       "app": {
-        "weekStartsOn": "Sunday"
+        "weekStartsOn": "Monday"
       }
     }
   ],
