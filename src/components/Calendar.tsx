@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
-import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getUsers } from "../lib/api";
 import { EventModal } from "./EventModal";
-import { UserManagement } from "./users/UserManagement";
 import { SettingsPanel } from "./settings/SettingsPanel";
 import { CalendarGrid } from "./calendar/CalendarGrid";
 import { User } from "../types/user";
 import { userSettingsEmitter } from "../hooks/useColleagueSettings";
 import { useCalendarSettings } from "../hooks/useCalendarSettings";
-import { useDragAndDrop } from "../hooks/useDragAndDrop";
 import { useCalendarState } from "../hooks/useCalendarState";
 import { addWeeks, subWeeks, format } from "date-fns";
 
@@ -31,17 +29,8 @@ export function Calendar() {
     fetchEvents,
     handleCreateEvent,
     handleEventDelete,
-    handleEventMove,
     handleEventResize
   } = useCalendarState(token);
-
-  const { 
-    draggedEvent, 
-    dragOverDate, 
-    handleDragStart, 
-    handleDragOver, 
-    handleDrop 
-  } = useDragAndDrop(handleEventMove);
 
   useEffect(() => {
     if (token) {
@@ -105,10 +94,6 @@ export function Calendar() {
             </button>
           </div>
         </div>
-        <div className="flex items-center space-x-4">
-          <UserManagement />
-          <SettingsPanel />
-        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow">
@@ -124,24 +109,11 @@ export function Calendar() {
           userSettings={currentUser?.settings}
           onEventDelete={handleEventDelete}
           currentUser={currentUser}
-          draggedEvent={draggedEvent}
-          dragOverDate={dragOverDate}
-          onEventDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragStart={handleDragStart}
           onEventResize={handleEventResize}
         />
       </div>
 
-      <button
-        onClick={() => {
-          setSelectedDate(new Date());
-          setShowModal(true);
-        }}
-        className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
+      <SettingsPanel />
 
       {showModal && (
         <EventModal

@@ -13,11 +13,6 @@ interface CalendarGridProps {
   userSettings?: any;
   onEventDelete?: (eventId: string) => void;
   currentUser?: User | null;
-  draggedEvent?: Event | null;
-  dragOverDate?: string | null;
-  onEventDrop?: (date: string) => void;
-  onDragOver?: (date: string, e: React.DragEvent) => void;
-  onDragStart?: (event: Event) => void;
   onEventResize?: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
 }
 
@@ -29,11 +24,6 @@ export function CalendarGrid({
   userSettings,
   onEventDelete,
   currentUser,
-  draggedEvent,
-  dragOverDate,
-  onEventDrop,
-  onDragOver,
-  onDragStart,
   onEventResize,
 }: CalendarGridProps) {
   const { days, emptyDays, weekDays } = getCalendarDays(
@@ -54,9 +44,9 @@ export function CalendarGrid({
             : "grid-cols-1"
       } gap-px`}>
         {showWeekNumber === "left" && <WeekColumn days={days} position="left" />}
-        <div className="grid grid-cols-7 gap-px bg-zinc-200">
+        <div className="grid grid-cols-7 auto-rows-[120px] gap-px bg-zinc-200">
           {Array.from({ length: emptyDays }).map((_, index) => (
-            <div key={`empty-${index}`} className="min-h-[120px] bg-white p-2" />
+            <div key={`empty-${index}`} className="bg-white p-2" />
           ))}
           {days.map((day) => (
             <DayCell
@@ -67,11 +57,6 @@ export function CalendarGrid({
               userSettings={userSettings}
               onEventDelete={onEventDelete}
               currentUser={currentUser}
-              draggedEvent={draggedEvent}
-              dragOverDate={dragOverDate}
-              onEventDrop={onEventDrop}
-              onDragOver={onDragOver}
-              onDragStart={onDragStart}
               onEventResize={onEventResize}
             />
           ))}

@@ -8,22 +8,20 @@ interface SingleDayEventBarProps {
   event: Event & { verticalPosition: number };
   userSettings?: User["settings"];
   canModify: boolean;
-  isDragging?: boolean;
   onDelete?: (eventId: string) => void;
-  onDragStart?: (e: React.DragEvent) => void;
   onResize: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
   currentUser?: User | null;
+  onClick: () => void;
 }
 
 export function SingleDayEventBar({
   event,
   userSettings,
   canModify,
-  isDragging,
   onDelete,
-  onDragStart,
   onResize,
-  currentUser
+  currentUser,
+  onClick
 }: SingleDayEventBarProps) {
   const { isResizing, handleResizeStart } = useEventResize({
     eventId: event.id,
@@ -43,21 +41,18 @@ export function SingleDayEventBar({
     }
   };
 
-  // Calculate top position based on verticalPosition
-  const topPosition = event.verticalPosition * 24; // Reduced from 28px
+  const topPosition = event.verticalPosition * 24;
 
   return (
     <div
-      draggable={canModify && !isResizing}
-      onDragStart={onDragStart}
+      onClick={onClick}
       className={`absolute left-0 right-0 flex items-center justify-between text-xs px-2 rounded 
-        ${canModify ? 'cursor-move' : 'cursor-default'} 
-        ${isDragging ? 'opacity-50' : ''}`}
+        cursor-pointer hover:opacity-90`}
       style={{
         backgroundColor,
         color: backgroundColor === "#fee090" || backgroundColor === "#e0f3f8" ? "#1a202c" : "white",
         top: `${topPosition}px`,
-        height: '20px', // Reduced from 24px
+        height: '20px',
         zIndex: isResizing ? 20 : 10
       }}
     >
@@ -76,7 +71,7 @@ export function SingleDayEventBar({
       
       <span className="truncate flex-1 px-4">
         {prefix}
-        {event.title}
+        {event.title || "Untitled Event"}
       </span>
       
       {canModify && onDelete && (

@@ -7,20 +7,21 @@ interface WeekColumnProps {
 }
 
 export function WeekColumn({ days, position }: WeekColumnProps) {
-  const weeks = new Map<number, Date>();
-  
-  // Get first day of each week
-  days.forEach(day => {
-    const weekNum = getWeekNumber(day);
-    if (!weeks.has(weekNum)) {
-      weeks.set(weekNum, day);
-    }
-  });
+  // Get unique weeks, but only for the actual calendar days we're showing
+  const uniqueWeeks = days
+    .reduce((acc, day) => {
+      const weekNum = getWeekNumber(day);
+      if (!acc.some(w => w.weekNum === weekNum)) {
+        acc.push({ weekNum, day });
+      }
+      return acc;
+    }, [] as { weekNum: number; day: Date }[])
+    .slice(0, 5); // Ensure we only show 5 weeks
 
   return (
     <div className="grid auto-rows-[120px] bg-white">
-      {Array.from(weeks.values()).map((day) => (
-        <WeekNumber key={day.toISOString()} date={day} />
+      {uniqueWeeks.map(({ weekNum, day }) => (
+        <WeekNumber key={weekNum} date={day} />
       ))}
     </div>
   );

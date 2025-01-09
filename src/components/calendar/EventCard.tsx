@@ -1,17 +1,17 @@
+import { useState } from "react";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
 import { useEventPermissions } from "../../hooks/useEventPermissions";
 import { SingleDayEventBar } from "./SingleDayEventBar";
 import { MultiDayEventBar } from "./MultiDayEventBar";
+import { EventDetailsModal } from "./EventDetailsModal";
 
 interface EventCardProps {
-  event: Event;
+  event: Event & { verticalPosition: number };
   date: string;
   userSettings?: User["settings"];
   onDelete?: (eventId: string) => void;
   currentUser?: User | null;
-  isDragging?: boolean;
-  onDragStart?: (event: Event) => void;
   onResize?: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
 }
 
@@ -21,44 +21,56 @@ export function EventCard({
   userSettings,
   onDelete,
   currentUser,
-  isDragging,
-  onDragStart,
   onResize,
 }: EventCardProps) {
+  const [showDetails, setShowDetails] = useState(false);
   const { canModify } = useEventPermissions(event, currentUser);
   const isMultiDay = event.endDate && event.endDate !== event.date;
 
-  const handleDragStart = (e: React.DragEvent) => {
-    if (!canModify) {
-      e.preventDefault();
-      return;
-    }
-    e.dataTransfer.setData('text/plain', event.id);
-    onDragStart?.(event);
+  const handleClick = () => {
+    setShowDetails(true);
   };
 
   if (isMultiDay) {
     return (
-      <MultiDayEventBar
-        event={event}
-        date={date}
-        userSettings={userSettings}
-        canModify={canModify}
-        onResize={onResize!}
-      />
+      <>
+        <MultiDayEventBar
+          event={event}
+          date={date}
+          userSettings={userSettings}
+          canModify={canModify}
+          onResize={onResize!}
+          onClick={handleClick}
+        />
+        {showDetails && (
+          <EventDetailsModal
+            event={event}
+            onClose={() => setShowDetails(false)}
+            onDelete={canModify ? onDelete : undefined}
+          />
+        )}
+      </>
     );
   }
 
   return (
-    <SingleDayEventBar
-      event={event}
-      userSettings={userSettings}
-      canModify={canModify}
-      isDragging={isDragging}
-      onDelete={onDelete}
-      onDragStart={handleDragStart}
-      onResize={onResize!}
-      currentUser={currentUser}
-    />
+    <>
+      <SingleDayEventBar
+        event={event}
+        userSettings={userSettings}
+        canModify={canModify}
+        onDelete={onDelete}
+        onResize={onResize!}
+        currentUser={currentUser}
+        onClick={handleClick}
+      />
+      {showDetails && (
+        <EventDetailsModal
+          event={event}
+          onClose={() => setShowDetails(false)}
+          onDelete={canModify ? onDelete : undefined}
+        />
+      )}
+    </>
   );
 }

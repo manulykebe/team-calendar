@@ -24,14 +24,13 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
   };
 
   return (
-    <div className={`${className} settings-panel`}>
+    <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+        className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 z-10"
         aria-label="Open Settings"
       >
-        <SettingsIcon className="w-4 h-4 mr-2" />
-        Settings
+        <SettingsIcon className="w-6 h-6" />
       </button>
 
       {isOpen && (
@@ -125,6 +124,6 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
       {showUserManagement && (
         <UserManagement onClose={() => setShowUserManagement(false)} />
       )}
-    </div>
+    </>
   );
 }

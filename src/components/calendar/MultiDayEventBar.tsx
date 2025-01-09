@@ -11,6 +11,7 @@ interface MultiDayEventBarProps {
   userSettings?: User["settings"];
   canModify: boolean;
   onResize: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
+  onClick: () => void;
 }
 
 export function MultiDayEventBar({
@@ -19,6 +20,7 @@ export function MultiDayEventBar({
   userSettings,
   canModify,
   onResize,
+  onClick,
 }: MultiDayEventBarProps) {
   const { isResizing, handleResizeStart } = useEventResize({
     eventId: event.id,
@@ -34,16 +36,16 @@ export function MultiDayEventBar({
   const isFirstDay = date === event.date;
   const isLastDay = date === event.endDate;
   const duration = differenceInDays(parseISO(event.endDate!), parseISO(event.date)) + 1;
-
   const topPosition = event.verticalPosition * 24;
 
   return (
     <div
+      onClick={onClick}
       className={`absolute left-0 right-0 flex items-center justify-between text-xs
         ${isFirstDay ? 'rounded-l pl-2' : ''}
         ${isLastDay ? 'rounded-r pr-2' : ''}
         ${!isFirstDay && !isLastDay ? 'px-0' : ''}
-        ${canModify && !isResizing ? 'cursor-pointer' : 'cursor-default'}
+        cursor-pointer hover:opacity-90
       `}
       style={{
         backgroundColor,
@@ -76,7 +78,7 @@ export function MultiDayEventBar({
       <div className="flex-1 min-w-0">
         {isFirstDay && (
           <span className="truncate">
-            {prefix}{event.title}
+            {prefix}{event.title || "Untitled Event"}
           </span>
         )}
       </div>

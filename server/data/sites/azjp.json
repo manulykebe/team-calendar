@@ -163,7 +163,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T11:14:47.220Z",
+      "updatedAt": "2025-01-09T11:31:50.557Z",
       "settings": {
         "app": {
           "color": {
@@ -172,23 +172,23 @@
         },
         "colleagues": {
           "1": {
-            "color": "#abd9e9",
+            "color": "#fdae61",
             "initials": "ADM",
             "visible": true
           },
           "2": {
-            "color": "#4575b4",
+            "color": "#d73027",
             "initials": "KDJ",
             "visible": true
           },
           "3": {
             "initials": "MS",
-            "color": "#74add1",
+            "color": "#f46d43",
             "visible": true
           },
           "4": {
             "initials": "SD",
-            "color": "#313695"
+            "color": "#a50026"
           }
         },
         "showWeekNumber": "left",
@@ -200,7 +200,7 @@
         ]
       },
       "app": {
-        "weekStartsOn": "Monday"
+        "weekStartsOn": "Sunday"
       }
     }
   ],
@@ -212,9 +212,9 @@
       "title": "",
       "description": "",
       "date": "2024-12-24",
-      "endDate": "2024-12-29",
+      "endDate": "2024-12-28",
       "createdAt": "2025-01-06T16:23:24.780Z",
-      "updatedAt": "2025-01-09T11:05:48.534Z"
+      "updatedAt": "2025-01-09T11:44:33.031Z"
     },
     {
       "id": "c744a6d8-f55e-4d49-ac98-0e59fcecbbda",
@@ -244,10 +244,21 @@
       "type": "requestedHoliday",
       "title": "",
       "description": "",
-      "date": "2025-01-01",
-      "endDate": "2025-01-05",
+      "date": "2024-12-31",
+      "endDate": "2025-01-02",
       "createdAt": "2025-01-06T16:26:23.957Z",
-      "updatedAt": "2025-01-06T16:26:23.957Z"
+      "updatedAt": "2025-01-09T11:42:18.137Z"
+    },
+    {
+      "id": "5c5b47ad-82f8-4408-81cf-f8ce34c2b247",
+      "userId": "1",
+      "type": "requestedPeriod",
+      "title": "",
+      "description": "",
+      "date": "2024-12-27",
+      "createdAt": "2025-01-09T11:42:29.356Z",
+      "updatedAt": "2025-01-09T11:43:47.391Z",
+      "endDate": "2025-01-16"
     }
   ]
 }

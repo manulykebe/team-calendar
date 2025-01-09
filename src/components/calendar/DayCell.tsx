@@ -1,6 +1,8 @@
 import { memo } from 'react';
 import { format, isFirstDayOfMonth } from "date-fns";
+import { EventCard } from "./EventCard";
 import { MonthLabel } from "./MonthLabel";
+import { useFilteredEvents } from "../../hooks/useFilteredEvents";
 import { useCalendarColors } from "../../hooks/useCalendarColors";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
@@ -19,10 +21,14 @@ export const DayCell = memo(function DayCell({
   date,
   events,
   onDateClick,
+  userSettings,
+  onEventDelete,
   currentUser,
+  onEventResize,
 }: DayCellProps) {
   const { getColumnColor } = useCalendarColors(currentUser);
   const formattedDate = format(date, "yyyy-MM-dd");
+  const dayEvents = useFilteredEvents(events, formattedDate, currentUser);
   const backgroundColor = getColumnColor(date);
   const showMonthLabel = isFirstDayOfMonth(date);
 
@@ -42,11 +48,24 @@ export const DayCell = memo(function DayCell({
         <span className="text-sm font-medium text-zinc-700">
           {format(date, "d")}
         </span>
-        {events.length > 0 && (
+        {dayEvents.length > 0 && (
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {events.length}
+            {dayEvents.length}
           </span>
         )}
+      </div>
+      <div className="mt-2 relative">
+        {dayEvents.map((event) => (
+          <EventCard
+            key={event.id}
+            event={event}
+            date={formattedDate}
+            userSettings={userSettings}
+            onDelete={onEventDelete}
+            currentUser={currentUser}
+            onResize={onEventResize}
+          />
+        ))}
       </div>
     </div>
   );
