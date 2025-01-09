@@ -6,6 +6,7 @@ import { userSettingsEmitter } from './useColleagueSettings';
 export function useCalendarSettings() {
   const { token } = useAuth();
   const [weekStartsOn, setWeekStartsOn] = useState<string>('Monday');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -24,6 +25,7 @@ export function useCalendarSettings() {
           );
         }
       } catch (error) {
+        setError(error instanceof Error ? error.message : 'Failed to fetch calendar settings');
         console.error('Failed to fetch calendar settings:', error);
       }
     };
@@ -49,6 +51,7 @@ export function useCalendarSettings() {
   }, [token]);
 
   return {
-    weekStartsOn
+    weekStartsOn,
+    error
   };
 }

@@ -29,6 +29,7 @@ export function CalendarGrid({
   currentUser,
   onEventResize,
 }: CalendarGridProps) {
+  const [error, setError] = useState<string | null>(null);
   const { days, emptyDays, weekDays } = getCalendarDays(
     currentMonth,
     weekStartsOn as any
@@ -42,8 +43,10 @@ export function CalendarGrid({
       try {
         const holidayData = await getHolidays(year);
         setHolidays(holidayData);
+        setError(null);
       } catch (error) {
         console.error('Failed to fetch holidays:', error);
+        setError('Failed to fetch holidays');
       }
     };
     fetchHolidays();
