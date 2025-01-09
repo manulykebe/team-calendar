@@ -147,7 +147,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T20:51:48.354Z",
+      "updatedAt": "2025-01-09T21:06:49.306Z",
       "settings": {
         "app": {
           "color": {
@@ -212,16 +212,16 @@
           },
           "alternateWeekSchedule": {
             "Monday": {
-              "am": true,
-              "pm": true
+              "am": false,
+              "pm": false
             },
             "Tuesday": {
               "am": true,
               "pm": true
             },
             "Wednesday": {
-              "am": false,
-              "pm": false
+              "am": true,
+              "pm": true
             },
             "Thursday": {
               "am": true,
@@ -232,9 +232,9 @@
               "pm": true
             }
           },
-          "startDate": "2025-01-09",
+          "startDate": "2000-01-01",
           "endDate": "",
-          "repeatPattern": "even"
+          "repeatPattern": "evenodd"
         }
       },
       "app": {

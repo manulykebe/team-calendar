@@ -13,13 +13,17 @@ interface AvailabilityModalProps {
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as const;
 
+type RepeatPattern = 'all' | 'evenodd';
+
 export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps) {
   const { token } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [endDate, setEndDate] = useState("");
-  const [repeatPattern, setRepeatPattern] = useState<'all' | 'even' | 'odd'>('all');
+  const [startDate, setStartDate] = useState(colleague.settings?.availability?.startDate || format(new Date(), 'yyyy-MM-dd'));
+  const [endDate, setEndDate] = useState(colleague.settings?.availability?.endDate || "");
+  const [repeatPattern, setRepeatPattern] = useState<RepeatPattern>(
+    colleague.settings?.availability?.repeatPattern as RepeatPattern || 'all'
+  );
   const [schedule, setSchedule] = useState<WeeklySchedule>(() => {
     const defaultSchedule = colleague.settings?.availability?.weeklySchedule || {};
     return DAYS.reduce((acc, day) => ({
@@ -53,12 +57,12 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
       setLoading(true);
       setError("");
 
-      // Only update the settings object with availability
+      // Create a new settings object with only the availability update
       const updatedSettings = {
         ...colleague.settings,
         availability: {
           weeklySchedule: schedule,
-          ...(repeatPattern !== 'all' && {
+          ...(repeatPattern === 'evenodd' && {
             alternateWeekSchedule: alternateSchedule
           }),
           startDate,
@@ -67,12 +71,8 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
         }
       };
 
-      // Create update payload with only necessary fields
-      const updatePayload = {
-        settings: updatedSettings
-      };
-
-      await updateUser(token, colleague.id, updatePayload);
+      // Only send the settings update, not the full user object
+      await updateUser(token, colleague.id, { settings: updatedSettings });
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save availability");
@@ -178,46 +178,19 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
               <label className="block text-sm font-medium text-zinc-700 mb-2">
                 Repeat Pattern
               </label>
-              <div className="flex space-x-4">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="repeatPattern"
-                    value="all"
-                    checked={repeatPattern === 'all'}
-                    onChange={(e) => setRepeatPattern(e.target.value as 'all')}
-                    className="mr-2"
-                  />
-                  <span>All Weeks</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="repeatPattern"
-                    value="even"
-                    checked={repeatPattern === 'even'}
-                    onChange={(e) => setRepeatPattern(e.target.value as 'even')}
-                    className="mr-2"
-                  />
-                  <span>Even Weeks</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="repeatPattern"
-                    value="odd"
-                    checked={repeatPattern === 'odd'}
-                    onChange={(e) => setRepeatPattern(e.target.value as 'odd')}
-                    className="mr-2"
-                  />
-                  <span>Odd Weeks</span>
-                </label>
-              </div>
+              <select
+                value={repeatPattern}
+                onChange={(e) => setRepeatPattern(e.target.value as RepeatPattern)}
+                className="w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="all">All Weeks</option>
+                <option value="evenodd">Even/Odd Weeks</option>
+              </select>
             </div>
           </div>
 
           <div className="space-y-8">
-            {repeatPattern !== 'all' && (
+            {repeatPattern === 'evenodd' && (
               <div>
                 <h3 className="text-lg font-medium text-zinc-900 mb-4">Even Weeks</h3>
                 {renderScheduleGrid(false)}
@@ -228,7 +201,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
               <h3 className="text-lg font-medium text-zinc-900 mb-4">
                 {repeatPattern === 'all' ? 'Weekly Schedule' : 'Odd Weeks'}
               </h3>
-              {renderScheduleGrid(repeatPattern !== 'all')}
+              {renderScheduleGrid(repeatPattern === 'evenodd')}
             </div>
           </div>
         </div>
