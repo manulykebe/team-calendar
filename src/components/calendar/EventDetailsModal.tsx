@@ -34,7 +34,7 @@ export function EventDetailsModal({ event, onClose, onDelete }: EventDetailsModa
         <div className="p-4 space-y-4">
           <div>
             <h4 className="text-sm font-medium text-zinc-500">Title</h4>
-            <p className="mt-1 text-zinc-900">{event.title || "Untitled Event"}</p>
+            <p className="mt-1 text-zinc-900">{event.title || ""}</p>
           </div>
 
           <div>

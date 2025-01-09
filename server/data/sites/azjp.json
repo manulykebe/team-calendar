@@ -32,35 +32,39 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T12:32:13.075Z",
+      "updatedAt": "2025-01-09T14:07:04.510Z",
       "app": {
-        "weekStartsOn": "Monday"
+        "weekStartsOn": "Sunday"
       },
       "settings": {
         "colleagues": {
           "1": {
-            "color": "#313695",
+            "color": "#a50026",
             "initials": "ADM"
           },
           "2": {
-            "color": "#e0f3f8",
+            "color": "#d73027",
             "initials": "KDJ"
           },
           "3": {
-            "color": "#e0f3f8",
+            "color": "#f46d43",
             "initials": "MS"
           },
           "4": {
             "initials": "SD",
-            "color": "#e0f3f8"
+            "color": "#fdae61"
+          },
+          "tTRjdtgFDDRN": {
+            "initials": "K",
+            "color": "#fee090"
           }
         },
         "showWeekNumber": "none",
         "colleagueOrder": [
           "1",
+          "2",
           "3",
-          "4",
-          "2"
+          "4"
         ]
       }
     },
@@ -75,7 +79,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T11:51:50.302Z",
+      "updatedAt": "2025-01-09T14:09:55.627Z",
       "settings": {
         "app": {
           "color": {
@@ -101,6 +105,10 @@
             "initials": "SD",
             "color": "#74add1",
             "visible": true
+          },
+          "tTRjdtgFDDRN": {
+            "color": "#e0f3f8",
+            "initials": "KV"
           }
         },
         "showWeekNumber": "left",
@@ -208,6 +216,61 @@
       "app": {
         "weekStartsOn": "Sunday"
       }
+    },
+    {
+      "id": "tTRjdtgFDDRN",
+      "firstName": "Kris",
+      "lastName": "",
+      "email": "kris@lyke.be",
+      "mobile": "+32 494 11 58 25",
+      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+      "site": "azjp",
+      "role": "user",
+      "status": "active",
+      "createdAt": "2025-01-04T14:23:29.975Z",
+      "updatedAt": "2025-01-09T14:08:13.385Z",
+      "settings": {
+        "app": {
+          "color": {
+            "Tuesday": "#4575b4"
+          }
+        },
+        "colleagues": {
+          "1": {
+            "color": "#e0f3f8",
+            "initials": "ADM",
+            "visible": true
+          },
+          "2": {
+            "color": "#74add1",
+            "initials": "KDJ",
+            "visible": true
+          },
+          "3": {
+            "initials": "MS",
+            "color": "#abd9e9",
+            "visible": true
+          },
+          "4": {
+            "initials": "SD",
+            "color": "#4575b4"
+          },
+          "tTRjdtgFDDRN": {
+            "color": "#313695",
+            "initials": "KV"
+          }
+        },
+        "showWeekNumber": "left",
+        "colleagueOrder": [
+          "4",
+          "2",
+          "3",
+          "1"
+        ]
+      },
+      "app": {
+        "weekStartsOn": "Sunday"
+      }
     }
   ],
   "events": [
@@ -251,9 +314,9 @@
       "title": "",
       "description": "",
       "date": "2024-12-31",
-      "endDate": "2025-01-02",
+      "endDate": "2025-01-03",
       "createdAt": "2025-01-06T16:26:23.957Z",
-      "updatedAt": "2025-01-09T11:42:18.137Z"
+      "updatedAt": "2025-01-09T14:02:49.818Z"
     },
     {
       "id": "5c5b47ad-82f8-4408-81cf-f8ce34c2b247",
@@ -263,8 +326,8 @@
       "description": "",
       "date": "2024-12-25",
       "createdAt": "2025-01-09T11:42:29.356Z",
-      "updatedAt": "2025-01-09T12:21:59.468Z",
-      "endDate": "2025-01-03"
+      "updatedAt": "2025-01-09T14:01:21.385Z",
+      "endDate": "2024-12-30"
     },
     {
       "id": "23368617-cf19-4887-893a-2cd7b3fb9b15",
@@ -307,6 +370,28 @@
       "createdAt": "2025-01-09T11:51:34.222Z",
       "updatedAt": "2025-01-09T11:51:35.871Z",
       "endDate": "2024-12-26"
+    },
+    {
+      "id": "50132256-bcb8-4f88-a209-1c4179a56b2a",
+      "userId": "1",
+      "type": "requestedHoliday",
+      "title": "",
+      "description": "",
+      "date": "2025-01-06",
+      "endDate": "2025-01-12",
+      "createdAt": "2025-01-09T13:16:02.226Z",
+      "updatedAt": "2025-01-09T14:01:18.966Z"
+    },
+    {
+      "id": "665ee0ed-ef1d-4a45-b251-eead072414d7",
+      "userId": "tTRjdtgFDDRN",
+      "type": "requestedHoliday",
+      "title": "",
+      "description": "",
+      "date": "2024-12-24",
+      "endDate": "2024-12-29",
+      "createdAt": "2025-01-09T14:07:32.393Z",
+      "updatedAt": "2025-01-09T14:07:32.393Z"
     }
   ]
 }

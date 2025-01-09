@@ -69,9 +69,9 @@ export function SingleDayEventBar({
         </>
       )}
       
-      <span className="truncate flex-1 px-4">
+      <span className="truncate">
         {prefix}
-        {event.title || "Untitled Event"}
+        {event.title || ""}
       </span>
       
       {canModify && onDelete && (

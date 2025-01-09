@@ -78,7 +78,7 @@ export function MultiDayEventBar({
       <div className="flex-1 min-w-0">
         {isFirstDay && (
           <span className="truncate">
-            {prefix}{event.title || "Untitled Event"}
+            {prefix}{event.title || ""}
           </span>
         )}
       </div>
