@@ -7,7 +7,7 @@ interface CalendarHeaderProps {
 
 export function CalendarHeader({ weekDays, showWeekNumber }: CalendarHeaderProps) {
   return (
-    <div className={`grid ${
+    <div className={`grid  ${
       showWeekNumber === "left" 
         ? "grid-cols-[3rem_1fr]" 
         : showWeekNumber === "right" 

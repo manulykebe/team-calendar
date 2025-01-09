@@ -79,7 +79,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T14:24:17.690Z",
+      "updatedAt": "2025-01-09T14:09:55.627Z",
       "settings": {
         "app": {
           "color": {
@@ -90,26 +90,25 @@
           "1": {
             "color": "#abd9e9",
             "initials": "MV",
-            "visible": false
+            "visible": true
           },
           "2": {
             "color": "#313695",
             "initials": "KDJ"
           },
           "3": {
-            "visible": false,
+            "visible": true,
             "initials": "MS",
             "color": "#4575b4"
           },
           "4": {
             "initials": "SD",
             "color": "#74add1",
-            "visible": false
+            "visible": true
           },
           "tTRjdtgFDDRN": {
             "color": "#e0f3f8",
-            "initials": "KV",
-            "visible": false
+            "initials": "KV"
           }
         },
         "showWeekNumber": "left",
@@ -292,10 +291,10 @@
       "type": "requestedPeriod",
       "title": "",
       "description": "",
-      "date": "2025-01-06",
+      "date": "2025-01-07",
       "createdAt": "2025-01-06T16:25:07.457Z",
-      "updatedAt": "2025-01-09T14:24:37.325Z",
-      "endDate": "2025-01-09"
+      "updatedAt": "2025-01-09T11:04:38.690Z",
+      "endDate": "2025-01-08"
     },
     {
       "id": "ef8fe3c6-ef11-4249-9464-dc48b3b00842",

@@ -4,9 +4,10 @@ import { WeekNumber } from './WeekNumber';
 interface WeekColumnProps {
   days: Date[];
   position: "left" | "right";
+  rowHeight?: number;
 }
 
-export function WeekColumn({ days, position }: WeekColumnProps) {
+export function WeekColumn({ days, position, rowHeight = 120 }: WeekColumnProps) {
   // Get unique weeks, but only for the actual calendar days we're showing
   const uniqueWeeks = days
     .reduce((acc, day) => {
@@ -19,7 +20,12 @@ export function WeekColumn({ days, position }: WeekColumnProps) {
     .slice(0, 5); // Ensure we only show 5 weeks
 
   return (
-    <div className="grid auto-rows-[120px] bg-white">
+    <div 
+      className="grid gap-px"
+      style={{ 
+        gridAutoRows: `${rowHeight}px`
+      }}
+    >
       {uniqueWeeks.map(({ weekNum, day }) => (
         <WeekNumber key={weekNum} date={day} />
       ))}

@@ -50,8 +50,8 @@ export function CalendarGrid({
           : showWeekNumber === "right" 
             ? "grid-cols-[1fr_3rem]" 
             : "grid-cols-1"
-      } gap-px`}>
-        {showWeekNumber === "left" && <WeekColumn days={days} position="left" />}
+      } gap-px bg-zinc-200`}>
+        {showWeekNumber === "left" && <WeekColumn days={days} position="left" rowHeight={rowHeight} />}
         <div 
           className="grid grid-cols-7 gap-px bg-zinc-200"
           style={{ 
@@ -74,7 +74,7 @@ export function CalendarGrid({
             />
           ))}
         </div>
-        {showWeekNumber === "right" && <WeekColumn days={days} position="right" />}
+        {showWeekNumber === "right" && <WeekColumn days={days} position="right" rowHeight={rowHeight} />}
       </div>
     </div>
   );
