@@ -27,9 +27,17 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
       [day]: defaultSchedule[day] || { am: true, pm: true }
     }), {} as WeeklySchedule);
   });
+  const [alternateSchedule, setAlternateSchedule] = useState<WeeklySchedule>(() => {
+    const defaultSchedule = colleague.settings?.availability?.alternateWeekSchedule || {};
+    return DAYS.reduce((acc, day) => ({
+      ...acc,
+      [day]: defaultSchedule[day] || { am: true, pm: true }
+    }), {} as WeeklySchedule);
+  });
 
-  const handleTimeSlotToggle = (day: keyof WeeklySchedule, slot: keyof TimeSlot) => {
-    setSchedule(prev => ({
+  const handleTimeSlotToggle = (day: keyof WeeklySchedule, slot: keyof TimeSlot, isAlternate = false) => {
+    const setterFunction = isAlternate ? setAlternateSchedule : setSchedule;
+    setterFunction(prev => ({
       ...prev,
       [day]: {
         ...prev[day],
@@ -50,6 +58,9 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
         ...colleague.settings,
         availability: {
           weeklySchedule: schedule,
+          ...(repeatPattern !== 'all' && {
+            alternateWeekSchedule: alternateSchedule
+          }),
           startDate,
           endDate,
           repeatPattern
@@ -58,7 +69,6 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
 
       // Create update payload with only necessary fields
       const updatePayload = {
-        id: colleague.id,
         settings: updatedSettings
       };
 
@@ -70,6 +80,53 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
       setLoading(false);
     }
   };
+
+  const renderScheduleGrid = (isAlternate = false) => (
+    <div className="grid grid-cols-6 gap-4">
+      <div className="col-span-1"></div>
+      {DAYS.map((day) => (
+        <div key={day} className="text-center font-medium">
+          {day}
+        </div>
+      ))}
+
+      <div className="flex items-center justify-end">
+        <Sun className="w-5 h-5 text-amber-500" />
+      </div>
+      {DAYS.map((day) => (
+        <div key={`${day}-am${isAlternate ? '-alt' : ''}`} className="text-center">
+          <button
+            onClick={() => handleTimeSlotToggle(day, 'am', isAlternate)}
+            className={`w-full h-12 rounded-md border ${
+              (isAlternate ? alternateSchedule : schedule)[day].am
+                ? 'bg-green-100 border-green-500'
+                : 'bg-red-100 border-red-500'
+            }`}
+          >
+            {(isAlternate ? alternateSchedule : schedule)[day].am ? 'Available' : 'Unavailable'}
+          </button>
+        </div>
+      ))}
+
+      <div className="flex items-center justify-end">
+        <Moon className="w-5 h-5 text-blue-500" />
+      </div>
+      {DAYS.map((day) => (
+        <div key={`${day}-pm${isAlternate ? '-alt' : ''}`} className="text-center">
+          <button
+            onClick={() => handleTimeSlotToggle(day, 'pm', isAlternate)}
+            className={`w-full h-12 rounded-md border ${
+              (isAlternate ? alternateSchedule : schedule)[day].pm
+                ? 'bg-green-100 border-green-500'
+                : 'bg-red-100 border-red-500'
+            }`}
+          >
+            {(isAlternate ? alternateSchedule : schedule)[day].pm ? 'Available' : 'Unavailable'}
+          </button>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
@@ -122,66 +179,57 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                 Repeat Pattern
               </label>
               <div className="flex space-x-4">
-                {['all', 'even', 'odd'].map((pattern) => (
-                  <label key={pattern} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="repeatPattern"
-                      value={pattern}
-                      checked={repeatPattern === pattern}
-                      onChange={(e) => setRepeatPattern(e.target.value as any)}
-                      className="mr-2"
-                    />
-                    <span className="capitalize">{pattern} weeks</span>
-                  </label>
-                ))}
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="repeatPattern"
+                    value="all"
+                    checked={repeatPattern === 'all'}
+                    onChange={(e) => setRepeatPattern(e.target.value as 'all')}
+                    className="mr-2"
+                  />
+                  <span>All Weeks</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="repeatPattern"
+                    value="even"
+                    checked={repeatPattern === 'even'}
+                    onChange={(e) => setRepeatPattern(e.target.value as 'even')}
+                    className="mr-2"
+                  />
+                  <span>Even Weeks</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="repeatPattern"
+                    value="odd"
+                    checked={repeatPattern === 'odd'}
+                    onChange={(e) => setRepeatPattern(e.target.value as 'odd')}
+                    className="mr-2"
+                  />
+                  <span>Odd Weeks</span>
+                </label>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-6 gap-4 mt-6">
-            <div className="col-span-1"></div>
-            {DAYS.map((day) => (
-              <div key={day} className="text-center font-medium">
-                {day}
+          <div className="space-y-8">
+            {repeatPattern !== 'all' && (
+              <div>
+                <h3 className="text-lg font-medium text-zinc-900 mb-4">Even Weeks</h3>
+                {renderScheduleGrid(false)}
               </div>
-            ))}
-
-            <div className="flex items-center justify-end">
-              <Sun className="w-5 h-5 text-amber-500" />
+            )}
+            
+            <div>
+              <h3 className="text-lg font-medium text-zinc-900 mb-4">
+                {repeatPattern === 'all' ? 'Weekly Schedule' : 'Odd Weeks'}
+              </h3>
+              {renderScheduleGrid(repeatPattern !== 'all')}
             </div>
-            {DAYS.map((day) => (
-              <div key={`${day}-am`} className="text-center">
-                <button
-                  onClick={() => handleTimeSlotToggle(day, 'am')}
-                  className={`w-full h-12 rounded-md border ${
-                    schedule[day].am
-                      ? 'bg-green-100 border-green-500'
-                      : 'bg-red-100 border-red-500'
-                  }`}
-                >
-                  {schedule[day].am ? 'Available' : 'Unavailable'}
-                </button>
-              </div>
-            ))}
-
-            <div className="flex items-center justify-end">
-              <Moon className="w-5 h-5 text-blue-500" />
-            </div>
-            {DAYS.map((day) => (
-              <div key={`${day}-pm`} className="text-center">
-                <button
-                  onClick={() => handleTimeSlotToggle(day, 'pm')}
-                  className={`w-full h-12 rounded-md border ${
-                    schedule[day].pm
-                      ? 'bg-green-100 border-green-500'
-                      : 'bg-red-100 border-red-500'
-                  }`}
-                >
-                  {schedule[day].pm ? 'Available' : 'Unavailable'}
-                </button>
-              </div>
-            ))}
           </div>
         </div>
 
