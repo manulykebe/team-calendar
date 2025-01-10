@@ -110,7 +110,8 @@
           "bhhMvstlpwUG",
           "KTHpbRLreSbC"
         ],
-        "availability": []
+        "availability": [],
+        "availabilityExceptions": []
       }
     },
     {
@@ -124,7 +125,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-10T22:29:00.912Z",
+      "updatedAt": "2025-01-10T22:33:15.443Z",
       "settings": {
         "app": {
           "color": {
@@ -164,57 +165,7 @@
           "SjFBqPWVxUVY",
           "tTRjdtgFDDRN"
         ],
-        "availability": [
-          {
-            "weeklySchedule": {
-              "Monday": {
-                "am": false,
-                "pm": true
-              },
-              "Tuesday": {
-                "am": true,
-                "pm": false
-              },
-              "Wednesday": {
-                "am": false,
-                "pm": true
-              },
-              "Thursday": {
-                "am": true,
-                "pm": false
-              },
-              "Friday": {
-                "am": false,
-                "pm": true
-              }
-            },
-            "alternateWeekSchedule": {
-              "Monday": {
-                "am": true,
-                "pm": false
-              },
-              "Tuesday": {
-                "am": false,
-                "pm": true
-              },
-              "Wednesday": {
-                "am": true,
-                "pm": false
-              },
-              "Thursday": {
-                "am": false,
-                "pm": true
-              },
-              "Friday": {
-                "am": true,
-                "pm": false
-              }
-            },
-            "startDate": "2025-07-01",
-            "endDate": "2025-08-31",
-            "repeatPattern": "evenodd"
-          }
-        ],
+        "availability": [],
         "availabilityExceptions": []
       },
       "app": {
