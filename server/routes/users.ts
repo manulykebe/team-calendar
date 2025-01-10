@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { AuthRequest, authenticateToken } from '../middleware/auth';
 import { getUsers, createUser, updateUser, deleteUser } from '../services/users';
+import { readSiteData, writeSiteData } from '../utils';
 
 const router = Router();
 
@@ -47,46 +48,48 @@ router.put('/:id/exceptions', async (req: AuthRequest, res) => {
   try {
     const { date, part, value } = req.body;
     const siteData = await readSiteData(req.user!.site);
-    const user = siteData.users.find((u: any) => u.id === req.params.id);
+    const userIndex = siteData.users.findIndex((u: any) => u.id === req.params.id);
 
-    if (!user) {
+    if (userIndex === -1) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Initialize or get existing exceptions
-    const availabilityExceptions = user.settings?.availabilityExceptions || [];
-    
+    const user = siteData.users[userIndex];
+
+    // Initialize settings and availabilityExceptions if they don't exist
+    if (!user.settings) {
+      user.settings = {};
+    }
+    if (!user.settings.availabilityExceptions) {
+      user.settings.availabilityExceptions = [];
+    }
+
     // Find existing exception for this date
-    const existingExceptionIndex = availabilityExceptions.findIndex(
+    const existingExceptionIndex = user.settings.availabilityExceptions.findIndex(
       (ex: any) => ex.date === date
     );
 
     if (existingExceptionIndex >= 0) {
       // Update existing exception
-      availabilityExceptions[existingExceptionIndex] = {
-        ...availabilityExceptions[existingExceptionIndex],
+      user.settings.availabilityExceptions[existingExceptionIndex] = {
+        ...user.settings.availabilityExceptions[existingExceptionIndex],
         [part]: value
       };
     } else {
       // Create new exception
-      availabilityExceptions.push({
+      user.settings.availabilityExceptions.push({
         date,
         [part]: value
       });
     }
 
-    // Update user settings
-    const updatedSettings = {
-      ...user.settings,
-      availabilityExceptions
-    };
+    // Update the user in the site data
+    siteData.users[userIndex] = user;
 
-    const updatedUser = await updateUser(req.params.id, {
-      settings: updatedSettings,
-      site: req.user!.site
-    });
+    // Write updated data back to file
+    await writeSiteData(req.user!.site, siteData);
 
-    res.json(updatedUser);
+    res.json(user);
   } catch (error) {
     res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to update exceptions' });
   }

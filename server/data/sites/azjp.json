@@ -160,7 +160,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-10T21:50:41.372Z",
+      "updatedAt": "2025-01-10T22:05:43.432Z",
       "settings": {
         "app": {
           "color": {
@@ -180,11 +180,11 @@
           "bhhMvstlpwUG": {
             "visible": true,
             "initials": "MS",
-            "color": "#74add1"
+            "color": "#4575b4"
           },
           "KTHpbRLreSbC": {
             "initials": "SD",
-            "color": "#313695",
+            "color": "#74add1",
             "visible": true
           },
           "tTRjdtgFDDRN": {
@@ -224,8 +224,8 @@
                 "pm": true
               }
             },
-            "startDate": "2025-01-10",
-            "endDate": "2025-01-09",
+            "startDate": "2020-01-01",
+            "endDate": "2025-06-30",
             "repeatPattern": "all"
           },
           {
@@ -235,28 +235,111 @@
                 "pm": true
               },
               "Tuesday": {
-                "am": false,
-                "pm": true
+                "am": true,
+                "pm": false
               },
               "Wednesday": {
                 "am": false,
                 "pm": true
               },
               "Thursday": {
-                "am": false,
-                "pm": true
+                "am": true,
+                "pm": false
               },
               "Friday": {
                 "am": false,
                 "pm": true
               }
             },
-            "startDate": "2025-01-10",
-            "endDate": "",
-            "repeatPattern": "all"
+            "alternateWeekSchedule": {
+              "Monday": {
+                "am": true,
+                "pm": false
+              },
+              "Tuesday": {
+                "am": false,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": false
+              },
+              "Thursday": {
+                "am": false,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": false
+              }
+            },
+            "startDate": "2025-07-01",
+            "endDate": "2025-08-31",
+            "repeatPattern": "evenodd"
           }
         ],
-        "availabilityException": []
+        "availabilityExceptions": [
+          {
+            "date": "2025-01-01",
+            "am": true
+          },
+          {
+            "date": "2025-01-02",
+            "pm": true
+          },
+          {
+            "date": "2025-01-03",
+            "am": true
+          },
+          {
+            "date": "2025-01-08",
+            "pm": false
+          },
+          {
+            "date": "2025-02-05",
+            "pm": false
+          },
+          {
+            "date": "2025-03-05",
+            "pm": false
+          },
+          {
+            "date": "2025-04-09",
+            "pm": false
+          },
+          {
+            "date": "2025-05-07",
+            "pm": false
+          },
+          {
+            "date": "2025-06-04",
+            "pm": false
+          },
+          {
+            "date": "2025-07-09",
+            "pm": false
+          },
+          {
+            "date": "2025-08-06",
+            "pm": false
+          },
+          {
+            "date": "2025-09-10",
+            "pm": false
+          },
+          {
+            "date": "2025-10-08",
+            "pm": false
+          },
+          {
+            "date": "2025-11-05",
+            "pm": false
+          },
+          {
+            "date": "2025-12-10",
+            "pm": false
+          }
+        ]
       },
       "app": {
         "weekStartsOn": "Monday"
