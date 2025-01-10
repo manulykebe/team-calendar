@@ -5,7 +5,6 @@ import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
-// Add authentication middleware
 router.use(authenticateToken);
 
 router.get('/availability/:site/:userId/:year', async (req, res) => {
@@ -23,44 +22,9 @@ router.get('/availability/:site/:userId/:year', async (req, res) => {
     const workWeekDays = siteData.app.workWeekDays || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     const dayParts = siteData.app.dayParts || ['am', 'pm'];
 
-    // Get availability settings or use site defaults
-    let availabilityArray = [];
-    
-    if (user.settings?.availability) {
-      // If availability is an array, use it directly
-      if (Array.isArray(user.settings.availability)) {
-        availabilityArray = user.settings.availability;
-      } 
-      // If availability is an object, convert it to array format
-      else if (typeof user.settings.availability === 'object') {
-        availabilityArray = [{
-          weeklySchedule: user.settings.availability.weeklySchedule,
-          alternateWeekSchedule: user.settings.availability.alternateWeekSchedule,
-          startDate: user.settings.availability.startDate,
-          endDate: user.settings.availability.endDate,
-          repeatPattern: user.settings.availability.repeatPattern
-        }];
-      }
-    }
-
-    // If no availability settings found, use site defaults
-    if (!availabilityArray.length) {
-      const defaultSchedule = {};
-      siteData.app.defaultWeeklySchedule.forEach((daySchedule: any) => {
-        const [day, slots] = Object.entries(daySchedule)[0];
-        defaultSchedule[day] = slots.reduce((acc: any, slot: string) => {
-          acc[slot] = true;
-          return acc;
-        }, {});
-      });
-
-      availabilityArray = [{
-        weeklySchedule: defaultSchedule,
-        startDate: '2020-01-01',
-        endDate: '',
-        repeatPattern: 'all'
-      }];
-    }
+    // Get availability settings and exceptions
+    const availabilityArray = user.settings?.availability || [];
+    const availabilityExceptions = user.settings?.availabilityExceptions || [];
 
     // Create date range for the year
     const startDate = new Date(parseInt(year), 0, 1);
@@ -82,6 +46,16 @@ router.get('/availability/:site/:userId/:year', async (req, res) => {
       const dateStr = format(date, 'yyyy-MM-dd');
       const dayName = dayMap[getDay(date)];
       
+      // Check for exceptions first
+      const exception = availabilityExceptions.find(ex => ex.date === dateStr);
+      if (exception) {
+        acc[dateStr] = {
+          am: exception.am !== undefined ? exception.am : getDefaultAvailability(date, 'am'),
+          pm: exception.pm !== undefined ? exception.pm : getDefaultAvailability(date, 'pm')
+        };
+        return acc;
+      }
+
       // Find applicable availability setting
       const setting = availabilityArray
         .filter(a => {
@@ -106,6 +80,27 @@ router.get('/availability/:site/:userId/:year', async (req, res) => {
 
       return acc;
     }, {});
+
+    function getDefaultAvailability(date: Date, part: 'am' | 'pm'): boolean {
+      const dayName = dayMap[getDay(date)];
+      const setting = availabilityArray
+        .filter(a => {
+          const start = parseISO(a.startDate);
+          const end = a.endDate ? parseISO(a.endDate) : new Date(2100, 0, 1);
+          return date >= start && date <= end;
+        })
+        .pop();
+
+      if (!setting) return false;
+
+      if (setting.repeatPattern === 'evenodd' && setting.alternateWeekSchedule) {
+        const weekNumber = Math.ceil((date.getTime() - parseISO(setting.startDate).getTime()) / (7 * 24 * 60 * 60 * 1000));
+        const schedule = weekNumber % 2 === 0 ? setting.weeklySchedule : setting.alternateWeekSchedule;
+        return schedule[dayName]?.[part] || false;
+      }
+
+      return setting.weeklySchedule[dayName]?.[part] || false;
+    }
 
     res.json({
       year,

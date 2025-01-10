@@ -72,6 +72,35 @@ export async function updateUser(token: string, userId: string, userData: Partia
   return response.json();
 }
 
+export async function updateAvailabilityException(
+  token: string, 
+  userId: string, 
+  data: {
+    date: string;
+    part: 'am' | 'pm';
+    value: boolean;
+  }
+) {
+  if (!token) {
+    throw new Error('Authentication token is required');
+  }
+
+  const response = await fetch(`${API_URL}/users/${userId}/exceptions`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to update exception' }));
+    throw new Error(error.message);
+  }
+  return response.json();
+}
+
 export async function deleteUser(token: string, userId: string) {
   if (!token) {
     throw new Error('Authentication token is required');

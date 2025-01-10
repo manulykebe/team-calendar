@@ -15,9 +15,10 @@ interface AvailabilityReportProps {
     };
   };
   onClose: () => void;
+  onExceptionToggle?: (date: string, part: 'am' | 'pm', value: boolean) => Promise<void>;
 }
 
-export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
+export function AvailabilityReport({ data, onClose, onExceptionToggle }: AvailabilityReportProps) {
   const dayHeaders = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -27,7 +28,7 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
   // Helper to convert Sunday=0 to Monday=0
   const getMondayBasedDay = (date: Date): number => {
     const day = getDay(date);
-    return day === 0 ? 6 : day - 1; // Convert Sunday (0) to 6, else subtract 1
+    return day === 0 ? 6 : day - 1;
   };
 
   // Custom week calculation starting from Monday
@@ -35,6 +36,12 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
     const daysSinceFirstDay = Math.floor((date.getTime() - firstDayOfYear.getTime()) / (24 * 60 * 60 * 1000));
     return Math.floor((daysSinceFirstDay + getMondayBasedDay(firstDayOfYear)) / 7) + 1;
+  };
+
+  const handleTimeSlotClick = async (dateStr: string, part: 'am' | 'pm', currentValue: boolean) => {
+    if (onExceptionToggle) {
+      await onExceptionToggle(dateStr, part, !currentValue);
+    }
   };
 
   return (
@@ -57,46 +64,15 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
             {/* Header row with day names */}
             <div className="grid grid-cols-[100px_repeat(37,1fr)] border-b">
               <div className="p-2"></div>
-              {dayHeaders.map((day, i) => (
-                <div 
-                  key={`header-${i}`}
-                  className="text-center font-medium p-2 text-xs"
-                >
-                  {day}
-                </div>
-              ))}
-              {/* Repeat headers for remaining weeks */}
-              {dayHeaders.map((day, i) => (
-                <div 
-                  key={`header-2-${i}`}
-                  className="text-center font-medium p-2 text-xs"
-                >
-                  {day}
-                </div>
-              ))}
-              {dayHeaders.map((day, i) => (
-                <div 
-                  key={`header-3-${i}`}
-                  className="text-center font-medium p-2 text-xs"
-                >
-                  {day}
-                </div>
-              ))}
-              {dayHeaders.map((day, i) => (
-                <div 
-                  key={`header-4-${i}`}
-                  className="text-center font-medium p-2 text-xs"
-                >
-                  {day}
-                </div>
-              ))}
-              {dayHeaders.map((day, i) => (
-                <div 
-                  key={`header-5-${i}`}
-                  className="text-center font-medium p-2 text-xs"
-                >
-                  {day}
-                </div>
+              {[...Array(5)].map((_, weekIndex) => (
+                dayHeaders.map((day, i) => (
+                  <div 
+                    key={`header-${weekIndex}-${i}`}
+                    className="text-center font-medium p-2 text-xs"
+                  >
+                    {day}
+                  </div>
+                ))
               ))}
             </div>
 
@@ -121,14 +97,14 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
                     const dayData = data.availability[dateStr];
                     const dayOfWeek = getMondayBasedDay(currentDate);
                     const isWeekend = dayOfWeek >= 5; // 5=Sat, 6=Sun
-                    const weekNumber = getWeek(currentDate);
+                    const weekNumber = getCustomWeek(currentDate);
                     const isEvenWeek = weekNumber % 2 === 0;
 
                     return (
                       <div
                         key={index}
                         className={`p-1 border-r border-zinc-100 ${
-                          isEvenWeek ? 'bg-zinc-200' : ''
+                          isEvenWeek ? 'bg-zinc-50' : ''
                         }`}
                         title={format(currentDate, 'MMMM d, yyyy')}
                       >
@@ -137,15 +113,18 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
                         </div>
                         <div className="space-y-0.5 mt-1">
                           {data.dayParts.map(part => (
-                            <div
+                            <button
                               key={part}
-                              className={`h-1 ${
+                              onClick={() => handleTimeSlotClick(dateStr, part as 'am' | 'pm', dayData?.[part])}
+                              className={`h-1.5 w-full transition-colors cursor-pointer ${
                                 dayData?.[part]
-                                  ? 'bg-green-500'
+                                  ? 'bg-green-500 hover:bg-green-600'
                                   : isWeekend
                                     ? 'bg-zinc-200'
-                                    : 'bg-red-500'
+                                    : 'bg-red-500 hover:bg-red-600'
                               } rounded-sm`}
+                              disabled={isWeekend}
+                              title={`${format(currentDate, 'MMM d')} ${part.toUpperCase()}`}
                             />
                           ))}
                         </div>
@@ -158,19 +137,26 @@ export function AvailabilityReport({ data, onClose }: AvailabilityReportProps) {
           </div>
 
           {/* Legend */}
-          <div className="mt-6 flex items-center space-x-6 text-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-green-500 rounded" />
-              <span>Available</span>
+          <div className="mt-6 space-y-4">
+            <div className="flex items-center space-x-6 text-sm">
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-green-500 rounded" />
+                <span>Available</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-red-500 rounded" />
+                <span>Unavailable</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-zinc-200 rounded" />
+                <span>Weekend</span>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-red-500 rounded" />
-              <span>Unavailable</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-zinc-200 rounded" />
-              <span>Weekend</span>
-            </div>
+            {onExceptionToggle && (
+              <div className="text-sm text-zinc-600">
+                Click on time slots to toggle exceptions. Changes are saved automatically.
+              </div>
+            )}
           </div>
         </div>
       </div>
