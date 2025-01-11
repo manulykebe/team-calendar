@@ -11,6 +11,7 @@ import { useScheduleNavigation } from "./hooks/useScheduleNavigation";
 import { NavigationControls } from "./components/NavigationControls";
 import { ScheduleNavigationControls } from "./components/ScheduleNavigationControls";
 import { ScheduleGrid } from "./components/ScheduleGrid";
+import { Availability } from "../../../lib/api/types";
 
 interface AvailabilityModalProps {
 	colleague: User;
@@ -72,14 +73,13 @@ export function AvailabilityModal({
 	});
 
 	const handleSave = async () => {
-		debugger;
 		if (!token || currentEntryIndex === -1) return;
 
 		try {
 			setLoading(true);
 			setError("");
 
-			const availability = {
+			const availability: Availability = {
 				weeklySchedule: schedule,
 				...(repeatPattern === "evenodd" && {
 					alternateWeekSchedule: alternateSchedule,
@@ -89,12 +89,12 @@ export function AvailabilityModal({
 				repeatPattern,
 			};
 
-			await updateUserAvailabilitySchedule(token, colleague.id, {
-				currentEntryIndex,
-				availability: availability,
-			});
-			onClose();
+			await updateUserAvailabilitySchedule(token, colleague.id, 
+				 currentEntryIndex,
+				 availability
+			);
 		} catch (err) {
+      debugger;
 			setError(
 				err instanceof Error
 					? err.message

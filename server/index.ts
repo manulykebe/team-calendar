@@ -7,6 +7,7 @@ import { userRouter } from './routes/users';
 import { holidaysRouter } from './routes/holidays';
 import { sitesRouter } from './routes/sites';
 import { reportRouter } from './routes/report';
+import { availabilityRouter } from './routes/availability';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use('/api/users', userRouter);
 app.use('/api/holidays', holidaysRouter);
 app.use('/api/sites', sitesRouter);
 app.use('/api/report', reportRouter);
+app.use('/api/availability', availabilityRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
