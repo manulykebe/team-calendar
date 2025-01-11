@@ -204,12 +204,12 @@
           {
             "weeklySchedule": {
               "Monday": {
-                "am": true,
-                "pm": true
-              },
-              "Tuesday": {
                 "am": false,
                 "pm": false
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
               },
               "Wednesday": {
                 "am": true,
@@ -235,8 +235,8 @@
                 "pm": true
               },
               "Tuesday": {
-                "am": true,
-                "pm": true
+                "am": false,
+                "pm": false
               },
               "Wednesday": {
                 "am": true,
@@ -261,8 +261,8 @@
                 "pm": true
               },
               "Wednesday": {
-                "am": true,
-                "pm": true
+                "am": false,
+                "pm": false
               },
               "Thursday": {
                 "am": true,
@@ -273,8 +273,7 @@
                 "pm": true
               }
             },
-            "startDate": "2024-12-24",
-            "endDate": "2024-12-31",
+            "startDate": "2025-02-01",
             "repeatPattern": "evenodd"
           }
         ],

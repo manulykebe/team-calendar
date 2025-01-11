@@ -23,6 +23,7 @@ export function AvailabilityModal({
 	onClose,
 }: AvailabilityModalProps) {
 	const { token } = useAuth();
+	if (!token) return null;
 	const [showReport, setShowReport] = useState(false);
 	const [reportData, setReportData] = useState<any>(null);
 	const [reportYear, setReportYear] = useState(
@@ -61,7 +62,9 @@ export function AvailabilityModal({
 		setAlternateSchedule,
 	});
 
+
 	const { handleDelete, handleAdd, handleSplit } = useScheduleNavigation({
+		token,
 		colleague,
 		currentEntryIndex,
 		setCurrentEntryIndex: () => {},
@@ -94,7 +97,6 @@ export function AvailabilityModal({
 				 availability
 			);
 		} catch (err) {
-      debugger;
 			setError(
 				err instanceof Error
 					? err.message

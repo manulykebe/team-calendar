@@ -171,3 +171,24 @@ export async function updateUserAvailabilitySchedule(
 	}
 	return response.json();
 }
+
+export async function addUserAvailabilitySchedule(
+	token: string,
+	userId: string,
+	index: number,
+	schedule: Availability
+) {
+	const response = await fetch(`${API_URL}/availability/${userId}/${index}`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(schedule),
+	});
+
+	if (!response.ok) {
+		throw new Error("Failed to update availability");
+	}
+	return response.json();
+}
