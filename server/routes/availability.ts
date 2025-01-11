@@ -85,6 +85,8 @@ router.post("/:userId/:index", async (req: AuthRequest, res) => {
 		if (parseInt(req.params.index) === -1) {
       siteData.users[userIndex].settings.availability = [schedule, ...siteData.users[userIndex].settings.availability];
 		} else {
+      const l = siteData.users[userIndex].settings.availability.length;
+      siteData.users[userIndex].settings.availability[l-1] = schedule;
 			siteData.users[userIndex].settings.availability.push(schedule);
 		}
 		await writeSiteData(req.user!.site, siteData);
