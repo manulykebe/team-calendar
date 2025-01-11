@@ -246,36 +246,28 @@ export function AvailabilityModal({
 							</div>
 						</div>
 
-						<div className="space-y-8">
-							{repeatPattern === "evenodd" && (
-								<div>
-									<ScheduleGrid
-										caption="Even Weeks"
-										schedule={schedule}
-										onTimeSlotToggle={handleTimeSlotToggle}
-										disabled={isNewEntry}
-									/>
-								</div>
-							)}
+            <div className="space-y-8 h-[348px]">
+              {repeatPattern === "evenodd" && (
+                <div>
+                  <ScheduleGrid
+                    caption="Even Weeks"
+                    schedule={schedule}
+                    onTimeSlotToggle={handleTimeSlotToggle}
+                    disabled={isNewEntry}
+                  />
+                </div>
+              )}
 
-							<div>
-								<ScheduleGrid
-									caption={
-										repeatPattern === "all"
-											? "Weekly Schedule"
-											: "Odd Weeks"
-									}
-									schedule={
-										repeatPattern === "evenodd"
-											? alternateSchedule
-											: schedule
-									}
-									isAlternate={repeatPattern === "evenodd"}
-									onTimeSlotToggle={handleTimeSlotToggle}
-									disabled={isNewEntry}
-								/>
-							</div>
-						</div>
+              <div>
+                <ScheduleGrid
+                  caption={repeatPattern === "all" ? "Weekly Schedule" : "Odd Weeks"}
+                  schedule={repeatPattern === "evenodd" ? alternateSchedule : schedule}
+                  isAlternate={repeatPattern === "evenodd"}
+                  onTimeSlotToggle={handleTimeSlotToggle}
+                  disabled={isNewEntry}
+                />
+              </div>
+            </div>
 					</div>
 
 					<div className="flex justify-between space-x-3 p-6 border-t">
