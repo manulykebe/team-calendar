@@ -204,19 +204,19 @@
           {
             "weeklySchedule": {
               "Monday": {
-                "am": false,
+                "am": true,
                 "pm": false
               },
               "Tuesday": {
-                "am": false,
+                "am": true,
                 "pm": false
               },
               "Wednesday": {
-                "am": false,
+                "am": true,
                 "pm": false
               },
               "Thursday": {
-                "am": false,
+                "am": true,
                 "pm": false
               },
               "Friday": {
@@ -261,8 +261,8 @@
                 "pm": false
               },
               "Wednesday": {
-                "am": false,
-                "pm": false
+                "am": true,
+                "pm": true
               },
               "Thursday": {
                 "am": true,
