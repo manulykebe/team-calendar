@@ -3,6 +3,7 @@ import { Trash2, Plus, Scissors } from 'lucide-react';
 import { DeleteScheduleDropdown } from './DeleteScheduleDropdown';
 import { AddScheduleDropdown } from './AddScheduleDropdown';
 import { SplitScheduleModal } from './SplitScheduleModal';
+import { AddScheduleSplitModal } from './AddScheduleSplitModal';
 
 interface ScheduleNavigationControlsProps {
   currentEntryIndex: number;
@@ -10,7 +11,7 @@ interface ScheduleNavigationControlsProps {
   startDate: string;
   endDate: string;
   onDelete: (extendPreceding: boolean) => void;
-  onAdd: (atStart: boolean) => void;
+  onAdd: (atStart: boolean, splitDate?: string) => void;
   onSplit: (splitDate: string) => void;
   disabled?: boolean;
 }
@@ -28,10 +29,19 @@ export function ScheduleNavigationControls({
   const [showDeleteDropdown, setShowDeleteDropdown] = useState(false);
   const [showAddDropdown, setShowAddDropdown] = useState(false);
   const [showSplitModal, setShowSplitModal] = useState(false);
+  const [showAddSplitModal, setShowAddSplitModal] = useState(false);
 
   const isFirstSchedule = currentEntryIndex === 0;
   const isLastSchedule = currentEntryIndex === totalEntries - 1;
   const isMiddleSchedule = !isFirstSchedule && !isLastSchedule;
+
+  const handleAddAtEnd = () => {
+    if (totalEntries > 0) {
+      setShowAddSplitModal(true);
+    } else {
+      onAdd(false);
+    }
+  };
 
   return (
     <div className="flex items-center space-x-2">
@@ -66,7 +76,13 @@ export function ScheduleNavigationControls({
         </button>
         {showAddDropdown && (
           <AddScheduleDropdown
-            onAdd={onAdd}
+            onAdd={(atStart) => {
+              if (!atStart && totalEntries > 0) {
+                handleAddAtEnd();
+              } else {
+                onAdd(atStart);
+              }
+            }}
             onClose={() => setShowAddDropdown(false)}
           />
         )}
@@ -89,6 +105,18 @@ export function ScheduleNavigationControls({
           endDate={endDate}
           onSplit={onSplit}
           onClose={() => setShowSplitModal(false)}
+        />
+      )}
+
+      {showAddSplitModal && (
+        <AddScheduleSplitModal
+          lastScheduleEndDate={endDate}
+          onSplit={(splitDate) => {
+
+            onAdd(false, splitDate);
+            setShowAddSplitModal(false);
+          }}
+          onClose={() => setShowAddSplitModal(false)}
         />
       )}
     </div>

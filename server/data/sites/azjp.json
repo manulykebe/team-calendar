@@ -204,8 +204,8 @@
           {
             "weeklySchedule": {
               "Monday": {
-                "am": false,
-                "pm": false
+                "am": true,
+                "pm": true
               },
               "Tuesday": {
                 "am": true,
@@ -226,6 +226,33 @@
             },
             "startDate": "2025-01-01",
             "endDate": "2025-01-31",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": false,
+                "pm": false
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2025-02-01",
+            "endDate": "2025-02-28",
             "repeatPattern": "all"
           },
           {
@@ -273,8 +300,116 @@
                 "pm": true
               }
             },
-            "startDate": "2025-02-01",
+            "startDate": "2025-03-01",
+            "endDate": "2025-03-31",
             "repeatPattern": "evenodd"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2025-04-01",
+            "endDate": "2025-04-30",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2025-05-01",
+            "endDate": "2025-05-31",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2025-06-01",
+            "endDate": "2025-06-30",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2025-07-01",
+            "repeatPattern": "all"
           }
         ],
         "availabilityExceptions": []

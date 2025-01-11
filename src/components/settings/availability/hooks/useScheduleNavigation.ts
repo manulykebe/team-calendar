@@ -2,7 +2,10 @@ import { addDays, subDays, parseISO, format, isValid } from "date-fns";
 import { User } from "../../../../types/user";
 import { WeeklySchedule } from "../../../../types/availability";
 import { useAvailabilityValidation } from "./useAvailabilityValidation";
-import { addUserAvailabilitySchedule } from "../../../../lib/api";
+import {
+	addUserAvailabilitySchedule,
+	updateUserAvailabilitySchedule,
+} from "../../../../lib/api";
 
 interface UseScheduleNavigationProps {
 	token: string;
@@ -98,8 +101,9 @@ export function useScheduleNavigation({
 		}
 	};
 
-	const handleAdd = async (atStart: boolean) => {
-    debugger;
+	const handleAdd = async (atStart: boolean, splitDate?: string) => {
+		console.log(splitDate);
+		debugger;
 		const today = new Date();
 		const newEntry = {
 			weeklySchedule: createDefaultSchedule(),
@@ -122,15 +126,22 @@ export function useScheduleNavigation({
 			newEntry.startDate = formatDate(startDate);
 		} else if (!atStart && availability.length > 0) {
 			const lastEntry = availability[availability.length - 1];
-			const lastDate = parseDate(
-				lastEntry.endDate || lastEntry.startDate
-			);
+			const lastDate = parseDate(lastEntry.endDate || splitDate);
 			if (!lastDate) {
 				setError("Invalid date in last schedule");
 				return;
 			}
-
+			if (!lastEntry.endDate) {
+				lastEntry.endDate = formatDate(lastDate);
+			}
 			newEntry.startDate = formatDate(addDays(lastDate, 1));
+
+			await updateUserAvailabilitySchedule(
+				token,
+				colleague.id,
+				availability.length - 1,
+				lastEntry
+			);
 		} else {
 			// No existing schedules
 			newEntry.startDate = formatDate(today);
@@ -161,7 +172,6 @@ export function useScheduleNavigation({
 			return;
 		}
 
-		//post request
 		await addUserAvailabilitySchedule(
 			token,
 			colleague.id,
