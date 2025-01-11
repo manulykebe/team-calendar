@@ -1,9 +1,24 @@
 import { User } from './user';
 
+export interface ScheduleData {
+  weeklySchedule: WeeklySchedule;
+  alternateWeekSchedule?: WeeklySchedule;
+  startDate: string;
+  endDate: string;
+  repeatPattern: 'all' | 'evenodd';
+}
+
 export interface TimeSlot {
   am: boolean;
   pm: boolean;
 }
+
+export type WeekDays =
+	| "Monday"
+	| "Tuesday"
+	| "Wednesday"
+	| "Thursday"
+	| "Friday";
 
 export interface WeeklySchedule {
   Monday: TimeSlot;
@@ -11,8 +26,8 @@ export interface WeeklySchedule {
   Wednesday: TimeSlot;
   Thursday: TimeSlot;
   Friday: TimeSlot;
-  Saturday: TimeSlot;
-  Sunday: TimeSlot;
+  Saturday?: TimeSlot;
+  Sunday?: TimeSlot;
 }
 
 export interface AvailabilitySettings {

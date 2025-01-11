@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { addDays, subDays, parseISO } from 'date-fns';
+import { addDays, subDays, parseISO, format, isValid } from 'date-fns';
 import { User } from '../../../../types/user';
 import { WeeklySchedule } from '../../../../types/availability';
 import { useAvailabilityValidation } from './useAvailabilityValidation';
@@ -20,8 +20,26 @@ const createDefaultSchedule = (): WeeklySchedule => ({
   Tuesday: { am: true, pm: true },
   Wednesday: { am: true, pm: true },
   Thursday: { am: true, pm: true },
-  Friday: { am: true, pm: true },
+  Friday: { am: true, pm: true }
 });
+
+// Helper function to safely format dates
+const formatDate = (date: Date | null): string => {
+  if (!date || !isValid(date)) {
+    return '';
+  }
+  return format(date, 'yyyy-MM-dd');
+};
+
+// Helper function to safely parse dates
+const parseDate = (dateString: string): Date | null => {
+  try {
+    const date = parseISO(dateString);
+    return isValid(date) ? date : null;
+  } catch {
+    return null;
+  }
+};
 
 export function useScheduleNavigation({
   colleague,
@@ -33,9 +51,7 @@ export function useScheduleNavigation({
   setAlternateSchedule,
   setError,
 }: UseScheduleNavigationProps) {
-  // Get the availability array directly
   const availability = colleague.settings?.availability || [];
-
   const { validateSchedule } = useAvailabilityValidation();
 
   const handleDelete = async (extendPreceding: boolean) => {
@@ -45,17 +61,13 @@ export function useScheduleNavigation({
     const deletedEntry = newAvailability[currentEntryIndex];
 
     if (currentEntryIndex > 0 && extendPreceding) {
-      // Extend preceding schedule
       newAvailability[currentEntryIndex - 1].endDate = deletedEntry.endDate;
     } else if (currentEntryIndex < newAvailability.length - 1 && !extendPreceding) {
-      // Extend following schedule
       newAvailability[currentEntryIndex + 1].startDate = deletedEntry.startDate;
     }
 
-    // Remove the current entry
     newAvailability.splice(currentEntryIndex, 1);
 
-    // Validate the new schedule arrangement
     for (let i = 0; i < newAvailability.length; i++) {
       const validation = validateSchedule(
         newAvailability[i].startDate,
@@ -70,14 +82,7 @@ export function useScheduleNavigation({
         return;
       }
     }
-    
-    // Update colleague settings
-    const updatedSettings = {
-      ...colleague.settings,
-      availability: newAvailability,
-    };
 
-    // Navigate to previous entry or reset to new
     if (currentEntryIndex > 0) {
       setCurrentEntryIndex(currentEntryIndex - 1);
       loadEntry(newAvailability[currentEntryIndex - 1]);
@@ -87,6 +92,7 @@ export function useScheduleNavigation({
   };
 
   const handleAdd = async (atStart: boolean) => {
+    const today = new Date();
     const newEntry = {
       weeklySchedule: createDefaultSchedule(),
       alternateWeekSchedule: createDefaultSchedule(),
@@ -95,32 +101,40 @@ export function useScheduleNavigation({
       repeatPattern: 'all' as const,
     };
 
-    if (atStart) {
-      // Add at start
-      if (availability.length > 0) {
-        newEntry.endDate = subDays(parseISO(availability[0].startDate), 1).toISOString().split('T')[0];
-        newEntry.startDate = subDays(parseISO(newEntry.endDate), 7).toISOString().split('T')[0];
-      } else {
-        const today = new Date();
-        newEntry.startDate = today.toISOString().split('T')[0];
-        newEntry.endDate = addDays(today, 7).toISOString().split('T')[0];
+    if (atStart && availability.length > 0) {
+      const firstStartDate = parseDate(availability[0].startDate);
+      if (!firstStartDate) {
+        setError('Invalid start date in first schedule');
+        return;
       }
+      
+      const endDate = subDays(firstStartDate, 1);
+      const startDate = subDays(endDate, 7);
+      
+      newEntry.endDate = formatDate(endDate);
+      newEntry.startDate = formatDate(startDate);
+    } else if (!atStart && availability.length > 0) {
+      const lastEntry = availability[availability.length - 1];
+      const lastDate = parseDate(lastEntry.endDate || lastEntry.startDate);
+      if (!lastDate) {
+        setError('Invalid date in last schedule');
+        return;
+      }
+      
+      newEntry.startDate = formatDate(addDays(lastDate, 1));
     } else {
-      // Add at end
-      if (availability.length > 0) {
-        const lastEntry = availability[availability.length - 1];
-        newEntry.startDate = addDays(parseISO(lastEntry.endDate || lastEntry.startDate), 1).toISOString().split('T')[0];
-        // Last entry doesn't require an end date
-        newEntry.endDate = '';
-      } else {
-        const today = new Date();
-        newEntry.startDate = today.toISOString().split('T')[0];
-        // Last entry doesn't require an end date
-        newEntry.endDate = '';
+      // No existing schedules
+      newEntry.startDate = formatDate(today);
+      if (atStart) {
+        newEntry.endDate = formatDate(addDays(today, 7));
       }
     }
 
-    // Validate the new entry
+    if (!newEntry.startDate) {
+      setError('Failed to create valid schedule dates');
+      return;
+    }
+
     const validation = validateSchedule(
       newEntry.startDate,
       newEntry.endDate,
@@ -140,6 +154,12 @@ export function useScheduleNavigation({
   const handleSplit = async (splitDate: string) => {
     if (currentEntryIndex === -1) return;
 
+    const splitDateObj = parseDate(splitDate);
+    if (!splitDateObj) {
+      setError('Invalid split date');
+      return;
+    }
+
     const currentEntry = availability[currentEntryIndex];
     const firstHalf = {
       ...currentEntry,
@@ -148,8 +168,7 @@ export function useScheduleNavigation({
 
     const secondHalf = {
       ...currentEntry,
-      startDate: addDays(parseISO(splitDate), 1).toISOString().split('T')[0],
-      // If this was the last entry, the second half becomes the new last entry
+      startDate: formatDate(addDays(splitDateObj, 1)),
       endDate: currentEntryIndex === availability.length - 1 ? '' : currentEntry.endDate,
     };
 
@@ -160,7 +179,6 @@ export function useScheduleNavigation({
       ...availability.slice(currentEntryIndex + 1),
     ];
 
-    // Validate both new entries
     const validation1 = validateSchedule(
       firstHalf.startDate,
       firstHalf.endDate,
@@ -187,13 +205,6 @@ export function useScheduleNavigation({
       return;
     }
 
-    // Update colleague settings
-    const updatedSettings = {
-      ...colleague.settings,
-      availability: newAvailability,
-    };
-
-    // Load the first half of the split
     loadEntry(firstHalf);
   };
 

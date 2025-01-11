@@ -1,6 +1,7 @@
 import { login, register } from './auth';
 import { getEvents, createEvent, updateEvent, deleteEvent } from './events';
 import { getUsers, createUser, updateUser, deleteUser } from './users';
+import { addSchedule, updateSchedule, deleteSchedule, reorderSchedules } from './schedules';
 import { API_URL } from './config';
 
 export async function getSiteData(site: string) {
@@ -26,5 +27,11 @@ export {
   getUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+
+  // Schedules
+  addSchedule,
+  updateSchedule,
+  deleteSchedule,
+  reorderSchedules
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, parseISO, isValid } from "date-fns";
 import { WeeklySchedule, TimeSlot } from "../../../../types/availability";
 import { User } from "../../../../types/user";
 
@@ -17,18 +17,33 @@ const createDefaultSchedule = () => {
   );
 };
 
-export function useAvailabilityState(colleague: User) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+// Helper function to format date consistently
+const formatDateString = (dateStr: string): string => {
+  if (!dateStr) return '';
   
-  // Ensure availability is always an array
+  // Handle dates in DD-MM-YYYY format
+  if (dateStr.includes('-')) {
+    const [day, month, year] = dateStr.split('-');
+    if (day && month && year) {
+      dateStr = `${year}-${month}-${day}`;
+    }
+  }
+
+  try {
+    const date = parseISO(dateStr);
+    return isValid(date) ? format(date, 'yyyy-MM-dd') : '';
+  } catch {
+    return '';
+  }
+};
+
+export function useAvailabilityState(colleague: User) {
   const availability = Array.isArray(colleague.settings?.availability) 
     ? colleague.settings.availability 
     : colleague.settings?.availability 
       ? [colleague.settings.availability]
       : [];
 
-  // Initialize state with the first availability entry if it exists
   const initialEntry = availability[0] || {
     weeklySchedule: createDefaultSchedule(),
     alternateWeekSchedule: createDefaultSchedule(),
@@ -37,11 +52,13 @@ export function useAvailabilityState(colleague: User) {
     repeatPattern: "all" as const
   };
 
-  const [startDate, setStartDate] = useState(initialEntry.startDate);
-  const [endDate, setEndDate] = useState(initialEntry.endDate || "");
+  const [startDate, setStartDate] = useState(formatDateString(initialEntry.startDate));
+  const [endDate, setEndDate] = useState(formatDateString(initialEntry.endDate || ''));
   const [repeatPattern, setRepeatPattern] = useState<RepeatPattern>(
     initialEntry.repeatPattern || "all"
   );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const [schedule, setSchedule] = useState<WeeklySchedule>(() => {
     return initialEntry.weeklySchedule || createDefaultSchedule();
@@ -66,6 +83,25 @@ export function useAvailabilityState(colleague: User) {
     }));
   };
 
+  const loadEntry = (entry: any) => {
+    if (!entry) return;
+
+    // Format and set dates
+    setStartDate(formatDateString(entry.startDate));
+    setEndDate(formatDateString(entry.endDate || ''));
+    
+    // Set repeat pattern
+    setRepeatPattern(entry.repeatPattern || "all");
+    
+    // Set schedules
+    setSchedule(entry.weeklySchedule || createDefaultSchedule());
+    if (entry.repeatPattern === 'evenodd') {
+      setAlternateSchedule(entry.alternateWeekSchedule || createDefaultSchedule());
+    } else {
+      setAlternateSchedule(createDefaultSchedule());
+    }
+  };
+
   return {
     loading,
     setLoading,
@@ -82,5 +118,6 @@ export function useAvailabilityState(colleague: User) {
     alternateSchedule,
     setAlternateSchedule,
     handleTimeSlotToggle,
+    loadEntry
   };
 }
