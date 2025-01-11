@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X, FileText } from "lucide-react";
 import { User } from "../../../types/user";
 import { useAuth } from "../../../context/AuthContext";
-import { updateUser } from "../../../lib/api";
+import { updateUserAvailabilitySchedule } from "../../../lib/api";
 import { getAvailabilityReport } from "../../../lib/api/report";
 import { AvailabilityReport } from "./AvailabilityReport";
 import { useAvailabilityState } from "./hooks/useAvailabilityState";
@@ -72,27 +72,26 @@ export function AvailabilityModal({
 	});
 
 	const handleSave = async () => {
+		debugger;
 		if (!token || currentEntryIndex === -1) return;
 
 		try {
 			setLoading(true);
 			setError("");
 
-			const updatedSettings = {
-				...colleague.settings,
-				availability: {
-					weeklySchedule: schedule,
-					...(repeatPattern === "evenodd" && {
-						alternateWeekSchedule: alternateSchedule,
-					}),
-					startDate,
-					endDate,
-					repeatPattern,
-				},
+			const availability = {
+				weeklySchedule: schedule,
+				...(repeatPattern === "evenodd" && {
+					alternateWeekSchedule: alternateSchedule,
+				}),
+				startDate,
+				endDate,
+				repeatPattern,
 			};
 
-			await updateUser(token, colleague.id, {
-				settings: updatedSettings,
+			await updateUserAvailabilitySchedule(token, colleague.id, {
+				currentEntryIndex,
+				availability: availability,
 			});
 			onClose();
 		} catch (err) {

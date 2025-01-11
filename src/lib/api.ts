@@ -137,3 +137,17 @@ export async function deleteUser(token: string, userId: string) {
   
   if (!response.ok) throw new Error('Failed to delete user');
 }
+
+export async function updateUserAvailabilitySchedule(token: string, userId: string, index: number, schedule: UserFormData) {
+  const response = await fetch(`${API_URL}/users/${userId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(userData)
+  });
+  
+  if (!response.ok) throw new Error('Failed to update user');
+  return response.json();
+}
