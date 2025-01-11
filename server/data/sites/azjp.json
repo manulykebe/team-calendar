@@ -160,7 +160,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-11T15:16:32.527Z",
+      "updatedAt": "2025-01-11T21:34:17.560Z",
       "settings": {
         "app": {
           "color": {
@@ -180,16 +180,17 @@
           "bhhMvstlpwUG": {
             "visible": true,
             "initials": "MS",
-            "color": "#4575b4"
+            "color": "#74add1"
           },
           "KTHpbRLreSbC": {
             "initials": "SD",
-            "color": "#74add1",
+            "color": "#4575b4",
             "visible": true
           },
           "tTRjdtgFDDRN": {
             "color": "#e0f3f8",
-            "initials": "KV"
+            "initials": "KV",
+            "visible": true
           }
         },
         "showWeekNumber": "left",
