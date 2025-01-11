@@ -110,8 +110,43 @@
           "bhhMvstlpwUG",
           "KTHpbRLreSbC"
         ],
-        "availability": [],
-        "availabilityExceptions": []
+        "availability": [
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": false,
+                "pm": false
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              },
+              "Saturday": {
+                "am": true,
+                "pm": true
+              },
+              "Sunday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2020-01-01",
+            "endDate": "",
+            "repeatPattern": "all"
+          }
+        ]
       }
     },
     {
@@ -125,7 +160,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-10T22:33:15.443Z",
+      "updatedAt": "2025-01-11T13:22:02.799Z",
       "settings": {
         "app": {
           "color": {
@@ -165,7 +200,33 @@
           "SjFBqPWVxUVY",
           "tTRjdtgFDDRN"
         ],
-        "availability": [],
+        "availability": [{
+          "weeklySchedule": {
+            "Monday": {
+              "am": true,
+              "pm": true
+            },
+            "Tuesday": {
+              "am": true,
+              "pm": true
+            },
+            "Wednesday": {
+              "am": true,
+              "pm": true
+            },
+            "Thursday": {
+              "am": true,
+              "pm": true
+            },
+            "Friday": {
+              "am": true,
+              "pm": true
+            }
+          },
+          "startDate": "",
+          "endDate": "",
+          "repeatPattern": "all"
+        }],
         "availabilityExceptions": []
       },
       "app": {
