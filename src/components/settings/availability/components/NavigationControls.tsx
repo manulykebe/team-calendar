@@ -31,7 +31,7 @@ export function NavigationControls({
       </button>
       
       <span className="text-sm font-medium min-w-[48px] text-center">
-        {hasEntries ? `${currentEntryIndex + 1}/${totalEntries}` : "0/0"}
+        {hasEntries ? `${currentEntryIndex + 1}/${totalEntries}` : "..."}
       </span>
       
       <button

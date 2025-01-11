@@ -205,37 +205,15 @@
             "weeklySchedule": {
               "Monday": {
                 "am": true,
-                "pm": false
+                "pm": true
               },
               "Tuesday": {
-                "am": true,
-                "pm": false
-              },
-              "Wednesday": {
-                "am": true,
-                "pm": false
-              },
-              "Thursday": {
-                "am": true,
-                "pm": false
-              },
-              "Friday": {
                 "am": true,
                 "pm": true
-              }
-            },
-            "alternateWeekSchedule": {
-              "Monday": {
-                "am": false,
-                "pm": false
-              },
-              "Tuesday": {
-                "am": false,
-                "pm": false
               },
               "Wednesday": {
-                "am": false,
-                "pm": false
+                "am": true,
+                "pm": true
               },
               "Thursday": {
                 "am": true,
@@ -248,12 +226,12 @@
             },
             "startDate": "2025-01-01",
             "endDate": "2025-01-31",
-            "repeatPattern": "evenodd"
+            "repeatPattern": "all"
           },
           {
             "weeklySchedule": {
               "Monday": {
-                "am": true,
+                "am": false,
                 "pm": true
               },
               "Tuesday": {
@@ -261,8 +239,8 @@
                 "pm": false
               },
               "Wednesday": {
-                "am": true,
-                "pm": true
+                "am": false,
+                "pm": false
               },
               "Thursday": {
                 "am": true,
