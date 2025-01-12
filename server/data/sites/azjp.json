@@ -225,6 +225,33 @@
                 "pm": true
               }
             },
+            "startDate": "2024-12-16",
+            "endDate": "2024-12-23",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": false,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
             "startDate": "2024-12-24",
             "endDate": "2024-12-31",
             "repeatPattern": "all"
@@ -405,7 +432,7 @@
                 "pm": true
               },
               "Friday": {
-                "am": true,
+                "am": false,
                 "pm": true
               }
             },

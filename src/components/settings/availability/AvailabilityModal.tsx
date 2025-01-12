@@ -51,8 +51,10 @@ export function AvailabilityModal({
 	const {
 		currentEntryIndex,
 		totalEntries,
+		handleFirstEntry,
 		handlePrevEntry,
 		handleNextEntry,
+		handleLastEntry,
 	} = useAvailabilityNavigation({
 		colleague,
 		setStartDate,
@@ -166,8 +168,8 @@ export function AvailabilityModal({
 									totalEntries={totalEntries}
 									onPrevEntry={handlePrevEntry}
 									onNextEntry={handleNextEntry}
-									onFirstEntry={() => {}}
-									onLastEntry={() => {}}
+									onFirstEntry={handleFirstEntry}
+									onLastEntry={handleLastEntry}
 								/>
 							</div>
 
