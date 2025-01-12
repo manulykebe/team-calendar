@@ -25,6 +25,7 @@ export function WeekColumn({ days, position, rowHeight = 120 }: WeekColumnProps)
       style={{ 
         gridAutoRows: `${rowHeight}px`
       }}
+      data-tsx-id="week-column"
     >
       {uniqueWeeks.map(({ weekNum, day }) => (
         <WeekNumber key={weekNum} date={day} />

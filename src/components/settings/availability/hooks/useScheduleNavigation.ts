@@ -102,8 +102,6 @@ export function useScheduleNavigation({
 	};
 
 	const handleAdd = async (atStart: boolean, splitDate?: string) => {
-		console.log(splitDate);
-		debugger;
 		const today = new Date();
 		const newEntry = {
 			weeklySchedule: createDefaultSchedule(),

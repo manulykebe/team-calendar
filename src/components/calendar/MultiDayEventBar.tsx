@@ -57,6 +57,7 @@ export function MultiDayEventBar({
         zIndex: isResizing ? 20 : 10,
         borderLeft: !isFirstDay ? '1px solid rgba(0,0,0,0.1)' : 'none',
       }}
+      data-tsx-id="multi-day-event-bar"
     >
       {canModify && (
         <>

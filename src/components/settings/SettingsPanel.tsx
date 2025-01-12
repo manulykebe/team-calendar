@@ -34,7 +34,7 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
   };
 
   return (
-    <>
+    <div data-tsx-id="settings-panel">
       <button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 z-10"
@@ -151,6 +151,6 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
           }}
         />
       )}
-    </>
+    </div>
   );
 }

@@ -12,7 +12,7 @@ export function DisplaySettings({
 	onWeekNumberChange,
 }: DisplaySettingsProps) {
 	return (
-		<div>
+    <div data-tsx-id="display-settings">
 			<h3 className="text-sm font-medium text-zinc-900 mb-2">Display</h3>
 			<div className="space-y-4">
 				<div className="flex items-center space-x-2">

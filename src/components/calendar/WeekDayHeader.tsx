@@ -4,7 +4,7 @@ interface WeekDayHeaderProps {
 
 export function WeekDayHeader({ weekDays }: WeekDayHeaderProps) {
   return (
-    <div className="grid grid-cols-7 gap-px border-b border-zinc-200">
+    <div className="grid grid-cols-7 gap-px border-b border-zinc-200" data-tsx-id="week-day-header">
       {weekDays.map((day) => (
         <div
           key={day}

@@ -55,6 +55,7 @@ export function SingleDayEventBar({
         height: '20px',
         zIndex: isResizing ? 20 : 10
       }}
+      data-tsx-id="single-day-event-bar"
     >
       {canModify && (
         <>

@@ -33,7 +33,7 @@ export function EventCard({
 
   if (isMultiDay) {
     return (
-      <>
+      <div data-tsx-id="event-card-multiday">
         <MultiDayEventBar
           event={event}
           date={date}
@@ -49,12 +49,12 @@ export function EventCard({
             onDelete={canModify ? onDelete : undefined}
           />
         )}
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div data-tsx-id="event-card-singleday">
       <SingleDayEventBar
         event={event}
         userSettings={userSettings}
@@ -71,6 +71,6 @@ export function EventCard({
           onDelete={canModify ? onDelete : undefined}
         />
       )}
-    </>
+    </div>
   );
 }

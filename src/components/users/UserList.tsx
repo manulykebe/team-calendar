@@ -94,7 +94,7 @@ export function UserList({ onEdit, onDelete }: UserListProps) {
 	}
 
 	return (
-		<div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" data-tsx-id="user-list">
 			<UserListFilters filters={filters} onChange={setFilters} />
 
 			<div className="overflow-x-auto">

@@ -72,7 +72,7 @@ export function Calendar() {
   const dateRange = `${format(subWeeks(currentMonth, 2), 'MMM d')} - ${format(addWeeks(currentMonth, 2), 'MMM d, yyyy')}`;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-tsx-id="calendar">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center space-x-4">
           <h1 className="text-3xl font-bold text-zinc-900">Team Calendar</h1>

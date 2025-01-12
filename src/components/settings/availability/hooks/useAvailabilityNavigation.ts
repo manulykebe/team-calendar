@@ -67,7 +67,6 @@ export function useAvailabilityNavigation({
 	};
 
 	const handleFirstEntry = () => {
-		debugger;
 		if (availability.length === 0 || currentEntryIndex === 0) return;
 
 		const newIndex = 0;

@@ -138,7 +138,7 @@ export function AvailabilityModal({
 	const isNewEntry = currentEntryIndex === -1;
 
 	return (
-		<>
+		<div data-tsx-id="availability-modal">
 			<div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
 				<div className="bg-white rounded-lg shadow-xl max-w-4xl w-full">
 					<div className="flex justify-between items-center p-6 border-b">
@@ -360,6 +360,6 @@ export function AvailabilityModal({
 					onClose={() => setShowReport(false)}
 				/>
 			)}
-		</>
+		</div>
 	);
 }

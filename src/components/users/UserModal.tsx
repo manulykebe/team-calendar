@@ -75,7 +75,7 @@ export function UserModal({ user, onClose }: UserModalProps) {
 	};
 
 	return (
-		<div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" data-tsx-id="user-modal">
 			<div className="bg-white rounded-lg shadow-xl max-w-md w-full">
 				<div className="flex justify-between items-center p-6 border-b">
 					<h2 className="text-xl font-semibold text-zinc-900">

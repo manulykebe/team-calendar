@@ -28,6 +28,7 @@ export function ColleagueAvatar({
       style={{ backgroundColor: color }}
       role="img"
       aria-label={`${firstName} ${lastName}'s avatar`}
+      data-tsx-id="colleague-avatar"
     >
       {initials.toUpperCase()}
     </div>

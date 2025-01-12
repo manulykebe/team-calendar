@@ -25,6 +25,7 @@ export function ScheduleGrid({
 	return (
 		<div
 			className={`grid grid-cols-6 gap-4 ${disabled ? "opacity-50" : ""}`}
+      data-tsx-id="schedule-grid"
 		>
 			<div className="col-span-1 text-center font-medium">{caption}</div>
 			{DAYS.map((day) => (

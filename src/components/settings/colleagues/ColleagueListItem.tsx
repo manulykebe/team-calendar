@@ -22,7 +22,7 @@ export function ColleagueListItem({
 	onAbbrevChange,
 }: ColleagueListItemProps) {
 	return (
-		<div className="flex items-center justify-between p-4 bg-zinc-50 rounded-lg">
+    <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-lg" data-tsx-id="colleague-list-item">
 			<div className="flex items-center space-x-4">
 				<ColleagueAvatar
 					firstName={colleague.firstName}

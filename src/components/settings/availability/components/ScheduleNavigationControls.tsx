@@ -44,7 +44,7 @@ export function ScheduleNavigationControls({
 	};
 
 	return (
-		<div className="flex items-center space-x-2">
+		<div className="flex items-center space-x-2" data-tsx-id="ScheduleNavigationControls">
 			<div className="relative">
 				{showDeleteDropdown && !disabled && (
 					<DeleteScheduleDropdown
@@ -102,7 +102,6 @@ export function ScheduleNavigationControls({
 				<AddScheduleSplitModal
 					lastScheduleEndDate={endDate}
 					onSplit={(splitDate) => {
-						debugger;
 						onAdd(false, splitDate);
 						setShowAddSplitModal(false);
 					}}

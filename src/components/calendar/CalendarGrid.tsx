@@ -78,7 +78,7 @@ export function CalendarGrid({
   const rowHeight = Math.max(120, 42 + visibleColleagues * 24);
 
   return (
-    <div className="bg-zinc-200">
+    <div className="bg-zinc-200" data-tsx-id="calendar-grid">
       <CalendarHeader weekDays={weekDays} showWeekNumber={showWeekNumber} />
       <div className={`grid ${
         showWeekNumber === "left" 

@@ -8,7 +8,7 @@ interface UserListFiltersProps {
 
 export function UserListFilters({ filters, onChange }: UserListFiltersProps) {
 	return (
-		<div className="p-4 space-y-4">
+    <div className="p-4 space-y-4" data-tsx-id="user-list-filters">
 			<div className="flex space-x-4">
 				<div className="flex-1 relative">
 					<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

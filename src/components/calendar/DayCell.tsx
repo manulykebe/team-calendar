@@ -46,6 +46,7 @@ export const DayCell = memo(function DayCell({
       className="relative p-2 hover:bg-opacity-90 transition-colors"
       style={{ backgroundColor }}
       onContextMenu={handleContextMenu}
+      data-tsx-id="day-cell"
     >
       {showMonthLabel && <MonthLabel date={date} />}
       <div className="flex items-start justify-between">

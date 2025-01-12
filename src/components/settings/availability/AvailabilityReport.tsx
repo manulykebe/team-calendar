@@ -45,7 +45,7 @@ export function AvailabilityReport({ data, onClose, onExceptionToggle }: Availab
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" data-tsx-id="availability-report">
       <div className="bg-white rounded-lg shadow-xl max-w-[1400px] w-full max-h-[90vh] overflow-auto">
         <div className="sticky top-0 bg-white z-10 flex justify-between items-center p-6 border-b">
           <h2 className="text-xl font-semibold text-zinc-900">

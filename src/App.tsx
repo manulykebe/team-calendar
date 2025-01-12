@@ -11,14 +11,14 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
 	const { token } = useAuth();
-	return token ? <>{children}</> : <Navigate to="/login" />;
+	return token ? <div data-tsx-id="private-route">{children}</div> : <Navigate to="/login" />;
 }
 
 function App() {
 	return (
 		<AuthProvider>
 			<Router>
-				<div className="min-h-screen bg-zinc-50">
+				<div className="min-h-screen bg-zinc-50" data-tsx-id="app-root">
 					<Routes>
 						<Route path="/login" element={<Login />} />
 						<Route path="/register" element={<Register />} />
