@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, FileText } from "lucide-react";
+import { X, FileText, Trash2, Save } from "lucide-react";
 import { User } from "../../../types/user";
 import { useAuth } from "../../../context/AuthContext";
 import { updateUserAvailabilitySchedule } from "../../../lib/api";
@@ -62,7 +62,6 @@ export function AvailabilityModal({
 		setAlternateSchedule,
 	});
 
-
 	const { handleDelete, handleAdd, handleSplit } = useScheduleNavigation({
 		token,
 		colleague,
@@ -92,9 +91,11 @@ export function AvailabilityModal({
 				repeatPattern,
 			};
 
-			await updateUserAvailabilitySchedule(token, colleague.id, 
-				 currentEntryIndex,
-				 availability
+			await updateUserAvailabilitySchedule(
+				token,
+				colleague.id,
+				currentEntryIndex,
+				availability
 			);
 		} catch (err) {
 			setError(
@@ -165,6 +166,8 @@ export function AvailabilityModal({
 									totalEntries={totalEntries}
 									onPrevEntry={handlePrevEntry}
 									onNextEntry={handleNextEntry}
+									onFirstEntry={() => {}}
+									onLastEntry={() => {}}
 								/>
 							</div>
 
@@ -186,38 +189,56 @@ export function AvailabilityModal({
 									<label className="block text-sm font-medium text-zinc-700 mb-2">
 										Start Date
 									</label>
-									<input
-										type="date"
-										value={startDate}
-										onChange={(e) =>
-											setStartDate(e.target.value)
-										}
-										className={`w-full rounded-md border-zinc-300 ${
-											isNewEntry
-												? "opacity-50 cursor-not-allowed"
-												: ""
-										}`}
-										disabled={isNewEntry}
-									/>
+									<div className="flex items-center">
+										<button
+											onClick={() => {}}
+											className={`text-red-600 hover:bg-red-50 rounded-full transition-colors`}
+											title="Merge this schedule with previous"
+										>
+											<Trash2 className="w-5 h-5" />
+										</button>
+										<input
+											type="date"
+											value={startDate}
+											onChange={(e) =>
+												setStartDate(e.target.value)
+											}
+											className={`w-full rounded-md border-zinc-300 ${
+												isNewEntry
+													? "opacity-50 cursor-not-allowed"
+													: ""
+											}`}
+											disabled={isNewEntry}
+										/>
+									</div>
 								</div>
 								<div className="col-span-3">
 									<label className="block text-sm font-medium text-zinc-700 mb-2">
 										End Date
 									</label>
-									<input
-										type="date"
-										value={endDate}
-										onChange={(e) =>
-											setEndDate(e.target.value)
-										}
-										min={startDate}
-										className={`w-full rounded-md border-zinc-300 ${
-											isNewEntry
-												? "opacity-50 cursor-not-allowed"
-												: ""
-										}`}
-										disabled={isNewEntry}
-									/>
+									<div className="flex items-center">
+										<input
+											type="date"
+											value={endDate}
+											onChange={(e) =>
+												setEndDate(e.target.value)
+											}
+											min={startDate}
+											className={`w-full rounded-md border-zinc-300 ${
+												isNewEntry
+													? "opacity-50 cursor-not-allowed"
+													: ""
+											}`}
+											disabled={isNewEntry}
+										/>
+										<button
+											onClick={() => {}}
+											className={`text-red-600 hover:bg-red-50 rounded-full transition-colors`}
+											title="Merge this schedule with next"
+										>
+											<Trash2 className="w-5 h-5" />
+										</button>
+									</div>
 								</div>
 								<div className="col-span-2">
 									<label className="block text-sm font-medium text-zinc-700 mb-2">
@@ -248,28 +269,36 @@ export function AvailabilityModal({
 							</div>
 						</div>
 
-            <div className="space-y-8 h-[348px]">
-              {repeatPattern === "evenodd" && (
-                <div>
-                  <ScheduleGrid
-                    caption="Even Weeks"
-                    schedule={schedule}
-                    onTimeSlotToggle={handleTimeSlotToggle}
-                    disabled={isNewEntry}
-                  />
-                </div>
-              )}
+						<div className="space-y-8 h-[348px]">
+							{repeatPattern === "evenodd" && (
+								<div>
+									<ScheduleGrid
+										caption="Even Weeks"
+										schedule={schedule}
+										onTimeSlotToggle={handleTimeSlotToggle}
+										disabled={isNewEntry}
+									/>
+								</div>
+							)}
 
-              <div>
-                <ScheduleGrid
-                  caption={repeatPattern === "all" ? "Weekly Schedule" : "Odd Weeks"}
-                  schedule={repeatPattern === "evenodd" ? alternateSchedule : schedule}
-                  isAlternate={repeatPattern === "evenodd"}
-                  onTimeSlotToggle={handleTimeSlotToggle}
-                  disabled={isNewEntry}
-                />
-              </div>
-            </div>
+							<div>
+								<ScheduleGrid
+									caption={
+										repeatPattern === "all"
+											? "Weekly Schedule"
+											: "Odd Weeks"
+									}
+									schedule={
+										repeatPattern === "evenodd"
+											? alternateSchedule
+											: schedule
+									}
+									isAlternate={repeatPattern === "evenodd"}
+									onTimeSlotToggle={handleTimeSlotToggle}
+									disabled={isNewEntry}
+								/>
+							</div>
+						</div>
 					</div>
 
 					<div className="flex justify-between space-x-3 p-6 border-t">
@@ -301,20 +330,21 @@ export function AvailabilityModal({
 						<div className="flex space-x-3">
 							<button
 								onClick={onClose}
-								className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+								className="flex items-center px-4 py-2 w-32 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 								disabled={loading}
 							>
+								<X className="w-4 h-4 mr-2" />
 								Cancel
 							</button>
 							<button
 								onClick={handleSave}
 								disabled={loading || isNewEntry}
-								className={`px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 ${
+								className={`flex items-center px-4 py-2 w-32 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50 ${
 									isNewEntry
 										? "opacity-50 cursor-not-allowed"
 										: ""
 								}`}
-							>
+							><Save className="w-4 h-4 mr-2" />
 								{loading ? "Saving..." : "Save"}
 							</button>
 						</div>
