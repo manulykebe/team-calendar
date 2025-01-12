@@ -1,4 +1,4 @@
-import { API_URL } from './config';
+import { API_URL } from "./config";
 
 export async function getSiteData(site: string) {
   try {
@@ -8,7 +8,7 @@ export async function getSiteData(site: string) {
     }
     return response.json();
   } catch (error) {
-    console.error('Error fetching site data:', error);
+    console.error("Error fetching site data:", error);
     throw error;
   }
 }

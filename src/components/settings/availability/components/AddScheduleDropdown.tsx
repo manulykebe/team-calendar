@@ -1,12 +1,15 @@
-import { useRef } from 'react';
-import { useClickOutside } from '../../../../hooks/useClickOutside';
+import { useRef } from "react";
+import { useClickOutside } from "../../../../hooks/useClickOutside";
 
 interface AddScheduleDropdownProps {
   onAdd: (atStart: boolean) => void;
   onClose: () => void;
 }
 
-export function AddScheduleDropdown({ onAdd, onClose }: AddScheduleDropdownProps) {
+export function AddScheduleDropdown({
+  onAdd,
+  onClose,
+}: AddScheduleDropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   useClickOutside(dropdownRef, onClose);
 

@@ -22,29 +22,33 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
   } = useColleagueSettings();
 
   const [orderedColleagues, setOrderedColleagues] = useState<User[]>([]);
-  const [visibilityState, setVisibilityState] = useState<Record<string, boolean>>({});
+  const [visibilityState, setVisibilityState] = useState<
+    Record<string, boolean>
+  >({});
 
   useEffect(() => {
     if (colleagues.length > 0 && currentUser) {
       // Get saved order from settings or create default order
       const savedOrder = currentUser.settings?.colleagueOrder || [];
       const orderedList = [...colleagues];
-      
+
       // Sort based on saved order
       orderedList.sort((a, b) => {
         const aIndex = savedOrder.indexOf(a.id);
         const bIndex = savedOrder.indexOf(b.id);
-        
+
         // Put items not in saved order at the end
         if (aIndex === -1 && bIndex === -1) return 0;
         if (aIndex === -1) return 1;
         if (bIndex === -1) return -1;
-        
+
         return aIndex - bIndex;
       });
 
       // Move current user to top
-      const currentUserIndex = orderedList.findIndex((c) => c.id === currentUser.id);
+      const currentUserIndex = orderedList.findIndex(
+        (c) => c.id === currentUser.id,
+      );
       if (currentUserIndex !== -1) {
         const [currentUserData] = orderedList.splice(currentUserIndex, 1);
         orderedList.unshift(currentUserData);
@@ -53,11 +57,14 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
       setOrderedColleagues(orderedList);
 
       // Initialize visibility state
-      const initialVisibility = colleagues.reduce((acc, colleague) => {
-        const settings = currentUser.settings?.colleagues?.[colleague.id];
-        acc[colleague.id] = settings?.visible !== false;
-        return acc;
-      }, {} as Record<string, boolean>);
+      const initialVisibility = colleagues.reduce(
+        (acc, colleague) => {
+          const settings = currentUser.settings?.colleagues?.[colleague.id];
+          acc[colleague.id] = settings?.visible !== false;
+          return acc;
+        },
+        {} as Record<string, boolean>,
+      );
       setVisibilityState(initialVisibility);
     }
   }, [colleagues, currentUser]);
@@ -68,19 +75,19 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
     const newVisibility = !visibilityState[colleagueId];
     setVisibilityState((prev) => ({
       ...prev,
-      [colleagueId]: newVisibility
+      [colleagueId]: newVisibility,
     }));
 
     try {
       const currentSettings = getColleagueSettings(colleagueId);
       await updateSettings(colleagueId, {
         ...currentSettings,
-        visible: newVisibility
+        visible: newVisibility,
       });
     } catch (err) {
       setVisibilityState((prev) => ({
         ...prev,
-        [colleagueId]: !newVisibility
+        [colleagueId]: !newVisibility,
       }));
       console.error("Failed to update visibility:", err);
     }
@@ -95,9 +102,9 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
     setOrderedColleagues(newOrder);
 
     // Save new order to settings
-    const colleagueOrder = newOrder.map(c => c.id);
+    const colleagueOrder = newOrder.map((c) => c.id);
     try {
-      await updateSettings('order', { colleagueOrder });
+      await updateSettings("order", { colleagueOrder });
     } catch (err) {
       console.error("Failed to save colleague order:", err);
       // Revert on error
@@ -117,7 +124,10 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
 
   return (
     <DndProvider backend={HTML5Backend}>
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" data-tsx-id="colleague-settings">
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+        data-tsx-id="colleague-settings"
+      >
         <div className="bg-white rounded-lg shadow-xl max-w-5xl w-full">
           <div className="flex justify-between items-center p-6 border-b">
             <h2 className="text-xl font-semibold text-zinc-900">
@@ -146,7 +156,9 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
                 settings={getColleagueSettings(colleague.id)}
                 colors={DEFAULT_COLORS}
                 onColorChange={(id, color) => updateSettings(id, { color })}
-                onAbbrevChange={(id, initials) => updateSettings(id, { initials })}
+                onAbbrevChange={(id, initials) =>
+                  updateSettings(id, { initials })
+                }
                 onVisibilityToggle={handleVisibilityToggle}
                 isVisible={visibilityState[colleague.id]}
                 index={index}

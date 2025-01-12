@@ -15,16 +15,16 @@ export interface ErrorWithMessage {
 // Type Guards
 export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
   return (
-    typeof error === 'object' &&
+    typeof error === "object" &&
     error !== null &&
-    'message' in error &&
-    typeof (error as Record<string, unknown>).message === 'string'
+    "message" in error &&
+    typeof (error as Record<string, unknown>).message === "string"
   );
 }
 
 export function assertNonNullable<T>(
   value: T,
-  message: string
+  message: string,
 ): asserts value is NonNullable<T> {
   if (value === null || value === undefined) {
     throw new Error(message);

@@ -1,5 +1,5 @@
-import { getWeekNumber } from '../../utils/dateUtils';
-import { WeekNumber } from './WeekNumber';
+import { getWeekNumber } from "../../utils/dateUtils";
+import { WeekNumber } from "./WeekNumber";
 
 interface WeekColumnProps {
   days: Date[];
@@ -7,23 +7,30 @@ interface WeekColumnProps {
   rowHeight?: number;
 }
 
-export function WeekColumn({ days, position, rowHeight = 120 }: WeekColumnProps) {
+export function WeekColumn({
+  days,
+  position,
+  rowHeight = 120,
+}: WeekColumnProps) {
   // Get unique weeks, but only for the actual calendar days we're showing
   const uniqueWeeks = days
-    .reduce((acc, day) => {
-      const weekNum = getWeekNumber(day);
-      if (!acc.some(w => w.weekNum === weekNum)) {
-        acc.push({ weekNum, day });
-      }
-      return acc;
-    }, [] as { weekNum: number; day: Date }[])
+    .reduce(
+      (acc, day) => {
+        const weekNum = getWeekNumber(day);
+        if (!acc.some((w) => w.weekNum === weekNum)) {
+          acc.push({ weekNum, day });
+        }
+        return acc;
+      },
+      [] as { weekNum: number; day: Date }[],
+    )
     .slice(0, 5); // Ensure we only show 5 weeks
 
   return (
-    <div 
+    <div
       className="grid gap-px"
-      style={{ 
-        gridAutoRows: `${rowHeight}px`
+      style={{
+        gridAutoRows: `${rowHeight}px`,
       }}
       data-tsx-id="week-column"
     >

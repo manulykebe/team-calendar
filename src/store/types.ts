@@ -20,7 +20,7 @@ export interface UsersState {
 }
 
 export interface SettingsState {
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
   showWeekends: boolean;
   weekStartsOnMonday: boolean;
 }

@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { User, Event } from './';
+import { ReactNode } from "react";
+import { User, Event } from "./";
 
 // Common component props
 export interface BaseProps {
@@ -28,7 +28,7 @@ export interface CalendarGridProps {
 
 export interface EventCardProps {
   event: Event;
-  userSettings?: User['settings'];
+  userSettings?: User["settings"];
   onEdit?: (event: Event) => void;
   onDelete?: (event: Event) => void;
 }
@@ -39,7 +39,7 @@ export interface ModalProps extends BaseProps {
   title: string;
 }
 
-export interface EventModalProps extends Omit<ModalProps, 'title'> {
+export interface EventModalProps extends Omit<ModalProps, "title"> {
   date: Date;
   onSubmit: (data: EventFormData) => Promise<void>;
 }
@@ -63,5 +63,5 @@ export interface ColleagueAvatarProps {
   lastName: string;
   color: string;
   abbreviation?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }

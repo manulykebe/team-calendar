@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { getEvents, createEvent } from '../lib/api';
-import type { Event } from '../types/event';
+import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "../context/AuthContext";
+import { getEvents, createEvent } from "../lib/api";
+import type { Event } from "../types/event";
 
 export function useCalendarEvents() {
   const { token } = useAuth();
@@ -18,19 +18,23 @@ export function useCalendarEvents() {
       const data = await getEvents(token);
       setEvents(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load events');
+      setError(err instanceof Error ? err.message : "Failed to load events");
     } finally {
       setIsLoading(false);
     }
   }, [token]);
 
-  const createNewEvent = async (eventData: { title: string; description: string; date: string }) => {
+  const createNewEvent = async (eventData: {
+    title: string;
+    description: string;
+    date: string;
+  }) => {
     if (!token) {
-      throw new Error('Not authenticated');
+      throw new Error("Not authenticated");
     }
 
     const newEvent = await createEvent(token, eventData);
-    setEvents(prev => [...prev, newEvent]);
+    setEvents((prev) => [...prev, newEvent]);
     return newEvent;
   };
 
@@ -43,6 +47,6 @@ export function useCalendarEvents() {
     isLoading,
     error,
     refreshEvents: fetchEvents,
-    createNewEvent
+    createNewEvent,
   };
 }

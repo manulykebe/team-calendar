@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { getUsers } from '../lib/api';
-import { userSettingsEmitter } from './useColleagueSettings';
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { getUsers } from "../lib/api";
+import { userSettingsEmitter } from "./useColleagueSettings";
 
 export function useCalendarSettings() {
   const { token } = useAuth();
-  const [weekStartsOn, setWeekStartsOn] = useState<string>('Monday');
+  const [weekStartsOn, setWeekStartsOn] = useState<string>("Monday");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -13,45 +13,49 @@ export function useCalendarSettings() {
       if (!token) return;
       try {
         const users = await getUsers(token);
-        const userEmail = localStorage.getItem('userEmail');
-        const currentUser = users.find(u => u.email === userEmail);
-        
+        const userEmail = localStorage.getItem("userEmail");
+        const currentUser = users.find((u) => u.email === userEmail);
+
         if (currentUser) {
           // Use user preference -> site preference -> default
           setWeekStartsOn(
-            currentUser.app?.weekStartsOn || 
-            currentUser.site?.app?.weekStartsOn || 
-            'Monday'
+            currentUser.app?.weekStartsOn ||
+              currentUser.site?.app?.weekStartsOn ||
+              "Monday",
           );
         }
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'Failed to fetch calendar settings');
-        console.error('Failed to fetch calendar settings:', error);
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch calendar settings",
+        );
+        console.error("Failed to fetch calendar settings:", error);
       }
     };
 
     fetchSettings();
 
-    const handleSettingsUpdate = ({ 
-      userId, 
-      app 
-    }: { 
-      userId: string; 
-      app?: { weekStartsOn: string } 
+    const handleSettingsUpdate = ({
+      userId,
+      app,
+    }: {
+      userId: string;
+      app?: { weekStartsOn: string };
     }) => {
       if (app?.weekStartsOn) {
         setWeekStartsOn(app.weekStartsOn);
       }
     };
 
-    userSettingsEmitter.on('settingsUpdated', handleSettingsUpdate);
+    userSettingsEmitter.on("settingsUpdated", handleSettingsUpdate);
     return () => {
-      userSettingsEmitter.off('settingsUpdated', handleSettingsUpdate);
+      userSettingsEmitter.off("settingsUpdated", handleSettingsUpdate);
     };
   }, [token]);
 
   return {
     weekStartsOn,
-    error
+    error,
   };
 }

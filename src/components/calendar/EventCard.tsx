@@ -12,7 +12,11 @@ interface EventCardProps {
   userSettings?: User["settings"];
   onDelete?: (eventId: string) => void;
   currentUser?: User | null;
-  onResize?: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
+  onResize?: (
+    eventId: string,
+    newDate: string,
+    newEndDate?: string,
+  ) => Promise<void>;
 }
 
 export function EventCard({

@@ -13,17 +13,17 @@ const createDefaultSchedule = () => {
       ...acc,
       [day]: { am: true, pm: true },
     }),
-    {} as WeeklySchedule
+    {} as WeeklySchedule,
   );
 };
 
 // Helper function to format date consistently
 const formatDateString = (dateStr: string): string => {
-  if (!dateStr) return '';
-  
+  if (!dateStr) return "";
+
   // Handle dates in DD-MM-YYYY format
-  if (dateStr.includes('-')) {
-    const [day, month, year] = dateStr.split('-');
+  if (dateStr.includes("-")) {
+    const [day, month, year] = dateStr.split("-");
     if (day && month && year) {
       dateStr = `${year}-${month}-${day}`;
     }
@@ -31,16 +31,16 @@ const formatDateString = (dateStr: string): string => {
 
   try {
     const date = parseISO(dateStr);
-    return isValid(date) ? format(date, 'yyyy-MM-dd') : '';
+    return isValid(date) ? format(date, "yyyy-MM-dd") : "";
   } catch {
-    return '';
+    return "";
   }
 };
 
 export function useAvailabilityState(colleague: User) {
-  const availability = Array.isArray(colleague.settings?.availability) 
-    ? colleague.settings.availability 
-    : colleague.settings?.availability 
+  const availability = Array.isArray(colleague.settings?.availability)
+    ? colleague.settings.availability
+    : colleague.settings?.availability
       ? [colleague.settings.availability]
       : [];
 
@@ -49,13 +49,17 @@ export function useAvailabilityState(colleague: User) {
     alternateWeekSchedule: createDefaultSchedule(),
     startDate: format(new Date(), "yyyy-MM-dd"),
     endDate: "",
-    repeatPattern: "all" as const
+    repeatPattern: "all" as const,
   };
 
-  const [startDate, setStartDate] = useState(formatDateString(initialEntry.startDate));
-  const [endDate, setEndDate] = useState(formatDateString(initialEntry.endDate || ''));
+  const [startDate, setStartDate] = useState(
+    formatDateString(initialEntry.startDate),
+  );
+  const [endDate, setEndDate] = useState(
+    formatDateString(initialEntry.endDate || ""),
+  );
   const [repeatPattern, setRepeatPattern] = useState<RepeatPattern>(
-    initialEntry.repeatPattern || "all"
+    initialEntry.repeatPattern || "all",
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -64,14 +68,16 @@ export function useAvailabilityState(colleague: User) {
     return initialEntry.weeklySchedule || createDefaultSchedule();
   });
 
-  const [alternateSchedule, setAlternateSchedule] = useState<WeeklySchedule>(() => {
-    return initialEntry.alternateWeekSchedule || createDefaultSchedule();
-  });
+  const [alternateSchedule, setAlternateSchedule] = useState<WeeklySchedule>(
+    () => {
+      return initialEntry.alternateWeekSchedule || createDefaultSchedule();
+    },
+  );
 
   const handleTimeSlotToggle = (
     day: keyof WeeklySchedule,
     slot: keyof TimeSlot,
-    isAlternate = false
+    isAlternate = false,
   ) => {
     const setterFunction = isAlternate ? setAlternateSchedule : setSchedule;
     setterFunction((prev) => ({
@@ -88,15 +94,17 @@ export function useAvailabilityState(colleague: User) {
 
     // Format and set dates
     setStartDate(formatDateString(entry.startDate));
-    setEndDate(formatDateString(entry.endDate || ''));
-    
+    setEndDate(formatDateString(entry.endDate || ""));
+
     // Set repeat pattern
     setRepeatPattern(entry.repeatPattern || "all");
-    
+
     // Set schedules
     setSchedule(entry.weeklySchedule || createDefaultSchedule());
-    if (entry.repeatPattern === 'evenodd') {
-      setAlternateSchedule(entry.alternateWeekSchedule || createDefaultSchedule());
+    if (entry.repeatPattern === "evenodd") {
+      setAlternateSchedule(
+        entry.alternateWeekSchedule || createDefaultSchedule(),
+      );
     } else {
       setAlternateSchedule(createDefaultSchedule());
     }
@@ -118,6 +126,6 @@ export function useAvailabilityState(colleague: User) {
     alternateSchedule,
     setAlternateSchedule,
     handleTimeSlotToggle,
-    loadEntry
+    loadEntry,
   };
 }

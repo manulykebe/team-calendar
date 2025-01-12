@@ -9,7 +9,11 @@ interface SingleDayEventBarProps {
   userSettings?: User["settings"];
   canModify: boolean;
   onDelete?: (eventId: string) => void;
-  onResize: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
+  onResize: (
+    eventId: string,
+    newDate: string,
+    newEndDate?: string,
+  ) => Promise<void>;
   currentUser?: User | null;
   onClick: () => void;
 }
@@ -21,18 +25,20 @@ export function SingleDayEventBar({
   onDelete,
   onResize,
   currentUser,
-  onClick
+  onClick,
 }: SingleDayEventBarProps) {
   const { isResizing, handleResizeStart } = useEventResize({
     eventId: event.id,
     date: event.date,
     endDate: event.endDate,
-    onResize
+    onResize,
   });
 
   const colleagueSettings = userSettings?.colleagues?.[event.userId];
   const backgroundColor = colleagueSettings?.color || "#e2e8f0";
-  const prefix = colleagueSettings?.initials ? `[${colleagueSettings.initials}] ` : "";
+  const prefix = colleagueSettings?.initials
+    ? `[${colleagueSettings.initials}] `
+    : "";
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -50,10 +56,13 @@ export function SingleDayEventBar({
         cursor-pointer hover:opacity-90`}
       style={{
         backgroundColor,
-        color: backgroundColor === "#fee090" || backgroundColor === "#e0f3f8" ? "#1a202c" : "white",
+        color:
+          backgroundColor === "#fee090" || backgroundColor === "#e0f3f8"
+            ? "#1a202c"
+            : "white",
         top: `${topPosition}px`,
-        height: '20px',
-        zIndex: isResizing ? 20 : 10
+        height: "20px",
+        zIndex: isResizing ? 20 : 10,
       }}
       data-tsx-id="single-day-event-bar"
     >
@@ -61,26 +70,28 @@ export function SingleDayEventBar({
         <>
           <EventResizeHandle
             position="left"
-            onMouseDown={(e) => handleResizeStart('start', e)}
+            onMouseDown={(e) => handleResizeStart("start", e)}
           />
           <EventResizeHandle
             position="right"
-            onMouseDown={(e) => handleResizeStart('end', e)}
+            onMouseDown={(e) => handleResizeStart("end", e)}
           />
         </>
       )}
-      
+
       <span className="truncate">
         {prefix}
         {event.title || ""}
       </span>
-      
+
       {canModify && onDelete && (
         <button
           onClick={handleDelete}
           className="p-0.5 hover:bg-black/10 rounded ml-1"
           aria-label="Delete event"
-          title={currentUser?.role === "admin" ? "Delete as admin" : "Delete event"}
+          title={
+            currentUser?.role === "admin" ? "Delete as admin" : "Delete event"
+          }
         >
           <Trash2 className="w-3 h-3" />
         </button>

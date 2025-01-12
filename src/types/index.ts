@@ -1,6 +1,6 @@
 // Export all types from a central location
-export * from './event';
-export * from './user';
+export * from "./event";
+export * from "./user";
 
 // Common types used across components
 export interface BaseComponentProps {

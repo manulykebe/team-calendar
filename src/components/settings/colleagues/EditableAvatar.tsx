@@ -1,12 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
-import { ColleagueAvatar } from './ColleagueAvatar';
+import { useState, useRef, useEffect } from "react";
+import { ColleagueAvatar } from "./ColleagueAvatar";
 
 interface EditableAvatarProps {
   firstName: string;
   lastName: string;
   color: string;
   abbreviation?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   onInitialsChange: (initials: string) => void;
 }
 
@@ -15,11 +15,11 @@ export function EditableAvatar({
   lastName,
   color,
   abbreviation,
-  size = 'md',
+  size = "md",
   onInitialsChange,
 }: EditableAvatarProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(abbreviation || '');
+  const [value, setValue] = useState(abbreviation || "");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -41,21 +41,21 @@ export function EditableAvatar({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleBlur();
-    } else if (e.key === 'Escape') {
-      setValue(abbreviation || '');
+    } else if (e.key === "Escape") {
+      setValue(abbreviation || "");
       setIsEditing(false);
     }
   };
 
   if (isEditing) {
     return (
-      <div className={`relative inline-block ${
-        size === 'sm' ? 'w-8 h-8' : 
-        size === 'md' ? 'w-10 h-10' : 
-        'w-12 h-12'
-      }`}>
+      <div
+        className={`relative inline-block ${
+          size === "sm" ? "w-8 h-8" : size === "md" ? "w-10 h-10" : "w-12 h-12"
+        }`}
+      >
         <input
           ref={inputRef}
           type="text"
@@ -66,7 +66,7 @@ export function EditableAvatar({
           className="absolute inset-0 w-full h-full text-center rounded-full border-2 border-blue-500 bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           maxLength={3}
           style={{
-            fontSize: size === 'sm' ? '12px' : size === 'md' ? '14px' : '16px',
+            fontSize: size === "sm" ? "12px" : size === "md" ? "14px" : "16px",
           }}
         />
       </div>
@@ -74,7 +74,7 @@ export function EditableAvatar({
   }
 
   return (
-    <div 
+    <div
       onClick={handleClick}
       className="cursor-pointer hover:opacity-80 transition-opacity"
       role="button"

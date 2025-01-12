@@ -35,10 +35,7 @@ export function useColleagueSettings() {
 
       if (current) {
         setCurrentUser(current);
-        setColleagues([
-          current,
-          ...users.filter((u) => u.id !== current.id),
-        ]);
+        setColleagues([current, ...users.filter((u) => u.id !== current.id)]);
       } else {
         throw new Error("Current user not found");
       }
@@ -60,16 +57,16 @@ export function useColleagueSettings() {
       initials?: string;
       visible?: boolean;
       colleagueOrder?: string[];
-    }
+    },
   ) => {
     if (!currentUser || !token) return;
 
     let newSettings;
-    if (colleagueId === 'order') {
+    if (colleagueId === "order") {
       // Handle order update
       newSettings = {
         ...currentUser.settings,
-        colleagueOrder: updates.colleagueOrder
+        colleagueOrder: updates.colleagueOrder,
       };
     } else {
       // Handle colleague-specific settings
@@ -88,7 +85,7 @@ export function useColleagueSettings() {
     try {
       await updateUser(token, currentUser.id, { settings: newSettings });
       setCurrentUser((prev) =>
-        prev ? { ...prev, settings: newSettings } : null
+        prev ? { ...prev, settings: newSettings } : null,
       );
 
       userSettingsEmitter.emit("settingsUpdated", {
@@ -104,9 +101,8 @@ export function useColleagueSettings() {
   const getColleagueSettings = (colleagueId: string) => {
     return (
       currentUser?.settings?.colleagues?.[colleagueId] || {
-        color: DEFAULT_COLORS[
-          Math.floor(Math.random() * DEFAULT_COLORS.length)
-        ],
+        color:
+          DEFAULT_COLORS[Math.floor(Math.random() * DEFAULT_COLORS.length)],
         initials: "",
       }
     );

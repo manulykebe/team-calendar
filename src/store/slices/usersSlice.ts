@@ -1,10 +1,14 @@
-import { create } from 'zustand';
-import { UsersState } from '../types';
-import { getUsers, updateUser } from '../../lib/api';
+import { create } from "zustand";
+import { UsersState } from "../types";
+import { getUsers, updateUser } from "../../lib/api";
 
 interface UsersStore extends UsersState {
   fetchUsers: (token: string) => Promise<void>;
-  updateUserSettings: (token: string, userId: string, settings: any) => Promise<void>;
+  updateUserSettings: (
+    token: string,
+    userId: string,
+    settings: any,
+  ) => Promise<void>;
   setCurrentUser: (email: string) => void;
 }
 
@@ -20,7 +24,10 @@ export const useUsersStore = create<UsersStore>((set) => ({
       const users = await getUsers(token);
       set({ users, isLoading: false });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to fetch users', isLoading: false });
+      set({
+        error: error instanceof Error ? error.message : "Failed to fetch users",
+        isLoading: false,
+      });
     }
   },
 
@@ -30,15 +37,20 @@ export const useUsersStore = create<UsersStore>((set) => ({
       const updatedUser = await updateUser(token, userId, { settings });
       set((state) => ({
         users: state.users.map((u) => (u.id === userId ? updatedUser : u)),
-        currentUser: state.currentUser?.id === userId ? updatedUser : state.currentUser,
+        currentUser:
+          state.currentUser?.id === userId ? updatedUser : state.currentUser,
         isLoading: false,
       }));
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to update settings', isLoading: false });
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to update settings",
+        isLoading: false,
+      });
     }
   },
 
-  setCurrentUser: (email) => 
+  setCurrentUser: (email) =>
     set((state) => ({
       currentUser: state.users.find((u) => u.email === email) || null,
     })),

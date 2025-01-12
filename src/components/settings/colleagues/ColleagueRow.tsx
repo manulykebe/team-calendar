@@ -16,11 +16,15 @@ export function ColleagueRow({
   isVisible,
   index,
   moveColleague,
-  currentUser
+  currentUser,
 }: ColleagueRowProps & { currentUser?: User | null }) {
-  const { isDragging, dragRef } = useColleagueDrag(colleague.id, index, moveColleague);
+  const { isDragging, dragRef } = useColleagueDrag(
+    colleague.id,
+    index,
+    moveColleague,
+  );
   const [showAvailability, setShowAvailability] = useState(false);
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === "admin";
 
   return (
     <>
@@ -61,7 +65,7 @@ export function ColleagueRow({
               <Clock className="w-5 h-5 text-zinc-600" />
             </button>
           )}
-          
+
           <button
             onClick={() => onVisibilityToggle(colleague.id)}
             className="p-2 hover:bg-zinc-200 rounded-full transition-colors"

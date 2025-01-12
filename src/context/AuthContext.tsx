@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from "react";
 
 interface AuthContextType {
   token: string | null;
@@ -14,17 +14,17 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem('token');
+    return localStorage.getItem("token");
   });
 
   const login = (newToken: string) => {
     setToken(newToken);
-    localStorage.setItem('token', newToken);
+    localStorage.setItem("token", newToken);
   };
 
   const logout = () => {
     setToken(null);
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
   };
 
   return (

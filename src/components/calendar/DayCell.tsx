@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo } from "react";
 import { format, isFirstDayOfMonth } from "date-fns";
 import { EventCard } from "./EventCard";
 import { MonthLabel } from "./MonthLabel";
@@ -16,7 +16,11 @@ interface DayCellProps {
   userSettings?: any;
   onEventDelete?: (eventId: string) => void;
   currentUser?: User | null;
-  onEventResize?: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
+  onEventResize?: (
+    eventId: string,
+    newDate: string,
+    newEndDate?: string,
+  ) => Promise<void>;
   holiday?: Holiday;
 }
 
@@ -51,11 +55,16 @@ export const DayCell = memo(function DayCell({
       {showMonthLabel && <MonthLabel date={date} />}
       <div className="flex items-start justify-between">
         <div className="flex items-center space-x-1">
-          <span className={`text-sm font-medium ${holiday ? 'text-red-600' : 'text-zinc-700'}`}>
+          <span
+            className={`text-sm font-medium ${holiday ? "text-red-600" : "text-zinc-700"}`}
+          >
             {format(date, "d")}
           </span>
           {holiday && (
-            <div className="inline-flex items-center text-xs text-red-600 bg-red-50 rounded px-1.5 py-0.5" title={holiday.name}>
+            <div
+              className="inline-flex items-center text-xs text-red-600 bg-red-50 rounded px-1.5 py-0.5"
+              title={holiday.name}
+            >
               <Calendar className="w-3 h-3 mr-1" />
               <span className="truncate max-w-[80px]">{holiday.name}</span>
             </div>

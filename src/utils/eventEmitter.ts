@@ -12,11 +12,13 @@ export class EventEmitter {
 
   off(event: string, callback: EventCallback) {
     if (!this.listeners[event]) return;
-    this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
+    this.listeners[event] = this.listeners[event].filter(
+      (cb) => cb !== callback,
+    );
   }
 
   emit(event: string, data: any) {
     if (!this.listeners[event]) return;
-    this.listeners[event].forEach(callback => callback(data));
+    this.listeners[event].forEach((callback) => callback(data));
   }
 }

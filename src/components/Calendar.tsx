@@ -15,7 +15,7 @@ export function Calendar() {
   const { token } = useAuth();
   const { weekStartsOn } = useCalendarSettings();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  
+
   const {
     events,
     selectedDate,
@@ -29,7 +29,7 @@ export function Calendar() {
     fetchEvents,
     handleCreateEvent,
     handleEventDelete,
-    handleEventResize
+    handleEventResize,
   } = useCalendarState(token);
 
   useEffect(() => {
@@ -52,27 +52,31 @@ export function Calendar() {
         settings: any;
       }) => {
         setCurrentUser((prev) =>
-          prev && prev.id === userId ? { ...prev, settings } : prev
+          prev && prev.id === userId ? { ...prev, settings } : prev,
         );
       };
 
       userSettingsEmitter.on("settingsUpdated", handleSettingsUpdate);
-      return () => userSettingsEmitter.off("settingsUpdated", handleSettingsUpdate);
+      return () =>
+        userSettingsEmitter.off("settingsUpdated", handleSettingsUpdate);
     }
   }, [token, fetchEvents]);
 
   const handlePrevWeek = () => {
-    setCurrentMonth(prev => subWeeks(prev, 1));
+    setCurrentMonth((prev) => subWeeks(prev, 1));
   };
 
   const handleNextWeek = () => {
-    setCurrentMonth(prev => addWeeks(prev, 1));
+    setCurrentMonth((prev) => addWeeks(prev, 1));
   };
 
-  const dateRange = `${format(subWeeks(currentMonth, 2), 'MMM d')} - ${format(addWeeks(currentMonth, 2), 'MMM d, yyyy')}`;
+  const dateRange = `${format(subWeeks(currentMonth, 2), "MMM d")} - ${format(addWeeks(currentMonth, 2), "MMM d, yyyy")}`;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-tsx-id="calendar">
+    <div
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+      data-tsx-id="calendar"
+    >
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center space-x-4">
           <h1 className="text-3xl font-bold text-zinc-900">Team Calendar</h1>
@@ -84,7 +88,9 @@ export function Calendar() {
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-sm font-medium text-zinc-600">{dateRange}</span>
+            <span className="text-sm font-medium text-zinc-600">
+              {dateRange}
+            </span>
             <button
               onClick={handleNextWeek}
               className="p-2 hover:bg-zinc-100 rounded-full"

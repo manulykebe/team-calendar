@@ -8,7 +8,11 @@ interface EventDetailsModalProps {
   onDelete?: (eventId: string) => void;
 }
 
-export function EventDetailsModal({ event, onClose, onDelete }: EventDetailsModalProps) {
+export function EventDetailsModal({
+  event,
+  onClose,
+  onDelete,
+}: EventDetailsModalProps) {
   const handleDelete = () => {
     if (onDelete) {
       onDelete(event.id);
@@ -17,12 +21,13 @@ export function EventDetailsModal({ event, onClose, onDelete }: EventDetailsModa
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" data-tsx-id="event-details-modal">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+      data-tsx-id="event-details-modal"
+    >
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="text-lg font-semibold text-zinc-900">
-            Event Details
-          </h3>
+          <h3 className="text-lg font-semibold text-zinc-900">Event Details</h3>
           <button
             onClick={onClose}
             className="text-zinc-400 hover:text-zinc-500"
@@ -42,10 +47,7 @@ export function EventDetailsModal({ event, onClose, onDelete }: EventDetailsModa
             <p className="mt-1 text-zinc-900">
               {format(new Date(event.date), "MMMM d, yyyy")}
               {event.endDate && (
-                <>
-                  {" "}
-                  - {format(new Date(event.endDate), "MMMM d, yyyy")}
-                </>
+                <> - {format(new Date(event.endDate), "MMMM d, yyyy")}</>
               )}
             </p>
           </div>

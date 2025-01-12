@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react';
-import { useClickOutside } from '../../../../hooks/useClickOutside';
+import { useRef, useEffect } from "react";
+import { useClickOutside } from "../../../../hooks/useClickOutside";
 
 interface DeleteScheduleDropdownProps {
   isFirstSchedule: boolean;
@@ -33,7 +33,9 @@ export function DeleteScheduleDropdown({
       className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg shadow-lg border border-zinc-200 z-50"
     >
       <div className="p-2">
-        <h3 className="text-sm font-medium text-zinc-900 mb-2">Delete Schedule</h3>
+        <h3 className="text-sm font-medium text-zinc-900 mb-2">
+          Delete Schedule
+        </h3>
         {isMiddleSchedule ? (
           <>
             <button

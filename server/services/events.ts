@@ -1,5 +1,5 @@
-import { Event } from '../types';
-import { readSiteData, writeSiteData } from '../utils';
+import { Event } from "../types";
+import { readSiteData, writeSiteData } from "../utils";
 
 export async function getEvents(site: string) {
   const data = await readSiteData(site);
@@ -16,7 +16,7 @@ export async function createEvent(params: {
   site: string;
 }) {
   const data = await readSiteData(params.site);
-  
+
   const newEvent: Event = {
     id: crypto.randomUUID(),
     userId: params.userId,
@@ -26,7 +26,7 @@ export async function createEvent(params: {
     date: params.date,
     endDate: params.endDate,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   };
 
   data.events.push(newEvent);
@@ -44,14 +44,14 @@ export async function updateEvent(params: {
   site: string;
 }) {
   const data = await readSiteData(params.site);
-  
+
   const event = data.events.find((e: Event) => e.id === params.id);
   if (!event) {
-    throw new Error('Event not found');
+    throw new Error("Event not found");
   }
-  
+
   if (event.userId !== params.userId) {
-    throw new Error('Not authorized to update this event');
+    throw new Error("Not authorized to update this event");
   }
 
   Object.assign(event, {
@@ -59,7 +59,7 @@ export async function updateEvent(params: {
     description: params.description,
     date: params.date,
     endDate: params.endDate,
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   });
 
   await writeSiteData(params.site, data);
@@ -73,18 +73,18 @@ export async function deleteEvent(params: {
   userRole?: string;
 }) {
   const data = await readSiteData(params.site);
-  
+
   const eventIndex = data.events.findIndex((e: Event) => e.id === params.id);
   if (eventIndex === -1) {
-    throw new Error('Event not found');
+    throw new Error("Event not found");
   }
-  
+
   // Allow deletion if user is admin or owns the event
-  const isAdmin = params.userRole === 'admin';
+  const isAdmin = params.userRole === "admin";
   const isOwner = data.events[eventIndex].userId === params.userId;
-  
+
   if (!isAdmin && !isOwner) {
-    throw new Error('Not authorized to delete this event');
+    throw new Error("Not authorized to delete this event");
   }
 
   data.events.splice(eventIndex, 1);

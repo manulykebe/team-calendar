@@ -1,11 +1,11 @@
-import { User } from './user';
+import { User } from "./user";
 
 export interface ScheduleData {
   weeklySchedule: WeeklySchedule;
   alternateWeekSchedule?: WeeklySchedule;
   startDate: string;
   endDate: string;
-  repeatPattern: 'all' | 'evenodd';
+  repeatPattern: "all" | "evenodd";
 }
 
 export interface TimeSlot {
@@ -14,11 +14,11 @@ export interface TimeSlot {
 }
 
 export type WeekDays =
-	| "Monday"
-	| "Tuesday"
-	| "Wednesday"
-	| "Thursday"
-	| "Friday";
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday";
 
 export interface WeeklySchedule {
   Monday: TimeSlot;
@@ -34,7 +34,7 @@ export interface AvailabilitySettings {
   weeklySchedule: WeeklySchedule;
   startDate: string;
   endDate: string;
-  repeatPattern?: 'all' | 'even' | 'odd';
+  repeatPattern?: "all" | "even" | "odd";
 }
 
 export interface ColleagueAvailability {

@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { Event } from '../types/event';
+import { useState } from "react";
+import { Event } from "../types/event";
 
-export function useDragAndDrop(onEventMove: (eventId: string, newDate: string) => Promise<void>) {
+export function useDragAndDrop(
+  onEventMove: (eventId: string, newDate: string) => Promise<void>,
+) {
   const [draggedEvent, setDraggedEvent] = useState<Event | null>(null);
   const [dragOverDate, setDragOverDate] = useState<string | null>(null);
 
@@ -11,7 +13,7 @@ export function useDragAndDrop(onEventMove: (eventId: string, newDate: string) =
 
   const handleDragOver = (date: string, e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.dropEffect = "move";
     setDragOverDate(date);
   };
 
@@ -20,7 +22,7 @@ export function useDragAndDrop(onEventMove: (eventId: string, newDate: string) =
       try {
         await onEventMove(draggedEvent.id, date);
       } catch (error) {
-        console.error('Failed to move event:', error);
+        console.error("Failed to move event:", error);
       }
     }
     setDraggedEvent(null);
@@ -32,6 +34,6 @@ export function useDragAndDrop(onEventMove: (eventId: string, newDate: string) =
     dragOverDate,
     handleDragStart,
     handleDragOver,
-    handleDrop
+    handleDrop,
   };
 }

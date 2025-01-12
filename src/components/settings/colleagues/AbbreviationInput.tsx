@@ -5,7 +5,10 @@ interface AbbreviationInputProps {
   onChange: (value: string) => void;
 }
 
-export function AbbreviationInput({ value = "", onChange }: AbbreviationInputProps) {
+export function AbbreviationInput({
+  value = "",
+  onChange,
+}: AbbreviationInputProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.toUpperCase().slice(0, 3);
     onChange(newValue);

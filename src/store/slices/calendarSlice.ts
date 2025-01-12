@@ -1,11 +1,20 @@
-import { create } from 'zustand';
-import { CalendarState } from '../types';
-import { getEvents, createEvent, updateEvent, deleteEvent } from '../../lib/api';
+import { create } from "zustand";
+import { CalendarState } from "../types";
+import {
+  getEvents,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+} from "../../lib/api";
 
 interface CalendarStore extends CalendarState {
   fetchEvents: (token: string) => Promise<void>;
-  addEvent: (token: string, event: Omit<Event, 'id'>) => Promise<void>;
-  updateEvent: (token: string, id: string, event: Partial<Event>) => Promise<void>;
+  addEvent: (token: string, event: Omit<Event, "id">) => Promise<void>;
+  updateEvent: (
+    token: string,
+    id: string,
+    event: Partial<Event>,
+  ) => Promise<void>;
   removeEvent: (token: string, id: string) => Promise<void>;
   setSelectedDate: (date: Date | null) => void;
 }
@@ -22,7 +31,11 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
       const events = await getEvents(token);
       set({ events, isLoading: false });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to fetch events', isLoading: false });
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to fetch events",
+        isLoading: false,
+      });
     }
   },
 
@@ -30,9 +43,16 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const newEvent = await createEvent(token, event);
-      set((state) => ({ events: [...state.events, newEvent], isLoading: false }));
+      set((state) => ({
+        events: [...state.events, newEvent],
+        isLoading: false,
+      }));
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to create event', isLoading: false });
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to create event",
+        isLoading: false,
+      });
     }
   },
 
@@ -45,7 +65,11 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
         isLoading: false,
       }));
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to update event', isLoading: false });
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to update event",
+        isLoading: false,
+      });
     }
   },
 
@@ -58,7 +82,11 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
         isLoading: false,
       }));
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to delete event', isLoading: false });
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to delete event",
+        isLoading: false,
+      });
     }
   },
 

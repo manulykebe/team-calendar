@@ -25,10 +25,10 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status?: number,
-    public code?: string
+    public code?: string,
   ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
@@ -48,7 +48,7 @@ export interface UserUpdateData {
   lastName?: string;
   email?: string;
   password?: string;
-  role?: 'admin' | 'user';
-  status?: 'active' | 'inactive';
+  role?: "admin" | "user";
+  status?: "active" | "inactive";
   settings?: Record<string, any>;
 }

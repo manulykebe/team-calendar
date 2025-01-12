@@ -2,9 +2,9 @@ import { useDrag, useDrop } from "react-dnd";
 import { DragItem } from "../types";
 
 export function useColleagueDrag(
-  id: string, 
+  id: string,
   index: number,
-  moveColleague: (dragIndex: number, hoverIndex: number) => void
+  moveColleague: (dragIndex: number, hoverIndex: number) => void,
 ) {
   const [{ isDragging }, drag] = useDrag({
     type: "colleague",

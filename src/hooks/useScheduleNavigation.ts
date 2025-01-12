@@ -2,7 +2,10 @@ import { addDays, subDays, parseISO, format, isValid } from "date-fns";
 import { User } from "../types/user";
 import { WeeklySchedule } from "../types/availability";
 import { useAvailabilityValidation } from "./useAvailabilityValidation";
-import { addUserAvailabilitySchedule, updateUserAvailabilitySchedule } from "../lib/api";
+import {
+  addUserAvailabilitySchedule,
+  updateUserAvailabilitySchedule,
+} from "../lib/api";
 
 interface UseScheduleNavigationProps {
   token: string;
@@ -77,7 +80,7 @@ export function useScheduleNavigation({
         newAvailability[i].endDate,
         i,
         newAvailability.length,
-        newAvailability
+        newAvailability,
       );
 
       if (!validation.isValid) {
@@ -117,20 +120,20 @@ export function useScheduleNavigation({
       newEntry.startDate = formatDate(startDate);
     } else if (!atStart && availability.length > 0) {
       const lastEntry = availability[availability.length - 1];
-      
+
       if (splitDate) {
         // Update the last entry's end date
         const updatedLastEntry = {
           ...lastEntry,
-          endDate: splitDate
+          endDate: splitDate,
         };
-        
+
         try {
           await updateUserAvailabilitySchedule(
             token,
             colleague.id,
             availability.length - 1,
-            updatedLastEntry
+            updatedLastEntry,
           );
 
           // Set up the new entry to start the day after the split date
@@ -171,7 +174,7 @@ export function useScheduleNavigation({
         ...(atStart ? [newEntry] : []),
         ...availability,
         ...(atStart ? [] : [newEntry]),
-      ]
+      ],
     );
 
     if (!validation.isValid) {
@@ -184,7 +187,7 @@ export function useScheduleNavigation({
         token,
         colleague.id,
         atStart ? -1 : availability.length,
-        newEntry
+        newEntry,
       );
       loadEntry(newEntry);
     } catch (error) {
@@ -228,7 +231,7 @@ export function useScheduleNavigation({
       firstHalf.endDate,
       currentEntryIndex,
       newAvailability.length,
-      newAvailability
+      newAvailability,
     );
 
     const validation2 = validateSchedule(
@@ -236,7 +239,7 @@ export function useScheduleNavigation({
       secondHalf.endDate,
       currentEntryIndex + 1,
       newAvailability.length,
-      newAvailability
+      newAvailability,
     );
 
     if (!validation1.isValid) {
@@ -259,7 +262,7 @@ export function useScheduleNavigation({
     setEndDate(entry.endDate || "");
     setSchedule(entry.weeklySchedule || createDefaultSchedule());
     setAlternateSchedule(
-      entry.alternateWeekSchedule || createDefaultSchedule()
+      entry.alternateWeekSchedule || createDefaultSchedule(),
     );
   };
 

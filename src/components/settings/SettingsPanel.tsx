@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Settings as SettingsIcon, X, Users, LogOut, Clock } from "lucide-react";
+import {
+  Settings as SettingsIcon,
+  X,
+  Users,
+  LogOut,
+  Clock,
+} from "lucide-react";
 import { ColleagueSettings } from "./colleagues/ColleagueSettings";
 import { UserManagement } from "../users/UserManagement";
 import { useAuth } from "../../context/AuthContext";
@@ -15,7 +21,8 @@ interface SettingsPanelProps {
 
 export function SettingsPanel({ className }: SettingsPanelProps) {
   const { logout } = useAuth();
-  const { currentUser, updateWorkStartDay, updateWeekNumberSetting } = useUserSettings();
+  const { currentUser, updateWorkStartDay, updateWeekNumberSetting } =
+    useUserSettings();
   const { colleagues } = useColleagueSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [showColleagueSettings, setShowColleagueSettings] = useState(false);
@@ -111,8 +118,13 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
                 <ColleagueAvatar
                   firstName={currentUser.firstName}
                   lastName={currentUser.lastName}
-                  color={currentUser.settings?.colleagues?.[currentUser.id]?.color || "#a50026"}
-                  abbreviation={currentUser.settings?.colleagues?.[currentUser.id]?.initials}
+                  color={
+                    currentUser.settings?.colleagues?.[currentUser.id]?.color ||
+                    "#a50026"
+                  }
+                  abbreviation={
+                    currentUser.settings?.colleagues?.[currentUser.id]?.initials
+                  }
                   size="sm"
                 />
                 <div className="ml-3">

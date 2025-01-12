@@ -1,14 +1,14 @@
-import { User, Event } from './';
+import { User, Event } from "./";
 
 export interface UseCalendarEventsReturn {
   events: Event[];
   isLoading: boolean;
   error: string | null;
   refreshEvents: () => Promise<void>;
-  createNewEvent: (eventData: { 
-    title: string; 
-    description: string; 
-    date: string 
+  createNewEvent: (eventData: {
+    title: string;
+    description: string;
+    date: string;
   }) => Promise<Event>;
 }
 
@@ -18,8 +18,8 @@ export interface UseColleagueSettingsReturn {
   loading: boolean;
   error: string;
   updateSettings: (
-    colleagueId: string, 
-    updates: { color?: string; initials?: string }
+    colleagueId: string,
+    updates: { color?: string; initials?: string },
   ) => Promise<void>;
   getColleagueSettings: (colleagueId: string) => {
     color: string;

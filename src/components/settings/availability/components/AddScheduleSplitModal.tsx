@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { X } from 'lucide-react';
-import { addDays, parseISO, format, isValid } from 'date-fns';
+import { useState } from "react";
+import { X } from "lucide-react";
+import { addDays, parseISO, format, isValid } from "date-fns";
 
 interface AddScheduleSplitModalProps {
   lastScheduleEndDate: string;
@@ -13,18 +13,20 @@ export function AddScheduleSplitModal({
   onSplit,
   onClose,
 }: AddScheduleSplitModalProps) {
-  const [selectedDate, setSelectedDate] = useState(lastScheduleEndDate || format(new Date(), 'yyyy-MM-dd'));
+  const [selectedDate, setSelectedDate] = useState(
+    lastScheduleEndDate || format(new Date(), "yyyy-MM-dd"),
+  );
   const [error, setError] = useState<string | null>(null);
 
   const getNextDayText = () => {
     try {
       const date = parseISO(selectedDate);
       if (!isValid(date)) {
-        return 'Invalid date selected';
+        return "Invalid date selected";
       }
-      return format(addDays(date, 1), 'MMM d, yyyy');
+      return format(addDays(date, 1), "MMM d, yyyy");
     } catch {
-      return 'Invalid date selected';
+      return "Invalid date selected";
     }
   };
 
@@ -32,20 +34,20 @@ export function AddScheduleSplitModal({
     try {
       const date = parseISO(selectedDate);
       if (!isValid(date)) {
-        setError('Please select a valid date');
+        setError("Please select a valid date");
         return;
       }
-      
+
       const minDate = parseISO(lastScheduleEndDate);
       if (isValid(minDate) && date < minDate) {
-        setError('Selected date cannot be before the last schedule end date');
+        setError("Selected date cannot be before the last schedule end date");
         return;
       }
 
       onSplit(selectedDate);
       onClose();
     } catch (err) {
-      setError('Invalid date selected');
+      setError("Invalid date selected");
     }
   };
 
@@ -53,7 +55,9 @@ export function AddScheduleSplitModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-zinc-900">Add New Schedule</h3>
+          <h3 className="text-lg font-medium text-zinc-900">
+            Add New Schedule
+          </h3>
           <button
             onClick={onClose}
             className="text-zinc-400 hover:text-zinc-500"

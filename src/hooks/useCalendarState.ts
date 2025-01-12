@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react';
-import { Event } from '../types/event';
-import { getEvents, createEvent, updateEvent } from '../lib/api';
-import { format } from 'date-fns';
+import { useState, useCallback } from "react";
+import { Event } from "../types/event";
+import { getEvents, createEvent, updateEvent } from "../lib/api";
+import { format } from "date-fns";
 
 export function useCalendarState(token: string | null) {
   const [events, setEvents] = useState<Event[]>([]);
@@ -12,7 +12,7 @@ export function useCalendarState(token: string | null) {
 
   const fetchEvents = useCallback(async () => {
     if (!token) {
-      console.warn('No authentication token available');
+      console.warn("No authentication token available");
       return;
     }
 
@@ -28,13 +28,13 @@ export function useCalendarState(token: string | null) {
     }
   }, [token]);
 
-  const handleCreateEvent = async (eventData: { 
-    title: string; 
+  const handleCreateEvent = async (eventData: {
+    title: string;
     description: string;
     endDate?: string;
   }) => {
     if (!token) {
-      console.warn('No authentication token available');
+      console.warn("No authentication token available");
       return;
     }
 
@@ -43,7 +43,7 @@ export function useCalendarState(token: string | null) {
         ...eventData,
         date: format(selectedDate, "yyyy-MM-dd"),
       });
-      setEvents(prev => [...prev, newEvent]);
+      setEvents((prev) => [...prev, newEvent]);
       setShowModal(false);
     } catch (error) {
       if (error instanceof Error) {
@@ -61,49 +61,57 @@ export function useCalendarState(token: string | null) {
 
   const handleEventMove = async (eventId: string, newDate: string) => {
     if (!token) {
-      console.warn('No authentication token available');
+      console.warn("No authentication token available");
       return;
     }
 
-    const event = events.find(e => e.id === eventId);
-    if (!event) return;
-
-    try {
-      const updatedEvent = await updateEvent(token, eventId, {
-        ...event,
-        date: newDate
-      });
-      setEvents(prev => prev.map(e => e.id === eventId ? updatedEvent : e));
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Failed to move event:', error.message);
-      } else {
-        console.error('Failed to move event: Unknown error');
-      }
-    }
-  };
-
-  const handleEventResize = async (eventId: string, newDate: string, newEndDate?: string) => {
-    if (!token) {
-      console.warn('No authentication token available');
-      return;
-    }
-
-    const event = events.find(e => e.id === eventId);
+    const event = events.find((e) => e.id === eventId);
     if (!event) return;
 
     try {
       const updatedEvent = await updateEvent(token, eventId, {
         ...event,
         date: newDate,
-        endDate: newEndDate
       });
-      setEvents(prev => prev.map(e => e.id === eventId ? updatedEvent : e));
+      setEvents((prev) =>
+        prev.map((e) => (e.id === eventId ? updatedEvent : e)),
+      );
     } catch (error) {
       if (error instanceof Error) {
-        console.error('Failed to resize event:', error.message);
+        console.error("Failed to move event:", error.message);
       } else {
-        console.error('Failed to resize event: Unknown error');
+        console.error("Failed to move event: Unknown error");
+      }
+    }
+  };
+
+  const handleEventResize = async (
+    eventId: string,
+    newDate: string,
+    newEndDate?: string,
+  ) => {
+    if (!token) {
+      console.warn("No authentication token available");
+      return;
+    }
+
+    const event = events.find((e) => e.id === eventId);
+    if (!event) return;
+
+    try {
+      const updatedEvent = await updateEvent(token, eventId, {
+        ...event,
+        date: newDate,
+        endDate: newEndDate,
+      });
+      setEvents((prev) =>
+        prev.map((e) => (e.id === eventId ? updatedEvent : e)),
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Failed to resize event:", error.message);
+      } else {
+        console.error("Failed to resize event: Unknown error");
       }
     }
   };
@@ -122,6 +130,6 @@ export function useCalendarState(token: string | null) {
     handleCreateEvent,
     handleEventDelete,
     handleEventMove,
-    handleEventResize
+    handleEventResize,
   };
 }

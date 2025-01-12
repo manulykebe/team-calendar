@@ -9,6 +9,6 @@ export function useEventPermissions(event: Event, currentUser?: User | null) {
   return {
     canModify,
     isAdmin,
-    isOwner
+    isOwner,
   };
 }

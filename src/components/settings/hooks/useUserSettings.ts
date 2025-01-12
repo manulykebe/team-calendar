@@ -35,7 +35,7 @@ export function useUserSettings() {
       app?: { weekStartsOn: string };
     }) => {
       setCurrentUser((prev) =>
-        prev && prev.id === userId ? { ...prev, settings, app } : prev
+        prev && prev.id === userId ? { ...prev, settings, app } : prev,
       );
     };
 
@@ -53,8 +53,8 @@ export function useUserSettings() {
       ...currentUser,
       app: {
         ...currentUser.app,
-        weekStartsOn: value
-      }
+        weekStartsOn: value,
+      },
     };
 
     const { password, ...userWithoutPassword } = updatedUser;
@@ -65,7 +65,7 @@ export function useUserSettings() {
       userSettingsEmitter.emit("settingsUpdated", {
         userId: currentUser.id,
         settings: updatedUser.settings,
-        app: updatedUser.app
+        app: updatedUser.app,
       });
     } catch (error) {
       console.error("Failed to update work start day:", error);
@@ -80,8 +80,8 @@ export function useUserSettings() {
       ...currentUser,
       settings: {
         ...currentUser.settings,
-        showWeekNumber: value
-      }
+        showWeekNumber: value,
+      },
     };
 
     const { password, ...userWithoutPassword } = updatedUser;
@@ -92,7 +92,7 @@ export function useUserSettings() {
       userSettingsEmitter.emit("settingsUpdated", {
         userId: currentUser.id,
         settings: updatedUser.settings,
-        app: updatedUser.app
+        app: updatedUser.app,
       });
     } catch (error) {
       console.error("Failed to update week number setting:", error);
@@ -103,6 +103,6 @@ export function useUserSettings() {
   return {
     currentUser,
     updateWorkStartDay,
-    updateWeekNumberSetting
+    updateWeekNumberSetting,
   };
 }

@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
+import { useMemo } from "react";
+import { startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 
 export function useCalendarDates(currentMonth: Date, showWeekends: boolean) {
   return useMemo(() => {
@@ -9,7 +9,7 @@ export function useCalendarDates(currentMonth: Date, showWeekends: boolean) {
     });
 
     if (!showWeekends) {
-      return days.filter(day => ![0, 6].includes(day.getDay()));
+      return days.filter((day) => ![0, 6].includes(day.getDay()));
     }
 
     return days;

@@ -17,7 +17,11 @@ interface CalendarGridProps {
   userSettings?: any;
   onEventDelete?: (eventId: string) => void;
   currentUser?: User | null;
-  onEventResize?: (eventId: string, newDate: string, newEndDate?: string) => Promise<void>;
+  onEventResize?: (
+    eventId: string,
+    newDate: string,
+    newEndDate?: string,
+  ) => Promise<void>;
 }
 
 export function CalendarGrid({
@@ -35,22 +39,22 @@ export function CalendarGrid({
 
   const { days, emptyDays, weekDays } = getCalendarDays(
     currentMonth,
-    weekStartsOn as any
+    weekStartsOn as any,
   );
 
   useEffect(() => {
     const fetchHolidays = async () => {
       if (!currentUser?.site) {
-        console.warn('No site information available for current user');
+        console.warn("No site information available for current user");
         return;
       }
 
-      const year = format(currentMonth, 'yyyy');
+      const year = format(currentMonth, "yyyy");
       try {
         // Fetch site data to get location
         const siteData = await getSiteData(currentUser.site);
         if (!siteData?.app?.location) {
-          console.warn('No location found in site data');
+          console.warn("No location found in site data");
           return;
         }
 
@@ -59,8 +63,8 @@ export function CalendarGrid({
         setHolidays(holidayData);
         setError(null);
       } catch (error) {
-        console.error('Failed to fetch holidays:', error);
-        setError('Failed to fetch holidays');
+        console.error("Failed to fetch holidays:", error);
+        setError("Failed to fetch holidays");
       }
     };
 
@@ -71,7 +75,9 @@ export function CalendarGrid({
 
   // Calculate the number of visible colleagues
   const visibleColleagues = currentUser?.settings?.colleagues
-    ? Object.values(currentUser.settings.colleagues).filter((c: any) => c.visible !== false).length
+    ? Object.values(currentUser.settings.colleagues).filter(
+        (c: any) => c.visible !== false,
+      ).length
     : 1;
 
   // Calculate row height: base height (120px) + additional height per colleague (24px)
@@ -80,27 +86,31 @@ export function CalendarGrid({
   return (
     <div className="bg-zinc-200" data-tsx-id="calendar-grid">
       <CalendarHeader weekDays={weekDays} showWeekNumber={showWeekNumber} />
-      <div className={`grid ${
-        showWeekNumber === "left" 
-          ? "grid-cols-[3rem_1fr]" 
-          : showWeekNumber === "right" 
-            ? "grid-cols-[1fr_3rem]" 
-            : "grid-cols-1"
-      } gap-px bg-zinc-200`}>
-        {showWeekNumber === "left" && <WeekColumn days={days} position="left" rowHeight={rowHeight} />}
-        <div 
+      <div
+        className={`grid ${
+          showWeekNumber === "left"
+            ? "grid-cols-[3rem_1fr]"
+            : showWeekNumber === "right"
+              ? "grid-cols-[1fr_3rem]"
+              : "grid-cols-1"
+        } gap-px bg-zinc-200`}
+      >
+        {showWeekNumber === "left" && (
+          <WeekColumn days={days} position="left" rowHeight={rowHeight} />
+        )}
+        <div
           className="grid grid-cols-7 gap-px bg-zinc-200"
-          style={{ 
-            gridAutoRows: `${rowHeight}px`
+          style={{
+            gridAutoRows: `${rowHeight}px`,
           }}
         >
           {Array.from({ length: emptyDays }).map((_, index) => (
             <div key={`empty-${index}`} className="bg-white p-2" />
           ))}
           {days.map((day) => {
-            const formattedDate = format(day, 'yyyy-MM-dd');
-            const holiday = holidays.find(h => h.date === formattedDate);
-            
+            const formattedDate = format(day, "yyyy-MM-dd");
+            const holiday = holidays.find((h) => h.date === formattedDate);
+
             return (
               <DayCell
                 key={day.toISOString()}
@@ -116,7 +126,9 @@ export function CalendarGrid({
             );
           })}
         </div>
-        {showWeekNumber === "right" && <WeekColumn days={days} position="right" rowHeight={rowHeight} />}
+        {showWeekNumber === "right" && (
+          <WeekColumn days={days} position="right" rowHeight={rowHeight} />
+        )}
       </div>
     </div>
   );
