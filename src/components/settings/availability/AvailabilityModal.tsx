@@ -186,8 +186,8 @@ export function AvailabilityModal({
 								/>
 							</div>
 
-							<div className="col-span-9 grid grid-cols-9 gap-2">
-								<div className="p-2 col-span-4 border rounded-md border-zinc-300">
+							<div className="col-span-10 grid grid-cols-9 gap-2">
+								<div className="p-2 col-span-3 border rounded-md border-zinc-300">
 									<label className="block text-sm font-medium text-zinc-700 mb-0">
 										Start Date
 									</label>
@@ -220,7 +220,7 @@ export function AvailabilityModal({
 											onChange={(e) =>
 												setStartDate(e.target.value)
 											}
-											className={`w-full ${
+											className={`w-32 ${
 												isNewEntry
 													? "opacity-50 cursor-not-allowed"
 													: ""
@@ -245,7 +245,7 @@ export function AvailabilityModal({
 									</button>
 								</div>
 
-								<div className="p-2 col-span-4 border rounded-md border-zinc-300">
+								<div className="p-2 col-span-3 border rounded-md border-zinc-300">
 									<label className="block text-sm font-medium text-zinc-700 mb-0">
 										End Date
 									</label>
@@ -257,7 +257,7 @@ export function AvailabilityModal({
 												setEndDate(e.target.value)
 											}
 											min={startDate}
-											className={`w-full ${
+											className={`w-32 ${
 												isNewEntry
 													? "opacity-50 cursor-not-allowed"
 													: ""
@@ -285,6 +285,39 @@ export function AvailabilityModal({
 										>
 											<Plus className="w-5 h-5" />
 										</button>
+									</div>
+								</div>
+
+								<div className="p-2 col-span-2 border rounded-md border-zinc-300">
+									<div className="flex justify-end">
+										<div className="w-48">
+											<label className="block text-sm font-medium text-zinc-700 mb-1">
+												Repeat Pattern
+											</label>
+											<select
+												value={repeatPattern}
+												onChange={(e) =>
+													setRepeatPattern(
+														e.target.value as
+															| "all"
+															| "evenodd"
+													)
+												}
+												className={`w-32 rounded-md border-zinc-300 ${
+													isNewEntry
+														? "opacity-50 cursor-not-allowed"
+														: ""
+												}`}
+												disabled={isNewEntry}
+											>
+												<option value="all">
+													Every Week
+												</option>
+												<option value="evenodd">
+													Alternate Weeks
+												</option>
+											</select>
+										</div>
 									</div>
 								</div>
 							</div>
