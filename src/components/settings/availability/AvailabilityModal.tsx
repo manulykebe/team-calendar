@@ -140,6 +140,7 @@ export function AvailabilityModal({
 	};
 
 	const handleAddSchedule = (position: "start" | "end") => {
+		debugger;
 		setAddPosition(position);
 		if (position === "end" && totalEntries > 0) {
 			setShowAddSplitModal(true);
@@ -149,6 +150,8 @@ export function AvailabilityModal({
 	};
 
 	const isNewEntry = currentEntryIndex === -1;
+	const isFirstEntry = currentEntryIndex === 0;
+	const isLastEntry = currentEntryIndex === totalEntries - 1;
 
 	return (
 		<div data-tsx-id="availability-modal">
@@ -191,25 +194,31 @@ export function AvailabilityModal({
 									<label className="block text-sm font-medium text-zinc-700 mb-0">
 										Start Date
 									</label>
-									<div className="flex-1 flex items-center space-x-2">
+									<div className="flex-1 flex items-center">
 										<button
 											onClick={() =>
 												handleAddSchedule("start")
 											}
-											className=" text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+											className={`space-x-2 ${
+												isNewEntry || isFirstEntry
+													? "text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+													: "text-zinc-300 cursor-not-allowed hidden"
+											}`}
 											title="Add schedule before"
 										>
 											<Plus className="w-5 h-5" />
 										</button>
 										<button
 											onClick={() => handleDelete(true)}
-											className={` text-red-600 hover:bg-red-50 rounded-full transition-colors ${
-												isNewEntry
-													? "opacity-50 cursor-not-allowed"
-													: ""
+											className={`space-x-2 ${
+												isNewEntry || isFirstEntry
+													? "text-zinc-300 cursor-not-allowed hidden"
+													: "text-red-600 hover:bg-red-50 rounded-full transition-colors"
 											}`}
 											title="Merge with previous schedule"
-											disabled={isNewEntry}
+											disabled={
+												isNewEntry || isFirstEntry
+											}
 										>
 											<Trash2 className="w-5 h-5" />
 										</button>
@@ -222,7 +231,7 @@ export function AvailabilityModal({
 											}
 											className={`w-32 ${
 												isNewEntry
-													? "opacity-50 cursor-not-allowed"
+													? "opacity-50 cursor-not-allowed hidden"
 													: ""
 											}`}
 											disabled={isNewEntry}
@@ -235,7 +244,7 @@ export function AvailabilityModal({
 										onClick={() => setShowSplitModal(true)}
 										className={`p-2 text-zinc-600 hover:bg-purple-50 rounded-full transition-colors ${
 											isNewEntry || !endDate
-												? "opacity-50 cursor-not-allowed"
+												? "opacity-50 cursor-not-allowed hidden"
 												: ""
 										}`}
 										title="Split schedule"
@@ -249,7 +258,32 @@ export function AvailabilityModal({
 									<label className="block text-sm font-medium text-zinc-700 mb-0">
 										End Date
 									</label>
-									<div className="flex-1 flex items-center space-x-2">
+									<div className="flex-1 flex items-center">
+										<button
+											onClick={() => handleDelete(false)}
+											className={`space-x-2 ${
+												isNewEntry || isLastEntry
+													? "text-zinc-300 cursor-not-allowed hidden"
+													: "text-red-600 hover:bg-red-50 rounded-full transition-colors"
+											}`}
+											title="Merge with next schedule"
+											disabled={isNewEntry || isLastEntry}
+										>
+											<Trash2 className="w-5 h-5" />
+										</button>
+										<button
+											onClick={() =>
+												handleAddSchedule("end")
+											}
+											className={`space-x-2 ${
+												isNewEntry || isLastEntry
+													? "text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+													: "text-zinc-300 cursor-not-allowed hidden"
+											}`}
+											title="Add schedule after"
+										>
+											<Plus className="w-5 h-5" />
+										</button>
 										<input
 											type="date"
 											value={endDate}
@@ -259,32 +293,11 @@ export function AvailabilityModal({
 											min={startDate}
 											className={`w-32 ${
 												isNewEntry
-													? "opacity-50 cursor-not-allowed"
+													? "opacity-50 cursor-not-allowed hidden"
 													: ""
 											}`}
 											disabled={isNewEntry}
 										/>
-										<button
-											onClick={() => handleDelete(false)}
-											className={` text-red-600 hover:bg-red-50 rounded-full transition-colors ${
-												isNewEntry
-													? "opacity-50 cursor-not-allowed"
-													: ""
-											}`}
-											title="Merge with next schedule"
-											disabled={isNewEntry}
-										>
-											<Trash2 className="w-5 h-5" />
-										</button>
-										<button
-											onClick={() =>
-												handleAddSchedule("end")
-											}
-											className=" text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-											title="Add schedule after"
-										>
-											<Plus className="w-5 h-5" />
-										</button>
 									</div>
 								</div>
 
@@ -305,7 +318,7 @@ export function AvailabilityModal({
 												}
 												className={`w-32 rounded-md border-zinc-300 ${
 													isNewEntry
-														? "opacity-50 cursor-not-allowed"
+														? "opacity-50 cursor-not-allowed hidden"
 														: ""
 												}`}
 												disabled={isNewEntry}
