@@ -180,9 +180,6 @@ export function useScheduleNavigation({
 	};
 
 	const handleSplit = async (splitDate: string) => {
-
-    debugger
-
 		if (currentEntryIndex === -1) return;
 
 		const splitDateObj = parseDate(splitDate);
@@ -200,10 +197,10 @@ export function useScheduleNavigation({
 		const secondHalf = {
 			...currentEntry,
 			startDate: formatDate(addDays(splitDateObj, 1)),
-			endDate:currentEntry.endDate
-				// currentEntryIndex === availability.length - 1
-				// 	? ""
-				// 	: currentEntry.endDate,
+			endDate: currentEntry.endDate,
+			// currentEntryIndex === availability.length - 1
+			// 	? ""
+			// 	: currentEntry.endDate,
 		};
 
 		const newAvailability = [
@@ -252,12 +249,11 @@ export function useScheduleNavigation({
 			currentEntryIndex + 1,
 			secondHalf
 		);
-    
-		debugger;
 
-    colleague.settings!.availability = newAvailability;
-		loadEntry(firstHalf);
+		colleague.settings!.availability = newAvailability;
 
+		setCurrentEntryIndex(currentEntryIndex);
+		loadEntry(availability[currentEntryIndex]);
 	};
 
 	const loadEntry = (entry: any) => {
