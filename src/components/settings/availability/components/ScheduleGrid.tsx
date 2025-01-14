@@ -9,7 +9,7 @@ interface ScheduleGridProps {
     day: keyof WeeklySchedule,
     slot: keyof TimeSlot,
     isAlternate: boolean,
-  ) => void;
+  ) => Promise<void>;
   disabled?: boolean;
 }
 

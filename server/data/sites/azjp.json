@@ -253,6 +253,60 @@
               }
             },
             "startDate": "2025-04-01",
+            "endDate": "2025-04-30",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": false,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": false,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2025-05-01",
+            "endDate": "2025-05-31",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": false,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": false,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2025-06-01",
             "endDate": "2025-06-30",
             "repeatPattern": "all"
           },

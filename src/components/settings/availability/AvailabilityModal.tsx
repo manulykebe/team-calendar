@@ -10,7 +10,8 @@ import { useAvailabilityNavigation } from "./hooks/useAvailabilityNavigation";
 import { useScheduleNavigation } from "./hooks/useScheduleNavigation";
 import { NavigationControls } from "./components/NavigationControls";
 import { ScheduleGrid } from "./components/ScheduleGrid";
-import { Availability } from "../../../lib/api/types";
+import { Availability, WeeklySchedule } from "../../../lib/api/types";
+import { TimeSlot } from "../../../../src/types/availability";
 import { SplitScheduleModal } from "./components/SplitScheduleModal";
 import toast from "react-hot-toast";
 
@@ -42,7 +43,6 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
     setSchedule,
     alternateSchedule,
     setAlternateSchedule,
-    handleTimeSlotToggle,
   } = useAvailabilityState(colleague);
 
   const {
@@ -160,6 +160,57 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to delete schedule";
       toast.error(errorMessage);
+    }
+  };
+
+  const handleTimeSlotToggle = async (
+    day: keyof typeof schedule,
+    slot: keyof TimeSlot, 
+    isAlternate: boolean
+  ) => {
+    if (!token || currentEntryIndex === -1) return;
+    
+    try {
+      // Update local state first
+      const updatedSchedule = isAlternate ? {...alternateSchedule} : {...schedule};
+      updatedSchedule[day] = {
+        ...updatedSchedule[day],
+        [slot]: !updatedSchedule[day]?.[slot],
+        am: updatedSchedule[day]?.am ?? false,
+        pm: updatedSchedule[day]?.pm ?? false,
+      };
+      
+      if (isAlternate) {
+        setAlternateSchedule(updatedSchedule);
+      } else {
+        setSchedule(updatedSchedule); 
+      }
+
+      // Save changes immediately
+      const updatedAvailability = {
+        weeklySchedule: schedule,
+        alternateWeekSchedule: repeatPattern === "evenodd" ? alternateSchedule : undefined,
+        startDate,
+        endDate,
+        repeatPattern,
+      };
+
+      await updateUserAvailabilitySchedule(
+        token,
+        colleague.id,
+        currentEntryIndex,
+        updatedAvailability
+      );
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to update schedule";
+      setError(errorMessage);
+      // Revert changes on error
+      if (isAlternate) {
+        setAlternateSchedule({...alternateSchedule}); 
+      } else {
+        setSchedule({...schedule});
+      }
     }
   };
 
