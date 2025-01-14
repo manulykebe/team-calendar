@@ -205,6 +205,60 @@
           {
             "weeklySchedule": {
               "Monday": {
+                "am": false,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2024-12-01",
+            "endDate": "2024-12-08",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": false
+              },
+              "Tuesday": {
+                "am": false,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2024-12-09",
+            "endDate": "2024-12-16",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
                 "am": true,
                 "pm": true
               },
@@ -225,7 +279,7 @@
                 "pm": true
               }
             },
-            "startDate": "2024-12-24",
+            "startDate": "2024-12-17",
             "endDate": "2024-12-31",
             "repeatPattern": "all"
           },
@@ -596,6 +650,142 @@
               }
             },
             "startDate": "2026-01-01",
+            "endDate": "2026-03-31",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2026-04-01",
+            "endDate": "2026-06-30",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2026-07-01",
+            "endDate": "2026-09-30",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2026-10-01",
+            "endDate": "2026-10-31",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2026-11-01",
+            "endDate": "2026-11-30",
+            "repeatPattern": "all"
+          },
+          {
+            "weeklySchedule": {
+              "Monday": {
+                "am": true,
+                "pm": true
+              },
+              "Tuesday": {
+                "am": true,
+                "pm": true
+              },
+              "Wednesday": {
+                "am": true,
+                "pm": true
+              },
+              "Thursday": {
+                "am": true,
+                "pm": true
+              },
+              "Friday": {
+                "am": true,
+                "pm": true
+              }
+            },
+            "startDate": "2026-12-01",
+            "endDate": "2026-12-31",
             "repeatPattern": "all"
           }
         ],

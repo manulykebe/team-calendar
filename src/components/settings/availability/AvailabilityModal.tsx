@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, FileText, Trash2, Save, Plus, Scissors } from "lucide-react";
+import { X, FileText, Trash2, Plus, Scissors } from "lucide-react";
 import { User } from "../../../types/user";
 import { useAuth } from "../../../context/AuthContext";
 import { updateUserAvailabilitySchedule } from "../../../lib/api";
@@ -79,7 +79,8 @@ export function AvailabilityModal({
 		setError,
 	});
 
-	const handleSave = async () => {
+	// Auto-save whenever relevant state changes
+	const handleStateChange = async () => {
 		if (!token || currentEntryIndex === -1) return;
 
 		try {
@@ -111,6 +112,30 @@ export function AvailabilityModal({
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	// Add effect handlers for state changes
+	const handleDateChange = async (newDate: string, isEndDate = false) => {
+		if (isEndDate) {
+			setEndDate(newDate);
+		} else {
+			setStartDate(newDate);
+		}
+		await handleStateChange();
+	};
+
+	const handlePatternChange = async (pattern: "all" | "evenodd") => {
+		setRepeatPattern(pattern);
+		await handleStateChange();
+	};
+
+	const handleSlotToggle = async (
+		day: keyof WeeklySchedule,
+		slot: keyof TimeSlot,
+		isAlternate = false
+	) => {
+		handleTimeSlotToggle(day, slot, isAlternate);
+		await handleStateChange();
 	};
 
 	const handleViewReport = async () => {
@@ -180,6 +205,7 @@ export function AvailabilityModal({
 									onPrevEntry={handlePrevEntry}
 									onNextEntry={handleNextEntry}
 									onLastEntry={handleLastEntry}
+									isNewEntry={isNewEntry}
 								/>
 							</div>
 
@@ -221,7 +247,7 @@ export function AvailabilityModal({
 											type="date"
 											value={startDate}
 											onChange={(e) =>
-												setStartDate(e.target.value)
+												handleDateChange(e.target.value)
 											}
 											className={`w-32 ${
 												isNewEntry
@@ -282,7 +308,10 @@ export function AvailabilityModal({
 											type="date"
 											value={endDate}
 											onChange={(e) =>
-												setEndDate(e.target.value)
+												handleDateChange(
+													e.target.value,
+													true
+												)
 											}
 											min={startDate}
 											className={`w-32 ${
@@ -304,7 +333,7 @@ export function AvailabilityModal({
 											<select
 												value={repeatPattern}
 												onChange={(e) =>
-													setRepeatPattern(
+													handlePatternChange(
 														e.target.value as
 															| "all"
 															| "evenodd"
@@ -336,7 +365,7 @@ export function AvailabilityModal({
 									<ScheduleGrid
 										caption="Even Weeks"
 										schedule={schedule}
-										onTimeSlotToggle={handleTimeSlotToggle}
+										onTimeSlotToggle={handleSlotToggle}
 										disabled={isNewEntry}
 									/>
 								</div>
@@ -355,7 +384,7 @@ export function AvailabilityModal({
 											: schedule
 									}
 									isAlternate={repeatPattern === "evenodd"}
-									onTimeSlotToggle={handleTimeSlotToggle}
+									onTimeSlotToggle={handleSlotToggle}
 									disabled={isNewEntry}
 								/>
 							</div>
@@ -388,28 +417,13 @@ export function AvailabilityModal({
 							</button>
 						</div>
 
-						<div className="flex space-x-3">
-							<button
-								onClick={onClose}
-								className="flex items-center px-4 py-2 w-32 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-								disabled={loading}
-							>
-								<X className="w-4 h-4 mr-2" />
-								Cancel
-							</button>
-							<button
-								onClick={handleSave}
-								disabled={loading || isNewEntry}
-								className={`flex items-center px-4 py-2 w-32 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50 ${
-									isNewEntry
-										? "opacity-50 cursor-not-allowed"
-										: ""
-								}`}
-							>
-								<Save className="w-4 h-4 mr-2" />
-								{loading ? "Saving..." : "Save"}
-							</button>
-						</div>
+						<button
+							onClick={onClose}
+							className="flex items-center px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+						>
+							<X className="w-4 h-4 mr-2" />
+							Close
+						</button>
 					</div>
 				</div>
 			</div>
@@ -420,7 +434,6 @@ export function AvailabilityModal({
 					onClose={() => setShowReport(false)}
 				/>
 			)}
-
 
 			{showSplitModal && !isNewEntry && (
 				<SplitScheduleModal
