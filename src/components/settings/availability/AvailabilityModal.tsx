@@ -43,6 +43,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
     setSchedule,
     alternateSchedule,
     setAlternateSchedule,
+    handleTimeSlotToggle,
   } = useAvailabilityState(colleague);
 
   const {
@@ -163,55 +164,12 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
     }
   };
 
-  const handleTimeSlotToggle = async (
-    day: keyof typeof schedule,
-    slot: keyof TimeSlot, 
+  const onTimeSlotToggle = (
+    day: keyof WeeklySchedule,
+    slot: keyof TimeSlot,
     isAlternate: boolean
   ) => {
-    if (!token || currentEntryIndex === -1) return;
-    
-    try {
-      // Update local state first
-      const updatedSchedule = isAlternate ? {...alternateSchedule} : {...schedule};
-      updatedSchedule[day] = {
-        ...updatedSchedule[day],
-        [slot]: !updatedSchedule[day]?.[slot],
-        am: updatedSchedule[day]?.am ?? false,
-        pm: updatedSchedule[day]?.pm ?? false,
-      };
-      
-      if (isAlternate) {
-        setAlternateSchedule(updatedSchedule);
-      } else {
-        setSchedule(updatedSchedule); 
-      }
-
-      // Save changes immediately
-      const updatedAvailability = {
-        weeklySchedule: schedule,
-        alternateWeekSchedule: repeatPattern === "evenodd" ? alternateSchedule : undefined,
-        startDate,
-        endDate,
-        repeatPattern,
-      };
-
-      await updateUserAvailabilitySchedule(
-        token,
-        colleague.id,
-        currentEntryIndex,
-        updatedAvailability
-      );
-
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to update schedule";
-      setError(errorMessage);
-      // Revert changes on error
-      if (isAlternate) {
-        setAlternateSchedule({...alternateSchedule}); 
-      } else {
-        setSchedule({...schedule});
-      }
-    }
+    handleTimeSlotToggle(token, colleague.id, currentEntryIndex, day, slot, isAlternate);
   };
 
   const isNewEntry = currentEntryIndex === -1;
@@ -376,7 +334,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                 <ScheduleGrid
                   caption="Even Weeks"
                   schedule={schedule}
-                  onTimeSlotToggle={handleTimeSlotToggle}
+                  onTimeSlotToggle={onTimeSlotToggle}
                   disabled={isNewEntry}
                 />
               </div>
@@ -387,7 +345,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                 caption={repeatPattern === "all" ? "Weekly Schedule" : "Odd Weeks"}
                 schedule={repeatPattern === "evenodd" ? alternateSchedule : schedule}
                 isAlternate={repeatPattern === "evenodd"}
-                onTimeSlotToggle={handleTimeSlotToggle}
+                onTimeSlotToggle={onTimeSlotToggle}
                 disabled={isNewEntry}
               />
             </div>

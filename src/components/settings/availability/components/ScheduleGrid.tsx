@@ -5,11 +5,7 @@ interface ScheduleGridProps {
   caption: string;
   schedule: WeeklySchedule;
   isAlternate?: boolean;
-  onTimeSlotToggle: (
-    day: keyof WeeklySchedule,
-    slot: keyof TimeSlot,
-    isAlternate: boolean,
-  ) => Promise<void>;
+  onTimeSlotToggle: (day: keyof WeeklySchedule, slot: keyof TimeSlot, isAlternate: boolean) => void;
   disabled?: boolean;
 }
 
@@ -45,13 +41,13 @@ export function ScheduleGrid({
           <button
             onClick={() => onTimeSlotToggle(day, "am", isAlternate)}
             className={`w-full h-12 rounded-md border ${
-              schedule[day].am
+              schedule[day]?.am
                 ? "bg-green-100 border-green-500"
                 : "bg-red-100 border-red-500"
             } ${disabled ? "cursor-not-allowed" : "hover:opacity-80"}`}
             disabled={disabled}
           >
-            {schedule[day].am ? "Available" : "Unavailable"}
+            {schedule[day]?.am ? "Available" : "Unavailable"}
           </button>
         </div>
       ))}
@@ -67,13 +63,13 @@ export function ScheduleGrid({
           <button
             onClick={() => onTimeSlotToggle(day, "pm", isAlternate)}
             className={`w-full h-12 rounded-md border ${
-              schedule[day].pm
+              schedule[day]?.pm
                 ? "bg-green-100 border-green-500"
                 : "bg-red-100 border-red-500"
             } ${disabled ? "cursor-not-allowed" : "hover:opacity-80"}`}
             disabled={disabled}
           >
-            {schedule[day].pm ? "Available" : "Unavailable"}
+            {schedule[day]?.pm ? "Available" : "Unavailable"}
           </button>
         </div>
       ))}
