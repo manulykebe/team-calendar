@@ -173,7 +173,7 @@ export function useScheduleNavigation({
 		await addUserAvailabilitySchedule(
 			token,
 			colleague.id,
-			atStart ? -1 : availability.length,
+			atStart ? 0 : availability.length,
 			newEntry
 		);
 		loadEntry(newEntry);

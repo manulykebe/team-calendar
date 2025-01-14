@@ -67,7 +67,7 @@ export function NavigationControls({
         className={`rounded hover:bg-zinc-100 ${
           !hasEntries || isLastEntry ? "opacity-50 cursor-not-allowed" : ""
         }`}
-        title="Next schedule"
+        title="Last schedule"
       >
         <ChevronsRight className="w-5 h-5" />
       </button>

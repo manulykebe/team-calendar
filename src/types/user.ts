@@ -1,5 +1,3 @@
-import { Event } from "./event";
-
 export interface User {
   id: string;
   firstName: string;
@@ -9,14 +7,6 @@ export interface User {
   role: "admin" | "user";
   status: "active" | "inactive";
   site: string;
-  site?: {
-    app?: {
-      location?: string;
-      weekStartsOn?: string;
-      defaultEventType?: string;
-      eventTypes?: any[];
-    };
-  };
   settings?: {
     colleagues?: {
       [userId: string]: {
@@ -24,6 +14,8 @@ export interface User {
         initials: string;
         visible?: boolean;
       };
+    };
+    availability?: {
     };
     colleagueOrder?: string[];
     showWeekNumber: "none" | "left" | "right";

@@ -30,7 +30,6 @@ export function AvailabilityModal({
 	const [reportYear, setReportYear] = useState(
 		new Date().getFullYear().toString()
 	);
-	const [showAddSplitModal, setShowAddSplitModal] = useState(false);
 	const [showSplitModal, setShowSplitModal] = useState(false);
 	const [addPosition, setAddPosition] = useState<"start" | "end">("end");
 
@@ -140,13 +139,8 @@ export function AvailabilityModal({
 	};
 
 	const handleAddSchedule = (position: "start" | "end") => {
-		debugger;
 		setAddPosition(position);
-		if (position === "end" && totalEntries > 0) {
-			setShowAddSplitModal(true);
-		} else {
-			handleAdd(position === "start");
-		}
+		handleAdd(position === "start");
 	};
 
 	const isNewEntry = currentEntryIndex === -1;
@@ -182,9 +176,9 @@ export function AvailabilityModal({
 								<NavigationControls
 									currentEntryIndex={currentEntryIndex}
 									totalEntries={totalEntries}
+									onFirstEntry={handleFirstEntry}
 									onPrevEntry={handlePrevEntry}
 									onNextEntry={handleNextEntry}
-									onFirstEntry={handleFirstEntry}
 									onLastEntry={handleLastEntry}
 								/>
 							</div>
@@ -427,16 +421,6 @@ export function AvailabilityModal({
 				/>
 			)}
 
-			{showAddSplitModal && (
-				<AddScheduleSplitModal
-					lastScheduleEndDate={endDate}
-					onSplit={(splitDate) => {
-						handleAdd(false, splitDate);
-						setShowAddSplitModal(false);
-					}}
-					onClose={() => setShowAddSplitModal(false)}
-				/>
-			)}
 
 			{showSplitModal && !isNewEntry && (
 				<SplitScheduleModal
