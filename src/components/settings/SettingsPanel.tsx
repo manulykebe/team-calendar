@@ -21,14 +21,12 @@ interface SettingsPanelProps {
 
 export function SettingsPanel({ className }: SettingsPanelProps) {
   const { logout } = useAuth();
-  const { currentUser, updateWorkStartDay, updateWeekNumberSetting } =
-    useUserSettings();
+  const { currentUser, updateWorkStartDay, updateWeekNumberSetting } = useUserSettings();
   const { colleagues } = useColleagueSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [showColleagueSettings, setShowColleagueSettings] = useState(false);
   const [showUserManagement, setShowUserManagement] = useState(false);
   const [showAvailability, setShowAvailability] = useState(false);
-  const [selectedColleague, setSelectedColleague] = useState<User | null>(null);
 
   const handleLogout = () => {
     logout();
@@ -36,8 +34,15 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
   };
 
   const handleOpenAvailability = () => {
-    setSelectedColleague(currentUser);
-    setShowAvailability(true);
+    if (currentUser) {
+      setShowAvailability(true);
+      setIsOpen(false); // Close settings panel when opening modal
+    }
+  };
+
+  const handleCloseAvailability = () => {
+    setShowAvailability(false);
+    setIsOpen(true); // Reopen settings panel when closing modal
   };
 
   return (
@@ -154,13 +159,10 @@ export function SettingsPanel({ className }: SettingsPanelProps) {
         <UserManagement onClose={() => setShowUserManagement(false)} />
       )}
 
-      {showAvailability && selectedColleague && (
+      {showAvailability && currentUser && (
         <AvailabilityModal
-          colleague={selectedColleague}
-          onClose={() => {
-            setShowAvailability(false);
-            setSelectedColleague(null);
-          }}
+          colleague={currentUser}
+          onClose={handleCloseAvailability}
         />
       )}
     </div>

@@ -8,6 +8,7 @@ import { Calendar } from "./components/Calendar";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
@@ -35,6 +36,27 @@ function App() {
               }
             />
           </Routes>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#333',
+                color: '#fff',
+              },
+              success: {
+                style: {
+                  background: '#059669',
+                },
+              },
+              error: {
+                style: {
+                  background: '#DC2626',
+                },
+                duration: 4000,
+              },
+            }}
+          />
         </div>
       </Router>
     </AuthProvider>
