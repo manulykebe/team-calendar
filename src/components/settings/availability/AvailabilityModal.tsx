@@ -14,6 +14,7 @@ import { Availability, WeeklySchedule } from "../../../lib/api/types";
 import { TimeSlot } from "../../../../src/types/availability";
 import { SplitScheduleModal } from "./components/SplitScheduleModal";
 import toast from "react-hot-toast";
+import { handleTimeSlotToggle } from "../../../hooks/useAvailabilityState";
 
 interface AvailabilityModalProps {
   colleague: User;
@@ -43,7 +44,6 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
     setSchedule,
     alternateSchedule,
     setAlternateSchedule,
-    handleTimeSlotToggle,
   } = useAvailabilityState(colleague);
 
   const {
@@ -133,48 +133,13 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
     }
   };
 
-  const handleAddSchedule = (position: "start" | "end") => {
-    try {
-      handleAdd(position === "start");
-      toast.success(`New schedule added ${position === "start" ? "at start" : "at end"}`);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to add schedule";
-      toast.error(errorMessage);
-    }
-  };
-
-  const handleSplitSchedule = async (splitDate: string) => {
-    try {
-      await handleSplit(splitDate);
-      setShowSplitModal(false);
-      toast.success('Schedule split successfully');
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to split schedule";
-      toast.error(errorMessage);
-    }
-  };
-
-  const handleDeleteSchedule = async (extendPreceding: boolean) => {
-    try {
-      await handleDelete(extendPreceding);
-      toast.success('Schedule deleted successfully');
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to delete schedule";
-      toast.error(errorMessage);
-    }
-  };
-
   const onTimeSlotToggle = (
     day: keyof WeeklySchedule,
     slot: keyof TimeSlot,
     isAlternate: boolean
   ) => {
-    handleTimeSlotToggle(token, colleague.id, currentEntryIndex, day, slot, isAlternate);
+    handleTimeSlotToggle(token, colleague, currentEntryIndex, day, slot, isAlternate);
   };
-
-  const isNewEntry = currentEntryIndex === -1;
-  const isFirstEntry = currentEntryIndex === 0;
-  const isLastEntry = currentEntryIndex === totalEntries - 1;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
@@ -201,7 +166,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                 onPrevEntry={handlePrevEntry}
                 onNextEntry={handleNextEntry}
                 onLastEntry={handleLastEntry}
-                isNewEntry={isNewEntry}
+                isNewEntry={currentEntryIndex === -1}
               />
             </div>
 
@@ -212,9 +177,9 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                 </label>
                 <div className="flex-1 flex items-center">
                   <button
-                    onClick={() => handleAddSchedule("start")}
+                    onClick={() => handleAdd(true)}
                     className={`space-x-2 ${
-                      isNewEntry || isFirstEntry
+                      currentEntryIndex === -1 || currentEntryIndex === 0
                         ? "text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
                         : "text-zinc-300 cursor-not-allowed hidden"
                     }`}
@@ -222,27 +187,14 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                   >
                     <Plus className="w-5 h-5" />
                   </button>
-                  <button
-                    onClick={() => handleDeleteSchedule(true)}
-                    className={`space-x-2 ${
-                      isNewEntry || isFirstEntry
-                        ? "text-zinc-300 cursor-not-allowed hidden"
-                        : "text-red-600 hover:bg-red-50 rounded-full transition-colors"
-                    }`}
-                    title="Merge with previous schedule"
-                    disabled={isNewEntry || isFirstEntry}
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-
                   <input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     className={`w-32 ${
-                      isNewEntry ? "opacity-50 cursor-not-allowed hidden" : ""
+                      currentEntryIndex === -1 ? "opacity-50 cursor-not-allowed hidden" : ""
                     }`}
-                    disabled={isNewEntry}
+                    disabled={currentEntryIndex === -1}
                   />
                 </div>
               </div>
@@ -251,12 +203,12 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                 <button
                   onClick={() => setShowSplitModal(true)}
                   className={`p-2 text-zinc-600 hover:bg-purple-50 rounded-full transition-colors ${
-                    isNewEntry || !endDate
+                    currentEntryIndex === -1 || !endDate
                       ? "opacity-50 cursor-not-allowed hidden"
                       : ""
                   }`}
                   title="Split schedule"
-                  disabled={isNewEntry || !endDate}
+                  disabled={currentEntryIndex === -1 || !endDate}
                 >
                   <Scissors className="w-5 h-5" />
                 </button>
@@ -267,22 +219,20 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                   End Date
                 </label>
                 <div className="flex-1 flex items-center">
-                  <button
-                    onClick={() => handleDeleteSchedule(false)}
-                    className={`space-x-2 ${
-                      isNewEntry || isLastEntry
-                        ? "text-zinc-300 cursor-not-allowed hidden"
-                        : "text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    min={startDate}
+                    className={`w-32 ${
+                      currentEntryIndex === -1 ? "opacity-50 cursor-not-allowed hidden" : ""
                     }`}
-                    title="Merge with next schedule"
-                    disabled={isNewEntry || isLastEntry}
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                    disabled={currentEntryIndex === -1}
+                  />
                   <button
-                    onClick={() => handleAddSchedule("end")}
+                    onClick={() => handleAdd(false)}
                     className={`space-x-2 ${
-                      isNewEntry || isLastEntry
+                      currentEntryIndex === -1 || currentEntryIndex === totalEntries - 1
                         ? "text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
                         : "text-zinc-300 cursor-not-allowed hidden"
                     }`}
@@ -290,16 +240,6 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                   >
                     <Plus className="w-5 h-5" />
                   </button>
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    min={startDate}
-                    className={`w-32 ${
-                      isNewEntry ? "opacity-50 cursor-not-allowed hidden" : ""
-                    }`}
-                    disabled={isNewEntry}
-                  />
                 </div>
               </div>
 
@@ -315,9 +255,9 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                         setRepeatPattern(e.target.value as "all" | "evenodd")
                       }
                       className={`w-32 rounded-md border-zinc-300 ${
-                        isNewEntry ? "opacity-50 cursor-not-allowed hidden" : ""
+                        currentEntryIndex === -1 ? "opacity-50 cursor-not-allowed hidden" : ""
                       }`}
-                      disabled={isNewEntry}
+                      disabled={currentEntryIndex === -1}
                     >
                       <option value="all">Every Week</option>
                       <option value="evenodd">Alternate Weeks</option>
@@ -335,7 +275,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                   caption="Even Weeks"
                   schedule={schedule}
                   onTimeSlotToggle={onTimeSlotToggle}
-                  disabled={isNewEntry}
+                  disabled={currentEntryIndex === -1}
                 />
               </div>
             )}
@@ -346,7 +286,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
                 schedule={repeatPattern === "evenodd" ? alternateSchedule : schedule}
                 isAlternate={repeatPattern === "evenodd"}
                 onTimeSlotToggle={onTimeSlotToggle}
-                disabled={isNewEntry}
+                disabled={currentEntryIndex === -1}
               />
             </div>
           </div>
@@ -389,7 +329,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
             </button>
             <button
               onClick={handleSave}
-              disabled={loading || isNewEntry}
+              disabled={loading || currentEntryIndex === -1}
               className={`flex items-center px-4 py-2 w-32 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600`}
             >
               {loading ? (
@@ -415,11 +355,11 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
         />
       )}
 
-      {showSplitModal && !isNewEntry && (
+      {showSplitModal && currentEntryIndex !== -1 && (
         <SplitScheduleModal
           startDate={startDate}
           endDate={endDate}
-          onSplit={handleSplitSchedule}
+          onSplit={handleSplit}
           onClose={() => setShowSplitModal(false)}
         />
       )}

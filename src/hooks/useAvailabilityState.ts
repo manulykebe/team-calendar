@@ -7,7 +7,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as const;
 
 export type RepeatPattern = "all" | "evenodd";
 
-const createDefaultSchedule = (): WeeklySchedule => {
+const createDefaultSchedule = () => {
   return DAYS.reduce(
     (acc, day) => ({
       ...acc,
