@@ -5,6 +5,7 @@ import { useColleagueDrag } from "./hooks/useColleagueDrag";
 import { ColleagueRowProps } from "./types";
 import { useState } from "react";
 import { AvailabilityModal } from "../availability/AvailabilityModal";
+import { User } from "../../../types/user";
 
 export function ColleagueRow({
   colleague,

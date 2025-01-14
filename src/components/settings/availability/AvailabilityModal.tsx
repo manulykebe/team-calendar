@@ -31,7 +31,6 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
   const {
     loading,
     setLoading,
-    error,
     setError,
     startDate,
     setStartDate,

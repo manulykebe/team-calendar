@@ -1,5 +1,3 @@
-import { User } from "./user";
-
 export interface ScheduleData {
   weeklySchedule: WeeklySchedule;
   alternateWeekSchedule?: WeeklySchedule;

@@ -1,3 +1,4 @@
+import { Availability } from "../lib/api/types";
 export interface User {
   id: string;
   firstName: string;
@@ -15,8 +16,7 @@ export interface User {
         visible?: boolean;
       };
     };
-    availability?: {
-    };
+    availability?: Availability[];
     colleagueOrder?: string[];
     showWeekNumber: "none" | "left" | "right";
   };

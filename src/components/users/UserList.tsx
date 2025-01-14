@@ -104,7 +104,7 @@ export function UserList({ onEdit, onDelete }: UserListProps) {
                 "Role",
                 "Status",
                 "Actions",
-              ].map((header, i) => (
+              ].map((header) => (
                 <th
                   key={header}
                   className="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider"

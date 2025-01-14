@@ -124,7 +124,7 @@ export function useScheduleNavigation({
 			newEntry.startDate = formatDate(startDate);
 		} else if (!atStart && availability.length > 0) {
 			const lastEntry = availability[availability.length - 1];
-			const lastDate = parseDate(lastEntry.endDate || splitDate);
+			const lastDate = parseDate(lastEntry.endDate || splitDate || "");
 			if (!lastDate) {
 				setError("Invalid date in last schedule");
 				return;

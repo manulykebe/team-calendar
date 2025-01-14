@@ -84,7 +84,7 @@ export function useAvailabilityState(colleague: User) {
       ...prev,
       [day]: {
         ...prev[day],
-        [slot]: !prev[day][slot],
+        [slot]: prev[day] ? !prev[day][slot] : true,
       },
     }));
   };
