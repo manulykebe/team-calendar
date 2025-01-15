@@ -73,6 +73,7 @@ router.get("/:site/:userId/calendar/:token", async (req, res) => {
 
     // Set headers for iCal
     res.setHeader("Content-Type", "text/calendar; charset=utf-8");
+    res.setHeader("Content-Disposition", "attachment; filename=calendar.ics");
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");
@@ -139,35 +140,49 @@ router.get("/:siteID/:userId", authenticateToken, async (req: AuthRequest, res) 
 // Helper function to generate iCal content
 function generateICalContent(events: Event[], user: any): string {
   const now = new Date();
+  const timestamp = format(now, "yyyyMMdd'T'HHmmss'Z'");
+  
   const icalEvents = events
     .map((event) => {
       const startDate = format(parseISO(event.date), "yyyyMMdd");
       const endDate = event.endDate
-        ? format(parseISO(event.endDate), "yyyyMMdd")
+        ? format(addDays(parseISO(event.endDate), 1), "yyyyMMdd")
         : format(addDays(parseISO(event.date), 1), "yyyyMMdd");
 
-      return `
-BEGIN:VEVENT
-UID:${event.id}
-DTSTAMP:${format(now, "yyyyMMdd'T'HHmmss'Z'")}
+      // Escape special characters in text fields
+      const summary = (event.title || event.type)
+        .replace(/[\\;,]/g, (match) => '\\' + match);
+      const description = (event.description || "")
+        .replace(/[\\;,]/g, (match) => '\\' + match)
+        .replace(/\n/g, '\\n');
+
+      return `BEGIN:VEVENT
+UID:${event.id}@teamcalendar
+DTSTAMP:${timestamp}
 DTSTART;VALUE=DATE:${startDate}
 DTEND;VALUE=DATE:${endDate}
-SUMMARY:${event.title || event.type}
-DESCRIPTION:${event.description || ""}
+SUMMARY:${summary}
+DESCRIPTION:${description}
 STATUS:CONFIRMED
-END:VEVENT`.trim();
+CLASS:PUBLIC
+TRANSP:TRANSPARENT
+SEQUENCE:0
+END:VEVENT`;
     })
-    .join("\n");
+    .join("\r\n");
+
+  const calendarName = `${user.firstName} ${user.lastName}'s Calendar`
+    .replace(/[\\;,]/g, (match) => '\\' + match);
 
   return `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Team Calendar//NONSGML v1.0//EN
-CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALNAME:${user.firstName} ${user.lastName}'s Calendar
+X-WR-CALNAME:${calendarName}
 X-WR-TIMEZONE:UTC
+CALSCALE:GREGORIAN
 ${icalEvents}
-END:VCALENDAR`;
+END:VCALENDAR`.split('\n').join('\r\n');
 }
 
 export { router as agendaRouter };
