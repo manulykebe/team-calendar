@@ -5,6 +5,7 @@ import { getUsers } from "../lib/api";
 import { EventModal } from "./EventModal";
 import { SettingsPanel } from "./settings/SettingsPanel";
 import { CalendarGrid } from "./calendar/CalendarGrid";
+import { MonthPicker } from "./calendar/MonthPicker";
 import { User } from "../types/user";
 import { userSettingsEmitter } from "../hooks/useColleagueSettings";
 import { useCalendarSettings } from "../hooks/useCalendarSettings";
@@ -103,6 +104,14 @@ export function Calendar() {
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <MonthPicker 
+            currentMonth={currentMonth}
+            onDateSelect={setCurrentMonth}
+            weekStartsOn={weekStartsOn}
+          />
         </div>
       </div>
 
