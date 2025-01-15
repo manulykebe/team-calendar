@@ -9,6 +9,8 @@ interface SubscriptionModalProps {
 	onClose: () => void;
 }
 
+type Tab = "outlook" | "google" | "apple" | "other";
+
 export function SubscriptionModal({
 	userId,
 	site,
@@ -19,11 +21,13 @@ export function SubscriptionModal({
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [copied, setCopied] = useState(false);
-	debugger;
+	const [activeTab, setActiveTab] = useState<Tab>("outlook");
+
 	useEffect(() => {
 		const fetchSubscriptionUrl = async () => {
 			try {
-				const response = await fetch(`${API_URL}/agenda/${site}/${userId}/subscribe`,
+				const response = await fetch(
+					`${API_URL}/agenda/${site}/${userId}/subscribe`,
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,
@@ -59,6 +63,110 @@ export function SubscriptionModal({
 		}
 	};
 
+	const TabButton = ({ tab, label }: { tab: Tab; label: string }) => (
+		<button
+			onClick={() => setActiveTab(tab)}
+			className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors
+        ${
+			activeTab === tab
+				? "bg-blue-100 text-blue-700"
+				: "text-zinc-600 hover:bg-zinc-100"
+		}`}
+		>
+			{label}
+		</button>
+	);
+
+	const TabContent = ({ tab }: { tab: Tab }) => {
+		switch (tab) {
+			case "outlook":
+				return (
+					<ol className="list-decimal list-inside space-y-0 ml-4">
+						<li>Open Outlook Desktop or Outlook Web</li>
+						<li>Right-click on Calendar in the navigation pane</li>
+						<li>Select "Add Calendar" → "From Internet"</li>
+						<li>Paste the subscription URL</li>
+						<li>Click "OK" or "Save"</li>
+						<li>
+							Choose how often you want Outlook to sync the
+							calendar
+						</li>
+						<li>Click "Yes" to add the calendar</li>
+					</ol>
+				);
+			case "google":
+				return (
+					<ol className="list-decimal list-inside space-y-0 ml-4">
+						<li>Open Google Calendar in your browser</li>
+						<li>
+							On the left side, find "Other calendars" and click
+							the "+" button
+						</li>
+						<li>Select "From URL" from the dropdown menu</li>
+						<li>Paste the subscription URL in the "URL" field</li>
+						<li>Click "Add calendar"</li>
+						<li>
+							The calendar will appear under "Other calendars" in
+							your calendar list
+						</li>
+					</ol>
+				);
+			case "apple":
+				return (
+					<ol className="list-decimal list-inside space-y-0 ml-4">
+						<li>Open the Calendar app on your Mac</li>
+						<li>From the menu bar, select File</li>
+						<li>Choose "New Calendar Subscription"</li>
+						<li>Paste the subscription URL</li>
+						<li>Click "Subscribe"</li>
+						<li>
+							Configure sync frequency and other options as needed
+						</li>
+						<li>Click "OK" to finish</li>
+						<p className="mt-4 text-sm text-zinc-600">
+							For iOS devices:
+						</p>
+						<li>Go to Settings → Calendar → Accounts</li>
+						<li>
+							Tap "Add Account" → "Other" → "Add Subscribed
+							Calendar"
+						</li>
+						<li>Paste the subscription URL</li>
+						<li>Tap "Next" and then "Save"</li>
+					</ol>
+				);
+			case "other":
+				return (
+					<div className="space-y-4">
+						<p>
+							For other calendar applications that support
+							webcal:// or HTTP(S) calendar subscriptions:
+						</p>
+						<ol className="list-decimal list-inside space-y-0 ml-4">
+							<li>
+								Look for an option to add a calendar
+								subscription or "Subscribe to Calendar"
+							</li>
+							<li>
+								When prompted, paste the subscription URL
+								provided above
+							</li>
+							<li>
+								Configure sync frequency if the option is
+								available
+							</li>
+							<li>Save or confirm the subscription</li>
+						</ol>
+						<p className="mt-4 text-sm text-zinc-600">
+							Note: The calendar uses the iCalendar (.ics) format,
+							which is compatible with most modern calendar
+							applications.
+						</p>
+					</div>
+				);
+		}
+	};
+
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
 			<div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
@@ -77,7 +185,7 @@ export function SubscriptionModal({
 					</button>
 				</div>
 
-				<div className="p-6 space-y-6">
+				<div className="p-6 space-y-2">
 					{error ? (
 						<div className="p-4 bg-red-50 text-red-600 rounded-md">
 							{error}
@@ -118,55 +226,42 @@ export function SubscriptionModal({
 								</div>
 							</div>
 
-							<div className="space-y-4">
-								<h4 className="font-medium text-zinc-900">
-									Instructions
-								</h4>
-								<div className="space-y-2 text-zinc-600">
-									<p className="font-medium">For Outlook:</p>
-									<ol className="list-decimal list-inside space-y-1 ml-4">
-										<li>Copy the URL above</li>
-										<li>
-											In Outlook, right-click on Calendar
-										</li>
-										<li>
-											Select "Add Calendar" &gt; "From
-											Internet"
-										</li>
-										<li>Paste the URL and click "OK"</li>
-									</ol>
+							<div className="space-y-2">
+								<div className="border-b">
+									<div className="flex space-x-2">
+										<TabButton
+											tab="outlook"
+											label="Outlook"
+										/>
+										<TabButton
+											tab="google"
+											label="Google Calendar"
+										/>
+										<TabButton
+											tab="apple"
+											label="Apple Calendar"
+										/>
+										<TabButton
+											tab="other"
+											label="Other Apps"
+										/>
+									</div>
+								</div>
 
-									<p className="font-medium mt-4">
-										For Google Calendar:
-									</p>
-									<ol className="list-decimal list-inside space-y-1 ml-4">
-										<li>Copy the URL above</li>
-										<li>Open Google Calendar</li>
-										<li>
-											Click the "+" next to "Other
-											calendars"
-										</li>
-										<li>Select "From URL"</li>
-										<li>
-											Paste the URL and click "Add
-											calendar"
-										</li>
-									</ol>
-
-									<p className="font-medium mt-4">
-										For Apple Calendar:
-									</p>
-									<ol className="list-decimal list-inside space-y-1 ml-4">
-										<li>Copy the URL above</li>
-										<li>Open Calendar app</li>
-										<li>
-											Select File &gt; "New Calendar
-											Subscription"
-										</li>
-										<li>
-											Paste the URL and click "Subscribe"
-										</li>
-									</ol>
+								<div className="min-h-[220px] p-2">
+									<h4 className="font-medium text-zinc-900 mb-4">
+										Instructions for{" "}
+										{activeTab === "outlook"
+											? "Microsoft Outlook"
+											: activeTab === "google"
+												? "Google Calendar"
+												: activeTab === "apple"
+													? "Apple Calendar"
+													: "Other Applications"}
+									</h4>
+									<div className="text-zinc-600">
+										<TabContent tab={activeTab} />
+									</div>
 								</div>
 							</div>
 						</>
