@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, FileText, Trash2, Plus, Scissors } from "lucide-react";
+import { X, FileText, Plus, Scissors } from "lucide-react";
 import { User } from "../../../types/user";
 import { useAuth } from "../../../context/AuthContext";
 import { updateUserAvailabilitySchedule } from "../../../lib/api";
@@ -14,7 +14,6 @@ import { Availability, WeeklySchedule } from "../../../lib/api/types";
 import { TimeSlot } from "../../../../src/types/availability";
 import { SplitScheduleModal } from "./components/SplitScheduleModal";
 import toast from "react-hot-toast";
-import { handleTimeSlotToggle } from "../../../hooks/useAvailabilityState";
 
 interface AvailabilityModalProps {
   colleague: User;
@@ -44,6 +43,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
     setSchedule,
     alternateSchedule,
     setAlternateSchedule,
+    handleTimeSlotToggle,
   } = useAvailabilityState(colleague);
 
   const {
@@ -138,7 +138,7 @@ export function AvailabilityModal({ colleague, onClose }: AvailabilityModalProps
     slot: keyof TimeSlot,
     isAlternate: boolean
   ) => {
-    handleTimeSlotToggle(token, colleague, currentEntryIndex, day, slot, isAlternate);
+    handleTimeSlotToggle(token, colleague.id, currentEntryIndex, day, slot, isAlternate);
   };
 
   return (
