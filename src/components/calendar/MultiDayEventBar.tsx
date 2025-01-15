@@ -1,6 +1,6 @@
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
-import { format, parseISO, differenceInDays } from "date-fns";
+import { parseISO, differenceInDays } from "date-fns";
 import { Calendar } from "lucide-react";
 import { EventResizeHandle } from "./EventResizeHandle";
 import { useEventResize } from "../../hooks/useEventResize";

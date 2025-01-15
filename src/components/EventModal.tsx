@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { format, subDays } from "date-fns";
 import { X } from "lucide-react";
 import { Event } from "../types/event";
