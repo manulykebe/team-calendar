@@ -160,7 +160,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-15T18:21:07.765Z",
+      "updatedAt": "2025-01-15T18:40:08.399Z",
       "settings": {
         "app": {
           "color": {
@@ -193,7 +193,7 @@
             "visible": true
           }
         },
-        "showWeekNumber": "none",
+        "showWeekNumber": "left",
         "colleagueOrder": [
           "XAefIrqLAeDy",
           "KTHpbRLreSbC",
