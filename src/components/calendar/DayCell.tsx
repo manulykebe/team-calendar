@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { format, isFirstDayOfMonth } from "date-fns";
+import { format, isFirstDayOfMonth, isEqual, isSameDay } from "date-fns";
 import { EventCard } from "./EventCard";
 import { MonthLabel } from "./MonthLabel";
 import { useFilteredEvents } from "../../hooks/useFilteredEvents";
@@ -13,6 +13,7 @@ interface DayCellProps {
   date: Date;
   events: Event[];
   onDateClick: (date: Date) => void;
+  onDateHover: (date: Date | null) => void;
   userSettings?: any;
   onEventDelete?: (eventId: string) => void;
   currentUser?: User | null;
@@ -22,23 +23,39 @@ interface DayCellProps {
     newEndDate?: string,
   ) => Promise<void>;
   holiday?: Holiday;
+  selectedStartDate: Date | null;
+  selectedEndDate: Date | null;
+  hoverDate: Date | null;
 }
 
 export const DayCell = memo(function DayCell({
   date,
   events,
   onDateClick,
+  onDateHover,
   userSettings,
   onEventDelete,
   currentUser,
   onEventResize,
   holiday,
+  selectedStartDate,
+  selectedEndDate,
+  hoverDate,
 }: DayCellProps) {
   const { getColumnColor } = useCalendarColors(currentUser);
   const formattedDate = format(date, "yyyy-MM-dd");
   const dayEvents = useFilteredEvents(events, formattedDate, currentUser);
   const backgroundColor = getColumnColor(date);
   const showMonthLabel = isFirstDayOfMonth(date);
+
+  const isSelected = selectedStartDate && isSameDay(date, selectedStartDate);
+  const isEndDate = selectedEndDate && isSameDay(date, selectedEndDate);
+  const isHoverEndDate = hoverDate && isSameDay(date, hoverDate);
+  
+  const isInRange = selectedStartDate && 
+    ((selectedEndDate && date >= selectedStartDate && date <= selectedEndDate) ||
+     (hoverDate && date >= selectedStartDate && date <= hoverDate) ||
+     (hoverDate && date <= selectedStartDate && date >= hoverDate));
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,8 +64,16 @@ export const DayCell = memo(function DayCell({
 
   return (
     <div
-      className="relative p-2 hover:bg-opacity-90 transition-colors"
-      style={{ backgroundColor }}
+      className={`relative p-2 transition-all duration-150 cursor-pointer
+        ${isSelected || isEndDate ? 'ring-2 ring-blue-500 bg-blue-100' : ''}
+        ${isInRange ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-opacity-90'}
+        ${isHoverEndDate ? 'ring-2 ring-blue-300' : ''}
+        ${isSelected || isEndDate ? 'z-10' : isInRange ? 'z-5' : 'z-0'}
+      `}
+      style={{ backgroundColor: isInRange || isSelected || isEndDate ? undefined : backgroundColor }}
+      onClick={() => onDateClick(date)}
+      onMouseEnter={() => onDateHover(date)}
+      onMouseLeave={() => onDateHover(null)}
       onContextMenu={handleContextMenu}
       data-tsx-id="day-cell"
     >
@@ -56,7 +81,9 @@ export const DayCell = memo(function DayCell({
       <div className="flex items-start justify-between">
         <div className="flex items-center space-x-1">
           <span
-            className={`text-sm font-medium ${holiday ? "text-red-600" : "text-zinc-700"}`}
+            className={`text-sm font-medium ${
+              holiday ? "text-red-600" : "text-zinc-700"
+            }`}
           >
             {format(date, "d")}
           </span>

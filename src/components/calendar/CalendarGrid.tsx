@@ -13,6 +13,7 @@ interface CalendarGridProps {
   currentMonth: Date;
   events: Event[];
   onDateClick: (date: Date) => void;
+  onDateHover: (date: Date | null) => void;
   weekStartsOn: string;
   userSettings?: any;
   onEventDelete?: (eventId: string) => void;
@@ -22,17 +23,24 @@ interface CalendarGridProps {
     newDate: string,
     newEndDate?: string,
   ) => Promise<void>;
+  selectedStartDate: Date | null;
+  selectedEndDate: Date | null;
+  hoverDate: Date | null;
 }
 
 export function CalendarGrid({
   currentMonth,
   events,
   onDateClick,
+  onDateHover,
   weekStartsOn,
   userSettings,
   onEventDelete,
   currentUser,
   onEventResize,
+  selectedStartDate,
+  selectedEndDate,
+  hoverDate,
 }: CalendarGridProps) {
   const [error, setError] = useState<string | null>(null);
   const [holidays, setHolidays] = useState<Holiday[]>([]);
@@ -51,7 +59,6 @@ export function CalendarGrid({
 
       const year = format(currentMonth, "yyyy");
       try {
-        // Fetch site data to get location
         const siteData = await getSiteData(currentUser.site);
         if (!siteData?.app?.location) {
           console.warn("No location found in site data");
@@ -73,14 +80,12 @@ export function CalendarGrid({
 
   const showWeekNumber = currentUser?.settings?.showWeekNumber || "none";
 
-  // Calculate the number of visible colleagues
   const visibleColleagues = currentUser?.settings?.colleagues
     ? Object.values(currentUser.settings.colleagues).filter(
         (c: any) => c.visible !== false,
       ).length
     : 1;
 
-  // Calculate row height: base height (120px) + additional height per colleague (24px)
   const rowHeight = Math.max(120, 42 + visibleColleagues * 24);
 
   return (
@@ -117,11 +122,15 @@ export function CalendarGrid({
                 date={day}
                 events={events}
                 onDateClick={onDateClick}
+                onDateHover={onDateHover}
                 userSettings={userSettings}
                 onEventDelete={onEventDelete}
                 currentUser={currentUser}
                 onEventResize={onEventResize}
                 holiday={holiday}
+                selectedStartDate={selectedStartDate}
+                selectedEndDate={selectedEndDate}
+                hoverDate={hoverDate}
               />
             );
           })}

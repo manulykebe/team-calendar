@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { X, Trash2 } from "lucide-react";
 import { Event } from "../../types/event";
+import toast from "react-hot-toast";
 
 interface EventDetailsModalProps {
   event: Event;
@@ -13,19 +14,28 @@ export function EventDetailsModal({
   onClose,
   onDelete,
 }: EventDetailsModalProps) {
-  const handleDelete = () => {
-    if (onDelete) {
-      onDelete(event.id);
+  const handleDelete = async () => {
+    if (!onDelete) return;
+
+    const toastId = toast.loading('Deleting event...');
+    try {
+      await onDelete(event.id);
+      toast.success('Event deleted successfully', { id: toastId });
       onClose();
+    } catch (error) {
+      toast.error('Failed to delete event', { id: toastId });
     }
   };
 
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       data-tsx-id="event-details-modal"
     >
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full" onClick={e => e.stopPropagation()}>
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="text-lg font-semibold text-zinc-900">Event Details</h3>
           <button
@@ -39,7 +49,7 @@ export function EventDetailsModal({
         <div className="p-4 space-y-4">
           <div>
             <h4 className="text-sm font-medium text-zinc-500">Title</h4>
-            <p className="mt-1 text-zinc-900">{event.title || ""}</p>
+            <p className="mt-1 text-zinc-900">{event.title || "Untitled Event"}</p>
           </div>
 
           <div>
@@ -69,24 +79,24 @@ export function EventDetailsModal({
                 .replace(/^./, (str) => str.toUpperCase())}
             </p>
           </div>
+        </div>
 
-          <div className="pt-4 flex justify-end space-x-3 border-t">
-            {onDelete && (
-              <button
-                onClick={handleDelete}
-                className="flex items-center px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Event
-              </button>
-            )}
+        <div className="flex justify-end items-center gap-3 p-4 border-t bg-zinc-50">
+          {onDelete && (
             <button
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-zinc-700 bg-zinc-100 rounded-md hover:bg-zinc-200"
+              onClick={handleDelete}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
-              Close
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete Event
             </button>
-          </div>
+          )}
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>

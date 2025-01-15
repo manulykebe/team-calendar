@@ -18,14 +18,18 @@ export function Calendar() {
 
   const {
     events,
-    selectedDate,
+    selectedStartDate,
+    selectedEndDate,
+    hoverDate,
     currentMonth,
     showModal,
     selectedEvent,
-    setSelectedDate,
     setCurrentMonth,
     setShowModal,
     setSelectedEvent,
+    handleDateClick,
+    handleDateHover,
+    resetSelection,
     fetchEvents,
     handleCreateEvent,
     handleEventDelete,
@@ -106,16 +110,16 @@ export function Calendar() {
         <CalendarGrid
           currentMonth={currentMonth}
           events={events}
-          onDateClick={(date) => {
-            setSelectedDate(date);
-            setSelectedEvent(null);
-            setShowModal(true);
-          }}
+          onDateClick={handleDateClick}
+          onDateHover={handleDateHover}
           weekStartsOn={weekStartsOn}
           userSettings={currentUser?.settings}
           onEventDelete={handleEventDelete}
           currentUser={currentUser}
           onEventResize={handleEventResize}
+          selectedStartDate={selectedStartDate}
+          selectedEndDate={selectedEndDate}
+          hoverDate={hoverDate}
         />
       </div>
 
@@ -123,9 +127,13 @@ export function Calendar() {
 
       {showModal && (
         <EventModal
-          date={selectedDate}
+          date={selectedStartDate!}
+          endDate={selectedEndDate}
           event={selectedEvent}
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false);
+            resetSelection();
+          }}
           onSubmit={handleCreateEvent}
         />
       )}
