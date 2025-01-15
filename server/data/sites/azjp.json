@@ -160,7 +160,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-11T21:34:17.560Z",
+      "updatedAt": "2025-01-15T18:21:07.765Z",
       "settings": {
         "app": {
           "color": {
@@ -193,7 +193,7 @@
             "visible": true
           }
         },
-        "showWeekNumber": "left",
+        "showWeekNumber": "none",
         "colleagueOrder": [
           "XAefIrqLAeDy",
           "KTHpbRLreSbC",
@@ -749,6 +749,17 @@
       "endDate": "2024-12-29",
       "createdAt": "2025-01-09T14:07:32.393Z",
       "updatedAt": "2025-01-09T14:07:32.393Z"
+    },
+    {
+      "id": "49e38e4b-f922-4572-bf27-2aa02e840cf8",
+      "userId": "XAefIrqLAeDy",
+      "type": "requestedHoliday",
+      "title": "",
+      "description": "",
+      "date": "2025-01-04",
+      "endDate": "2025-01-12",
+      "createdAt": "2025-01-15T18:21:17.651Z",
+      "updatedAt": "2025-01-15T18:21:17.651Z"
     }
   ]
 }

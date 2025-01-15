@@ -94,8 +94,6 @@ export function MonthPicker({
 	};
 
 	const handleNextMonth = () => {
-		debugger
-		console.log(baseMonth);
 		const newDate = addMonths(baseMonth, 1);
 		if (!isAfter(newDate, END_PICKER_DATE)) {
 			setBaseMonth(newDate);
@@ -287,15 +285,15 @@ export function MonthPicker({
 									<div className="text-sm font-medium mb-2">
 										{format(month, "MMMM yyyy")}
 									</div>
-									<div className="grid grid-cols-7 gap-0 text-center mb-1">
+									<div className="grid grid-cols-7 gap-0 text-left">
 										{[
+											"Su",
 											"Mo",
 											"Tu",
 											"We",
 											"Th",
 											"Fr",
 											"Sa",
-											"Su",
 										]
 											.slice(weekStartsOnNumber)
 											.concat(
