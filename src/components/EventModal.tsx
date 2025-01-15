@@ -15,6 +15,7 @@ interface EventModalProps {
     endDate?: string;
     type: string;
   }) => Promise<void>;
+  defaultEventType?: string;
 }
 
 export function EventModal({
@@ -23,10 +24,11 @@ export function EventModal({
   event,
   onClose,
   onSubmit,
+  defaultEventType,
 }: EventModalProps) {
   const [title, setTitle] = useState(event?.title || "");
   const [description, setDescription] = useState(event?.description || "");
-  const [type, setType] = useState(event?.type || "requestedPeriod");
+  const [type, setType] = useState(event?.type || defaultEventType || "requestedPeriod");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -44,13 +46,13 @@ export function EventModal({
 
       // Adjust start date for holiday types
       let startDate = new Date(date);
-      if (type === "requestedHoliday" || type === "requestedHolidayMandatory") {
-        // Find previous Saturday
-        while (startDate.getDay() !== 6) {
-          // 6 is Saturday
-          startDate = subDays(startDate, 1);
-        }
-      }
+      // if (type === "requestedHoliday" || type === "requestedHolidayMandatory") {
+      //   // Find previous Saturday
+      //   while (startDate.getDay() !== 6) {
+      //     // 6 is Saturday
+      //     startDate = subDays(startDate, 1);
+      //   }
+      // }
 
       const eventData = {
         title: title.trim(),

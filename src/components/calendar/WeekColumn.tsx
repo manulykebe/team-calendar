@@ -5,12 +5,14 @@ interface WeekColumnProps {
   days: Date[];
   position: "left" | "right";
   rowHeight?: number;
+  onWeekClick?: (startDate: Date, endDate: Date) => void;
 }
 
 export function WeekColumn({
   days,
   position,
   rowHeight = 120,
+  onWeekClick,
 }: WeekColumnProps) {
   // Get unique weeks, but only for the actual calendar days we're showing
   const uniqueWeeks = days
@@ -35,7 +37,11 @@ export function WeekColumn({
       data-tsx-id="week-column"
     >
       {uniqueWeeks.map(({ weekNum, day }) => (
-        <WeekNumber key={weekNum} date={day} />
+        <WeekNumber 
+          key={weekNum} 
+          date={day} 
+          onWeekClick={onWeekClick}
+        />
       ))}
     </div>
   );

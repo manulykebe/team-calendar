@@ -123,5 +123,7 @@ export function useCalendarState(token: string | null) {
     handleCreateEvent,
     handleEventDelete,
     handleEventResize,
+    setSelectedStartDate,  // Expose these functions
+    setSelectedEndDate,    // Expose these functions
   };
 }

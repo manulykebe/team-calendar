@@ -35,6 +35,8 @@ export function Calendar() {
     handleCreateEvent,
     handleEventDelete,
     handleEventResize,
+    setSelectedStartDate,
+    setSelectedEndDate,
   } = useCalendarState(token);
 
   useEffect(() => {
@@ -73,6 +75,12 @@ export function Calendar() {
 
   const handleNextWeek = () => {
     setCurrentMonth((prev) => addWeeks(prev, 1));
+  };
+
+  const handleWeekSelect = (startDate: Date, endDate: Date) => {
+    setSelectedStartDate(startDate);
+    setSelectedEndDate(endDate);
+    setShowModal(true);
   };
 
   const dateRange = `${format(subWeeks(currentMonth, 2), "MMM d")} - ${format(addWeeks(currentMonth, 2), "MMM d, yyyy")}`;
@@ -129,6 +137,7 @@ export function Calendar() {
           selectedStartDate={selectedStartDate}
           selectedEndDate={selectedEndDate}
           hoverDate={hoverDate}
+          onWeekSelect={handleWeekSelect}
         />
       </div>
 
@@ -144,6 +153,7 @@ export function Calendar() {
             resetSelection();
           }}
           onSubmit={handleCreateEvent}
+          defaultEventType={selectedStartDate && selectedEndDate ? "requestedHoliday" : undefined}
         />
       )}
     </div>

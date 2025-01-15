@@ -26,6 +26,7 @@ interface CalendarGridProps {
   selectedStartDate: Date | null;
   selectedEndDate: Date | null;
   hoverDate: Date | null;
+  onWeekSelect?: (startDate: Date, endDate: Date) => void;
 }
 
 export function CalendarGrid({
@@ -41,6 +42,7 @@ export function CalendarGrid({
   selectedStartDate,
   selectedEndDate,
   hoverDate,
+  onWeekSelect,
 }: CalendarGridProps) {
   const [error, setError] = useState<string | null>(null);
   const [holidays, setHolidays] = useState<Holiday[]>([]);
@@ -101,7 +103,12 @@ export function CalendarGrid({
         } gap-px bg-zinc-200`}
       >
         {showWeekNumber === "left" && (
-          <WeekColumn days={days} position="left" rowHeight={rowHeight} />
+          <WeekColumn 
+            days={days} 
+            position="left" 
+            rowHeight={rowHeight} 
+            onWeekClick={onWeekSelect}
+          />
         )}
         <div
           className="grid grid-cols-7 gap-px bg-zinc-200"
@@ -136,7 +143,12 @@ export function CalendarGrid({
           })}
         </div>
         {showWeekNumber === "right" && (
-          <WeekColumn days={days} position="right" rowHeight={rowHeight} />
+          <WeekColumn 
+            days={days} 
+            position="right" 
+            rowHeight={rowHeight} 
+            onWeekClick={onWeekSelect}
+          />
         )}
       </div>
     </div>
