@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
 	format,
 	addMonths,
@@ -35,15 +35,6 @@ export function MonthPicker({
 	const [isOpen, setIsOpen] = useState(false);
 	const [baseMonth, setBaseMonth] = useState(startOfMonth(currentMonth));
 	const [isHovered, setIsHovered] = useState(false);
-
-	// useEffect(() => {
-	// 	if (
-	// 		Math.abs(baseMonth.getTime() - currentMonth.getTime()) >
-	// 		1000 * 60 * 60 * 24 * 90
-	// 	) {
-	// 		setBaseMonth(startOfMonth(currentMonth));
-	// 	}
-	// }, [currentMonth, baseMonth]);
 
 	const weekStartsOnNumber =
 		{
@@ -298,13 +289,13 @@ export function MonthPicker({
 											.slice(weekStartsOnNumber)
 											.concat(
 												[
+													"Su",
 													"Mo",
 													"Tu",
 													"We",
 													"Th",
 													"Fr",
 													"Sa",
-													"Su",
 												].slice(0, weekStartsOnNumber)
 											)
 											.map((day) => (
