@@ -35,8 +35,9 @@ router.get("/:siteID/:userId/subscribe", authenticateToken, async (req: AuthRequ
     // Generate subscription token
     const token = generateSubscriptionToken(userId, siteID);
     
-    // Generate subscription URL
-    const subscriptionUrl = `${req.protocol}://${req.get('host')}/api/agenda/${siteID}/${userId}/calendar/${token}`;
+    // Generate subscription URL with webcal:// protocol
+    const host = req.get('host');
+    const subscriptionUrl = `webcal://${host}/api/agenda/${siteID}/${userId}/calendar/${token}`;
     
     res.json({
       subscriptionUrl,
@@ -72,8 +73,8 @@ router.get("/:site/:userId/calendar/:token", async (req, res) => {
     const icalContent = generateICalContent(userEvents, user);
 
     // Set headers for iCal
-    res.setHeader("Content-Type", "text/calendar; charset=utf-8");
-    res.setHeader("Content-Disposition", "attachment; filename=calendar.ics");
+    res.setHeader("Content-Type", "text/calendar; charset=UTF-8");
+    res.setHeader("Content-Disposition", "inline; filename=calendar.ics");
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");
@@ -141,6 +142,7 @@ router.get("/:siteID/:userId", authenticateToken, async (req: AuthRequest, res) 
 function generateICalContent(events: Event[], user: any): string {
   const now = new Date();
   const timestamp = format(now, "yyyyMMdd'T'HHmmss'Z'");
+  const prodId = "-//Team Calendar//NONSGML Team Calendar V1.0//EN";
   
   const icalEvents = events
     .map((event) => {
@@ -149,40 +151,52 @@ function generateICalContent(events: Event[], user: any): string {
         ? format(addDays(parseISO(event.endDate), 1), "yyyyMMdd")
         : format(addDays(parseISO(event.date), 1), "yyyyMMdd");
 
+      // Create a unique identifier that's consistent across updates
+      const eventUid = `${event.id}-${startDate}@teamcalendar`;
+
       // Escape special characters in text fields
       const summary = (event.title || event.type)
-        .replace(/[\\;,]/g, (match) => '\\' + match);
+        .replace(/[\\;,]/g, (match) => '\\' + match)
+        .replace(/\n/g, '\\n');
       const description = (event.description || "")
         .replace(/[\\;,]/g, (match) => '\\' + match)
         .replace(/\n/g, '\\n');
 
-      return `BEGIN:VEVENT
-UID:${event.id}@teamcalendar
-DTSTAMP:${timestamp}
-DTSTART;VALUE=DATE:${startDate}
-DTEND;VALUE=DATE:${endDate}
-SUMMARY:${summary}
-DESCRIPTION:${description}
-STATUS:CONFIRMED
-CLASS:PUBLIC
-TRANSP:TRANSPARENT
-SEQUENCE:0
-END:VEVENT`;
+      return [
+        "BEGIN:VEVENT",
+        `UID:${eventUid}`,
+        `DTSTAMP:${timestamp}`,
+        `DTSTART;VALUE=DATE:${startDate}`,
+        `DTEND;VALUE=DATE:${endDate}`,
+        `SUMMARY:${summary}`,
+        description ? `DESCRIPTION:${description}` : "",
+        "STATUS:CONFIRMED",
+        "CLASS:PUBLIC",
+        "TRANSP:TRANSPARENT",
+        "SEQUENCE:0",
+        "END:VEVENT"
+      ].filter(Boolean).join("\r\n");
     })
     .join("\r\n");
 
   const calendarName = `${user.firstName} ${user.lastName}'s Calendar`
     .replace(/[\\;,]/g, (match) => '\\' + match);
 
-  return `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Team Calendar//NONSGML v1.0//EN
-METHOD:PUBLISH
-X-WR-CALNAME:${calendarName}
-X-WR-TIMEZONE:UTC
-CALSCALE:GREGORIAN
-${icalEvents}
-END:VCALENDAR`.split('\n').join('\r\n');
+  const calendar = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    `PRODID:${prodId}`,
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    `X-WR-CALNAME:${calendarName}`,
+    "X-WR-CALDESC:Team Calendar Events",
+    "X-WR-TIMEZONE:UTC",
+    icalEvents,
+    "END:VCALENDAR"
+  ].join("\r\n");
+
+  // Ensure CRLF line endings
+  return calendar.replace(/\n/g, "\r\n");
 }
 
 export { router as agendaRouter };

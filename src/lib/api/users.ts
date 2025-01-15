@@ -1,6 +1,5 @@
 import { User } from "../../types/user";
-
-const API_URL = "http://localhost:3000/api";
+import { API_URL } from "./config";
 
 export async function getUsers(token: string) {
   if (!token) {

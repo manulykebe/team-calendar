@@ -5,6 +5,7 @@ import {
 	Users,
 	LogOut,
 	Clock,
+	Calendar
 } from "lucide-react";
 import { ColleagueSettings } from "./colleagues/ColleagueSettings";
 import { UserManagement } from "../users/UserManagement";
@@ -13,6 +14,7 @@ import { ColleagueAvatar } from "./colleagues/ColleagueAvatar";
 import { useUserSettings } from "./hooks/useUserSettings";
 import { DisplaySettings } from "./DisplaySettings";
 import { AvailabilityModal } from "./availability/AvailabilityModal";
+import { SubscriptionModal } from "./SubscriptionModal";
 
 interface SettingsPanelProps {
 	className?: string;
@@ -26,6 +28,7 @@ export function SettingsPanel({}: SettingsPanelProps) {
 	const [showColleagueSettings, setShowColleagueSettings] = useState(false);
 	const [showUserManagement, setShowUserManagement] = useState(false);
 	const [showAvailability, setShowAvailability] = useState(false);
+	const [showSubscription, setShowSubscription] = useState(false);
 
 	const handleLogout = () => {
 		logout();
@@ -35,13 +38,25 @@ export function SettingsPanel({}: SettingsPanelProps) {
 	const handleOpenAvailability = () => {
 		if (currentUser) {
 			setShowAvailability(true);
-			setIsOpen(false); // Close settings panel when opening modal
+			setIsOpen(false);
 		}
 	};
 
 	const handleCloseAvailability = () => {
 		setShowAvailability(false);
-		setIsOpen(true); // Reopen settings panel when closing modal
+		setIsOpen(true);
+	};
+
+	const handleOpenSubscription = () => {
+		if (currentUser) {
+			setShowSubscription(true);
+			setIsOpen(false);
+		}
+	};
+
+	const handleCloseSubscription = () => {
+		setShowSubscription(false);
+		setIsOpen(true);
 	};
 
 	return (
@@ -107,6 +122,13 @@ export function SettingsPanel({}: SettingsPanelProps) {
 								>
 									<Clock className="w-4 h-4 mr-2" />
 									Set Availability
+								</button>
+								<button
+									onClick={handleOpenSubscription}
+									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+								>
+									<Calendar className="w-4 h-4 mr-2" />
+									Subscribe to Calendar
 								</button>
 							</div>
 						</div>
@@ -174,6 +196,14 @@ export function SettingsPanel({}: SettingsPanelProps) {
 				<AvailabilityModal
 					colleague={currentUser}
 					onClose={handleCloseAvailability}
+				/>
+			)}
+
+			{showSubscription && currentUser && (
+				<SubscriptionModal
+					userId={currentUser.id}
+					site={currentUser.site}
+					onClose={handleCloseSubscription}
 				/>
 			)}
 		</div>
