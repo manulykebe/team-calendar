@@ -334,6 +334,39 @@
       "endDate": "2025-01-15",
       "createdAt": "2025-01-16T10:03:56.902Z",
       "updatedAt": "2025-01-16T10:03:56.902Z"
+    },
+    {
+      "id": "aa07f960-b279-4942-b8f0-45b5646f5ff7",
+      "userId": "XAefIrqLAeDy",
+      "type": "requestedHoliday",
+      "title": "",
+      "description": "",
+      "date": "2025-01-06",
+      "endDate": "2025-01-07",
+      "createdAt": "2025-01-16T15:29:33.679Z",
+      "updatedAt": "2025-01-16T15:29:33.679Z"
+    },
+    {
+      "id": "a4a03066-cc06-4a78-b7a9-3947556c8cd0",
+      "userId": "XAefIrqLAeDy",
+      "type": "requestedHoliday",
+      "title": "",
+      "description": "",
+      "date": "2025-01-20",
+      "endDate": "2025-01-26",
+      "createdAt": "2025-01-16T15:30:21.359Z",
+      "updatedAt": "2025-01-16T15:30:21.359Z"
+    },
+    {
+      "id": "920a15f7-5537-40d6-a9a9-6077aa046bd8",
+      "userId": "XAefIrqLAeDy",
+      "type": "requestedHoliday",
+      "title": "",
+      "description": "",
+      "date": "2025-01-27",
+      "endDate": "2025-02-02",
+      "createdAt": "2025-01-16T15:30:25.109Z",
+      "updatedAt": "2025-01-16T15:30:25.109Z"
     }
   ]
 }
