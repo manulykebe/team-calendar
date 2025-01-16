@@ -87,6 +87,9 @@ export async function deleteEvent(params: {
     throw new Error("Not authorized to delete this event");
   }
 
+  // Remove the event from the array
   data.events.splice(eventIndex, 1);
+  
+  // Save the updated data back to the file
   await writeSiteData(params.site, data);
 }

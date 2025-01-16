@@ -1,6 +1,8 @@
 import { format } from "date-fns";
 import { X, Trash2 } from "lucide-react";
 import { Event } from "../../types/event";
+import { useAuth } from "../../context/AuthContext";
+import { deleteEvent } from "../../lib/api";
 import toast from "react-hot-toast";
 
 interface EventDetailsModalProps {
@@ -14,15 +16,23 @@ export function EventDetailsModal({
   onClose,
   onDelete,
 }: EventDetailsModalProps) {
+  const { token } = useAuth();
+
   const handleDelete = async () => {
-    if (!onDelete) return;
+    if (!token || !onDelete) return;
 
     const toastId = toast.loading('Deleting event...');
     try {
-      await onDelete(event.id);
+      // First call the API to delete the event
+      await deleteEvent(token, event.id);
+      
+      // Then update the UI through the callback
+      onDelete(event.id);
+      
       toast.success('Event deleted successfully', { id: toastId });
       onClose();
     } catch (error) {
+      console.error('Failed to delete event:', error);
       toast.error('Failed to delete event', { id: toastId });
     }
   };
