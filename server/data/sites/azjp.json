@@ -366,12 +366,12 @@
       "id": "6f393dcc-1028-4823-88f3-b64f408e00bc",
       "userId": "XAefIrqLAeDy",
       "type": "requestedHoliday",
-      "title": "",
+      "title": "Title",
       "description": "",
       "date": "2025-02-03",
       "endDate": "2025-02-09",
       "createdAt": "2025-01-16T19:47:24.844Z",
-      "updatedAt": "2025-01-16T19:47:24.844Z"
+      "updatedAt": "2025-01-16T19:54:21.533Z"
     }
   ]
 }
