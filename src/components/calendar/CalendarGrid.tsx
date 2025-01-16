@@ -45,6 +45,7 @@ export function CalendarGrid({
   onWeekSelect,
 }: CalendarGridProps) {
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [holidays, setHolidays] = useState<Holiday[]>([]);
 
   const { days, emptyDays, weekDays } = getCalendarDays(
@@ -54,16 +55,18 @@ export function CalendarGrid({
 
   useEffect(() => {
     const fetchHolidays = async () => {
+      // Skip fetch if no user or site data
       if (!currentUser?.site) {
-        console.warn("No site information available for current user");
+        setHolidays([]); // Reset holidays when no site data
         return;
       }
 
+      setLoading(true);
       const year = format(currentMonth, "yyyy");
       try {
         const siteData = await getSiteData(currentUser.site);
         if (!siteData?.app?.location) {
-          console.warn("No location found in site data");
+          setHolidays([]);
           return;
         }
 
@@ -71,9 +74,13 @@ export function CalendarGrid({
         const holidayData = await getHolidays(year, location);
         setHolidays(holidayData);
         setError(null);
-      } catch (error) {
-        console.error("Failed to fetch holidays:", error);
-        setError("Failed to fetch holidays");
+
+      } catch (err) {
+        console.error("Failed to fetch holidays:", err);
+        setError("Unable to load holidays");
+        setHolidays([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -93,6 +100,9 @@ export function CalendarGrid({
   return (
     <div className="bg-zinc-200" data-tsx-id="calendar-grid">
       <CalendarHeader weekDays={weekDays} showWeekNumber={showWeekNumber} />
+      {error && (
+        <div className="p-2 text-sm text-red-600 bg-red-50">{error}</div>
+      )}
       <div
         className={`grid ${
           showWeekNumber === "left"
