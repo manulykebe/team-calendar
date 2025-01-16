@@ -1,10 +1,5 @@
 import { memo, useState } from "react";
-import {
-	format,
-	isFirstDayOfMonth,
-	isSameDay,
-	parseISO,
-} from "date-fns";
+import { format, isFirstDayOfMonth, isSameDay, parseISO } from "date-fns";
 import { getWeekNumber } from "../../utils/dateUtils";
 import { EventCard } from "./EventCard";
 import { MonthLabel } from "./MonthLabel";
@@ -99,10 +94,12 @@ export const DayCell = memo(function DayCell({
 
 			if (date >= scheduleStart && date <= scheduleEnd) {
 				if (schedule.repeatPattern === "evenodd") {
-					const weekNumber = getWeekNumber(date) //calculateWeekNumber(date, parseISO(schedule.startDate));
-					const targetSchedule = weekNumber % 2 === 0
-					? schedule.weeklySchedule
-					: schedule.oddWeeklySchedule || schedule.weeklySchedule;
+					const weekNumber = getWeekNumber(date); //calculateWeekNumber(date, parseISO(schedule.startDate));
+					const targetSchedule =
+						weekNumber % 2 === 0
+							? schedule.weeklySchedule
+							: schedule.oddWeeklySchedule ||
+								schedule.weeklySchedule;
 					return targetSchedule[dayName] || { am: true, pm: true };
 				} else {
 					return (
@@ -158,10 +155,10 @@ export const DayCell = memo(function DayCell({
 			>
 				{/* Availability background layers */}
 				{!am && (
-					<div className="absolute inset-x-0 top-0 h-1/2 bg-zinc-300 opacity-50" />
+					<div className="absolute inset-x-0 top-0 h-1/2 bg-zinc-200 opacity-50" />
 				)}
 				{!pm && (
-					<div className="absolute inset-x-0 bottom-0 h-1/2 bg-zinc-300 opacity-50" />
+					<div className="absolute inset-x-0 bottom-0 h-1/2 bg-zinc-200 opacity-50" />
 				)}
 
 				{showMonthLabel && <MonthLabel date={date} />}
