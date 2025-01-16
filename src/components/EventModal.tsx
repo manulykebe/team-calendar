@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { format, subDays } from "date-fns";
+import { format } from "date-fns";
 import { X } from "lucide-react";
 import { Event } from "../types/event";
 import toast from "react-hot-toast";
