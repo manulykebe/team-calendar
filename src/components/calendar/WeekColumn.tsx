@@ -1,11 +1,16 @@
 import { getWeekNumber } from "../../utils/dateUtils";
 import { WeekNumber } from "./WeekNumber";
+import { Event } from "../../types/event";
+import { User } from "../../types/user";
 
 interface WeekColumnProps {
   days: Date[];
   position: "left" | "right";
   rowHeight?: number;
   onWeekClick?: (startDate: Date, endDate: Date) => void;
+  events?: Event[];
+  currentUser?: User | null;
+  onEventDelete?: (eventId: string) => void;
 }
 
 export function WeekColumn({
@@ -13,6 +18,9 @@ export function WeekColumn({
   position,
   rowHeight = 120,
   onWeekClick,
+  events,
+  currentUser,
+  onEventDelete
 }: WeekColumnProps) {
   // Get unique weeks, but only for the actual calendar days we're showing
   const uniqueWeeks = days
@@ -41,6 +49,9 @@ export function WeekColumn({
           key={weekNum} 
           date={day} 
           onWeekClick={onWeekClick}
+          events={events}
+          currentUser={currentUser}
+          onEventDelete={onEventDelete}
         />
       ))}
     </div>

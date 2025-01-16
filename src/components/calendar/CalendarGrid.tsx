@@ -108,6 +108,9 @@ export function CalendarGrid({
             position="left" 
             rowHeight={rowHeight} 
             onWeekClick={onWeekSelect}
+            events={events}
+            currentUser={currentUser}
+            onEventDelete={onEventDelete}
           />
         )}
         <div
@@ -148,6 +151,9 @@ export function CalendarGrid({
             position="right" 
             rowHeight={rowHeight} 
             onWeekClick={onWeekSelect}
+            events={events}
+            currentUser={currentUser}
+            onEventDelete={onEventDelete}
           />
         )}
       </div>
