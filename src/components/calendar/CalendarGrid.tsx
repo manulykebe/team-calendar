@@ -88,7 +88,7 @@ export function CalendarGrid({
       ).length
     : 1;
 
-  const rowHeight = Math.max(120, 42 + visibleColleagues * 24);
+  const rowHeight = Math.max(120, 42 + (visibleColleagues-1) * 24);
 
   return (
     <div className="bg-zinc-200" data-tsx-id="calendar-grid">

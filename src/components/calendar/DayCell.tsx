@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { format, isFirstDayOfMonth, isEqual, isSameDay } from "date-fns";
+import { format, isFirstDayOfMonth, isEqual, isSameDay, parseISO } from "date-fns";
 import { EventCard } from "./EventCard";
 import { MonthLabel } from "./MonthLabel";
 import { useFilteredEvents } from "../../hooks/useFilteredEvents";
@@ -27,6 +27,8 @@ interface DayCellProps {
   selectedEndDate: Date | null;
   hoverDate: Date | null;
 }
+
+const HOLIDAY_TYPES = ["requestedHoliday", "requestedHolidayMandatory"];
 
 export const DayCell = memo(function DayCell({
   date,
@@ -57,6 +59,16 @@ export const DayCell = memo(function DayCell({
      (hoverDate && date >= selectedStartDate && date <= hoverDate) ||
      (hoverDate && date <= selectedStartDate && date >= hoverDate));
 
+  // Check if there are any holiday events for this day
+  const hasHolidayEvent = events.some(
+    event => 
+      HOLIDAY_TYPES.includes(event.type) &&
+      (event.date === formattedDate || 
+        (event.endDate && 
+          date >= parseISO(event.date) && 
+          date <= parseISO(event.endDate)))
+  );
+
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     onDateClick(date);
@@ -69,8 +81,15 @@ export const DayCell = memo(function DayCell({
         ${isInRange ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-opacity-90'}
         ${isHoverEndDate ? 'ring-2 ring-blue-300' : ''}
         ${isSelected || isEndDate ? 'z-10' : isInRange ? 'z-5' : 'z-0'}
+        ${hasHolidayEvent ? 'bg-red-50' : ''}
       `}
-      style={{ backgroundColor: isInRange || isSelected || isEndDate ? undefined : backgroundColor }}
+      style={{ 
+        backgroundColor: hasHolidayEvent 
+          ? undefined 
+          : (isInRange || isSelected || isEndDate 
+              ? undefined 
+              : backgroundColor) 
+      }}
       onClick={() => onDateClick(date)}
       onMouseEnter={() => onDateHover(date)}
       onMouseLeave={() => onDateHover(null)}

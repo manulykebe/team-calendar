@@ -87,12 +87,12 @@ export function Calendar() {
 
   return (
     <div
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+      className="max-w-7xl mx-auto px-2 sm:px-2 lg:px-4 py-4"
       data-tsx-id="calendar"
     >
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-2">
         <div className="flex items-center space-x-4">
-          <h1 className="text-3xl font-bold text-zinc-900">Team Calendar</h1>
+          <h1 className="text-3xl font-bold text-zinc-900">Team Calendar: AZJP</h1>
           <div className="flex items-center space-x-2">
             <button
               onClick={handlePrevWeek}

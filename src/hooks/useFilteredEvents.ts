@@ -3,6 +3,8 @@ import { Event } from "../types/event";
 import { User } from "../types/user";
 import { isWithinInterval, parseISO } from "date-fns";
 
+const HOLIDAY_TYPES = ["requestedHoliday", "requestedHolidayMandatory"];
+
 export function useFilteredEvents(
   events: Event[],
   date: string,
@@ -11,35 +13,38 @@ export function useFilteredEvents(
   return useMemo(() => {
     const targetDate = parseISO(date);
 
-    // If no current user or settings, return filtered events by date only
-    if (!currentUser?.settings) {
-      return filterEventsByDate(events, date, targetDate);
-    }
+    // Filter events by date and visibility rules
+    const visibleEvents = filterEventsByDate(events, date, targetDate)
+      .filter((event) => {
+        // For current user, show all non-holiday events
+        if (event.userId === currentUser?.id) {
+          return !HOLIDAY_TYPES.includes(event.type);
+        }
 
-    // Get colleague settings and order
-    const { colleagues, colleagueOrder = [] } = currentUser.settings;
-
-    // Filter events by date and visibility
-    const visibleEvents = filterEventsByDate(events, date, targetDate).filter(
-      (event) => {
-        // Always show current user's events
-        if (event.userId === currentUser.id) return true;
+        // For other users, check visibility settings
+        if (!currentUser?.settings) {
+          return true;
+        }
 
         // Check if colleague is visible
-        return colleagues?.[event.userId]?.visible !== false;
-      },
-    );
+        return currentUser.settings.colleagues?.[event.userId]?.visible !== false;
+      });
+
+    // Get colleague settings and order
+    const { colleagues, colleagueOrder = [] } = currentUser?.settings || {};
 
     // Create a map for colleague order positions
     const orderMap = new Map<string, number>();
 
     // First, add current user at position 0
-    orderMap.set(currentUser.id, 0);
+    if (currentUser) {
+      orderMap.set(currentUser.id, 0);
+    }
     let position = 1;
 
     // Then add ordered colleagues
     colleagueOrder.forEach((userId) => {
-      if (userId !== currentUser.id && !orderMap.has(userId)) {
+      if (!currentUser || (userId !== currentUser.id && !orderMap.has(userId))) {
         orderMap.set(userId, position++);
       }
     });
