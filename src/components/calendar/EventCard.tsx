@@ -19,6 +19,8 @@ interface EventCardProps {
   ) => Promise<void>;
 }
 
+const HOLIDAY_TYPES = ["requestedHoliday", "requestedHolidayMandatory"];
+
 export function EventCard({
   event,
   date,
@@ -30,9 +32,13 @@ export function EventCard({
   const [showDetails, setShowDetails] = useState(false);
   const { canModify } = useEventPermissions(event, currentUser);
   const isMultiDay = event.endDate && event.endDate !== event.date;
+  const isHolidayEvent = HOLIDAY_TYPES.includes(event.type);
+  const isCurrentUserEvent = event.userId === currentUser?.id;
 
   const handleClick = () => {
-    setShowDetails(true);
+    if (isHolidayEvent && isCurrentUserEvent) {
+      setShowDetails(true);
+    }
   };
 
   if (isMultiDay) {
