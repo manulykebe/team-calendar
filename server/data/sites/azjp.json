@@ -345,6 +345,17 @@
       "endDate": "2025-01-08",
       "createdAt": "2025-01-16T10:39:40.106Z",
       "updatedAt": "2025-01-16T10:39:40.106Z"
+    },
+    {
+      "id": "c1927716-0ae9-481e-b62e-63434318d0c4",
+      "userId": "XAefIrqLAeDy",
+      "type": "requestedHoliday",
+      "title": "",
+      "description": "",
+      "date": "2025-01-06",
+      "endDate": "2025-01-08",
+      "createdAt": "2025-01-16T12:13:31.946Z",
+      "updatedAt": "2025-01-16T12:13:31.946Z"
     }
   ]
 }
