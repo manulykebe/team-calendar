@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AuthRequest, authenticateToken } from "../middleware/auth";
 import { readSiteData } from "../utils";
-import { format, parseISO, isWithinInterval } from "date-fns";
+import { format, parseISO, eachDayOfInterval, isWithinInterval } from "date-fns";
 
 const router = Router();
 
@@ -14,21 +14,41 @@ function eventsToCSV(events: any[], users: any[], includeHeaders = true) {
 		"Type",
 		"Title",
 		"Description",
-		"Start Date",
-		"End Date",
+		"Date",
 		"Created At",
 		"Updated At",
 	];
 
-	const rows = events.map((event) => {
+	// Expand events with date ranges into individual dates
+	const expandedEvents = events.flatMap(event => {
+		if (!event.endDate || event.date === event.endDate) {
+			// Single day event
+			return [{
+				...event,
+				expandedDate: event.date
+			}];
+		}
+
+		// Multi-day event - create an entry for each day in the range
+		const dateRange = eachDayOfInterval({
+			start: parseISO(event.date),
+			end: parseISO(event.endDate)
+		});
+
+		return dateRange.map(date => ({
+			...event,
+			expandedDate: format(date, "yyyy-MM-dd")
+		}));
+	});
+
+	const rows = expandedEvents.map((event) => {
 		const user = users.find((u) => u.id === event.userId);
 		return [
 			user?.initials || "Unknown",
 			event.type,
 			`"${event.title || ""}"`,
 			`"${event.description || ""}"`,
-			event.date,
-			event.endDate || "",
+			event.expandedDate,
 			event.createdAt,
 			event.updatedAt,
 		];
@@ -50,21 +70,20 @@ router.get("/:site", async (req: AuthRequest, res) => {
 		const siteData = await readSiteData(site);
 		let events = [...siteData.events];
 		let users = [...siteData.users];
+
 		// Filter by date range if provided
 		if (startDate && endDate) {
 			const start = parseISO(startDate as string);
 			const end = parseISO(endDate as string);
 
 			events = events.filter((event) => {
-				const eventDate = parseISO(event.date);
-				const eventEndDate = event.endDate
-					? parseISO(event.endDate)
-					: eventDate;
+				const eventStart = parseISO(event.date);
+				const eventEnd = event.endDate ? parseISO(event.endDate) : eventStart;
 
 				return (
-					isWithinInterval(eventDate, { start, end }) ||
-					isWithinInterval(eventEndDate, { start, end }) ||
-					(eventDate <= start && eventEndDate >= end)
+					isWithinInterval(eventStart, { start, end }) ||
+					isWithinInterval(eventEnd, { start, end }) ||
+					(eventStart <= start && eventEnd >= end)
 				);
 			});
 		}
@@ -91,7 +110,6 @@ router.get("/:site/:userId", async (req: AuthRequest, res) => {
 		const siteData = await readSiteData(site);
 
 		let users = [...siteData.users];
-
 		let events = siteData.events.filter((event) => event.userId === userId);
 
 		// Filter by date range if provided
@@ -100,20 +118,18 @@ router.get("/:site/:userId", async (req: AuthRequest, res) => {
 			const end = parseISO(endDate as string);
 
 			events = events.filter((event) => {
-				const eventDate = parseISO(event.date);
-				const eventEndDate = event.endDate
-					? parseISO(event.endDate)
-					: eventDate;
+				const eventStart = parseISO(event.date);
+				const eventEnd = event.endDate ? parseISO(event.endDate) : eventStart;
 
 				return (
-					isWithinInterval(eventDate, { start, end }) ||
-					isWithinInterval(eventEndDate, { start, end }) ||
-					(eventDate <= start && eventEndDate >= end)
+					isWithinInterval(eventStart, { start, end }) ||
+					isWithinInterval(eventEnd, { start, end }) ||
+					(eventStart <= start && eventEnd >= end)
 				);
 			});
 		}
 
-    const csv = eventsToCSV(events, users);
+		const csv = eventsToCSV(events, users);
 
 		res.setHeader("Content-Type", "text/csv");
 		res.setHeader(
