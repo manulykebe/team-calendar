@@ -25,7 +25,7 @@ const weeklyScheduleSchema = z.object({
 
 const scheduleSchema = z.object({
 	weeklySchedule: weeklyScheduleSchema,
-	alternateWeekSchedule: weeklyScheduleSchema.optional(),
+	oddWeeklySchedule: weeklyScheduleSchema.optional(),
 	startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
 	endDate: z.preprocess(
 		(val) => (val === "" ? undefined : val),

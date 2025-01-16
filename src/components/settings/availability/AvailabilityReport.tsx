@@ -1,4 +1,5 @@
-import { format, getMonth, getWeek, getDay } from "date-fns";
+import { format, getMonth,  getDay } from "date-fns";
+import { getWeekNumber } from "../../../utils/dateUtils";
 import { X } from "lucide-react";
 
 interface AvailabilityReportProps {
@@ -47,18 +48,6 @@ export function AvailabilityReport({
   const getMondayBasedDay = (date: Date): number => {
     const day = getDay(date);
     return day === 0 ? 6 : day - 1;
-  };
-
-  // Custom week calculation starting from Monday
-  const getCustomWeek = (date: Date): number => {
-    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-    const daysSinceFirstDay = Math.floor(
-      (date.getTime() - firstDayOfYear.getTime()) / (24 * 60 * 60 * 1000),
-    );
-    return (
-      Math.floor((daysSinceFirstDay + getMondayBasedDay(firstDayOfYear)) / 7) +
-      1
-    );
   };
 
   const handleTimeSlotClick = async (
@@ -136,7 +125,7 @@ export function AvailabilityReport({
                       const dayData = data.availability[dateStr];
                       const dayOfWeek = getMondayBasedDay(currentDate);
                       const isWeekend = dayOfWeek >= 5; // 5=Sat, 6=Sun
-                      const weekNumber = getCustomWeek(currentDate);
+                      const weekNumber = getWeekNumber(currentDate);
                       const isEvenWeek = weekNumber % 2 === 0;
 
                       return (

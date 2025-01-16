@@ -263,7 +263,7 @@ export function useScheduleNavigation({
 		setEndDate(entry.endDate || "");
 		setSchedule(entry.weeklySchedule || createDefaultSchedule());
 		setAlternateSchedule(
-			entry.alternateWeekSchedule || createDefaultSchedule()
+			entry.oddWeeklySchedule || createDefaultSchedule()
 		);
 	};
 
