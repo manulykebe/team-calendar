@@ -59,10 +59,11 @@ export const DayCell = memo(function DayCell({
      (hoverDate && date >= selectedStartDate && date <= hoverDate) ||
      (hoverDate && date <= selectedStartDate && date >= hoverDate));
 
-  // Check if there are any holiday events for this day
-  const hasHolidayEvent = events.some(
+  // Check if there are any holiday events for the current user on this day
+  const hasCurrentUserHolidayEvent = events.some(
     event => 
       HOLIDAY_TYPES.includes(event.type) &&
+      event.userId === currentUser?.id &&
       (event.date === formattedDate || 
         (event.endDate && 
           date >= parseISO(event.date) && 
@@ -81,10 +82,10 @@ export const DayCell = memo(function DayCell({
         ${isInRange ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-opacity-90'}
         ${isHoverEndDate ? 'ring-2 ring-blue-300' : ''}
         ${isSelected || isEndDate ? 'z-10' : isInRange ? 'z-5' : 'z-0'}
-        ${hasHolidayEvent ? 'bg-red-50' : ''}
+        ${hasCurrentUserHolidayEvent ? 'bg-red-100' : ''}
       `}
       style={{ 
-        backgroundColor: hasHolidayEvent 
+        backgroundColor: hasCurrentUserHolidayEvent 
           ? undefined 
           : (isInRange || isSelected || isEndDate 
               ? undefined 

@@ -76,9 +76,9 @@
       "role": "admin",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-09T20:27:58.028Z",
+      "updatedAt": "2025-01-16T10:05:42.247Z",
       "app": {
-        "weekStartsOn": "Sunday"
+        "weekStartsOn": "Monday"
       },
       "settings": {
         "colleagues": {
@@ -334,6 +334,28 @@
       "endDate": "2025-01-12",
       "createdAt": "2025-01-16T08:15:08.420Z",
       "updatedAt": "2025-01-16T08:15:08.420Z"
+    },
+    {
+      "id": "d1e23ae0-9d3d-4abb-bca1-31eff6a0e50e",
+      "userId": "XAefIrqLAeDy",
+      "type": "requestedHoliday",
+      "title": "",
+      "description": "",
+      "date": "2025-01-20",
+      "endDate": "2025-01-26",
+      "createdAt": "2025-01-16T10:03:04.257Z",
+      "updatedAt": "2025-01-16T10:03:04.257Z"
+    },
+    {
+      "id": "5bffbfc0-54cf-4c3e-9580-ba40c8bd60ef",
+      "userId": "XAefIrqLAeDy",
+      "type": "requestedPeriod",
+      "title": "",
+      "description": "",
+      "date": "2025-01-13",
+      "endDate": "2025-01-15",
+      "createdAt": "2025-01-16T10:03:56.902Z",
+      "updatedAt": "2025-01-16T10:03:56.902Z"
     }
   ]
 }

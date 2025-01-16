@@ -18,6 +18,8 @@ interface SingleDayEventBarProps {
   onClick: () => void;
 }
 
+const HOLIDAY_TYPES = ["requestedHoliday", "requestedHolidayMandatory"];
+
 export function SingleDayEventBar({
   event,
   userSettings,
@@ -39,6 +41,9 @@ export function SingleDayEventBar({
   const prefix = colleagueSettings?.initials
     ? `[${colleagueSettings.initials}] `
     : "";
+
+  const isHolidayEvent = HOLIDAY_TYPES.includes(event.type);
+  const isCurrentUserEvent = event.userId === currentUser?.id;
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -79,7 +84,11 @@ export function SingleDayEventBar({
         </>
       )}
 
-      <span className="truncate">
+      <span className="truncate" style={{
+        color: isHolidayEvent && !isCurrentUserEvent 
+          ? backgroundColor 
+          : undefined
+      }}>
         {prefix}
         {event.title || ""}
       </span>

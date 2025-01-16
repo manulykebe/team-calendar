@@ -18,6 +18,8 @@ interface MultiDayEventBarProps {
   onClick: () => void;
 }
 
+const HOLIDAY_TYPES = ["requestedHoliday", "requestedHolidayMandatory"];
+
 export function MultiDayEventBar({
   event,
   date,
