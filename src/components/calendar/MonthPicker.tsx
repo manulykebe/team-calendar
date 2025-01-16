@@ -167,24 +167,12 @@ export function MonthPicker({
 			{/* Toggle button in the header */}
 			<button
 				onClick={() => setIsOpen(!isOpen)}
-				onMouseEnter={() => setIsHovered(true)}
-				onMouseLeave={() => setIsHovered(false)}
-				className={`p-2 rounded-full transition-all duration-200 relative
-          ${isHovered ? "bg-blue-50 text-blue-600 scale-105" : "hover:bg-zinc-100"}`}
-				aria-label={isOpen ? "Close month picker" : "Open month picker"}
+				className={`fixed top-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 z-10`}
+				aria-label={"Open month picker"}
 			>
 				<Calendar
-					className={`w-5 h-5 transition-colors duration-200 ${isHovered ? "text-blue-600" : "text-zinc-600"}`}
+					className={`w-5 h-5 transition-colors duration-200`}
 				/>
-
-				{/* Tooltip */}
-				<div
-					className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-zinc-800 rounded whitespace-nowrap transition-opacity duration-200
-          ${isHovered && !isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-				>
-					{isOpen ? "Close month picker" : "Open month picker"}
-					<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-zinc-800" />
-				</div>
 			</button>
 
 			{/* Overlay */}
