@@ -72,6 +72,34 @@ export const DayCell = memo(function DayCell({
           date <= parseISO(event.endDate)))
   );
 
+  // Get availability for the current user on this day
+  const getUserAvailability = () => {
+    if (!currentUser?.settings?.availability) return { am: true, pm: true };
+
+    const availability = currentUser.settings.availability;
+    const dayName = format(date, 'EEEE') as keyof typeof availability[0]['weeklySchedule'];
+    
+    for (const schedule of availability) {
+      const scheduleStart = parseISO(schedule.startDate);
+      const scheduleEnd = schedule.endDate ? parseISO(schedule.endDate) : new Date(2100, 0, 1);
+      
+      if (date >= scheduleStart && date <= scheduleEnd) {
+        if (schedule.repeatPattern === 'evenodd') {
+          const weekNumber = Math.ceil((date.getTime() - scheduleStart.getTime()) / (7 * 24 * 60 * 60 * 1000));
+          const isEvenWeek = weekNumber % 2 === 0;
+          const targetSchedule = isEvenWeek ? schedule.weeklySchedule : schedule.alternateWeekSchedule || schedule.weeklySchedule;
+          return targetSchedule[dayName] || { am: true, pm: true };
+        } else {
+          return schedule.weeklySchedule[dayName] || { am: true, pm: true };
+        }
+      }
+    }
+    
+    return { am: true, pm: true };
+  };
+
+  const { am, pm } = getUserAvailability();
+
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     onDateClick(date);
@@ -108,8 +136,16 @@ export const DayCell = memo(function DayCell({
         onContextMenu={handleContextMenu}
         data-tsx-id="day-cell"
       >
+        {/* Availability background layers */}
+        {!am && (
+          <div className="absolute inset-x-0 top-0 h-1/2 bg-zinc-300 opacity-50" />
+        )}
+        {!pm && (
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-zinc-300 opacity-50" />
+        )}
+
         {showMonthLabel && <MonthLabel date={date} />}
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between relative">
           <div className="flex items-center space-x-1">
             <span
               className={`text-sm font-medium ${
