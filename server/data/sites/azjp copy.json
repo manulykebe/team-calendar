@@ -126,7 +126,7 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-17T11:31:49.527Z",
+      "updatedAt": "2025-01-17T12:29:21.864Z",
       "settings": {
         "app": {
           "color": {
@@ -160,27 +160,38 @@
           },
           "mKtuftErhhnO": {
             "color": "#74add1",
-            "initials": "MS"
+            "initials": "MS",
+            "visible": false
           },
           "CxuzKGosISkk": {
             "color": "#abd9e9",
-            "initials": "SD"
+            "initials": "SD",
+            "visible": false
           },
           "rwqJQFnAqWdn": {
             "color": "#e0f3f8",
-            "initials": "EV"
+            "initials": "EV",
+            "visible": false
           },
           "ZIdGWxhnRSYw": {
             "color": "#fee090",
-            "initials": "KV"
+            "initials": "KV",
+            "visible": false
           },
           "OBOaSHVowagL": {
             "color": "#fdae61",
-            "initials": "HG"
+            "initials": "HG",
+            "visible": false
           },
           "dijVShwJoKFD": {
             "color": "#f46d43",
-            "initials": "AY"
+            "initials": "AY",
+            "visible": false
+          },
+          "suuebRsdLhQv": {
+            "color": "#e0f3f8",
+            "initials": "",
+            "visible": false
           }
         },
         "showWeekNumber": "left",
@@ -1064,17 +1075,6 @@
       "endDate": "2025-02-09",
       "createdAt": "2025-01-16T21:46:14.828Z",
       "updatedAt": "2025-01-16T21:46:14.828Z"
-    },
-    {
-      "id": "8cbe1e14-8b40-4558-98f5-cf9857603907",
-      "userId": "XAefIrqLAeDy",
-      "type": "requestedHoliday",
-      "title": "",
-      "description": "",
-      "date": "2025-04-14",
-      "endDate": "2025-04-20",
-      "createdAt": "2025-01-16T21:46:42.796Z",
-      "updatedAt": "2025-01-16T21:46:42.796Z"
     },
     {
       "id": "3ba63f65-8b25-4398-bd19-817feb361edf",

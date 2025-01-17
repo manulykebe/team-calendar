@@ -208,7 +208,7 @@ export function MonthPicker({
 						<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-zinc-800" />
 					</div>
 
-					<div className="flex-1 overflow-y-auto p-4">
+					<div className="flex-1 overflow-hidden p-4">
 						<div className="flex justify-between items-center mb-4">
 							<div className="flex items-center space-x-1">
 								<button

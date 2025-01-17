@@ -30,9 +30,12 @@ export function getCalendarDays(
   // Find the start of the week for the current date
   const weekStart = startOfWeek(currentDate, { weekStartsOn: startDay });
 
-  // Calculate the start date (2 weeks before) and end date (2 weeks after)
-  const calendarStart = subWeeks(weekStart, 2);
-  const calendarEnd = addDays(addWeeks(weekStart, 2), 6);
+  const weeksBeforeStartDate = 2;
+  const weeksAfterStartDate = 2;
+
+  // Calculate the start date (x? weeks before) and end date (x? weeks after) 
+  const calendarStart = subWeeks(weekStart, weeksBeforeStartDate);
+  const calendarEnd = addDays(addWeeks(weekStart, weeksAfterStartDate), 6);
 
   // Get all days in the interval
   const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });

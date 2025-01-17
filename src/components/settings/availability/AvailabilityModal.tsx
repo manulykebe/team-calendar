@@ -86,7 +86,6 @@ export function AvailabilityModal({
 		try {
 			setLoading(true);
 			setError("");
-			debugger
 			const data = await getAvailabilityReport(
 				token,
 				colleague.site,

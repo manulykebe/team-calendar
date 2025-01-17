@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getWeekNumber } from "../../utils/dateUtils";
-import { startOfWeek, endOfWeek, format, parseISO } from "date-fns";
+import { startOfWeek, endOfWeek, format, parseISO, getMonth } from "date-fns";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
@@ -25,10 +25,11 @@ export function WeekNumber({
   const [isHovered, setIsHovered] = useState(false);
   const { token } = useAuth();
   const weekNumber = getWeekNumber(date);
-debugger
   const weekStart = startOfWeek(date, { weekStartsOn: 1 }); // Start from Monday
   const weekEnd = endOfWeek(date, { weekStartsOn: 1 }); // End on Sunday
 
+  const monthWeekStart = format(weekStart, "MMMM");
+  const monthWeekEnd = format(weekEnd, "MMMM");
   // Check if there's an existing holiday request for this week
   const existingHoliday = events.find(event => {
     if (event.userId !== currentUser?.id) return false;
@@ -66,7 +67,7 @@ debugger
 
   return (
     <div
-      className={`flex items-center justify-center text-xs font-medium transition-colors duration-200 cursor-pointer
+      className={`relative flex items-center justify-center text-xs font-medium transition-colors duration-200 cursor-pointer
         ${isHovered 
           ? "bg-blue-50 text-blue-600" 
           : existingHoliday 
@@ -81,6 +82,10 @@ debugger
       data-tsx-id="week-number"
     >
       {weekNumber}
+      <div className="text-xs absolute inset-x-0 -top-0.5 -left-0.5 font-medium text-zinc-400 pointer-events-none">
+      {monthWeekStart}
+        {/* {monthWeekStart === monthWeekEnd ? monthWeekStart : `${monthWeekStart} ${monthWeekEnd}`} */}
+        </div>
     </div>
   );
 }

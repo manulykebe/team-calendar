@@ -37,7 +37,6 @@ export function WeekColumn({
 			[] as { weekNum: number; day: Date }[]
 		)
 		.slice(0, 5); // Ensure we only show 5 weeks
-	debugger;
 	return (
 		<div
 			className="grid gap-px"
