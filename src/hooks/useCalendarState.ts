@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { Event } from "../types/event";
 import { getEvents, createEvent, updateEvent } from "../lib/api";
-import { format } from "date-fns";
 
 export function useCalendarState(token: string | null) {
   const [events, setEvents] = useState<Event[]>([]);
