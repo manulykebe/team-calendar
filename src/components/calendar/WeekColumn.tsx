@@ -53,6 +53,7 @@ export function WeekColumn({
 					events={events}
 					currentUser={currentUser}
 					onEventDelete={onEventDelete}
+					position={position}
 				/>
 			))}
 		</div>

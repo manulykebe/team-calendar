@@ -16,7 +16,7 @@ import { User } from "../types/user";
 import { userSettingsEmitter } from "../hooks/useColleagueSettings";
 import { useCalendarSettings } from "../hooks/useCalendarSettings";
 import { useCalendarState } from "../hooks/useCalendarState";
-import { addWeeks, subWeeks, addMonths, subMonths, format } from "date-fns";
+import { subDays, addWeeks, subWeeks, addMonths, subMonths, format, startOfWeek } from "date-fns";
 
 export function Calendar() {
 	const { token } = useAuth();
@@ -99,12 +99,18 @@ export function Calendar() {
 	};
 
 	const handleWeekSelect = (startDate: Date, endDate: Date) => {
-		setSelectedStartDate(startDate);
+		// Ensure start date is aligned with Monday
+		const alignedStartDate = startOfWeek(startDate, { weekStartsOn: 1 }); // 1 = Monday
+		setSelectedStartDate(alignedStartDate);
 		setSelectedEndDate(endDate);
 		setShowModal(true);
 	};
 
-	const dateRange = `${format(subWeeks(currentMonth, 2), "MMM d")} - ${format(addWeeks(currentMonth, 2), "MMM d, yyyy")}`;
+	// Calculate the date range for display
+	// Show 2 weeks before and 2 weeks after current week (5 weeks total)
+	const startDisplayDate = subWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 1);
+	const endDisplayDate = subDays(addWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 3 + 1),1)
+	const dateRange = `${format(startDisplayDate, "MMM d")} - ${format(endDisplayDate, "MMM d, yyyy")}`;
 
 	return (
 		<div

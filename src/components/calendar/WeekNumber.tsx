@@ -13,6 +13,7 @@ interface WeekNumberProps {
   events?: Event[];
   currentUser?: User | null;
   onEventDelete?: (eventId: string) => void;
+  position: string
 }
 
 export function WeekNumber({ 
@@ -20,7 +21,8 @@ export function WeekNumber({
   onWeekClick, 
   events = [], 
   currentUser,
-  onEventDelete 
+  onEventDelete,
+  position
 }: WeekNumberProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { token } = useAuth();
@@ -29,7 +31,7 @@ export function WeekNumber({
   const weekEnd = endOfWeek(date, { weekStartsOn: 1 }); // End on Sunday
 
   const monthWeekStart = format(weekStart, "MMMM");
-  const monthWeekEnd = format(weekEnd, "MMMM");
+  // const monthWeekEnd = format(weekEnd, "MMMM");
   // Check if there's an existing holiday request for this week
   const existingHoliday = events.find(event => {
     if (event.userId !== currentUser?.id) return false;
@@ -82,7 +84,7 @@ export function WeekNumber({
       data-tsx-id="week-number"
     >
       {weekNumber}
-      <div className="text-xs absolute inset-x-0 -top-0.5 -left-0.5 font-medium text-zinc-400 z-50">
+      <div className={`text-xs absolute -top-0.5 font-medium text-zinc-400 z-50 ${position==='right'? '-right-0.5' : '-left-0.5'}`}>
       {monthWeekStart}
         {/* {monthWeekStart === monthWeekEnd ? monthWeekStart : `${monthWeekStart} ${monthWeekEnd}`} */}
         </div>
