@@ -82,7 +82,7 @@ export function WeekNumber({
       data-tsx-id="week-number"
     >
       {weekNumber}
-      <div className="text-xs absolute inset-x-0 -top-0.5 -left-0.5 font-medium text-zinc-400 pointer-events-none">
+      <div className="text-xs absolute inset-x-0 -top-0.5 -left-0.5 font-medium text-zinc-400 z-50">
       {monthWeekStart}
         {/* {monthWeekStart === monthWeekEnd ? monthWeekStart : `${monthWeekStart} ${monthWeekEnd}`} */}
         </div>

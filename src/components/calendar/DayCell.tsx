@@ -52,6 +52,7 @@ export const DayCell = memo(function DayCell({
 	const dayEvents = useFilteredEvents(events, formattedDate, currentUser);
 	const backgroundColor = getColumnColor(date);
 	const showMonthLabel = isFirstDayOfMonth(date);
+	const isToday = isSameDay(date, new Date());
 
 	const isSelected = selectedStartDate && isSameDay(date, selectedStartDate);
 	const isEndDate = selectedEndDate && isSameDay(date, selectedEndDate);
@@ -165,11 +166,16 @@ export const DayCell = memo(function DayCell({
 				<div className="flex items-start justify-between relative">
 					<div className="flex items-center space-x-1">
 						<span
-							className={`text-sm font-medium ${
+							className={`relative text-sm font-medium ${
 								holiday ? "text-red-600" : "text-zinc-700"
 							}`}
 						>
+							{isToday && (
+									<span className="absolute inset-0 w-7 h-7 border-2 border-blue-500 rounded-full -m-[6px]" />
+							)}
+							<span className="absolute inset-2 flex items-center justify-center">
 							{format(date, "d")}
+							</span>
 						</span>
 						{holiday && (
 							<div
