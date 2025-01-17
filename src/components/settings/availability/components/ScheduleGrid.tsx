@@ -34,18 +34,16 @@ export function ScheduleGrid({
         <Sun className="w-5 h-5 text-amber-500" />
       </div>
       {DAYS.map((day) => (
-        <div
-          key={`${day}-am${isAlternate ? "-alt" : ""}`}
-          className="text-center"
-        >
+        <div key={`${day}-am`} className="text-center">
           <button
             onClick={() => onTimeSlotToggle(day, "am", isAlternate)}
-            className={`w-full h-12 rounded-md border ${
-              schedule[day]?.am
-                ? "bg-green-100 border-green-500"
-                : "bg-red-100 border-red-500"
-            } ${disabled ? "cursor-not-allowed" : "hover:opacity-80"}`}
             disabled={disabled}
+            className={`w-full h-12 rounded-md border transition-colors duration-200 
+              ${schedule[day]?.am
+                ? "bg-green-100 border-green-500 hover:bg-green-200"
+                : "bg-red-100 border-red-500 hover:bg-red-200"
+              } ${disabled ? "cursor-not-allowed opacity-75" : "cursor-pointer"}
+            `}
           >
             {schedule[day]?.am ? "Available" : "Unavailable"}
           </button>
@@ -56,18 +54,16 @@ export function ScheduleGrid({
         <Moon className="w-5 h-5 text-blue-500" />
       </div>
       {DAYS.map((day) => (
-        <div
-          key={`${day}-pm${isAlternate ? "-alt" : ""}`}
-          className="text-center"
-        >
+        <div key={`${day}-pm`} className="text-center">
           <button
             onClick={() => onTimeSlotToggle(day, "pm", isAlternate)}
-            className={`w-full h-12 rounded-md border ${
-              schedule[day]?.pm
-                ? "bg-green-100 border-green-500"
-                : "bg-red-100 border-red-500"
-            } ${disabled ? "cursor-not-allowed" : "hover:opacity-80"}`}
             disabled={disabled}
+            className={`w-full h-12 rounded-md border transition-colors duration-200 
+              ${schedule[day]?.pm
+                ? "bg-green-100 border-green-500 hover:bg-green-200"
+                : "bg-red-100 border-red-500 hover:bg-red-200"
+              } ${disabled ? "cursor-not-allowed opacity-75" : "cursor-pointer"}
+            `}
           >
             {schedule[day]?.pm ? "Available" : "Unavailable"}
           </button>

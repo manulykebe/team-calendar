@@ -75,6 +75,9 @@ export function useAvailabilityState(colleague: User) {
 	);
 
 	const handleTimeSlotToggle = (
+		token: string,
+		colleagueId: string,
+		currentEntryIndex: number,
 		day: keyof WeeklySchedule,
 		slot: keyof TimeSlot,
 		isAlternate = false
