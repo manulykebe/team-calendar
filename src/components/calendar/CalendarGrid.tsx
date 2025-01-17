@@ -8,7 +8,6 @@ import { User } from "../../types/user";
 import { Holiday, getHolidays } from "../../lib/api/holidays";
 import { format } from "date-fns";
 import { getSiteData } from "../../lib/api/client";
-import toast from "react-hot-toast";
 
 interface CalendarGridProps {
 	currentMonth: Date;
@@ -45,7 +44,6 @@ export function CalendarGrid({
 	hoverDate,
 	onWeekSelect,
 }: CalendarGridProps) {
-	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [holidays, setHolidays] = useState<Holiday[]>([]);
 
@@ -74,10 +72,8 @@ export function CalendarGrid({
 				const location = siteData.app.location;
 				const holidayData = await getHolidays(year, location);
 				setHolidays(holidayData);
-				setError(null);
 			} catch (err) {
 				console.error("Failed to fetch holidays:", err);
-				setError("Unable to load holidays");
 				setHolidays([]);
 			} finally {
 				setLoading(false);
