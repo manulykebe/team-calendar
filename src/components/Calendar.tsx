@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronsLeft,
+	ChevronsRight,
+	ChevronRight,
+	CalendarIcon,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getUsers } from "../lib/api";
 import { EventModal } from "./EventModal";
@@ -10,7 +16,7 @@ import { User } from "../types/user";
 import { userSettingsEmitter } from "../hooks/useColleagueSettings";
 import { useCalendarSettings } from "../hooks/useCalendarSettings";
 import { useCalendarState } from "../hooks/useCalendarState";
-import { addWeeks, subWeeks, format } from "date-fns";
+import { addWeeks, subWeeks, addMonths, subMonths, format } from "date-fns";
 
 export function Calendar() {
 	const { token } = useAuth();
@@ -72,12 +78,24 @@ export function Calendar() {
 		}
 	}, [token, fetchEvents]);
 
+	const handleToday = () => {
+		setCurrentMonth((prev) => prev);
+	};
+
+	const handlePrevMonth = () => {
+		setCurrentMonth((prev) => subMonths(prev, 1));
+	};
+
 	const handlePrevWeek = () => {
 		setCurrentMonth((prev) => subWeeks(prev, 1));
 	};
 
 	const handleNextWeek = () => {
 		setCurrentMonth((prev) => addWeeks(prev, 1));
+	};
+
+	const handleNextMonth = () => {
+		setCurrentMonth((prev) => addMonths(prev, 1));
 	};
 
 	const handleWeekSelect = (startDate: Date, endDate: Date) => {
@@ -98,24 +116,53 @@ export function Calendar() {
 					<h1 className="text-3xl font-bold text-zinc-900">
 						Team Calendar: AZJP
 					</h1>
-					<div className="flex items-center space-x-2">
-						<button
-							onClick={handlePrevWeek}
-							className="p-2 hover:bg-zinc-100 rounded-full"
-							aria-label="Previous week"
-						>
-							<ChevronLeft className="w-5 h-5" />
-						</button>
-						<span className="text-sm font-medium text-zinc-600">
-							{dateRange}
-						</span>
-						<button
-							onClick={handleNextWeek}
-							className="p-2 hover:bg-zinc-100 rounded-full"
-							aria-label="Next week"
-						>
-							<ChevronRight className="w-5 h-5" />
-						</button>
+					<div className="flex justify-between items-center">
+						<div className="w-80 flex-1 items-center space-x-1">
+							<div className="flex justify-between items-center">
+								<div className="flex items-center space-x-1">
+									<button
+										onClick={handleToday}
+										className="flex items-center px-2 py-1 space-x-1 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
+										title="Go to today"
+									>
+										<CalendarIcon className="w-4 h-4" />
+									</button>
+									<button
+										onClick={handlePrevMonth}
+										className="hover:bg-zinc-100 rounded-full"
+										aria-label="Previous month"
+									>
+										<ChevronsLeft className="w-4 h-4" />
+									</button>
+									<button
+										onClick={handlePrevWeek}
+										className="hover:bg-zinc-100 rounded-full"
+										aria-label="Previous week"
+									>
+										<ChevronLeft className="w-4 h-4" />
+									</button>
+								</div>
+								<span className="text-sm font-medium text-zinc-600">
+									{dateRange}
+								</span>
+								<div className="flex items-center space-x-1">
+									<button
+										onClick={handleNextWeek}
+										className="hover:bg-zinc-100 rounded-full"
+										aria-label="Next week"
+									>
+										<ChevronRight className="w-4 h-4" />
+									</button>
+									<button
+										onClick={handleNextMonth}
+										className="hover:bg-zinc-100 rounded-full"
+										aria-label="Next month"
+									>
+										<ChevronsRight className="w-4 h-4" />
+									</button>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 
