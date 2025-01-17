@@ -25,7 +25,7 @@ export function WeekNumber({
   const [isHovered, setIsHovered] = useState(false);
   const { token } = useAuth();
   const weekNumber = getWeekNumber(date);
-
+debugger
   const weekStart = startOfWeek(date, { weekStartsOn: 1 }); // Start from Monday
   const weekEnd = endOfWeek(date, { weekStartsOn: 1 }); // End on Sunday
 
