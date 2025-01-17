@@ -82,6 +82,7 @@ export function useAvailabilityState(colleague: User) {
 		slot: keyof TimeSlot,
 		isAlternate = false
 	) => {
+		console.log(token, colleagueId, currentEntryIndex);
 		const setterFunction = isAlternate ? setAlternateSchedule : setSchedule;
 		setterFunction((prev) => ({
 			...prev,
