@@ -14,6 +14,7 @@ import { Availability, WeeklySchedule } from "../../../lib/api/types";
 import { TimeSlot } from "../../../../src/types/availability";
 import { SplitScheduleModal } from "./components/SplitScheduleModal";
 import toast from "react-hot-toast";
+import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
 
 interface AvailabilityModalProps {
 	colleague: User;
@@ -33,6 +34,7 @@ export function AvailabilityModal({
 		new Date().getFullYear().toString()
 	);
 	const [showSplitModal, setShowSplitModal] = useState(false);
+	const [hasChanges, setHasChanges] = useState(false);
 
 	const {
 		loading,
@@ -131,6 +133,21 @@ export function AvailabilityModal({
 				currentEntryIndex,
 				availability
 			);
+
+			// Emit settings update event
+			userSettingsEmitter.emit("settingsUpdated", {
+				userId: colleague.id,
+				settings: {
+					...colleague.settings,
+					availability: [
+						...colleague.settings?.availability?.slice(0, currentEntryIndex) || [],
+						availability,
+						...colleague.settings?.availability?.slice(currentEntryIndex + 1) || []
+					]
+				}
+			});
+
+			setHasChanges(true);
 			toast.success("Changes saved successfully", { id: toastId });
 		} catch (err) {
 			const errorMessage =
@@ -142,6 +159,16 @@ export function AvailabilityModal({
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const handleCloseModal = () => {
+		if (hasChanges) {
+			// Trigger a refresh of the calendar grid
+			userSettingsEmitter.emit("availabilityChanged", {
+				userId: colleague.id
+			});
+		}
+		onClose();
 	};
 
 	const onTimeSlotToggle = (
@@ -168,7 +195,7 @@ export function AvailabilityModal({
 						{colleague.lastName}
 					</h2>
 					<button
-						onClick={onClose}
+						onClick={handleCloseModal}
 						className="text-zinc-400 hover:text-zinc-500"
 					>
 						<X className="w-6 h-6" />
@@ -370,7 +397,7 @@ export function AvailabilityModal({
 
 					<div className="flex space-x-3">
 						<button
-							onClick={onClose}
+							onClick={handleCloseModal}
 							className="flex items-center px-4 py-2 w-32 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 							disabled={loading}
 						>

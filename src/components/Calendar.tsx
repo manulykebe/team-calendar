@@ -69,12 +69,18 @@ export function Calendar() {
 				);
 			};
 
+			const handleAvailabilityChange = () => {
+				// Refresh events when availability changes
+				fetchEvents();
+			};
+
 			userSettingsEmitter.on("settingsUpdated", handleSettingsUpdate);
-			return () =>
-				userSettingsEmitter.off(
-					"settingsUpdated",
-					handleSettingsUpdate
-				);
+			userSettingsEmitter.on("availabilityChanged", handleAvailabilityChange);
+			
+			return () => {
+				userSettingsEmitter.off("settingsUpdated", handleSettingsUpdate);
+				userSettingsEmitter.off("availabilityChanged", handleAvailabilityChange);
+			};
 		}
 	}, [token, fetchEvents]);
 
