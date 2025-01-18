@@ -5,6 +5,7 @@ import { updateAvailabilityException } from "../../../lib/api/users";
 import { useAuth } from "../../../context/AuthContext";
 import toast from "react-hot-toast";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
+import { useState } from "react";
 
 interface AvailabilityReportProps {
 	data: {
@@ -43,6 +44,9 @@ export function AvailabilityReport({
 		"December",
 	];
 
+	const [clickedSlots, setClickedSlots] = useState<Record<string, boolean>>({});
+	const [loadingSlots, setLoadingSlots] = useState<Record<string, boolean>>({});
+
 	// Helper to convert Sunday=0 to Monday=0
 	const getMondayBasedDay = (date: Date): number => {
 		const day = getDay(date);
@@ -56,7 +60,9 @@ export function AvailabilityReport({
 	) => {
 		if (!token) return;
 
-		const toastId = toast.loading("Updating availability...");
+		const slotKey = `${dateStr}-${part}`;
+		setClickedSlots(prev => ({ ...prev, [slotKey]: !currentValue }));
+		setLoadingSlots(prev => ({ ...prev, [slotKey]: true }));
 
 		try {
 			await updateAvailabilityException(token, data.userId, {
@@ -64,16 +70,15 @@ export function AvailabilityReport({
 				part,
 				value: !currentValue,
 			});
-
-			// Emit event to update UI
-			userSettingsEmitter.emit("availabilityChanged", {
-				userId: data.userId,
-			});
-
-			toast.success("Availability updated", { id: toastId });
+			userSettingsEmitter.emit("availabilityChanged", { userId: data.userId });
+			toast.success("Availability updated");
 		} catch (error) {
 			console.error("Failed to update availability:", error);
-			toast.error("Failed to update availability", { id: toastId });
+			toast.error("Failed to update availability");
+			// Revert on error
+			setClickedSlots(prev => ({ ...prev, [slotKey]: currentValue }));
+		} finally {
+			setLoadingSlots(prev => ({ ...prev, [slotKey]: false }));
 		}
 	};
 
@@ -201,16 +206,20 @@ export function AvailabilityReport({
 																		)
 																	}
 																	className={`h-1.5 w-full transition-colors cursor-pointer ${
-																		dayData?.[
-																			part as keyof typeof dayData
-																		]
-																			? "bg-green-500 hover:bg-green-600"
-																			: isWeekend
-																				? "bg-zinc-200"
-																				: "bg-red-500 hover:bg-red-600"
+																		loadingSlots[`${dateStr}-${part}`] 
+																			? "bg-yellow-500" 
+																			: clickedSlots[`${dateStr}-${part}`] !== undefined
+																				? clickedSlots[`${dateStr}-${part}`]
+																					? "bg-green-500 hover:bg-green-600"
+																					: "bg-red-500 hover:bg-red-600"
+																				: dayData?.[part as keyof typeof dayData]
+																					? "bg-green-500 hover:bg-green-600"
+																					: isWeekend
+																						? "bg-zinc-200"
+																						: "bg-red-500 hover:bg-red-600"
 																	} rounded-sm`}
 																	disabled={
-																		isWeekend
+																		isWeekend || loadingSlots[`${dateStr}-${part}`]
 																	}
 																	title={`${format(currentDate, "MMM d")} ${part.toUpperCase()}`}
 																/>
