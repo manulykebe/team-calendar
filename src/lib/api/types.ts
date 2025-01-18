@@ -18,10 +18,6 @@ export interface RegisterData {
 }
 
 export interface UserSettings {
-	settings: Settings;
-}
-
-export interface Settings {
 	app: AppSettings;
 	colleagues: Record<ColleagueID, ColleagueCalendarSettings>;
 	colleagueOrder: ColleagueID[];

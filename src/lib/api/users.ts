@@ -96,7 +96,7 @@ export async function updateAvailabilityException(
   if (!token) {
     throw new Error("Authentication token is required");
   }
-
+debugger
   const response = await fetch(`${API_URL}/users/${userId}/exceptions`, {
     method: "PUT",
     headers: {

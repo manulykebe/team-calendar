@@ -100,5 +100,10 @@
       "repeatPattern": "all"
     }
   ],
-  "availabilityExceptions": []
+  "availabilityExceptions": [
+    {
+      "date": "2025-01-01",
+      "am": true
+    }
+  ]
 }
