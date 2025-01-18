@@ -57,11 +57,12 @@ export type WeekDays =
 	| "Tuesday"
 	| "Wednesday"
 	| "Thursday"
-	| "Friday";
+	| "Friday"
+	| "Saturday"
+	| "Sunday";
 export type WeeklySchedule = {
 	[key in WeekDays]?: DailyAvailability;
 };
-export type DayPartsOptions = ["am" | "pm", "day"];
 export type DayParts = "am" | "pm";
 export type DailyAvailability = {
 	[key in DayParts]?: boolean;

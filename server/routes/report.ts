@@ -3,6 +3,7 @@ import { readSiteData } from "../utils";
 import { eachDayOfInterval, format, parseISO, getDay } from "date-fns";
 import { authenticateToken } from "../middleware/auth";
 import { getWeekNumber } from "../../src/utils/dateUtils";
+import { readUserSettings } from "../utils";
 
 const router = Router();
 
@@ -30,9 +31,11 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 		const dayParts = siteData.app.dayParts || ["am", "pm"];
 
 		// Get availability settings and exceptions
-		const availabilityArray = user.settings?.availability || [];
+		const settings = await readUserSettings(site, user.id);
+
+		const availabilityArray = settings.availability || [];
 		const availabilityExceptions =
-			user.settings?.availabilityExceptions || [];
+		settings.availabilityExceptions || [];
 
 		// Create date range for the year
 		const startDate = new Date(parseInt(year), 0, 1);
