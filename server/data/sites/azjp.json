@@ -231,11 +231,6 @@
           }
         ],
         "availabilityExceptions": [
-          {
-            "date": "2025-01-01",
-            "am": false,
-            "pm": false
-          }
         ]
       },
       "app": {
