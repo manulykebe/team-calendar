@@ -1,6 +1,10 @@
 import { format, getMonth, getDay } from "date-fns";
 import { getWeekNumber } from "../../../utils/dateUtils";
 import { X } from "lucide-react";
+import { updateAvailabilityException } from "../../../lib/api/users";
+import { useAuth } from "../../../context/AuthContext";
+import toast from "react-hot-toast";
+import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
 
 interface AvailabilityReportProps {
 	data: {
@@ -16,18 +20,13 @@ interface AvailabilityReportProps {
 		};
 	};
 	onClose: () => void;
-	onToggleTimeSlotChangeException?: (
-		date: string,
-		part: "am" | "pm",
-		value: boolean
-	) => Promise<void>;
 }
 
 export function AvailabilityReport({
 	data,
 	onClose,
-	onToggleTimeSlotChangeException,
 }: AvailabilityReportProps) {
+	const { token } = useAuth();
 	const dayHeaders = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 	const months = [
 		"January",
@@ -55,8 +54,26 @@ export function AvailabilityReport({
 		part: "am" | "pm",
 		currentValue: boolean
 	) => {
-		if (onToggleTimeSlotChangeException) {
-			await onToggleTimeSlotChangeException(dateStr, part, !currentValue);
+		if (!token) return;
+
+		const toastId = toast.loading("Updating availability...");
+
+		try {
+			await updateAvailabilityException(token, data.userId, {
+				date: dateStr,
+				part,
+				value: !currentValue,
+			});
+
+			// Emit event to update UI
+			userSettingsEmitter.emit("availabilityChanged", {
+				userId: data.userId,
+			});
+
+			toast.success("Availability updated", { id: toastId });
+		} catch (error) {
+			console.error("Failed to update availability:", error);
+			toast.error("Failed to update availability", { id: toastId });
 		}
 	};
 
@@ -179,13 +196,13 @@ export function AvailabilityReport({
 																				| "am"
 																				| "pm",
 																			dayData[
-																				part
+																				part as keyof typeof dayData
 																			]
 																		)
 																	}
 																	className={`h-1.5 w-full transition-colors cursor-pointer ${
 																		dayData?.[
-																			part
+																			part as keyof typeof dayData
 																		]
 																			? "bg-green-500 hover:bg-green-600"
 																			: isWeekend
@@ -224,12 +241,10 @@ export function AvailabilityReport({
 								<span>Weekend</span>
 							</div>
 						</div>
-						{onToggleTimeSlotChangeException && (
-							<div className="text-sm text-zinc-600">
-								Click on time slots to toggle exceptions.
-								Changes are saved automatically.
-							</div>
-						)}
+						<div className="text-sm text-zinc-600">
+							Click on time slots to toggle individual updates.
+							Changes are saved automatically.
+						</div>
 					</div>
 				</div>
 			</div>
