@@ -1,0 +1,40 @@
+{
+  "showWeekNumber": "left",
+  "colleagues": {
+    "XAefIrqLAeDy": {
+      "color": "#313695"
+    },
+    "SjFBqPWVxUVY": {
+      "color": "#4575b4",
+      "visible": false
+    },
+    "mKtuftErhhnO": {
+      "color": "#74add1",
+      "visible": false
+    },
+    "suuebRsdLhQv": {
+      "color": "#abd9e9",
+      "visible": false
+    },
+    "CxuzKGosISkk": {
+      "color": "#e0f3f8",
+      "visible": false
+    },
+    "rwqJQFnAqWdn": {
+      "color": "#fee090",
+      "visible": false
+    },
+    "ZIdGWxhnRSYw": {
+      "color": "#fdae61",
+      "visible": false
+    },
+    "OBOaSHVowagL": {
+      "color": "#f46d43",
+      "visible": false
+    },
+    "dijVShwJoKFD": {
+      "color": "#d73027",
+      "visible": false
+    }
+  }
+}

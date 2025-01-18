@@ -1,10 +1,19 @@
 import bcrypt from "bcryptjs";
 import { User } from "../types";
-import { readSiteData, writeSiteData } from "../utils";
+import { readSiteData, writeSiteData, readUserSettings, writeUserSettings } from "../utils";
 
 export async function getUsers(site: string) {
   const data = await readSiteData(site);
-  return data.users;
+  
+  // Load settings for each user
+  const usersWithSettings = await Promise.all(
+    data.users.map(async (user) => {
+      const settings = await readUserSettings(site, user.id);
+      return { ...user, settings };
+    })
+  );
+  
+  return usersWithSettings;
 }
 
 export async function createUser(userData: {
@@ -32,6 +41,9 @@ export async function createUser(userData: {
     updatedAt: new Date().toISOString(),
   };
 
+  // Create empty settings file for new user
+  await writeUserSettings(userData.site, newUser.id, {});
+
   data.users.push(newUser);
   await writeSiteData(userData.site, data);
 
@@ -49,6 +61,7 @@ export async function updateUser(
     mobile?: string;
     role?: "admin" | "user";
     status?: "active" | "inactive";
+    settings?: User["settings"];
     site: string;
   },
 ) {
@@ -68,6 +81,12 @@ export async function updateUser(
     }
   }
 
+  // Handle settings separately
+  if (userData.settings) {
+    await writeUserSettings(userData.site, userId, userData.settings);
+    delete userData.settings;
+  }
+
   const updatedUser = {
     ...data.users[userIndex],
     ...userData,
@@ -81,8 +100,10 @@ export async function updateUser(
   data.users[userIndex] = updatedUser;
   await writeSiteData(userData.site, data);
 
+  // Load updated settings
+  const settings = await readUserSettings(userData.site, userId);
   const { password, ...userWithoutPassword } = updatedUser;
-  return userWithoutPassword;
+  return { ...userWithoutPassword, settings };
 }
 
 export async function deleteUser(userId: string, site: string) {
@@ -106,4 +127,13 @@ export async function deleteUser(userId: string, site: string) {
 
   data.users.splice(userIndex, 1);
   await writeSiteData(site, data);
+
+  // Clean up user settings file
+  try {
+    const dirPath = path.join(__dirname, "..", "data", "sites", site, "settings");
+    const filePath = path.join(dirPath, `${userId}.json`);
+    await fs.unlink(filePath);
+  } catch (error) {
+    // Ignore errors if settings file doesn't exist
+  }
 }
