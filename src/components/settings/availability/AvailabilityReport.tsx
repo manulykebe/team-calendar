@@ -16,7 +16,7 @@ interface AvailabilityReportProps {
 		};
 	};
 	onClose: () => void;
-	onToggleTimeSlotChange?: (
+	onToggleTimeSlotChangeException?: (
 		date: string,
 		part: "am" | "pm",
 		value: boolean
@@ -26,7 +26,7 @@ interface AvailabilityReportProps {
 export function AvailabilityReport({
 	data,
 	onClose,
-	onToggleTimeSlotChange,
+	onToggleTimeSlotChangeException,
 }: AvailabilityReportProps) {
 	const dayHeaders = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 	const months = [
@@ -55,8 +55,8 @@ export function AvailabilityReport({
 		part: "am" | "pm",
 		currentValue: boolean
 	) => {
-		if (onToggleTimeSlotChange) {
-			await onToggleTimeSlotChange(dateStr, part, !currentValue);
+		if (onToggleTimeSlotChangeException) {
+			await onToggleTimeSlotChangeException(dateStr, part, !currentValue);
 		}
 	};
 
@@ -178,11 +178,15 @@ export function AvailabilityReport({
 																			part as
 																				| "am"
 																				| "pm",
-																			dayData[part]
+																			dayData[
+																				part
+																			]
 																		)
 																	}
 																	className={`h-1.5 w-full transition-colors cursor-pointer ${
-																		dayData?.[part]
+																		dayData?.[
+																			part
+																		]
 																			? "bg-green-500 hover:bg-green-600"
 																			: isWeekend
 																				? "bg-zinc-200"
@@ -220,7 +224,7 @@ export function AvailabilityReport({
 								<span>Weekend</span>
 							</div>
 						</div>
-						{onToggleTimeSlotChange && (
+						{onToggleTimeSlotChangeException && (
 							<div className="text-sm text-zinc-600">
 								Click on time slots to toggle exceptions.
 								Changes are saved automatically.
