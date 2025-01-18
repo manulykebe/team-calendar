@@ -1,0 +1,100 @@
+{
+	"app": {
+		"color": {
+			"Tuesday": "#4575b4"
+		}
+	},
+	"colleagues": {
+		"SjFBqPWVxUVY": {
+			"color": "#abd9e9",
+			"initials": "MV",
+			"visible": false
+		},
+		"XAefIrqLAeDy": {
+			"color": "#e0f3f8",
+			"initials": "KDJ"
+		},
+		"bhhMvstlpwUG": {
+			"visible": false,
+			"initials": "MS",
+			"color": "#74add1"
+		},
+		"KTHpbRLreSbC": {
+			"initials": "SD",
+			"color": "#4575b4",
+			"visible": false
+		},
+		"tTRjdtgFDDRN": {
+			"color": "#e0f3f8",
+			"initials": "KV",
+			"visible": false
+		},
+		"mKtuftErhhnO": {
+			"initials": "MS",
+			"color": "#4575b4"
+		},
+		"CxuzKGosISkk": {
+			"initials": "SD",
+			"color": "#74add1"
+		},
+		"ZIdGWxhnRSYw": {
+			"initials": "KV",
+			"color": "#fdae61"
+		},
+		"OBOaSHVowagL": {
+			"initials": "HG",
+			"color": "#f46d43"
+		},
+		"dijVShwJoKFD": {
+			"initials": "AY",
+			"color": "#d73027"
+		},
+		"rwqJQFnAqWdn": {
+			"color": "#a50026",
+			"initials": "EV"
+		},
+		"suuebRsdLhQv": {
+			"initials": "KC",
+			"color": "#313695"
+		}
+	},
+	"showWeekNumber": "left",
+	"colleagueOrder": [
+		"mKtuftErhhnO",
+		"CxuzKGosISkk",
+		"SjFBqPWVxUVY",
+		"XAefIrqLAeDy",
+		"ZIdGWxhnRSYw",
+		"OBOaSHVowagL",
+		"dijVShwJoKFD"
+	],
+	"availability": [
+		{
+			"weeklySchedule": {
+				"Monday": {
+					"am": true,
+					"pm": true
+				},
+				"Tuesday": {
+					"am": true,
+					"pm": true
+				},
+				"Wednesday": {
+					"am": true,
+					"pm": true
+				},
+				"Thursday": {
+					"am": true,
+					"pm": true
+				},
+				"Friday": {
+					"am": true,
+					"pm": true
+				}
+			},
+			"startDate": "2025-01-01",
+			"repeatPattern": "all"
+		}
+	],
+	"availabilityExceptions": []
+}

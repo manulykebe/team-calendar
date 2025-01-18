@@ -70,7 +70,18 @@ export function AvailabilityReport({
 				part,
 				value: !currentValue,
 			});
-			userSettingsEmitter.emit("availabilityChanged", { userId: data.userId });
+
+			// Emit event to update settings
+			userSettingsEmitter.emit("availabilityChanged", { 
+				userId: data.userId,
+				type: "exception",
+				data: {
+					date: dateStr,
+					part,
+					value: !currentValue
+				}
+			});
+
 			toast.success("Availability updated");
 		} catch (error) {
 			console.error("Failed to update availability:", error);

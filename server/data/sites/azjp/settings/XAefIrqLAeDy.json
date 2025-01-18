@@ -1,12 +1,12 @@
 {
   "colleagues": {
     "SjFBqPWVxUVY": {
-      "color": "#4575b4",
+      "color": "#d73027",
       "initials": "MV",
       "visible": false
     },
     "XAefIrqLAeDy": {
-      "color": "#313695",
+      "color": "#a50026",
       "initials": "KDJ"
     },
     "bhhMvstlpwUG": {
@@ -25,12 +25,12 @@
       "visible": false
     },
     "mKtuftErhhnO": {
-      "color": "#74add1",
+      "color": "#f46d43",
       "initials": "MS",
       "visible": false
     },
     "CxuzKGosISkk": {
-      "color": "#abd9e9",
+      "color": "#fee090",
       "initials": "SD",
       "visible": false
     },
@@ -40,22 +40,22 @@
       "visible": false
     },
     "ZIdGWxhnRSYw": {
-      "color": "#fee090",
+      "color": "#abd9e9",
       "initials": "KV",
       "visible": false
     },
     "OBOaSHVowagL": {
-      "color": "#fdae61",
+      "color": "#74add1",
       "initials": "HG",
       "visible": false
     },
     "dijVShwJoKFD": {
-      "color": "#f46d43",
+      "color": "#4575b4",
       "initials": "AY",
       "visible": false
     },
     "suuebRsdLhQv": {
-      "color": "#e0f3f8",
+      "color": "#fdae61",
       "initials": "",
       "visible": false
     }
@@ -63,10 +63,14 @@
   "showWeekNumber": "left",
   "colleagueOrder": [
     "XAefIrqLAeDy",
-    "KTHpbRLreSbC",
-    "bhhMvstlpwUG",
     "SjFBqPWVxUVY",
-    "tTRjdtgFDDRN"
+    "mKtuftErhhnO",
+    "suuebRsdLhQv",
+    "CxuzKGosISkk",
+    "rwqJQFnAqWdn",
+    "ZIdGWxhnRSYw",
+    "OBOaSHVowagL",
+    "dijVShwJoKFD"
   ],
   "availability": [
     {

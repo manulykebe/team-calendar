@@ -48,7 +48,42 @@ export function useColleagueSettings() {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+
+    const handleAvailabilityChange = async ({
+      userId,
+      type,
+      data,
+    }: {
+      userId: string;
+      type: string;
+      data: any;
+    }) => {
+      if (!token || !currentUser) return;
+
+      if (type === "exception") {
+        const { date, part, value } = data;
+        const newSettings = {
+          ...currentUser.settings,
+          availabilityExceptions: [
+            ...(currentUser.settings?.availabilityExceptions || []),
+            { date, [part]: value }
+          ]
+        };
+
+        try {
+          await updateUser(token, userId, { settings: newSettings });
+          setCurrentUser(prev => prev ? { ...prev, settings: newSettings } : null);
+        } catch (err) {
+          console.error("Failed to update availability exception:", err);
+        }
+      }
+    };
+
+    userSettingsEmitter.on("availabilityChanged", handleAvailabilityChange);
+    return () => {
+      userSettingsEmitter.off("availabilityChanged", handleAvailabilityChange);
+    };
+  }, [fetchData, token, currentUser]);
 
   const updateSettings = async (
     colleagueId: string,

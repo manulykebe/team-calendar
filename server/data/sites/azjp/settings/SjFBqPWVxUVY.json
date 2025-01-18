@@ -1,0 +1,32 @@
+{
+	"colleagues": {
+		"SjFBqPWVxUVY": {
+			"color": "#a50026",
+			"initials": "ADM"
+		},
+		"XAefIrqLAeDy": {
+			"color": "#d73027",
+			"initials": "KDJ"
+		},
+		"bhhMvstlpwUG": {
+			"color": "#f46d43",
+			"initials": "MS"
+		},
+		"KTHpbRLreSbC": {
+			"initials": "SD",
+			"color": "#fdae61"
+		},
+		"tTRjdtgFDDRN": {
+			"initials": "K",
+			"color": "#fee090"
+		}
+	},
+	"showWeekNumber": "left",
+	"colleagueOrder": [
+		"SjFBqPWVxUVY",
+		"XAefIrqLAeDy",
+		"bhhMvstlpwUG",
+		"KTHpbRLreSbC"
+	],
+	"availability": []
+}
