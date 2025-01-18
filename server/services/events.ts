@@ -1,9 +1,13 @@
 import { Event } from "../types";
-import { readSiteData, writeSiteData } from "../utils";
+import { readUserEvents, writeUserEvents } from "../utils";
 
 export async function getEvents(site: string) {
-  const data = await readSiteData(site);
-  return data.events;
+  // This will be deprecated once we migrate all events
+  return [];
+}
+
+export async function getUserEvents(site: string, userId: string) {
+  return await readUserEvents(site, userId);
 }
 
 export async function createEvent(params: {
@@ -15,7 +19,7 @@ export async function createEvent(params: {
   userId: string;
   site: string;
 }) {
-  const data = await readSiteData(params.site);
+  const events = await readUserEvents(params.site, params.userId);
 
   const newEvent: Event = {
     id: crypto.randomUUID(),
@@ -29,8 +33,8 @@ export async function createEvent(params: {
     updatedAt: new Date().toISOString(),
   };
 
-  data.events.push(newEvent);
-  await writeSiteData(params.site, data);
+  events.push(newEvent);
+  await writeUserEvents(params.site, params.userId, events);
   return newEvent;
 }
 
@@ -43,27 +47,29 @@ export async function updateEvent(params: {
   userId: string;
   site: string;
 }) {
-  const data = await readSiteData(params.site);
+  const events = await readUserEvents(params.site, params.userId);
 
-  const event = data.events.find((e: Event) => e.id === params.id);
-  if (!event) {
+  const eventIndex = events.findIndex((e: Event) => e.id === params.id);
+  if (eventIndex === -1) {
     throw new Error("Event not found");
   }
 
-  if (event.userId !== params.userId) {
+  if (events[eventIndex].userId !== params.userId) {
     throw new Error("Not authorized to update this event");
   }
 
-  Object.assign(event, {
+  const updatedEvent = {
+    ...events[eventIndex],
     title: params.title,
     description: params.description,
     date: params.date,
     endDate: params.endDate,
     updatedAt: new Date().toISOString(),
-  });
+  };
 
-  await writeSiteData(params.site, data);
-  return event;
+  events[eventIndex] = updatedEvent;
+  await writeUserEvents(params.site, params.userId, events);
+  return updatedEvent;
 }
 
 export async function deleteEvent(params: {
@@ -72,24 +78,21 @@ export async function deleteEvent(params: {
   site: string;
   userRole?: string;
 }) {
-  const data = await readSiteData(params.site);
+  const events = await readUserEvents(params.site, params.userId);
 
-  const eventIndex = data.events.findIndex((e: Event) => e.id === params.id);
+  const eventIndex = events.findIndex((e: Event) => e.id === params.id);
   if (eventIndex === -1) {
     throw new Error("Event not found");
   }
 
   // Allow deletion if user is admin or owns the event
   const isAdmin = params.userRole === "admin";
-  const isOwner = data.events[eventIndex].userId === params.userId;
+  const isOwner = events[eventIndex].userId === params.userId;
 
   if (!isAdmin && !isOwner) {
     throw new Error("Not authorized to delete this event");
   }
 
-  // Remove the event from the array
-  data.events.splice(eventIndex, 1);
-  
-  // Save the updated data back to the file
-  await writeSiteData(params.site, data);
+  events.splice(eventIndex, 1);
+  await writeUserEvents(params.site, params.userId, events);
 }

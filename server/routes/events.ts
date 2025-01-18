@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AuthRequest, authenticateToken } from "../middleware/auth";
 import {
-  getEvents,
+  getUserEvents,
   createEvent,
   updateEvent,
   deleteEvent,
@@ -28,7 +28,7 @@ const eventSchema = z.object({
 
 router.get("/", async (req: AuthRequest, res) => {
   try {
-    const events = await getEvents(req.user!.site);
+    const events = await getUserEvents(req.user!.site, req.user!.id);
     res.json(events);
   } catch (error) {
     res.status(500).json({
