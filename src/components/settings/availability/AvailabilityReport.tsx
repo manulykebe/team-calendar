@@ -5,7 +5,7 @@ import { updateAvailabilityException } from "../../../lib/api/users";
 import { useAuth } from "../../../context/AuthContext";
 import toast from "react-hot-toast";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface AvailabilityReportProps {
 	data: {
@@ -44,8 +44,21 @@ export function AvailabilityReport({
 		"December",
 	];
 
-	const [clickedSlots, setClickedSlots] = useState<Record<string, boolean>>({});
+	// Track both clicked slots and their current values
+	const [slotStates, setSlotStates] = useState<Record<string, boolean>>({});
 	const [loadingSlots, setLoadingSlots] = useState<Record<string, boolean>>({});
+
+	// Initialize slot states from data
+	useEffect(() => {
+		const initialStates: Record<string, boolean> = {};
+		Object.entries(data.availability).forEach(([date, dayData]) => {
+			['am', 'pm'].forEach(part => {
+				const slotKey = `${date}-${part}`;
+				initialStates[slotKey] = dayData[part as keyof typeof dayData];
+			});
+		});
+		setSlotStates(initialStates);
+	}, [data]);
 
 	// Helper to convert Sunday=0 to Monday=0
 	const getMondayBasedDay = (date: Date): number => {
@@ -61,15 +74,20 @@ export function AvailabilityReport({
 		if (!token) return;
 
 		const slotKey = `${dateStr}-${part}`;
-		setClickedSlots(prev => ({ ...prev, [slotKey]: !currentValue }));
+		const newValue = !currentValue;
+
+		// Update loading state
 		setLoadingSlots(prev => ({ ...prev, [slotKey]: true }));
 
 		try {
 			await updateAvailabilityException(token, data.userId, {
 				date: dateStr,
 				part,
-				value: !currentValue,
+				value: newValue,
 			});
+
+			// Update local state
+			setSlotStates(prev => ({ ...prev, [slotKey]: newValue }));
 
 			// Emit event to update settings
 			userSettingsEmitter.emit("availabilityChanged", { 
@@ -78,7 +96,7 @@ export function AvailabilityReport({
 				data: {
 					date: dateStr,
 					part,
-					value: !currentValue
+					value: newValue
 				}
 			});
 
@@ -86,8 +104,7 @@ export function AvailabilityReport({
 		} catch (error) {
 			console.error("Failed to update availability:", error);
 			toast.error("Failed to update availability");
-			// Revert on error
-			setClickedSlots(prev => ({ ...prev, [slotKey]: currentValue }));
+			// Don't update state on error
 		} finally {
 			setLoadingSlots(prev => ({ ...prev, [slotKey]: false }));
 		}
@@ -202,39 +219,39 @@ export function AvailabilityReport({
 													</div>
 													<div className="space-y-0.5 mt-1">
 														{data.dayParts.map(
-															(part) => (
-																<button
-																	key={part}
-																	onClick={() =>
-																		handleTimeSlotClick(
-																			dateStr,
-																			part as
-																				| "am"
-																				| "pm",
-																			dayData[
-																				part as keyof typeof dayData
-																			]
-																		)
-																	}
-																	className={`h-1.5 w-full transition-colors cursor-pointer ${
-																		loadingSlots[`${dateStr}-${part}`] 
-																			? "bg-yellow-500" 
-																			: clickedSlots[`${dateStr}-${part}`] !== undefined
-																				? clickedSlots[`${dateStr}-${part}`]
-																					? "bg-green-500 hover:bg-green-600"
-																					: "bg-red-500 hover:bg-red-600"
-																				: dayData?.[part as keyof typeof dayData]
+															(part) => {
+																const slotKey = `${dateStr}-${part}`;
+																const isLoading = loadingSlots[slotKey];
+																const currentValue = slotStates[slotKey] ?? dayData?.[part as keyof typeof dayData] ?? false;
+
+																return (
+																	<button
+																		key={part}
+																		onClick={() =>
+																			handleTimeSlotClick(
+																				dateStr,
+																				part as
+																					| "am"
+																					| "pm",
+																				currentValue
+																			)
+																		}
+																		className={`h-1.5 w-full transition-colors cursor-pointer ${
+																			isLoading 
+																				? "bg-yellow-500" 
+																				: currentValue
 																					? "bg-green-500 hover:bg-green-600"
 																					: isWeekend
 																						? "bg-zinc-200"
 																						: "bg-red-500 hover:bg-red-600"
-																	} rounded-sm`}
-																	disabled={
-																		isWeekend || loadingSlots[`${dateStr}-${part}`]
-																	}
-																	title={`${format(currentDate, "MMM d")} ${part.toUpperCase()}`}
-																/>
-															)
+																		} rounded-sm`}
+																		disabled={
+																			isWeekend || isLoading
+																		}
+																		title={`${format(currentDate, "MMM d")} ${part.toUpperCase()}`}
+																	/>
+																);
+															}
 														)}
 													</div>
 												</div>
