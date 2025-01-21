@@ -1,7 +1,13 @@
 import { Router } from "express";
 import { AuthRequest, authenticateToken } from "../middleware/auth";
-import { readSiteData } from "../utils";
-import { format, parseISO, eachDayOfInterval, isWithinInterval } from "date-fns";
+import { readSiteData, readUserEvents } from "../utils";
+import {
+	format,
+	parseISO,
+	eachDayOfInterval,
+	isWithinInterval,
+} from "date-fns";
+
 
 const router = Router();
 
@@ -20,24 +26,26 @@ function eventsToCSV(events: any[], users: any[], includeHeaders = true) {
 	];
 
 	// Expand events with date ranges into individual dates
-	const expandedEvents = events.flatMap(event => {
+	const expandedEvents = events.flatMap((event) => {
 		if (!event.endDate || event.date === event.endDate) {
 			// Single day event
-			return [{
-				...event,
-				expandedDate: event.date
-			}];
+			return [
+				{
+					...event,
+					expandedDate: event.date,
+				},
+			];
 		}
 
 		// Multi-day event - create an entry for each day in the range
 		const dateRange = eachDayOfInterval({
 			start: parseISO(event.date),
-			end: parseISO(event.endDate)
+			end: parseISO(event.endDate),
 		});
 
-		return dateRange.map(date => ({
+		return dateRange.map((date) => ({
 			...event,
-			expandedDate: format(date, "yyyy-MM-dd")
+			expandedDate: format(date, "yyyy-MM-dd"),
 		}));
 	});
 
@@ -68,9 +76,13 @@ router.get("/:site", async (req: AuthRequest, res) => {
 		const { startDate, endDate } = req.query;
 
 		const siteData = await readSiteData(site);
-		let events = [...siteData.events];
 		let users = [...siteData.users];
 
+		let events: any[] = [];
+		for (const user of users) {
+			const userEvents = await readUserEvents(site, user.id);
+			events = [...events, ...userEvents];
+		}
 		// Filter by date range if provided
 		if (startDate && endDate) {
 			const start = parseISO(startDate as string);
@@ -78,7 +90,9 @@ router.get("/:site", async (req: AuthRequest, res) => {
 
 			events = events.filter((event) => {
 				const eventStart = parseISO(event.date);
-				const eventEnd = event.endDate ? parseISO(event.endDate) : eventStart;
+				const eventEnd = event.endDate
+					? parseISO(event.endDate)
+					: eventStart;
 
 				return (
 					isWithinInterval(eventStart, { start, end }) ||
@@ -109,8 +123,11 @@ router.get("/:site/:userId", async (req: AuthRequest, res) => {
 		const { startDate, endDate } = req.query;
 		const siteData = await readSiteData(site);
 
-		let users = [...siteData.users];
-		let events = siteData.events.filter((event) => event.userId === userId);
+		let users = [...siteData.users].filter((user) => user.id === userId);
+		if (users.length === 0) {
+			res.status(500).json({ message: "Failed to export user events" });
+		}
+		let events = await readUserEvents(site, userId);
 
 		// Filter by date range if provided
 		if (startDate && endDate) {
@@ -119,7 +136,9 @@ router.get("/:site/:userId", async (req: AuthRequest, res) => {
 
 			events = events.filter((event) => {
 				const eventStart = parseISO(event.date);
-				const eventEnd = event.endDate ? parseISO(event.endDate) : eventStart;
+				const eventEnd = event.endDate
+					? parseISO(event.endDate)
+					: eventStart;
 
 				return (
 					isWithinInterval(eventStart, { start, end }) ||
