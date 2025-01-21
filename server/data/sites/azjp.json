@@ -91,7 +91,10 @@
       "role": "user",
       "status": "active",
       "createdAt": "2025-01-04T14:23:29.975Z",
-      "updatedAt": "2025-01-18T19:38:26.217Z"
+      "updatedAt": "2025-01-21T21:01:24.998Z",
+      "app": {
+        "weekStartsOn": "Monday"
+      }
     },
     {
       "id": "mKtuftErhhnO",

@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 import { format, isFirstDayOfMonth, isSameDay, parseISO } from "date-fns";
 import { getWeekNumber } from "../../utils/dateUtils";
 import { EventCard } from "./EventCard";
@@ -10,6 +10,9 @@ import { User } from "../../types/user";
 import { Holiday } from "../../lib/api/holidays";
 import { Calendar } from "lucide-react";
 import { EventDetailsModal } from "./EventDetailsModal";
+import { getAvailabilityReport } from "../../lib/api/report";
+import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 interface DayCellProps {
 	date: Date;
@@ -46,6 +49,7 @@ export const DayCell = memo(function DayCell({
 	selectedEndDate,
 	hoverDate,
 }: DayCellProps) {
+	const { token } = useAuth();
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
 	const { getColumnColor } = useCalendarColors(currentUser);
 	const formattedDate = format(date, "yyyy-MM-dd");
@@ -77,46 +81,29 @@ export const DayCell = memo(function DayCell({
 					date <= parseISO(event.endDate)))
 	);
 
-	// Get availability for the current user on this day
-	const getUserAvailability = () => {
-		if (!currentUser?.settings?.availability) return { am: true, pm: true };
+	const [availability, setAvailability] = useState<{ am: boolean; pm: boolean }>({ am: true, pm: true });
 
-		const availability = currentUser.settings.availability;
-		const dayName = format(
-			date,
-			"EEEE"
-		) as keyof (typeof availability)[0]["weeklySchedule"];
+	useEffect(() => {
+		const fetchAvailability = async () => {
+			if (!currentUser?.id || !token) return;
 
-		for (const schedule of availability) {
-			const scheduleStart = parseISO(schedule.startDate);
-			const scheduleEnd = schedule.endDate
-				? parseISO(schedule.endDate)
-				: new Date(2100, 0, 1);
-
-			if (date >= scheduleStart && date <= scheduleEnd) {
-				if (schedule.repeatPattern === "evenodd") {
-					const weekNumber = getWeekNumber(date); //calculateWeekNumber(date, parseISO(schedule.startDate));
-					const targetSchedule =
-						weekNumber % 2 === 0
-							? schedule.weeklySchedule
-							: schedule.oddWeeklySchedule ||
-								schedule.weeklySchedule;
-					return targetSchedule[dayName] || { am: true, pm: true };
-				} else {
-					return (
-						schedule.weeklySchedule[dayName] || {
-							am: true,
-							pm: true,
-						}
-					);
+			try {
+				const year = format(date, "yyyy");
+				const report = await getAvailabilityReport(token, currentUser.site, currentUser.id, year);
+				
+				// Get availability for the current date from the report
+				const dayAvailability = report.availability[formattedDate];
+				if (dayAvailability) {
+					setAvailability(dayAvailability);
 				}
+			} catch (error) {
+				console.error("Failed to fetch availability:", error);
+				toast.error("Failed to load availability data");
 			}
-		}
+		};
 
-		return { am: true, pm: true };
-	};
-
-	const { am, pm } = getUserAvailability();
+		fetchAvailability();
+	}, [currentUser?.id, currentUser?.site, date, formattedDate, token]);
 
 	const handleContextMenu = (e: React.MouseEvent) => {
 		e.preventDefault();
@@ -155,10 +142,10 @@ export const DayCell = memo(function DayCell({
 				data-tsx-id="day-cell"
 			>
 				{/* Availability background layers */}
-				{!am && (
+				{!availability.am && (
 					<div className="absolute inset-x-0 top-0 h-1/2 bg-zinc-200 opacity-50" />
 				)}
-				{!pm && (
+				{!availability.pm && (
 					<div className="absolute inset-x-0 bottom-0 h-1/2 bg-zinc-200 opacity-50" />
 				)}
 
