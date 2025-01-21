@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { readSiteData } from "../utils";
-import { eachDayOfInterval, format, parseISO, getDay } from "date-fns";
+import { eachDayOfInterval, format, parseISO, getDay, isWithinInterval } from "date-fns";
 import { authenticateToken } from "../middleware/auth";
 import { getWeekNumber } from "../../src/utils/dateUtils";
 import { readUserSettings } from "../utils";
@@ -12,6 +12,8 @@ router.use(authenticateToken);
 router.get("/availability/:site/:userId/:year", async (req, res) => {
 	try {
 		const { site, userId, year } = req.params;
+		const { startDate, endDate } = req.query;
+
 		const siteData = await readSiteData(site);
 
 		// Find user
@@ -38,9 +40,28 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 		settings.availabilityExceptions || [];
 
 		// Create date range for the year
-		const startDate = new Date(parseInt(year), 0, 1);
-		const endDate = new Date(parseInt(year), 11, 31);
-		const days = eachDayOfInterval({ start: startDate, end: endDate });
+		const yearStart = new Date(parseInt(year), 0, 1);
+		const yearEnd = new Date(parseInt(year), 11, 31);
+
+		// If start/end dates are provided and valid, use them to filter the range
+		let rangeStart = yearStart;
+		let rangeEnd = yearEnd;
+
+		if (startDate) {
+			const parsedStartDate = parseISO(startDate as string);
+			if (parsedStartDate >= yearStart && parsedStartDate <= yearEnd) {
+				rangeStart = parsedStartDate;
+			}
+		}
+
+		if (endDate) {
+			const parsedEndDate = parseISO(endDate as string);
+			if (parsedEndDate >= yearStart && parsedEndDate <= yearEnd) {
+				rangeEnd = parsedEndDate;
+			}
+		}
+
+		const days = eachDayOfInterval({ start: rangeStart, end: rangeEnd });
 
 		const dayMap = {
 			0: "Sunday",
@@ -95,7 +116,7 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 				setting.repeatPattern === "evenodd" &&
 				setting.oddWeeklySchedule
 			) {
-				const weekNumber = getWeekNumber( date ) //, parseISO(setting.startDate) );
+				const weekNumber = getWeekNumber(date);
 				const schedule =
 					weekNumber % 2 === 0
 						? setting.weeklySchedule
@@ -132,7 +153,7 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 				setting.repeatPattern === "evenodd" &&
 				setting.oddWeeklySchedule
 			) {
-				const weekNumber = getWeekNumber(date); //,					parseISO(setting.startDate)
+				const weekNumber = getWeekNumber(date);
 				const schedule =
 					weekNumber % 2 === 0
 						? setting.weeklySchedule
@@ -149,6 +170,10 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 			workWeekDays,
 			dayParts,
 			availability,
+			dateRange: {
+				start: format(rangeStart, "yyyy-MM-dd"),
+				end: format(rangeEnd, "yyyy-MM-dd")
+			}
 		});
 	} catch (error) {
 		console.error("Error generating availability report:", error);

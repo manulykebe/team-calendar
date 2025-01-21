@@ -5,16 +5,25 @@ export async function getAvailabilityReport(
   site: string,
   userId: string,
   year: string,
+  startDate?: string,
+  endDate?: string,
 ) {
-  const response = await fetch(
-    `${API_URL}/report/availability/${site}/${userId}/${year}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+  const url = new URL(`${API_URL}/report/availability/${site}/${userId}/${year}`);
+  
+  // Add date filters to query parameters if provided
+  if (startDate) {
+    url.searchParams.append("startDate", startDate);
+  }
+  if (endDate) {
+    url.searchParams.append("endDate", endDate);
+  }
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
-  );
+  });
 
   if (!response.ok) {
     const error = await response

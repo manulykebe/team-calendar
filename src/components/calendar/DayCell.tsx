@@ -89,7 +89,15 @@ export const DayCell = memo(function DayCell({
 
 			try {
 				const year = format(date, "yyyy");
-				const report = await getAvailabilityReport(token, currentUser.site, currentUser.id, year);
+				// Use the specific date for both start and end to get just this day's availability
+				const report = await getAvailabilityReport(
+					token, 
+					currentUser.site, 
+					currentUser.id, 
+					year,
+					formattedDate, // startDate
+					formattedDate  // endDate
+				);
 				
 				// Get availability for the current date from the report
 				const dayAvailability = report.availability[formattedDate];
