@@ -16,12 +16,28 @@ import { User } from "../types/user";
 import { userSettingsEmitter } from "../hooks/useColleagueSettings";
 import { useCalendarSettings } from "../hooks/useCalendarSettings";
 import { useCalendarState } from "../hooks/useCalendarState";
-import { subDays, addWeeks, subWeeks, addMonths, subMonths, format, startOfWeek } from "date-fns";
+import { 
+	subDays, 
+	addWeeks, 
+	subWeeks, 
+	addMonths, 
+	subMonths, 
+	format, 
+	startOfWeek,
+	startOfMonth,
+	endOfMonth,
+	startOfDay,
+	isSameWeek
+} from "date-fns";
+import { getAvailabilityReport } from "../lib/api/report";
+import toast from "react-hot-toast";
 
 export function Calendar() {
 	const { token } = useAuth();
 	const { weekStartsOn } = useCalendarSettings();
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
+	const [availabilityData, setAvailabilityData] = useState<Record<string, { am: boolean; pm: boolean }>>({});
+	const [isLoadingAvailability, setIsLoadingAvailability] = useState(false);
 
 	const {
 		events,
@@ -70,7 +86,6 @@ export function Calendar() {
 			};
 
 			const handleAvailabilityChange = () => {
-				// Refresh events when availability changes
 				fetchEvents();
 			};
 
@@ -84,8 +99,45 @@ export function Calendar() {
 		}
 	}, [token, fetchEvents]);
 
+	useEffect(() => {
+		const fetchAvailabilityData = async () => {
+			if (!token || !currentUser) return;
+
+			setIsLoadingAvailability(true);
+			try {
+				const startDisplayDate = subWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 1);
+				const endDisplayDate = subDays(addWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 3 + 1), 1);
+
+				const year = format(currentMonth, "yyyy");
+				const report = await getAvailabilityReport(
+					token,
+					currentUser.site,
+					currentUser.id,
+					year,
+					format(startDisplayDate, "yyyy-MM-dd"),
+					format(endDisplayDate, "yyyy-MM-dd")
+				);
+
+				setAvailabilityData(report.availability);
+			} catch (error) {
+				console.error("Failed to fetch availability data:", error);
+				toast.error("Failed to load availability data");
+			} finally {
+				setIsLoadingAvailability(false);
+			}
+		};
+
+		fetchAvailabilityData();
+	}, [token, currentUser, currentMonth]);
+
 	const handleToday = () => {
-		setCurrentMonth((prev) => prev);
+		const today = startOfDay(new Date());
+		const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Start from Monday
+		
+		// If today is already in the current visible range, no need to change
+		if (!isSameWeek(currentMonth, today, { weekStartsOn: 1 })) {
+			setCurrentMonth(weekStart);
+		}
 	};
 
 	const handlePrevMonth = () => {
@@ -105,17 +157,15 @@ export function Calendar() {
 	};
 
 	const handleWeekSelect = (startDate: Date, endDate: Date) => {
-		// Ensure start date is aligned with Monday
-		const alignedStartDate = startOfWeek(startDate, { weekStartsOn: 1 }); // 1 = Monday
+		const alignedStartDate = startOfWeek(startDate, { weekStartsOn: 1 });
 		setSelectedStartDate(alignedStartDate);
 		setSelectedEndDate(endDate);
 		setShowModal(true);
 	};
 
 	// Calculate the date range for display
-	// Show 2 weeks before and 2 weeks after current week (5 weeks total)
 	const startDisplayDate = subWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 1);
-	const endDisplayDate = subDays(addWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 3 + 1),1)
+	const endDisplayDate = subDays(addWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 3 + 1), 1);
 	const dateRange = `${format(startDisplayDate, "MMM d")} - ${format(endDisplayDate, "MMM d, yyyy")}`;
 
 	return (
@@ -202,6 +252,8 @@ export function Calendar() {
 					selectedEndDate={selectedEndDate}
 					hoverDate={hoverDate}
 					onWeekSelect={handleWeekSelect}
+					availabilityData={availabilityData}
+					isLoadingAvailability={isLoadingAvailability}
 				/>
 			</div>
 

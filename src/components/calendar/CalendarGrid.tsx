@@ -27,6 +27,8 @@ interface CalendarGridProps {
 	selectedEndDate: Date | null;
 	hoverDate: Date | null;
 	onWeekSelect?: (startDate: Date, endDate: Date) => void;
+	availabilityData: Record<string, { am: boolean; pm: boolean }>;
+	isLoadingAvailability: boolean;
 }
 
 export function CalendarGrid({
@@ -43,6 +45,8 @@ export function CalendarGrid({
 	selectedEndDate,
 	hoverDate,
 	onWeekSelect,
+	availabilityData,
+	isLoadingAvailability,
 }: CalendarGridProps) {
 	const [loading, setLoading] = useState(false);
 	const [holidays, setHolidays] = useState<Holiday[]>([]);
@@ -149,6 +153,8 @@ export function CalendarGrid({
 								selectedStartDate={selectedStartDate}
 								selectedEndDate={selectedEndDate}
 								hoverDate={hoverDate}
+								availability={availabilityData[formattedDate]}
+								isLoadingAvailability={isLoadingAvailability}
 							/>
 						);
 					})}

@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState } from "react";
 import { format, isFirstDayOfMonth, isSameDay, parseISO } from "date-fns";
 import { getWeekNumber } from "../../utils/dateUtils";
 import { EventCard } from "./EventCard";
@@ -10,9 +10,7 @@ import { User } from "../../types/user";
 import { Holiday } from "../../lib/api/holidays";
 import { Calendar } from "lucide-react";
 import { EventDetailsModal } from "./EventDetailsModal";
-import { getAvailabilityReport } from "../../lib/api/report";
 import { useAuth } from "../../context/AuthContext";
-import toast from "react-hot-toast";
 
 interface DayCellProps {
 	date: Date;
@@ -31,6 +29,8 @@ interface DayCellProps {
 	selectedStartDate: Date | null;
 	selectedEndDate: Date | null;
 	hoverDate: Date | null;
+	availability?: { am: boolean; pm: boolean };
+	isLoadingAvailability: boolean;
 }
 
 const HOLIDAY_TYPES = ["requestedHoliday", "requestedHolidayMandatory"];
@@ -48,6 +48,8 @@ export const DayCell = memo(function DayCell({
 	selectedStartDate,
 	selectedEndDate,
 	hoverDate,
+	availability = { am: true, pm: true },
+	isLoadingAvailability,
 }: DayCellProps) {
 	const { token } = useAuth();
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
@@ -80,38 +82,6 @@ export const DayCell = memo(function DayCell({
 					date >= parseISO(event.date) &&
 					date <= parseISO(event.endDate)))
 	);
-
-	const [availability, setAvailability] = useState<{ am: boolean; pm: boolean }>({ am: true, pm: true });
-
-	useEffect(() => {
-		const fetchAvailability = async () => {
-			if (!currentUser?.id || !token) return;
-
-			try {
-				const year = format(date, "yyyy");
-				// Use the specific date for both start and end to get just this day's availability
-				const report = await getAvailabilityReport(
-					token, 
-					currentUser.site, 
-					currentUser.id, 
-					year,
-					formattedDate, // startDate
-					formattedDate  // endDate
-				);
-				
-				// Get availability for the current date from the report
-				const dayAvailability = report.availability[formattedDate];
-				if (dayAvailability) {
-					setAvailability(dayAvailability);
-				}
-			} catch (error) {
-				console.error("Failed to fetch availability:", error);
-				toast.error("Failed to load availability data");
-			}
-		};
-
-		fetchAvailability();
-	}, [currentUser?.id, currentUser?.site, date, formattedDate, token]);
 
 	const handleContextMenu = (e: React.MouseEvent) => {
 		e.preventDefault();
@@ -150,11 +120,17 @@ export const DayCell = memo(function DayCell({
 				data-tsx-id="day-cell"
 			>
 				{/* Availability background layers */}
-				{!availability.am && (
-					<div className="absolute inset-x-0 top-0 h-1/2 bg-zinc-200 opacity-50" />
-				)}
-				{!availability.pm && (
-					<div className="absolute inset-x-0 bottom-0 h-1/2 bg-zinc-200 opacity-50" />
+				{!isLoadingAvailability ? (
+					<>
+						{!availability.am && (
+							<div className="absolute inset-x-0 top-0 h-1/2 bg-zinc-200 opacity-50" />
+						)}
+						{!availability.pm && (
+							<div className="absolute inset-x-0 bottom-0 h-1/2 bg-zinc-200 opacity-50" />
+						)}
+					</>
+				) : (
+					<div className="absolute inset-0 bg-zinc-100 animate-pulse" />
 				)}
 
 				{showMonthLabel && <MonthLabel date={date} />}
