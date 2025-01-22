@@ -4,7 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "outDir": "/opt/render/project/src/dist",
+    "outDir": "./dist/server",
     "rootDir": "./server",
     "strict": true,
     "skipLibCheck": true,
