@@ -1,82 +1,71 @@
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
+import { readFile, writeFile, deleteFile } from "./services/storage";
 import { User, Event, UserSettings } from "./types";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Helper function to generate storage keys
+function getStorageKey(type: string, ...parts: string[]): string {
+  return `${type}/${parts.join("/")}`;
+}
 
 export async function readSiteData(site: string) {
-	const filePath = path.join(__dirname, "data", "sites", `${site}.json`);
-	const data = await fs.readFile(filePath, "utf-8");
-	return JSON.parse(data);
+  try {
+    const key = getStorageKey("sites", `${site}.json`);
+    const data = await readFile(key);
+    return JSON.parse(data);
+  } catch (error) {
+    if (error instanceof Error && error.message === "File not found") {
+      return { users: [], events: [] };
+    }
+    throw error;
+  }
 }
 
-export async function writeSiteData(
-	site: string,
-	data: { users: User[]; events: Event[] }
-) {
-	const filePath = path.join(__dirname, "data", "sites", `${site}.json`);
-	await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+export async function writeSiteData(site: string, data: { users: User[]; events: Event[] }) {
+  const key = getStorageKey("sites", `${site}.json`);
+  await writeFile(key, JSON.stringify(data, null, 2));
 }
 
-export async function readUserEvents(
-	site: string,
-	userId: string
-): Promise<Event[]> {
-	const dirPath = path.join(__dirname, "data", "sites", site, "events");
-	const filePath = path.join(dirPath, `${userId}.json`);
-
-	try {
-		await fs.mkdir(dirPath, { recursive: true });
-		const data = await fs.readFile(filePath, "utf-8");
-		return JSON.parse(data);
-	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-			return [];
-		}
-		throw error;
-	}
+export async function readUserEvents(site: string, userId: string): Promise<Event[]> {
+  try {
+    const key = getStorageKey("sites", site, "events", `${userId}.json`);
+    const data = await readFile(key);
+    return JSON.parse(data);
+  } catch (error) {
+    if (error instanceof Error && error.message === "File not found") {
+      return [];
+    }
+    throw error;
+  }
 }
 
-export async function writeUserEvents(
-	site: string,
-	userId: string,
-	events: Event[]
-) {
-	const dirPath = path.join(__dirname, "data", "sites", site, "events");
-	const filePath = path.join(dirPath, `${userId}.json`);
-
-	await fs.mkdir(dirPath, { recursive: true });
-	await fs.writeFile(filePath, JSON.stringify(events, null, 2));
+export async function writeUserEvents(site: string, userId: string, events: Event[]) {
+  const key = getStorageKey("sites", site, "events", `${userId}.json`);
+  await writeFile(key, JSON.stringify(events, null, 2));
 }
 
-export async function readUserSettings(
-	site: string,
-	userId: string
-): Promise<UserSettings> {
-	const dirPath = path.join(__dirname, "data", "sites", site, "settings");
-	const filePath = path.join(dirPath, `${userId}.json`);
-
-	try {
-		await fs.mkdir(dirPath, { recursive: true });
-		const data = await fs.readFile(filePath, "utf-8");
-		return JSON.parse(data);
-	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-			return {};
-		}
-		throw error;
-	}
+export async function readUserSettings(site: string, userId: string): Promise<UserSettings> {
+  try {
+    const key = getStorageKey("sites", site, "settings", `${userId}.json`);
+    const data = await readFile(key);
+    return JSON.parse(data);
+  } catch (error) {
+    if (error instanceof Error && error.message === "File not found") {
+      return {};
+    }
+    throw error;
+  }
 }
 
-export async function writeUserSettings(
-	site: string,
-	userId: string,
-	settings: UserSettings
-) {
-	const dirPath = path.join(__dirname, "data", "sites", site, "settings");
-	const filePath = path.join(dirPath, `${userId}.json`);
+export async function writeUserSettings(site: string, userId: string, settings: UserSettings) {
+  const key = getStorageKey("sites", site, "settings", `${userId}.json`);
+  await writeFile(key, JSON.stringify(settings, null, 2));
+}
 
-	await fs.mkdir(dirPath, { recursive: true });
-	await fs.writeFile(filePath, JSON.stringify(settings, null, 2));
+export async function deleteUserData(site: string, userId: string) {
+  // Delete user events
+  const eventsKey = getStorageKey("sites", site, "events", `${userId}.json`);
+  await deleteFile(eventsKey);
+
+  // Delete user settings
+  const settingsKey = getStorageKey("sites", site, "settings", `${userId}.json`);
+  await deleteFile(settingsKey);
 }
