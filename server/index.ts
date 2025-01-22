@@ -1,15 +1,15 @@
 import express from "express";
 import cors from "cors";
 import { PORT } from "./config.js";
-import { authRouter } from "./routes/auth";
-import { eventRouter } from "./routes/events";
-import { userRouter } from "./routes/users";
-import { holidaysRouter } from "./routes/holidays";
-import { sitesRouter } from "./routes/sites";
-import { reportRouter } from "./routes/report";
-import { availabilityRouter } from "./routes/availability";
-import { agendaRouter } from "./routes/agenda";
-import { exportRouter } from "./routes/export";
+import { authRouter } from "./routes/auth.js";
+import { eventRouter } from "./routes/events.js";
+import { userRouter } from "./routes/users.js";
+import { holidaysRouter } from "./routes/holidays.js";
+import { sitesRouter } from "./routes/sites.js";
+import { reportRouter } from "./routes/report.js";
+import { availabilityRouter } from "./routes/availability.js";
+import { agendaRouter } from "./routes/agenda.js";
+import { exportRouter } from "./routes/export.js";
 
 const app = express();
 
