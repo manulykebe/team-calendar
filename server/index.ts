@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { PORT } from "./config";
+import { PORT } from "./config.js";
 import { authRouter } from "./routes/auth";
 import { eventRouter } from "./routes/events";
 import { userRouter } from "./routes/users";
