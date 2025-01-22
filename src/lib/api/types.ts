@@ -23,14 +23,12 @@ export interface UserSettings {
 	colleagueOrder: ColleagueID[];
 	showWeekNumber: string;
 	availability: Availability[];
-	availabilityExceptions: AvailabilityException[]; // or you can replace with an appropriate type if known
+	availabilityExceptions: AvailabilityException[];
 }
 
 export interface AppSettings {
 	color: {
 		[key: string]: string;
-		// For example, "Tuesday": "#4575b4"
-		// If you know exactly which days can appear, you could enumerate them instead of using an index signature.
 	};
 }
 
@@ -45,9 +43,10 @@ export interface Availability {
 	weeklySchedule: WeeklySchedule;
 	oddWeeklySchedule?: WeeklySchedule;
 	startDate: string;
-	endDate: string;
-	repeatPattern: string;
+	endDate?: string;
+	repeatPattern: "all" | "evenodd";
 }
+
 export type WeekDays =
 	| "Monday"
 	| "Tuesday"
@@ -56,12 +55,18 @@ export type WeekDays =
 	| "Friday"
 	| "Saturday"
 	| "Sunday";
+
 export type WeeklySchedule = {
 	[key in WeekDays]?: DailyAvailability;
 };
+
 export type DayParts = "am" | "pm";
 export type DailyAvailability = {
-	[key in DayParts]?: boolean;
+	[key in DayParts]: boolean;
 };
 
-export interface AvailabilityException {}
+export interface AvailabilityException {
+	date: string;
+	am?: boolean;
+	pm?: boolean;
+}

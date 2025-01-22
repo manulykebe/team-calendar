@@ -3,6 +3,7 @@ import { WeeklySchedule, TimeSlot } from "../types/availability";
 import { User } from "../types/user";
 import { updateUserAvailabilitySchedule } from "../lib/api";
 import toast from "react-hot-toast";
+import { userSettingsEmitter } from "./useColleagueSettings";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as const;
 
@@ -63,13 +64,15 @@ export function useAvailabilityState(colleague: User) {
 
       // Create new schedule with toggled value
       const targetSchedule = isAlternate ? alternateSchedule : schedule;
-      const newValue = !targetSchedule[day][slot];
+      const newValue = !targetSchedule[day]?.[slot];
 
       const updatedSchedule = {
         ...targetSchedule,
         [day]: {
           ...targetSchedule[day],
-          [slot]: newValue
+          [slot]: newValue,
+          // Ensure both am/pm are defined
+          ...(slot === 'am' ? { pm: targetSchedule[day]?.pm ?? true } : { am: targetSchedule[day]?.am ?? true })
         }
       };
 
@@ -80,12 +83,29 @@ export function useAvailabilityState(colleague: User) {
         setSchedule(updatedSchedule);
       }
 
+      // Ensure all days have both am and pm defined in both schedules
+      const normalizedSchedule = DAYS.reduce((acc, d) => ({
+        ...acc,
+        [d]: {
+          am: (isAlternate ? schedule : updatedSchedule)[d]?.am ?? true,
+          pm: (isAlternate ? schedule : updatedSchedule)[d]?.pm ?? true
+        }
+      }), {});
+
+      const normalizedAltSchedule = DAYS.reduce((acc, d) => ({
+        ...acc,
+        [d]: {
+          am: (isAlternate ? updatedSchedule : alternateSchedule)[d]?.am ?? true,
+          pm: (isAlternate ? updatedSchedule : alternateSchedule)[d]?.pm ?? true
+        }
+      }), {});
+
       // Prepare data for API
       const availabilityData = {
-        weeklySchedule: isAlternate ? schedule : updatedSchedule,
-        oddWeeklySchedule: isAlternate ? updatedSchedule : alternateSchedule,
+        weeklySchedule: normalizedSchedule,
+        ...(repeatPattern === "evenodd" && { oddWeeklySchedule: normalizedAltSchedule }),
         startDate,
-        endDate,
+        ...(endDate && { endDate }),
         repeatPattern,
       };
 
@@ -97,6 +117,20 @@ export function useAvailabilityState(colleague: User) {
         availabilityData
       );
 
+      // Emit settings update event
+      userSettingsEmitter.emit("settingsUpdated", {
+        userId,
+        settings: {
+          ...colleague.settings,
+          availability: [
+            ...colleague.settings?.availability?.slice(0, currentEntryIndex) || [],
+            availabilityData,
+            ...colleague.settings?.availability?.slice(currentEntryIndex + 1) || []
+          ]
+        }
+      });
+
+      toast.success("Availability updated successfully");
     } catch (err) {
       // Revert on error
       if (isAlternate) {

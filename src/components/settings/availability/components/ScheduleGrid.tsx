@@ -44,6 +44,7 @@ export function ScheduleGrid({
                 : "bg-red-100 border-red-500 hover:bg-red-200"
               } ${disabled ? "cursor-not-allowed opacity-75" : "cursor-pointer"}
             `}
+            aria-label={`Toggle ${day} morning availability`}
           >
             {schedule[day]?.am ? "Available" : "Unavailable"}
           </button>
@@ -64,6 +65,7 @@ export function ScheduleGrid({
                 : "bg-red-100 border-red-500 hover:bg-red-200"
               } ${disabled ? "cursor-not-allowed opacity-75" : "cursor-pointer"}
             `}
+            aria-label={`Toggle ${day} afternoon availability`}
           >
             {schedule[day]?.pm ? "Available" : "Unavailable"}
           </button>
