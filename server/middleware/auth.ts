@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config";
-import { readSiteData } from "../utils";
-import { AuthRequest } from "../types";
+import { JWT_SECRET } from "../config.js";
+import { readSiteData } from "../utils.js";
+import { AuthRequest } from "../types.js";
 
 export const authenticateToken = async (
   req: AuthRequest,

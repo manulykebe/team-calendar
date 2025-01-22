@@ -1,5 +1,5 @@
-import { readFile, writeFile, deleteFile } from "./services/storage";
-import { User, Event, UserSettings } from "./types";
+import { readFile, writeFile, deleteFile } from "./services/storage.js";
+import { User, Event, UserSettings } from "./types.js";
 
 // Helper function to generate storage keys
 function getStorageKey(type: string, ...parts: string[]): string {

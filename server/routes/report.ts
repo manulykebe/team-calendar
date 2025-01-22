@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { readSiteData } from "../utils";
+import { readSiteData } from "../utils.js";
 import { eachDayOfInterval, format, parseISO, getDay, isWithinInterval } from "date-fns";
-import { authenticateToken } from "../middleware/auth";
-import { getWeekNumber } from "../utils/dateUtils";
-import { readUserSettings } from "../utils";
+import { authenticateToken } from "../middleware/auth.js";
+import { getWeekNumber } from "../utils/dateUtils.js";
+import { readUserSettings } from "../utils.js";
 
 interface TimeSlot {
     am: boolean;

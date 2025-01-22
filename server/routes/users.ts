@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { authenticateToken } from "../middleware/auth";
-import { AuthRequest } from "../types";
+import { authenticateToken } from "../middleware/auth.js";
+import { AuthRequest } from "../types.js";
 import {
 	getUsers,
 	createUser,
 	updateUser,
 	deleteUser,
-} from "../services/users";
-import { readSiteData, writeSiteData, readUserSettings, writeUserSettings } from "../utils";
+} from "../services/users.js";
+import { readSiteData, writeSiteData, readUserSettings, writeUserSettings } from "../utils.js";
 
 const router = Router();
 

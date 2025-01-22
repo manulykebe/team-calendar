@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config";
-import { User } from "../types";
-import { readSiteData, writeSiteData } from "../utils";
+import { JWT_SECRET } from "../config.js";
+import { User } from "../types.js";
+import { readSiteData, writeSiteData } from "../utils.js";
 
 export async function registerUser(userData: {
   firstName: string;

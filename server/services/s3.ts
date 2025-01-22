@@ -7,7 +7,7 @@ import {
 	type _Object,
 } from "@aws-sdk/client-s3";
 
-import { AWS_CONFIG } from "../config";
+import { AWS_CONFIG } from "../config.js";
 
 // Custom error class
 class S3OperationError extends Error {

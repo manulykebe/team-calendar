@@ -1,8 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import { IS_PRODUCTION, FORCE_S3 } from "../config";
-import { uploadToS3, getFromS3, deleteFromS3 } from "./s3";
+import { IS_PRODUCTION, FORCE_S3 } from "../config.js";
+import { uploadToS3, getFromS3, deleteFromS3 } from "./s3.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, "..", "data");

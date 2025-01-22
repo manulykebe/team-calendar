@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { authenticateToken } from "../middleware/auth";
-import { AuthRequest } from "../types";
-import { readSiteData, writeSiteData } from "../utils";
+import { authenticateToken } from "../middleware/auth.js";
+import { AuthRequest } from "../types.js";
+import { readSiteData, writeSiteData } from "../utils.js";
 import { format, parseISO, startOfDay, endOfDay, addDays } from "date-fns";
-import { Event } from "../types";
+import { Event } from "../types.js";
 import crypto from "crypto";
-import { JWT_SECRET } from "../config";
+import { JWT_SECRET } from "../config.js";
 
 const router = Router();
 

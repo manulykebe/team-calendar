@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { authenticateToken } from "../middleware/auth";
-import { AuthRequest } from "../types";
-import { readSiteData, readUserEvents } from "../utils";
+import { authenticateToken } from "../middleware/auth.js";
+import { AuthRequest } from "../types.js";
+import { readSiteData, readUserEvents } from "../utils.js";
 import {
 	format,
 	parseISO,

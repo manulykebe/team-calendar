@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { readSiteData } from "../utils";
+import { readSiteData } from "../utils.js";
 
 const router = Router();
 

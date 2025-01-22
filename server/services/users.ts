@@ -1,11 +1,11 @@
 import bcrypt from "bcryptjs";
-import { User, UserSettings } from "../types";
+import { User, UserSettings } from "../types.js";
 import {
 	readSiteData,
 	writeSiteData,
 	readUserSettings,
 	writeUserSettings,
-} from "../utils";
+} from "../utils.js";
 
 export async function getUsers(site: string) {
 	const data = await readSiteData(site);

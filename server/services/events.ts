@@ -1,5 +1,5 @@
-import { Event } from "../types";
-import { readUserEvents, writeUserEvents } from "../utils";
+import { Event } from "../types.js";
+import { readUserEvents, writeUserEvents } from "../utils.js";
 
 export async function getEvents(site: string) {
   // This will be deprecated once we migrate all events

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { authenticateToken } from "../middleware/auth";
-import { AuthRequest } from "../types";
-import { readUserSettings, writeUserSettings } from "../utils";
+import { authenticateToken } from "../middleware/auth.js";
+import { AuthRequest } from "../types.js";
+import { readUserSettings, writeUserSettings } from "../utils.js";
 import { z } from "zod";
 
 const router = Router();

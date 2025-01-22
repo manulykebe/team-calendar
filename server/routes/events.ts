@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { authenticateToken } from "../middleware/auth";
-import { AuthRequest } from "../types";
+import { authenticateToken } from "../middleware/auth.js";
+import { AuthRequest } from "../types.js";
 import {
   getUserEvents,
   createEvent,
   updateEvent,
   deleteEvent,
-} from "../services/events";
+} from "../services/events.js";
 import { z } from "zod";
 
 const router = Router();
