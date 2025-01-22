@@ -10,7 +10,7 @@
     "build:client": "tsc && vite build",
     "build:server": "tsc -p tsconfig.server.json",
     "build": "npm run build:client && npm run build:server",
-    "start": "cd dist && node index.js",
+    "start": "node dist/server/index.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"server/**/*.ts\""
