@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import { IS_PRODUCTION } from "../config";
+import { IS_PRODUCTION, FORCE_S3 } from "../config";
 import { uploadToS3, getFromS3, deleteFromS3 } from "./s3";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -39,18 +39,22 @@ async function deleteLocalFile(filePath: string) {
 
 // Unified storage interface
 export async function writeFile(key: string, data: string) {
-  if (IS_PRODUCTION) {
+  if (IS_PRODUCTION || FORCE_S3) {
+    console.log(`[Storage] Writing to S3: ${key}`);
     await uploadToS3(key, data);
   } else {
+    console.log(`[Storage] Writing to local file: ${key}`);
     await writeLocalFile(key, data);
   }
 }
 
 export async function readFile(key: string): Promise<string> {
   try {
-    if (IS_PRODUCTION) {
+    if (IS_PRODUCTION || FORCE_S3) {
+      console.log(`[Storage] Reading from S3: ${key}`);
       return await getFromS3(key);
     } else {
+      console.log(`[Storage] Reading from local file: ${key}`);
       return await readLocalFile(key);
     }
   } catch (error) {
@@ -65,9 +69,11 @@ export async function readFile(key: string): Promise<string> {
 }
 
 export async function deleteFile(key: string) {
-  if (IS_PRODUCTION) {
+  if (IS_PRODUCTION || FORCE_S3) {
+    console.log(`[Storage] Deleting from S3: ${key}`);
     await deleteFromS3(key);
   } else {
+    console.log(`[Storage] Deleting local file: ${key}`);
     await deleteLocalFile(key);
   }
 }
