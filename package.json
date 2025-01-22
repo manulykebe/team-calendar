@@ -19,7 +19,7 @@
     "@aws-sdk/client-s3": "^3.732.0",
     "@hookform/resolvers": "^3.3.4",
     "@types/bcryptjs": "^2.4.6",
-    "@types/cors": "^2.8.17",
+    "@types/cors": "^2.8.17", 
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.7",
     "bcryptjs": "^2.4.3",
