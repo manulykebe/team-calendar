@@ -1,146 +1,105 @@
 {
-  "colleagues": {
-    "SjFBqPWVxUVY": {
-      "color": "#d73027",
-      "initials": "MV",
-      "visible": false
-    },
-    "XAefIrqLAeDy": {
-      "color": "#a50026",
-      "initials": "KDJ"
-    },
-    "bhhMvstlpwUG": {
-      "visible": false,
-      "initials": "MS",
-      "color": "#74add1"
-    },
-    "KTHpbRLreSbC": {
-      "initials": "SD",
-      "color": "#4575b4",
-      "visible": false
-    },
-    "tTRjdtgFDDRN": {
-      "color": "#e0f3f8",
-      "initials": "KV",
-      "visible": false
-    },
-    "mKtuftErhhnO": {
-      "color": "#f46d43",
-      "initials": "MS",
-      "visible": false
-    },
-    "CxuzKGosISkk": {
-      "color": "#fee090",
-      "initials": "SD",
-      "visible": false
-    },
-    "rwqJQFnAqWdn": {
-      "color": "#e0f3f8",
-      "initials": "EV",
-      "visible": false
-    },
-    "ZIdGWxhnRSYw": {
-      "color": "#abd9e9",
-      "initials": "KV",
-      "visible": false
-    },
-    "OBOaSHVowagL": {
-      "color": "#74add1",
-      "initials": "HG",
-      "visible": false
-    },
-    "dijVShwJoKFD": {
-      "color": "#4575b4",
-      "initials": "AY",
-      "visible": false
-    },
-    "suuebRsdLhQv": {
-      "color": "#fdae61",
-      "initials": "",
-      "visible": false
-    }
-  },
-  "showWeekNumber": "left",
-  "colleagueOrder": [
-    "XAefIrqLAeDy",
-    "SjFBqPWVxUVY",
-    "mKtuftErhhnO",
-    "suuebRsdLhQv",
-    "CxuzKGosISkk",
-    "rwqJQFnAqWdn",
-    "ZIdGWxhnRSYw",
-    "OBOaSHVowagL",
-    "dijVShwJoKFD"
-  ],
-  "availability": [
-    {
-      "weeklySchedule": {
-        "Monday": {
-          "am": true,
-          "pm": true
-        },
-        "Tuesday": {
-          "am": false,
-          "pm": false
-        },
-        "Wednesday": {
-          "am": true,
-          "pm": true
-        },
-        "Thursday": {
-          "am": true,
-          "pm": true
-        },
-        "Friday": {
-          "am": true,
-          "pm": true
-        }
-      },
-      "startDate": "2025-01-01",
-      "endDate": "",
-      "repeatPattern": "all"
-    }
-  ],
-  "availabilityExceptions": [
-    {
-      "date": "2025-01-01",
-      "am": true
-    },
-    {
-      "date": "2025-01-21",
-      "am": false,
-      "pm": false
-    },
-    {
-      "date": "2025-01-14",
-      "am": false,
-      "pm": false
-    },
-    {
-      "date": "2025-01-13",
-      "am": true,
-      "pm": true
-    },
-    {
-      "date": "2025-01-22",
-      "am": true,
-      "pm": true
-    },
-    {
-      "date": "2025-01-23",
-      "pm": true
-    },
-    {
-      "date": "2025-01-24",
-      "pm": true
-    },
-    {
-      "date": "2025-01-15",
-      "pm": true
-    },
-    {
-      "date": "2025-01-20",
-      "am": true
-    }
-  ]
+	"colleagues": {
+		"SjFBqPWVxUVY": {
+			"color": "#d73027",
+			"initials": "MV",
+			"visible": false
+		},
+		"XAefIrqLAeDy": {
+			"color": "#a50026",
+			"initials": "KDJ"
+		},
+		"bhhMvstlpwUG": {
+			"visible": false,
+			"initials": "MS",
+			"color": "#74add1"
+		},
+		"KTHpbRLreSbC": {
+			"initials": "SD",
+			"color": "#4575b4",
+			"visible": false
+		},
+		"tTRjdtgFDDRN": {
+			"color": "#e0f3f8",
+			"initials": "KV",
+			"visible": false
+		},
+		"mKtuftErhhnO": {
+			"color": "#f46d43",
+			"initials": "MS",
+			"visible": false
+		},
+		"CxuzKGosISkk": {
+			"color": "#fee090",
+			"initials": "SD",
+			"visible": false
+		},
+		"rwqJQFnAqWdn": {
+			"color": "#e0f3f8",
+			"initials": "EV",
+			"visible": false
+		},
+		"ZIdGWxhnRSYw": {
+			"color": "#abd9e9",
+			"initials": "KV",
+			"visible": false
+		},
+		"OBOaSHVowagL": {
+			"color": "#74add1",
+			"initials": "HG",
+			"visible": false
+		},
+		"dijVShwJoKFD": {
+			"color": "#4575b4",
+			"initials": "AY",
+			"visible": false
+		},
+		"suuebRsdLhQv": {
+			"color": "#fdae61",
+			"initials": "",
+			"visible": false
+		}
+	},
+	"showWeekNumber": "left",
+	"colleagueOrder": [
+		"XAefIrqLAeDy",
+		"SjFBqPWVxUVY",
+		"mKtuftErhhnO",
+		"suuebRsdLhQv",
+		"CxuzKGosISkk",
+		"rwqJQFnAqWdn",
+		"ZIdGWxhnRSYw",
+		"OBOaSHVowagL",
+		"dijVShwJoKFD"
+	],
+	"availability": [
+		{
+			"weeklySchedule": {
+				"Monday": {
+					"am": true,
+					"pm": true
+				},
+				"Tuesday": {
+					"am": false,
+					"pm": false
+				},
+				"Wednesday": {
+					"am": true,
+					"pm": true
+				},
+				"Thursday": {
+					"am": true,
+					"pm": true
+				},
+				"Friday": {
+					"am": true,
+					"pm": true
+				}
+			},
+			"startDate": "2025-01-01",
+			"endDate": "",
+			"repeatPattern": "all"
+		}
+	],
+	"availabilityExceptions": []
 }

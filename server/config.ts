@@ -6,7 +6,7 @@ export const NODE_ENV = process.env.NODE_ENV || "development";
 export const IS_PRODUCTION = NODE_ENV === "production";
 
 // Force S3 usage in development for testing
-export const FORCE_S3 = process.env.FORCE_S3 === "false";
+export const FORCE_S3 = process.env.FORCE_S3 === "true";
 
 // JWT Configuration
 export const JWT_SECRET = process.env.JWT_SECRET || "wySWletJvQvvPZNKPnbGxHrO";
