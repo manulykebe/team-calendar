@@ -1,4 +1,6 @@
 import express from "express";
+import { AuthRequest } from './types';
+import { Response, NextFunction } from 'express';
 import cors from "cors";
 import { PORT } from "./config";
 import { authRouter } from "./routes/auth";
@@ -15,6 +17,10 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use((req: AuthRequest, res: Response, next: NextFunction) => {
+  next();
+});
 
 // Routes
 app.use("/api/auth", authRouter);

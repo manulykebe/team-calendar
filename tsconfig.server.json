@@ -10,7 +10,9 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "typeRoots": ["./node_modules/@types", "./server/types"],
+    "types": ["node", "express"]
   },
   "include": ["server/**/*"],
   "exclude": ["node_modules"]

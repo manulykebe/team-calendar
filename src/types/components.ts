@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { User, Event } from "./";
+import { Event } from "./";
+import { UserSettings } from "../../src/lib/api/types";
 
 // Common component props
 export interface BaseProps {
