@@ -2,8 +2,56 @@ import { Router } from "express";
 import { readSiteData } from "../utils";
 import { eachDayOfInterval, format, parseISO, getDay, isWithinInterval } from "date-fns";
 import { authenticateToken } from "../middleware/auth";
-import { getWeekNumber } from "../../src/utils/dateUtils";
+import { getWeekNumber } from "../utils/dateUtils";
 import { readUserSettings } from "../utils";
+
+interface TimeSlot {
+    am: boolean;
+    pm: boolean;
+}
+
+interface WeeklySchedule {
+    Monday: TimeSlot;
+    Tuesday: TimeSlot;
+    Wednesday: TimeSlot;
+    Thursday: TimeSlot;
+    Friday: TimeSlot;
+    Saturday?: TimeSlot;
+    Sunday?: TimeSlot;
+}
+
+interface AvailabilitySettings {
+    startDate: string;
+    endDate?: string;
+    repeatPattern: "all" | "evenodd";
+    weeklySchedule: WeeklySchedule;
+    oddWeeklySchedule?: WeeklySchedule;
+}
+
+interface AvailabilityException {
+    date: string;
+    am?: boolean;
+    pm?: boolean;
+}
+
+interface DailyAvailability {
+    am: boolean;
+    pm: boolean;
+}
+
+interface AvailabilityAccumulator {
+    [key: string]: DailyAvailability;
+}
+
+const dayMap: Record<number, keyof WeeklySchedule> = {
+    0: "Sunday",
+    1: "Monday",
+    2: "Tuesday",
+    3: "Wednesday",
+    4: "Thursday",
+    5: "Friday",
+    6: "Saturday",
+};
 
 const router = Router();
 
@@ -12,6 +60,22 @@ router.use(authenticateToken);
 router.get("/availability/:site/:userId/:year", async (req, res) => {
 	try {
 		const { site, userId, year } = req.params;
+		
+		// Validate parameters
+		if (!site || !userId || !year) {
+			return res.status(400).json({ 
+				error: "Missing required parameters" 
+			});
+		}
+
+		// Validate year format
+		const yearNum = parseInt(year, 10);
+		if (isNaN(yearNum) || yearNum < 1900 || yearNum > 9999) {
+			return res.status(400).json({ 
+				error: "Invalid year format" 
+			});
+		}
+
 		const { startDate, endDate } = req.query;
 
 		const siteData = await readSiteData(site);
@@ -63,20 +127,10 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 
 		const days = eachDayOfInterval({ start: rangeStart, end: rangeEnd });
 
-		const dayMap = {
-			0: "Sunday",
-			1: "Monday",
-			2: "Tuesday",
-			3: "Wednesday",
-			4: "Thursday",
-			5: "Friday",
-			6: "Saturday",
-		};
-
 		// Calculate availability for each day
-		const availability = days.reduce((acc, date) => {
+		const availability = days.reduce<AvailabilityAccumulator>((acc, date) => {
 			const dateStr = format(date, "yyyy-MM-dd");
-			const dayName = dayMap[getDay(date)];
+			const dayName = dayMap[getDay(date)] as keyof WeeklySchedule;
 
 			// Check for exceptions first
 			const exception = availabilityExceptions.find(
@@ -112,6 +166,7 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 				return acc;
 			}
 
+			// Update the schedule assignment with proper type checking
 			if (
 				setting.repeatPattern === "evenodd" &&
 				setting.oddWeeklySchedule
@@ -121,11 +176,16 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 					weekNumber % 2 === 0
 						? setting.weeklySchedule
 						: setting.oddWeeklySchedule;
-				acc[dateStr] = schedule[dayName] || { am: false, pm: false };
+				const timeSlot = schedule[dayName];
+				acc[dateStr] = {
+					am: timeSlot?.am ?? false,
+					pm: timeSlot?.pm ?? false
+				};
 			} else {
-				acc[dateStr] = setting.weeklySchedule[dayName] || {
-					am: false,
-					pm: false,
+				const timeSlot = setting.weeklySchedule[dayName];
+				acc[dateStr] = {
+					am: timeSlot?.am ?? false,
+					pm: timeSlot?.pm ?? false
 				};
 			}
 
@@ -158,10 +218,10 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 					weekNumber % 2 === 0
 						? setting.weeklySchedule
 						: setting.oddWeeklySchedule;
-				return schedule[dayName]?.[part] || false;
+				return schedule[dayName as keyof WeeklySchedule]?.[part] ?? false;
 			}
 
-			return setting.weeklySchedule[dayName]?.[part] || false;
+			return setting.weeklySchedule[dayName as keyof WeeklySchedule]?.[part] ?? false;
 		}
 
 		res.json({

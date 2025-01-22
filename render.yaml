@@ -3,7 +3,7 @@ services:
     name: team-calendar
     env: node
     buildCommand: npm install && npm run build:server
-    startCommand: node dist/server/index.js
+    startCommand: node server/index.js
     envVars:
       - key: NODE_ENV
         value: production

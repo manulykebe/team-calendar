@@ -48,9 +48,9 @@ export async function readUserSettings(site: string, userId: string): Promise<Us
     const data = await readFile(key);
     return JSON.parse(data);
   } catch (error) {
-    if (error instanceof Error && error.message === "File not found") {
-      return {};
-    }
+    // if (error instanceof Error && error.message === "File not found") {
+    //   return {};
+    // }
     throw error;
   }
 }

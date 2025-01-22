@@ -24,6 +24,8 @@ export async function registerUser(userData: {
     ...userData,
     password: hashedPassword,
     role: data.users.length === 0 ? "admin" : "user",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   data.users.push(newUser);
