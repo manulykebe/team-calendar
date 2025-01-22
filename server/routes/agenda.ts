@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { AuthRequest, authenticateToken } from "../middleware/auth";
+import { authenticateToken } from "../middleware/auth";
+import { AuthRequest } from "../types";
 import { readSiteData, writeSiteData } from "../utils";
 import { format, parseISO, startOfDay, endOfDay, addDays } from "date-fns";
 import { Event } from "../types";

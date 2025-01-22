@@ -2,15 +2,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config";
 import { readSiteData } from "../utils";
-
-export interface AuthRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    site: string;
-    role?: string;
-  };
-}
+import { AuthRequest } from "../types";
 
 export const authenticateToken = async (
   req: AuthRequest,

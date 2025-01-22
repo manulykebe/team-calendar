@@ -1,11 +1,12 @@
 import { Request } from 'express';
 
 export interface AuthRequest extends Request {
-    user?: {
-        site: string;
-        id: string;
-        role: string;
-    };
+	user?: {
+		id: string;
+		email: string;
+		site: string;
+		role?: string;
+	  };
 }
 export interface User {
 	id: string;

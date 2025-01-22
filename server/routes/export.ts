@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { AuthRequest, authenticateToken } from "../middleware/auth";
+import { authenticateToken } from "../middleware/auth";
+import { AuthRequest } from "../types";
 import { readSiteData, readUserEvents } from "../utils";
 import {
 	format,
@@ -7,7 +8,6 @@ import {
 	eachDayOfInterval,
 	isWithinInterval,
 } from "date-fns";
-
 
 const router = Router();
 
