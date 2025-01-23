@@ -1,26 +1,18 @@
 import { useState, useCallback } from "react";
 import { Event } from "../types/event";
-import { getEvents, createEvent, updateEvent } from "../lib/api";
+import { createEvent, updateEvent } from "../lib/api";
+import { useApp } from "../context/AppContext";
+import { useAuth } from "../context/AuthContext";
 
-export function useCalendarState(token: string | null) {
-  const [events, setEvents] = useState<Event[]>([]);
+export function useCalendarState() {
+  const { token } = useAuth();
+  const { events, refreshData } = useApp();
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-
-  const fetchEvents = useCallback(async () => {
-    if (!token) return;
-
-    try {
-      const eventsData = await getEvents(token);
-      setEvents(eventsData);
-    } catch (error) {
-      console.error("Failed to fetch events:", error);
-    }
-  }, [token]);
 
   const handleCreateEvent = async (eventData: {
     title: string;
@@ -32,8 +24,8 @@ export function useCalendarState(token: string | null) {
     if (!token) return;
 
     try {
-      const newEvent = await createEvent(token, eventData);
-      setEvents((prev) => [...prev, newEvent]);
+      await createEvent(token, eventData);
+      await refreshData(); // Refresh all data after creating event
       setShowModal(false);
     } catch (error) {
       console.error("Failed to create event:", error);
@@ -41,8 +33,8 @@ export function useCalendarState(token: string | null) {
     }
   };
 
-  const handleEventDelete = (eventId: string) => {
-    setEvents(events.filter((event) => event.id !== eventId));
+  const handleEventDelete = async (eventId: string) => {
+    await refreshData(); // Refresh all data after deleting event
   };
 
   const handleEventResize = async (
@@ -56,14 +48,12 @@ export function useCalendarState(token: string | null) {
     if (!event) return;
 
     try {
-      const updatedEvent = await updateEvent(token, eventId, {
+      await updateEvent(token, eventId, {
         ...event,
         date: newDate,
         endDate: newEndDate,
       });
-      setEvents((prev) =>
-        prev.map((e) => (e.id === eventId ? updatedEvent : e)),
-      );
+      await refreshData(); // Refresh all data after updating event
     } catch (error) {
       console.error("Failed to resize event:", error);
     }
@@ -71,11 +61,9 @@ export function useCalendarState(token: string | null) {
 
   const handleDateClick = (date: Date) => {
     if (!selectedStartDate) {
-      // First click - set start date
       setSelectedStartDate(date);
       setSelectedEndDate(null);
     } else if (!selectedEndDate) {
-      // Second click - set end date and open modal
       if (date < selectedStartDate) {
         setSelectedEndDate(selectedStartDate);
         setSelectedStartDate(date);
@@ -85,7 +73,6 @@ export function useCalendarState(token: string | null) {
       setShowModal(true);
       setHoverDate(null);
     } else {
-      // Reset selection on next click
       setSelectedStartDate(date);
       setSelectedEndDate(null);
       setHoverDate(null);
@@ -118,11 +105,10 @@ export function useCalendarState(token: string | null) {
     handleDateClick,
     handleDateHover,
     resetSelection,
-    fetchEvents,
     handleCreateEvent,
     handleEventDelete,
     handleEventResize,
-    setSelectedStartDate,  // Expose these functions
-    setSelectedEndDate,    // Expose these functions
+    setSelectedStartDate,
+    setSelectedEndDate,
   };
 }
