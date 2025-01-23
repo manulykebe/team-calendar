@@ -192,8 +192,8 @@ function generateICalContent(events: Event[], user: any): string {
 			// Format dates in iCal format
 			const startDate = format(parseISO(event.date), "yyyyMMdd");
 			const endDate = event.endDate
-				? format(addDays(parseISO(event.endDate), 1), "yyyyMMdd")
-				: format(addDays(parseISO(event.date), 1), "yyyyMMdd");
+				? format(addDays(parseISO(event.endDate), 0), "yyyyMMdd")
+				: format(addDays(parseISO(event.date), 0), "yyyyMMdd");
 
 			// Create unique identifier
 			const eventUid = `${event.id}-${startDate}@teamcalendar`;
@@ -221,7 +221,7 @@ function generateICalContent(events: Event[], user: any): string {
 				`DTEND;TZID=Europe/Amsterdam:${endDate}T235959`,
 				`LOCATION:Antwerp Ontspanningslaan 4 2960 BRECHT`,
 				description ? `DESCRIPTION:${description}` : "",
-				`ORGANIZER;CN=Sportlink:MAILTO:noreply@sportlink.nl`,
+				`ORGANIZER;CN=AZJP Team Calendar:MAILTO:team-calendar@lyke.be`,
 				// "STATUS:CONFIRMED",
 				"END:VEVENT",
 			]
@@ -411,7 +411,7 @@ function generateICalContent(events: Event[], user: any): string {
 		"VERSION:2.0",
 		"CALSCALE:GREGORIAN",
 		"METHOD:PUBLISH",
-		"X-WR-CALNAME:Sportlink - Racing D-1",
+		"X-WR-CALNAME:AZJP Team Calendar",
 		"BEGIN:VTIMEZONE",
 		"TZID:Europe/Amsterdam",
 		"TZURL:http://tzurl.org/zoneinfo/Europe/Amsterdam",
