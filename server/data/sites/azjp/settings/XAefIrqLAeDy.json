@@ -1,9 +1,9 @@
 {
   "colleagues": {
     "SjFBqPWVxUVY": {
-      "color": "#d73027",
+      "color": "#a50026",
       "initials": "MV",
-      "visible": false
+      "visible": true
     },
     "XAefIrqLAeDy": {
       "color": "#a50026",
@@ -101,5 +101,5 @@
       "repeatPattern": "all"
     }
   ],
-  "availabilityExceptions": [ ]
+  "availabilityExceptions": []
 }
