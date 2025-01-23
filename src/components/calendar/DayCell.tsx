@@ -104,7 +104,7 @@ export const DayCell = memo(function DayCell({
           ${isInRange ? "bg-blue-50 hover:bg-blue-100" : "hover:bg-opacity-90"}
           ${isHoverEndDate ? "ring-2 ring-blue-300" : ""}
           ${isSelected || isEndDate ? "z-10" : isInRange ? "z-5" : "z-0"}
-          ${currentUserHolidayEvent ? "bg-red-100" : ""}
+          ${currentUserHolidayEvent ? "bg-red-100 bg-stripes-red" : ""}
         `}
 				style={{
 					backgroundColor: currentUserHolidayEvent
