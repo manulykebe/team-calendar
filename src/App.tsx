@@ -7,16 +7,26 @@ import {
 import { Calendar } from "./components/Calendar";
 import { Login } from "./components/Login";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { AppProvider } from "./context/AppContext";
+import { AppProvider, useApp } from "./context/AppContext"; // Add useApp import
 import { Toaster } from "react-hot-toast";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
-  return token ? (
-    <div data-tsx-id="private-route">{children}</div>
-  ) : (
-    <Navigate to="/login" />
-  );
+  const { isLoading } = useApp(); // Now useApp is properly imported
+
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  return <div data-tsx-id="private-route">{children}</div>;
 }
 
 function App() {

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Event } from "../types/event";
 import { createEvent, updateEvent } from "../lib/api";
 import { useApp } from "../context/AppContext";

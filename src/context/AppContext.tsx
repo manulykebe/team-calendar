@@ -53,16 +53,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   const loadAllData = async () => {
-    if (!token) return;
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
 
     try {
-      // 1. Fetch users and identify current user
-      const users = await getUsers(token);
+      // Load data in parallel for better performance
+      const [users, eventsData] = await Promise.all([
+        getUsers(token),
+        getEvents(token)
+      ]);
+
       const userEmail = localStorage.getItem("userEmail");
-      const user = users.find((u) => u.email === userEmail);
+      const user = users.find((u: User) => u.email === userEmail);
 
       if (!user) {
         throw new Error("Current user not found");
@@ -70,10 +77,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       // 2. Set current user and colleagues
       setCurrentUser(user);
-      setColleagues(users.filter((u) => u.id !== user.id));
-
-      // 3. Fetch events
-      const eventsData = await getEvents(token);
+      setColleagues(users.filter((u:User) => u.id !== user.id));
       setEvents(eventsData);
 
       // 4. Fetch availability report for the current year
@@ -95,12 +99,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Initial data load when token is available
+  // Load data when token changes
   useEffect(() => {
     if (token) {
       loadAllData();
     }
   }, [token]);
+
+  // Provide a way to refresh data
+  const refreshData = async () => {
+    await loadAllData();
+  };
 
   const value = {
     currentUser,
@@ -109,7 +118,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     availabilityData,
     isLoading,
     error,
-    refreshData: loadAllData,
+    refreshData,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

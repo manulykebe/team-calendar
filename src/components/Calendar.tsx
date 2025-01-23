@@ -23,8 +23,16 @@ import {
 } from "date-fns";
 
 export function Calendar() {
-  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
-  debugger;
+    const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
+  
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-600">
+        Error: User data not available
+      </div>
+    );
+  }
+  
   const weekStartsOn = currentUser?.app?.weekStartsOn || "Monday";
 
   const {
@@ -36,7 +44,6 @@ export function Calendar() {
     selectedEvent,
     setCurrentMonth,
     setShowModal,
-    setSelectedEvent,
     handleDateClick,
     handleDateHover,
     resetSelection,
