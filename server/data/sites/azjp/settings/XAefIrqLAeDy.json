@@ -6,7 +6,7 @@
       "visible": false
     },
     "XAefIrqLAeDy": {
-      "color": "#f46d43",
+      "color": "#313695",
       "initials": "KDJ"
     },
     "bhhMvstlpwUG": {
@@ -25,12 +25,12 @@
       "visible": false
     },
     "mKtuftErhhnO": {
-      "color": "#74add1",
+      "color": "#4575b4",
       "initials": "MS",
       "visible": false
     },
     "CxuzKGosISkk": {
-      "color": "#fee090",
+      "color": "#abd9e9",
       "initials": "SD",
       "visible": false
     },
@@ -40,22 +40,22 @@
       "visible": false
     },
     "ZIdGWxhnRSYw": {
-      "color": "#abd9e9",
+      "color": "#fee090",
       "initials": "KV",
       "visible": false
     },
     "OBOaSHVowagL": {
-      "color": "#74add1",
+      "color": "#fdae61",
       "initials": "HG",
       "visible": false
     },
     "dijVShwJoKFD": {
-      "color": "#4575b4",
+      "color": "#f46d43",
       "initials": "AY",
       "visible": false
     },
     "suuebRsdLhQv": {
-      "color": "#fdae61",
+      "color": "#74add1",
       "initials": "",
       "visible": false
     }
@@ -101,10 +101,5 @@
       "repeatPattern": "all"
     }
   ],
-  "availabilityExceptions": [
-    {
-      "date": "2025-01-06",
-      "am": true
-    }
-  ]
+  "availabilityExceptions": []
 }

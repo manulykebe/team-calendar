@@ -130,6 +130,13 @@ export function useAvailabilityState(colleague: User) {
         }
       });
 
+      // Emit availability change event to update calendar
+      userSettingsEmitter.emit("availabilityChanged", {
+        userId,
+        type: "schedule",
+        data: availabilityData
+      });
+
       toast.success("Availability updated successfully");
     } catch (err) {
       // Revert on error

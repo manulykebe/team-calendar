@@ -60,12 +60,6 @@ export function AvailabilityReport({
 		setSlotStates(initialStates);
 	}, [data]);
 
-	// Helper to convert Sunday=0 to Monday=0
-	const getMondayBasedDay = (date: Date): number => {
-		const day = getDay(date);
-		return day === 0 ? 6 : day - 1;
-	};
-
 	const handleTimeSlotClick = async (
 		dateStr: string,
 		part: "am" | "pm",
@@ -288,3 +282,9 @@ export function AvailabilityReport({
 		</div>
 	);
 }
+
+// Helper to convert Sunday=0 to Monday=0
+const getMondayBasedDay = (date: Date): number => {
+	const day = getDay(date);
+	return day === 0 ? 6 : day - 1;
+};

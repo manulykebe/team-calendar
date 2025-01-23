@@ -4,24 +4,8 @@ import { Event } from "../types/event";
 import { getUsers, getEvents } from "../lib/api";
 import { getAvailabilityReport } from "../lib/api/report";
 import { useAuth } from "./AuthContext";
+import { userSettingsEmitter } from "../hooks/useColleagueSettings";
 import toast from "react-hot-toast";
-
-/*
-
-const { currentUser, colleagues, events, availabilityData } = useApp();
-
-const { refreshData } = useApp();
-await refreshData();
-
-
-const { isLoading } = useApp();
-if (isLoading) {
-  return <LoadingSpinner />;
-}
-
-
-
-*/
 
 interface AppState {
   currentUser: User | null;
@@ -75,12 +59,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         throw new Error("Current user not found");
       }
 
-      // 2. Set current user and colleagues
+      // Set current user and colleagues
       setCurrentUser(user);
       setColleagues(users.filter((u:User) => u.id !== user.id));
       setEvents(eventsData);
 
-      // 4. Fetch availability report for the current year
+      // Fetch availability report for the current year
       const year = new Date().getFullYear().toString();
       const report = await getAvailabilityReport(
         token,
@@ -105,6 +89,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       loadAllData();
     }
   }, [token]);
+
+  // Listen for availability changes
+  useEffect(() => {
+    const handleAvailabilityChange = async () => {
+      if (!token || !currentUser) return;
+
+      try {
+        // Fetch updated availability data
+        const year = new Date().getFullYear().toString();
+        const report = await getAvailabilityReport(
+          token,
+          currentUser.site,
+          currentUser.id,
+          year
+        );
+        setAvailabilityData(report.availability);
+      } catch (err) {
+        console.error("Failed to update availability data:", err);
+      }
+    };
+
+    userSettingsEmitter.on("availabilityChanged", handleAvailabilityChange);
+    return () => {
+      userSettingsEmitter.off("availabilityChanged", handleAvailabilityChange);
+    };
+  }, [token, currentUser]);
 
   // Provide a way to refresh data
   const refreshData = async () => {
