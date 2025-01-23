@@ -1,12 +1,11 @@
 {
   "colleagues": {
     "SjFBqPWVxUVY": {
-      "color": "#a50026",
-      "initials": "MV",
-      "visible": true
+      "color": "#74add1",
+      "initials": "MV"
     },
     "XAefIrqLAeDy": {
-      "color": "#a50026",
+      "color": "#313695",
       "initials": "KDJ"
     },
     "bhhMvstlpwUG": {
@@ -25,9 +24,8 @@
       "visible": false
     },
     "mKtuftErhhnO": {
-      "color": "#f46d43",
-      "initials": "MS",
-      "visible": false
+      "color": "#abd9e9",
+      "initials": "MS"
     },
     "CxuzKGosISkk": {
       "color": "#fee090",
@@ -35,27 +33,27 @@
       "visible": false
     },
     "rwqJQFnAqWdn": {
-      "color": "#e0f3f8",
+      "color": "#fdae61",
       "initials": "EV",
       "visible": false
     },
     "ZIdGWxhnRSYw": {
-      "color": "#abd9e9",
+      "color": "#f46d43",
       "initials": "KV",
       "visible": false
     },
     "OBOaSHVowagL": {
-      "color": "#74add1",
+      "color": "#d73027",
       "initials": "HG",
       "visible": false
     },
     "dijVShwJoKFD": {
-      "color": "#4575b4",
+      "color": "#a50026",
       "initials": "AY",
       "visible": false
     },
     "suuebRsdLhQv": {
-      "color": "#fdae61",
+      "color": "#e0f3f8",
       "initials": "",
       "visible": false
     }

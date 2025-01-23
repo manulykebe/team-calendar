@@ -3,41 +3,48 @@ import { X } from "lucide-react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { ColleagueRow } from "./ColleagueRow";
-import { useColleagueSettings } from "../../../hooks/useColleagueSettings";
+import { useApp } from "../../../context/AppContext";
+import { useAuth } from "../../../context/AuthContext";
+import { updateUser } from "../../../lib/api";
 import { User } from "../../../types/user";
+import toast from "react-hot-toast";
+import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
 
 interface ColleagueSettingsProps {
   onClose: () => void;
 }
 
-export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
-  const {
-    colleagues,
-    loading,
-    error,
-    updateSettings,
-    getColleagueSettings,
-    DEFAULT_COLORS,
-    currentUser,
-  } = useColleagueSettings();
+export const DEFAULT_COLORS = [
+  "#a50026",
+  "#d73027",
+  "#f46d43",
+  "#fdae61",
+  "#fee090",
+  "#e0f3f8",
+  "#abd9e9",
+  "#74add1",
+  "#4575b4",
+  "#313695",
+];
 
+export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
+  const { token } = useAuth();
+  const { currentUser, colleagues } = useApp();
+  const [error, setError] = useState("");
+  const [localSettings, setLocalSettings] = useState(currentUser?.settings);
   const [orderedColleagues, setOrderedColleagues] = useState<User[]>([]);
-  const [visibilityState, setVisibilityState] = useState<
-    Record<string, boolean>
-  >({});
 
   useEffect(() => {
-    if (colleagues.length > 0 && currentUser) {
-      // Get saved order from settings or create default order
+    if (currentUser && colleagues) {
       const savedOrder = currentUser.settings?.colleagueOrder || [];
-      const orderedList = [...colleagues];
-
+      const allColleagues = [currentUser, ...colleagues];
+      
       // Sort based on saved order
+      const orderedList = [...allColleagues];
       orderedList.sort((a, b) => {
         const aIndex = savedOrder.indexOf(a.id);
         const bIndex = savedOrder.indexOf(b.id);
 
-        // Put items not in saved order at the end
         if (aIndex === -1 && bIndex === -1) return 0;
         if (aIndex === -1) return 1;
         if (bIndex === -1) return -1;
@@ -45,89 +52,116 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
         return aIndex - bIndex;
       });
 
-      // Move current user to top
-      const currentUserIndex = orderedList.findIndex(
-        (c) => c.id === currentUser.id,
-      );
-      if (currentUserIndex !== -1) {
-        const [currentUserData] = orderedList.splice(currentUserIndex, 1);
-        orderedList.unshift(currentUserData);
-      }
-
       setOrderedColleagues(orderedList);
-
-      // Initialize visibility state
-      const initialVisibility = colleagues.reduce(
-        (acc, colleague) => {
-          const settings = currentUser.settings?.colleagues?.[colleague.id];
-          acc[colleague.id] = settings?.visible !== false;
-          return acc;
-        },
-        {} as Record<string, boolean>,
-      );
-      setVisibilityState(initialVisibility);
+      setLocalSettings(currentUser.settings);
     }
-  }, [colleagues, currentUser]);
+  }, [currentUser, colleagues]);
+
+  if (!currentUser || !localSettings) {
+    return null;
+  }
+
+  const getColleagueSettings = (colleagueId: string) => {
+    return (
+      localSettings.colleagues?.[colleagueId] || {
+        color: DEFAULT_COLORS[Math.floor(Math.random() * DEFAULT_COLORS.length)],
+        initials: "",
+      }
+    );
+  };
+
+  const updateSettings = async (
+    colleagueId: string,
+    updates: {
+      color?: string;
+      initials?: string;
+      visible?: boolean;
+    }
+  ) => {
+    if (!currentUser || !token) return;
+
+    const newSettings = {
+      ...localSettings,
+      colleagues: {
+        ...localSettings.colleagues,
+        [colleagueId]: {
+          ...localSettings.colleagues?.[colleagueId],
+          ...updates,
+        },
+      },
+    };
+
+    try {
+      // Update server
+      await updateUser(token, currentUser.id, { settings: newSettings });
+      
+      // Update local state
+      setLocalSettings(newSettings);
+
+      // Emit settings update event
+      userSettingsEmitter.emit("settingsUpdated", {
+        userId: currentUser.id,
+        settings: newSettings
+      });
+      
+      toast.success("Settings updated successfully");
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to update settings";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    }
+  };
 
   const handleVisibilityToggle = async (colleagueId: string) => {
     if (!currentUser || colleagueId === currentUser.id) return;
 
-    const newVisibility = !visibilityState[colleagueId];
-    setVisibilityState((prev) => ({
-      ...prev,
-      [colleagueId]: newVisibility,
-    }));
+    const currentVisibility = localSettings.colleagues?.[colleagueId]?.visible;
+    const newVisibility = currentVisibility === false ? undefined : false;
 
-    try {
-      const currentSettings = getColleagueSettings(colleagueId);
-      await updateSettings(colleagueId, {
-        ...currentSettings,
-        visible: newVisibility,
-      });
-    } catch (err) {
-      setVisibilityState((prev) => ({
-        ...prev,
-        [colleagueId]: !newVisibility,
-      }));
-      console.error("Failed to update visibility:", err);
-    }
+    await updateSettings(colleagueId, { visible: newVisibility });
   };
 
   const moveColleague = async (dragIndex: number, hoverIndex: number) => {
-    if (!currentUser || dragIndex === 0 || hoverIndex === 0) return; // Prevent moving current user
+    if (!currentUser || !token || dragIndex === 0 || hoverIndex === 0) return;
 
     const newOrder = [...orderedColleagues];
     const [draggedColleague] = newOrder.splice(dragIndex, 1);
     newOrder.splice(hoverIndex, 0, draggedColleague);
+
     setOrderedColleagues(newOrder);
 
-    // Save new order to settings
-    const colleagueOrder = newOrder.map((c) => c.id);
+    const newSettings = {
+      ...localSettings,
+      colleagueOrder: newOrder.map(c => c.id),
+    };
+
     try {
-      await updateSettings("order", { colleagueOrder });
+      // Update server
+      await updateUser(token, currentUser.id, { settings: newSettings });
+      
+      // Update local state
+      setLocalSettings(newSettings);
+
+      // Emit settings update event
+      userSettingsEmitter.emit("settingsUpdated", {
+        userId: currentUser.id,
+        settings: newSettings
+      });
+      
+      toast.success("Colleague order updated");
     } catch (err) {
-      console.error("Failed to save colleague order:", err);
+      const errorMessage = err instanceof Error ? err.message : "Failed to update colleague order";
+      setError(errorMessage);
+      toast.error(errorMessage);
+      
       // Revert on error
-      setOrderedColleagues([...colleagues]);
+      setOrderedColleagues(orderedColleagues);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div className="bg-white rounded-lg p-6">
-          <div className="animate-pulse">Loading colleagues...</div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <DndProvider backend={HTML5Backend}>
-      <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-        data-tsx-id="colleague-settings"
-      >
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-xl max-w-5xl w-full">
           <div className="flex justify-between items-center p-6 border-b">
             <h2 className="text-xl font-semibold text-zinc-900">
@@ -160,9 +194,10 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
                   updateSettings(id, { initials })
                 }
                 onVisibilityToggle={handleVisibilityToggle}
-                isVisible={visibilityState[colleague.id]}
+                isVisible={localSettings.colleagues?.[colleague.id]?.visible !== false}
                 index={index}
                 moveColleague={moveColleague}
+                currentUser={currentUser}
               />
             ))}
           </div>
