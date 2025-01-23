@@ -104,7 +104,6 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
         settings: newSettings
       });
       
-      toast.success("Settings updated successfully");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to update settings";
       setError(errorMessage);
