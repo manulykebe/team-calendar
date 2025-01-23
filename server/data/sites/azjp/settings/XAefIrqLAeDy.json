@@ -101,30 +101,5 @@
       "repeatPattern": "all"
     }
   ],
-  "availabilityExceptions": [
-    {
-      "date": "2025-01-03",
-      "am": true
-    },
-    {
-      "date": "2025-01-13",
-      "am": true
-    },
-    {
-      "date": "2025-02-10",
-      "am": true
-    },
-    {
-      "date": "2025-01-20",
-      "am": true
-    },
-    {
-      "date": "2025-01-22",
-      "am": false
-    },
-    {
-      "date": "2025-01-23",
-      "am": false
-    }
-  ]
+  "availabilityExceptions": [ ]
 }
