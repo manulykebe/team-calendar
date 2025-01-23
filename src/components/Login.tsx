@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { login } from "../lib/api";
 import { Calendar } from "lucide-react";
@@ -103,14 +103,6 @@ export function Login() {
             </button>
           </div>
 
-          <div className="text-sm text-center">
-            <Link
-              to="/register"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
-              Don't have an account? Register
-            </Link>
-          </div>
         </form>
       </div>
     </div>
