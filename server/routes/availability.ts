@@ -28,7 +28,12 @@ const scheduleSchema = z.object({
 	weeklySchedule: weeklyScheduleSchema,
 	oddWeeklySchedule: weeklyScheduleSchema.optional(),
 	startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
-	endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"), // Removed optional and preprocess
+	endDate: z
+		.union([
+			z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+			z.literal(""),
+		])
+		.optional(), // Removed optional and preprocess
 	repeatPattern: z.enum(["all", "evenodd"]),
 });
 

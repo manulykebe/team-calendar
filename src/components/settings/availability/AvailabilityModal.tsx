@@ -15,6 +15,7 @@ import { TimeSlot } from "../../../../src/types/availability";
 import { SplitScheduleModal } from "./components/SplitScheduleModal";
 import toast from "react-hot-toast";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
+import { useApp } from "../../../context/AppContext";
 
 interface AvailabilityModalProps {
 	colleague: User;
@@ -26,7 +27,8 @@ export function AvailabilityModal({
 	onClose,
 }: AvailabilityModalProps) {
 	const { token } = useAuth();
-	if (!token) return null;
+	const { currentUser } = useApp();
+	if (!token || !currentUser) return null;
 
 	const [showReport, setShowReport] = useState(false);
 	const [reportData, setReportData] = useState<any>(null);
@@ -138,11 +140,11 @@ export function AvailabilityModal({
 			userSettingsEmitter.emit("settingsUpdated", {
 				userId: colleague.id,
 				settings: {
-					...colleague.settings,
+					...currentUser.settings,
 					availability: [
-						...colleague.settings?.availability?.slice(0, currentEntryIndex) || [],
+						...currentUser.settings?.availability?.slice(0, currentEntryIndex) || [],
 						availability,
-						...colleague.settings?.availability?.slice(currentEntryIndex + 1) || []
+						...currentUser.settings?.availability?.slice(currentEntryIndex + 1) || []
 					]
 				}
 			});

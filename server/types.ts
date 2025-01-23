@@ -49,7 +49,7 @@ export interface Availability {
 	weeklySchedule: WeeklySchedule;
 	oddWeeklySchedule?: WeeklySchedule;
 	startDate: string;
-	endDate: string;
+	endDate?: string;
 	repeatPattern: string;
 }
 
