@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { login } from "../lib/api";
 import { Calendar } from "lucide-react";
+import { LoadingSpinner } from "./common/LoadingSpinner";
 
 export function Login() {
   const navigate = useNavigate();
@@ -11,9 +12,13 @@ export function Login() {
   const [password, setPassword] = useState("");
   const [site, setSite] = useState("azjp");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setIsLoading(true);
+    
     try {
       const { token } = await login(email, password, site);
       localStorage.setItem("userEmail", email);
@@ -21,6 +26,8 @@ export function Login() {
       navigate("/");
     } catch (err) {
       setError("Invalid credentials");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,6 +66,7 @@ export function Login() {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
                 autoComplete="username"
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -75,6 +83,7 @@ export function Login() {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 autoComplete="current-password"
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -90,6 +99,7 @@ export function Login() {
                 onChange={(e) => setSite(e.target.value)}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Site"
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -97,12 +107,19 @@ export function Login() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign in
+              {isLoading ? (
+                <div className="flex items-center">
+                  <LoadingSpinner size="sm" />
+                  <span className="ml-2">Signing in...</span>
+                </div>
+              ) : (
+                "Sign in"
+              )}
             </button>
           </div>
-
         </form>
       </div>
     </div>
