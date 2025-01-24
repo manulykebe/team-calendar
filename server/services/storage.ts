@@ -7,6 +7,11 @@ import { uploadToS3, getFromS3, deleteFromS3 } from "./s3.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, "..", "data");
 
+// Helper function to generate storage keys
+export function getStorageKey(type: string, ...parts: string[]): string {
+  return `${type}/${parts.join("/")}`;
+}
+
 // Local file system operations
 async function writeLocalFile(filePath: string, data: string) {
   const fullPath = path.join(DATA_DIR, filePath);
