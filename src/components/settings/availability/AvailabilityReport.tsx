@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import toast from "react-hot-toast";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
 import { useState, useEffect } from "react";
+import { User } from "../../../types";
 
 interface AvailabilityReportProps {
 	data: {
@@ -20,13 +21,11 @@ interface AvailabilityReportProps {
 			};
 		};
 	};
+	colleague: User;
 	onClose: () => void;
 }
 
-export function AvailabilityReport({
-	data,
-	onClose,
-}: AvailabilityReportProps) {
+export function AvailabilityReport({ data, colleague, onClose }: AvailabilityReportProps) {
 	const { token } = useAuth();
 	const dayHeaders = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 	const months = [
@@ -46,13 +45,15 @@ export function AvailabilityReport({
 
 	// Track both clicked slots and their current values
 	const [slotStates, setSlotStates] = useState<Record<string, boolean>>({});
-	const [loadingSlots, setLoadingSlots] = useState<Record<string, boolean>>({});
+	const [loadingSlots, setLoadingSlots] = useState<Record<string, boolean>>(
+		{}
+	);
 
 	// Initialize slot states from data
 	useEffect(() => {
 		const initialStates: Record<string, boolean> = {};
 		Object.entries(data.availability).forEach(([date, dayData]) => {
-			['am', 'pm'].forEach(part => {
+			["am", "pm"].forEach((part) => {
 				const slotKey = `${date}-${part}`;
 				initialStates[slotKey] = dayData[part as keyof typeof dayData];
 			});
@@ -71,7 +72,7 @@ export function AvailabilityReport({
 		const newValue = !currentValue;
 
 		// Update loading state
-		setLoadingSlots(prev => ({ ...prev, [slotKey]: true }));
+		setLoadingSlots((prev) => ({ ...prev, [slotKey]: true }));
 
 		try {
 			await updateAvailabilityException(token, data.userId, {
@@ -81,17 +82,17 @@ export function AvailabilityReport({
 			});
 
 			// Update local state
-			setSlotStates(prev => ({ ...prev, [slotKey]: newValue }));
+			setSlotStates((prev) => ({ ...prev, [slotKey]: newValue }));
 
 			// Emit event to update settings
-			userSettingsEmitter.emit("availabilityChanged", { 
+			userSettingsEmitter.emit("availabilityChanged", {
 				userId: data.userId,
 				type: "exception",
 				data: {
 					date: dateStr,
 					part,
-					value: newValue
-				}
+					value: newValue,
+				},
 			});
 
 			toast.success("Availability updated");
@@ -100,7 +101,7 @@ export function AvailabilityReport({
 			toast.error("Failed to update availability");
 			// Don't update state on error
 		} finally {
-			setLoadingSlots(prev => ({ ...prev, [slotKey]: false }));
+			setLoadingSlots((prev) => ({ ...prev, [slotKey]: false }));
 		}
 	};
 
@@ -112,7 +113,7 @@ export function AvailabilityReport({
 			<div className="bg-white rounded-lg shadow-xl max-w-[1400px] w-full max-h-[90vh] overflow-auto">
 				<div className="sticky top-0 bg-white z-10 flex justify-between items-center p-6 border-b">
 					<h2 className="text-xl font-semibold text-zinc-900">
-						Availability Report - {data.year}
+						Availability Report for {colleague.firstName} {colleague.lastName} - {data.year}
 					</h2>
 					<button
 						onClick={onClose}
@@ -215,12 +216,24 @@ export function AvailabilityReport({
 														{data.dayParts.map(
 															(part) => {
 																const slotKey = `${dateStr}-${part}`;
-																const isLoading = loadingSlots[slotKey];
-																const currentValue = slotStates[slotKey] ?? dayData?.[part as keyof typeof dayData] ?? false;
+																const isLoading =
+																	loadingSlots[
+																		slotKey
+																	];
+																const currentValue =
+																	slotStates[
+																		slotKey
+																	] ??
+																	dayData?.[
+																		part as keyof typeof dayData
+																	] ??
+																	false;
 
 																return (
 																	<button
-																		key={part}
+																		key={
+																			part
+																		}
 																		onClick={() =>
 																			handleTimeSlotClick(
 																				dateStr,
@@ -231,8 +244,8 @@ export function AvailabilityReport({
 																			)
 																		}
 																		className={`h-1.5 w-full transition-colors cursor-pointer ${
-																			isLoading 
-																				? "bg-yellow-500" 
+																			isLoading
+																				? "bg-yellow-500"
 																				: currentValue
 																					? "bg-green-500 hover:bg-green-600"
 																					: isWeekend
@@ -240,7 +253,8 @@ export function AvailabilityReport({
 																						: "bg-red-500 hover:bg-red-600"
 																		} rounded-sm`}
 																		disabled={
-																			isWeekend || isLoading
+																			isWeekend ||
+																			isLoading
 																		}
 																		title={`${format(currentDate, "MMM d")} ${part.toUpperCase()}`}
 																	/>

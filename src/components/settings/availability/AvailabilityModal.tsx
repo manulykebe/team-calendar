@@ -71,7 +71,7 @@ export function AvailabilityModal({
 		setAlternateSchedule,
 	});
 
-	const { handleDelete, handleAdd, handleSplit } = useScheduleNavigation({
+	const { handleAdd, handleSplit } = useScheduleNavigation({
 		token,
 		colleague,
 		currentEntryIndex,
@@ -446,6 +446,7 @@ export function AvailabilityModal({
 			{showReport && reportData && (
 				<AvailabilityReport
 					data={reportData}
+					colleague={colleague}
 					onClose={() => setShowReport(false)}
 				/>
 			)}
