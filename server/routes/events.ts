@@ -7,6 +7,8 @@ import {
   updateEvent,
   deleteEvent,
 } from "../services/events.js";
+import { getSocketManager } from "../websocket/socketManager.js";
+import { readSiteData } from "../utils.js";
 import { z } from "zod";
 
 const router = Router();
@@ -25,12 +27,41 @@ const eventSchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
     .optional(),
+  status: z.enum(['pending', 'approved', 'denied']).optional(),
 });
 
 router.get("/", async (req: AuthRequest, res) => {
   try {
-    const events = await getUserEvents(req.user!.site, req.user!.id);
-    res.json(events);
+    // Check if this is an admin requesting specific user's events
+    const requestedUserId = req.headers['x-user-id'] as string;
+    
+    if (requestedUserId && req.user!.role === 'admin') {
+      // Admin requesting specific user's events
+      const events = await getUserEvents(req.user!.site, requestedUserId);
+      res.json(events);
+    } else if (req.user!.role === 'admin' && !requestedUserId) {
+      // Admin requesting all site events - this shouldn't happen with the new approach
+      // but keeping as fallback
+      const siteData = await readSiteData(req.user!.site);
+      const allEvents: any[] = [];
+      
+      // Collect events from all users in the site
+      for (const user of siteData.users) {
+        try {
+          const userEvents = await getUserEvents(req.user!.site, user.id);
+          allEvents.push(...userEvents);
+        } catch (error) {
+          // Continue if we can't get events for a specific user
+          console.warn(`Failed to get events for user ${user.id}:`, error);
+        }
+      }
+      
+      res.json(allEvents);
+    } else {
+      // Regular user requesting their own events
+      const events = await getUserEvents(req.user!.site, req.user!.id);
+      res.json(events);
+    }
   } catch (error) {
     res.status(500).json({
       message:
@@ -48,6 +79,17 @@ router.post("/", async (req: AuthRequest, res) => {
       userId: req.user!.id,
       site: req.user!.site,
     });
+
+    // Broadcast event creation to other users
+    const socketManager = getSocketManager();
+    if (socketManager) {
+      socketManager.broadcastEventChange(
+        req.user!.site,
+        event,
+        'created',
+        req.user!.id
+      );
+    }
 
     res.status(201).json(event);
   } catch (error) {
@@ -72,10 +114,23 @@ router.put("/:id", async (req: AuthRequest, res) => {
     const event = await updateEvent({
       id: req.params.id,
       ...validatedData,
-      endDate: validatedData.endDate || validatedData.date, // Fallback to date if endDate not provided
+      endDate: validatedData.endDate || validatedData.date,
       userId: req.user!.id,
       site: req.user!.site,
+      userRole: req.user!.role,
     });
+
+    // Broadcast event update to other users
+    const socketManager = getSocketManager();
+    if (socketManager) {
+      socketManager.broadcastEventChange(
+        req.user!.site,
+        event,
+        'updated',
+        req.user!.id
+      );
+    }
+
     res.json(event);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -93,12 +148,28 @@ router.put("/:id", async (req: AuthRequest, res) => {
 
 router.delete("/:id", async (req: AuthRequest, res) => {
   try {
+    // Get the event before deletion for broadcasting
+    const events = await getUserEvents(req.user!.site, req.user!.id);
+    const eventToDelete = events.find(e => e.id === req.params.id);
+
     await deleteEvent({
       id: req.params.id,
       userId: req.user!.id,
       site: req.user!.site,
       userRole: req.user!.role,
     });
+
+    // Broadcast event deletion to other users
+    const socketManager = getSocketManager();
+    if (socketManager && eventToDelete) {
+      socketManager.broadcastEventChange(
+        req.user!.site,
+        eventToDelete,
+        'deleted',
+        req.user!.id
+      );
+    }
+
     res.sendStatus(204);
   } catch (error) {
     res.status(403).json({

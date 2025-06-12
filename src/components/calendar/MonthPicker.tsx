@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
 	format,
 	addMonths,
@@ -8,6 +8,7 @@ import {
 	parseISO,
 	isAfter,
 	isBefore,
+	isWithinInterval,
 } from "date-fns";
 import {
 	ChevronLeft,
@@ -16,6 +17,10 @@ import {
 	ChevronsRight,
 	Calendar,
 } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { useApp } from "../../context/AppContext";
+import { getPeriods } from "../../lib/api/periods";
+import { Period } from "../../types/period";
 
 interface MonthPickerProps {
 	currentMonth: Date;
@@ -25,16 +30,22 @@ interface MonthPickerProps {
 
 // Define the date range constants
 const BEGIN_PICKER_DATE = parseISO("2024-11-11");
-const END_PICKER_DATE = parseISO("2028-06-30"); // Updated to June 2025
+const END_PICKER_DATE = parseISO("2028-06-30");
 
 export function MonthPicker({
 	currentMonth,
 	onDateSelect,
 	weekStartsOn,
 }: MonthPickerProps) {
+	const { token } = useAuth();
+	const { currentUser } = useApp();
 	const [isOpen, setIsOpen] = useState(false);
 	const [baseMonth, setBaseMonth] = useState(startOfMonth(currentMonth));
 	const [isHovered, setIsHovered] = useState(false);
+	const [periods, setPeriods] = useState<Period[]>([]);
+	const [loadingPeriods, setLoadingPeriods] = useState(false);
+	const [selectedDate, setSelectedDate] = useState<Date>(currentMonth);
+	const [loadedYears, setLoadedYears] = useState<Set<number>>(new Set());
 
 	const weekStartsOnNumber =
 		{
@@ -43,18 +54,194 @@ export function MonthPicker({
 			Saturday: 6,
 		}[weekStartsOn] || 1;
 
+	// Update selected date when currentMonth changes
+	useEffect(() => {
+		setSelectedDate(currentMonth);
+	}, [currentMonth]);
+
+	// Load periods for multiple years when component mounts or when baseMonth changes
+	useEffect(() => {
+		const loadPeriodsForVisibleYears = async () => {
+			if (!token || !currentUser || !isOpen) return;
+
+			try {
+				setLoadingPeriods(true);
+				
+				// Calculate which years are visible in the current 3-month view
+				const months = [
+					baseMonth,
+					addMonths(baseMonth, 1),
+					addMonths(baseMonth, 2),
+				];
+				
+				const visibleYears = new Set(months.map(month => month.getFullYear()));
+				const yearsToLoad = Array.from(visibleYears).filter(year => !loadedYears.has(year));
+				
+				if (yearsToLoad.length === 0) {
+					setLoadingPeriods(false);
+					return;
+				}
+
+				// Load periods for all visible years
+				const periodPromises = yearsToLoad.map(year => 
+					getPeriods(token, currentUser.site, year).catch(error => {
+						console.error(`Failed to load periods for year ${year}:`, error);
+						return { periods: [] };
+					})
+				);
+
+				const periodResults = await Promise.all(periodPromises);
+				
+				// Combine all periods from different years
+				const allNewPeriods = periodResults.flatMap(result => result.periods || []);
+				
+				// Update periods state by merging with existing periods
+				setPeriods(prevPeriods => {
+					// Remove periods from years we're reloading to avoid duplicates
+					const filteredPrevPeriods = prevPeriods.filter(period => {
+						const periodYear = new Date(period.startDate).getFullYear();
+						return !yearsToLoad.includes(periodYear);
+					});
+					
+					return [...filteredPrevPeriods, ...allNewPeriods];
+				});
+				
+				// Mark these years as loaded
+				setLoadedYears(prev => new Set([...prev, ...yearsToLoad]));
+				
+			} catch (error) {
+				console.error("Failed to load periods:", error);
+			} finally {
+				setLoadingPeriods(false);
+			}
+		};
+
+		loadPeriodsForVisibleYears();
+	}, [token, currentUser, baseMonth, isOpen, loadedYears]);
+
+	// Check if a date is within an open editing period
+	const isDateOpenForEditing = (date: Date): boolean => {
+		return periods.some(period => {
+			if (period.editingStatus === 'closed') return false;
+			
+			try {
+				const periodStart = parseISO(period.startDate);
+				const periodEnd = parseISO(period.endDate);
+				return isWithinInterval(date, { start: periodStart, end: periodEnd });
+			} catch (error) {
+				return false;
+			}
+		});
+	};
+
+	// Get the editing status for a date
+	const getDateEditingStatus = (date: Date): string | null => {
+		const period = periods.find(period => {
+			try {
+				const periodStart = parseISO(period.startDate);
+				const periodEnd = parseISO(period.endDate);
+				return isWithinInterval(date, { start: periodStart, end: periodEnd });
+			} catch (error) {
+				return false;
+			}
+		});
+
+		return period?.editingStatus || null;
+	};
+
+	// Find the first available date for a specific editing status
+	const findFirstAvailableDate = (editingStatus: 'open-holiday' | 'open-desiderata'): Date | null => {
+		const relevantPeriods = periods.filter(period => period.editingStatus === editingStatus);
+		
+		if (relevantPeriods.length === 0) return null;
+
+		// Sort periods by start date and find the earliest one
+		const sortedPeriods = relevantPeriods.sort((a, b) => 
+			new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+		);
+
+		try {
+			const firstPeriod = sortedPeriods[0];
+			const startDate = parseISO(firstPeriod.startDate);
+			
+			// Make sure it's within our allowed date range
+			if (isAfter(startDate, END_PICKER_DATE) || isBefore(startDate, BEGIN_PICKER_DATE)) {
+				return null;
+			}
+			
+			return startDate;
+		} catch (error) {
+			return null;
+		}
+	};
+
+	// Find the first available date in the visible months
+	const findFirstAvailableDateInVisibleMonths = (): Date | null => {
+		const months = [
+			baseMonth,
+			addMonths(baseMonth, 1),
+			addMonths(baseMonth, 2),
+		];
+
+		for (const month of months) {
+			const start = new Date(month.getFullYear(), month.getMonth(), 1);
+			const end = new Date(month.getFullYear(), month.getMonth() + 1, 0);
+
+			for (let day = 1; day <= end.getDate(); day++) {
+				const date = new Date(month.getFullYear(), month.getMonth(), day);
+				
+				// Check if date is within allowed range
+				if (isAfter(date, END_PICKER_DATE) || isBefore(date, BEGIN_PICKER_DATE)) {
+					continue;
+				}
+
+				// Check if date has open editing status
+				if (isDateOpenForEditing(date)) {
+					return date;
+				}
+			}
+		}
+
+		return null;
+	};
+
+	// Auto-select first available date when baseMonth changes
+	useEffect(() => {
+		if (!isOpen || periods.length === 0) return;
+
+		const firstAvailable = findFirstAvailableDateInVisibleMonths();
+		if (firstAvailable && !isSameDay(firstAvailable, selectedDate)) {
+			setSelectedDate(firstAvailable);
+			onDateSelect(firstAvailable);
+		}
+	}, [baseMonth, periods, isOpen]);
+
+	// Handle clicking on editing status indicators
+	const handleEditingStatusClick = (editingStatus: 'open-holiday' | 'open-desiderata') => {
+		const firstAvailableDate = findFirstAvailableDate(editingStatus);
+		
+		if (firstAvailableDate) {
+			// Update all states to ensure proper highlighting
+			setSelectedDate(firstAvailableDate);
+			setBaseMonth(startOfMonth(firstAvailableDate));
+			onDateSelect(firstAvailableDate);
+			// Keep the panel open for better UX
+		}
+	};
+
 	const handleToday = () => {
 		const today = new Date();
+		let targetDate = today;
+		
 		if (isAfter(today, END_PICKER_DATE)) {
-			onDateSelect(END_PICKER_DATE);
-			setBaseMonth(startOfMonth(END_PICKER_DATE));
+			targetDate = END_PICKER_DATE;
 		} else if (isBefore(today, BEGIN_PICKER_DATE)) {
-			onDateSelect(BEGIN_PICKER_DATE);
-			setBaseMonth(startOfMonth(BEGIN_PICKER_DATE));
-		} else {
-			onDateSelect(today);
-			setBaseMonth(startOfMonth(today));
+			targetDate = BEGIN_PICKER_DATE;
 		}
+		
+		setSelectedDate(targetDate);
+		onDateSelect(targetDate);
+		setBaseMonth(startOfMonth(targetDate));
 	};
 
 	const handlePrevYear = () => {
@@ -93,6 +280,16 @@ export function MonthPicker({
 		}
 	};
 
+	const handleDateClick = (date: Date) => {
+		if (isAfter(date, END_PICKER_DATE) || isBefore(date, BEGIN_PICKER_DATE)) {
+			return;
+		}
+		
+		setSelectedDate(date);
+		onDateSelect(date);
+		// Keep the panel open for better UX
+	};
+
 	const renderMonth = (monthDate: Date) => {
 		const daysInMonth = [];
 		const start = new Date(
@@ -120,35 +317,57 @@ export function MonthPicker({
 				monthDate.getMonth(),
 				day
 			);
-			const isSelected = isSameDay(date, currentMonth);
+			const isSelectedDate = isSameDay(date, selectedDate);
 			const isToday = isSameDay(date, new Date());
 			const isDisabled =
 				isAfter(date, END_PICKER_DATE) ||
 				isBefore(date, BEGIN_PICKER_DATE);
+			
+			const isOpenForEditing = !isDisabled && isDateOpenForEditing(date);
+			const editingStatus = getDateEditingStatus(date);
+
+			// Determine the styling based on editing status
+			let dateClasses = "h-6 w-6 rounded-full text-xs flex items-center justify-center relative transition-all duration-200";
+			let indicatorClasses = "";
+
+			if (isDisabled) {
+				dateClasses += " text-zinc-300 cursor-not-allowed";
+			} else if (isSelectedDate) {
+				dateClasses += " bg-blue-600 text-white";
+			} else if (isToday) {
+				dateClasses += " text-blue-600 font-semibold ring-1 ring-blue-600";
+			} else {
+				dateClasses += " hover:bg-zinc-100 cursor-pointer";
+			}
+
+			// Add editing status indicator
+			if (isOpenForEditing && editingStatus) {
+				switch (editingStatus) {
+					case 'open-holiday':
+						indicatorClasses = "absolute -top-0.5 -right-0.5 w-2 h-2 bg-yellow-400 rounded-full border border-white";
+						break;
+					case 'open-desiderata':
+						indicatorClasses = "absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full border border-white";
+						break;
+				}
+			}
 
 			daysInMonth.push(
 				<button
 					key={day}
-					onClick={() => {
-						if (!isDisabled) {
-							onDateSelect(date);
-							setIsOpen(false);
-						}
-					}}
+					onClick={() => handleDateClick(date)}
 					disabled={isDisabled}
-					className={`h-6 w-6 rounded-full text-xs flex items-center justify-center relative
-            ${
-				isSelected
-					? "bg-blue-600 text-white"
-					: isToday
-						? "text-blue-600 font-semibold"
-						: isDisabled
-							? "text-zinc-300 cursor-not-allowed"
-							: "hover:bg-zinc-100"
-			}
-            ${isToday && !isSelected ? "ring-1 ring-blue-600" : ""}`}
+					className={dateClasses}
+					title={
+						isOpenForEditing 
+							? `Open for ${editingStatus === 'open-holiday' ? 'Holiday' : 'Desiderata'} editing`
+							: isDisabled 
+								? 'Date not available'
+								: format(date, 'MMMM d, yyyy')
+					}
 				>
 					{day}
+					{indicatorClasses && <div className={indicatorClasses} />}
 				</button>
 			);
 		}
@@ -167,13 +386,24 @@ export function MonthPicker({
 			{/* Toggle button in the header */}
 			<button
 				onClick={() => setIsOpen(!isOpen)}
-				className={`fixed top-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 z-10`}
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}
+				className={`fixed top-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 z-10 transition-all duration-200`}
 				aria-label={"Open month picker"}
 			>
 				<Calendar
 					className={`w-5 h-5 transition-colors duration-200`}
 				/>
 			</button>
+
+			{/* Tooltip */}
+			<div
+				className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-zinc-800 rounded whitespace-nowrap transition-opacity duration-200
+          ${isHovered && !isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+			>
+				{isOpen ? "Close month picker" : "Open month picker"}
+				<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-zinc-800" />
+			</div>
 
 			{/* Overlay */}
 			{isOpen && (
@@ -191,21 +421,13 @@ export function MonthPicker({
 			>
 				<div className="flex flex-col h-full">
 					<div className="flex items-center justify-between p-2 border-b">
-						<h2 className="text-lg font-semibold text-zinc-900"></h2>
+						<h2 className="text-lg font-semibold text-zinc-900">Calendar</h2>
 						<button
 							onClick={() => setIsOpen(false)}
 							className="p-2 hover:bg-zinc-100 rounded-full"
 						>
 							<Calendar className="w-5 h-5" />
 						</button>
-					</div>
-					{/* Tooltip */}
-					<div
-						className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-zinc-800 rounded whitespace-nowrap transition-opacity duration-200
-          ${isHovered && !isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-					>
-						{isOpen ? "Close month picker" : "Open month picker"}
-						<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-zinc-800" />
 					</div>
 
 					<div className="flex-1 overflow-hidden p-4">
@@ -255,7 +477,37 @@ export function MonthPicker({
 							</div>
 						</div>
 
+						{/* Legend for editing status indicators with clickable navigation */}
+						{periods.length > 0 && (
+							<div className="mb-4 p-3 bg-zinc-50 rounded-lg">
+								<h4 className="text-xs font-medium text-zinc-700 mb-2">Editing Status</h4>
+								<div className="space-y-1">
+									<button
+										onClick={() => handleEditingStatusClick('open-holiday')}
+										className="flex items-center space-x-2 text-xs w-full text-left hover:bg-zinc-100 rounded px-1 py-0.5 transition-colors"
+										title="Click to go to first Holiday editing period"
+									>
+										<div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+										<span className="text-zinc-600">Open - Holiday</span>
+									</button>
+									<button
+										onClick={() => handleEditingStatusClick('open-desiderata')}
+										className="flex items-center space-x-2 text-xs w-full text-left hover:bg-zinc-100 rounded px-1 py-0.5 transition-colors"
+										title="Click to go to first Desiderata editing period"
+									>
+										<div className="w-2 h-2 bg-green-400 rounded-full"></div>
+										<span className="text-zinc-600">Open - Desiderata</span>
+									</button>
+								</div>
+							</div>
+						)}
+
 						<div className="space-y-2">
+							{loadingPeriods && (
+								<div className="flex justify-center py-2">
+									<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+								</div>
+							)}
 							{months.map((month) => (
 								<div
 									key={month.toString()}
@@ -289,7 +541,7 @@ export function MonthPicker({
 											.map((day) => (
 												<div
 													key={day}
-													className="text-xs text-zinc-500"
+													className="text-xs text-zinc-500 text-center py-1"
 												>
 													{day}
 												</div>

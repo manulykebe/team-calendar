@@ -1,22 +1,20 @@
 import { memo, useState, useMemo, useCallback } from "react";
 import { format, isFirstDayOfMonth, isSameDay, parseISO } from "date-fns";
-import { getWeekNumber } from "../../utils/dateUtils";
 import { EventCard } from "./EventCard";
 import { MonthLabel } from "./MonthLabel";
-import { useFilteredEvents } from "../../hooks/useFilteredEvents";
 import { useCalendarColors } from "../../hooks/useCalendarColors";
+import { getEventsForDate } from "../../hooks/useOptimizedEvents";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
 import { Holiday } from "../../lib/api/holidays";
 import { Calendar } from "lucide-react";
 import { EventDetailsModal } from "./EventDetailsModal";
-import { AdminHolidayModal } from "./AdminHolidayModal";
-import { useAuth } from "../../context/AuthContext";
-import { useApp } from "../../context/AppContext";
 
-interface DayCellProps {
+interface OptimizedDayCellProps {
 	date: Date;
-	events: Event[];
+	eventsByDate: Map<string, Event[]>;
+	colleagueVisibility: Map<string, boolean>;
+	colleagueOrder: Map<string, number>;
 	onDateClick: (date: Date) => void;
 	onDateHover: (date: Date | null) => void;
 	userSettings?: any;
@@ -37,9 +35,11 @@ interface DayCellProps {
 
 const HOLIDAY_TYPES = ["requestedHoliday", "requestedHolidayMandatory"];
 
-export const DayCell = memo(function DayCell({
+export const OptimizedDayCell = memo(function OptimizedDayCell({
 	date,
-	events,
+	eventsByDate,
+	colleagueVisibility,
+	colleagueOrder,
 	onDateClick,
 	onDateHover,
 	userSettings,
@@ -52,17 +52,18 @@ export const DayCell = memo(function DayCell({
 	hoverDate,
 	availability = { am: true, pm: true },
 	isLoadingAvailability,
-}: DayCellProps) {
-	const { token } = useAuth();
-	const { colleagues, refreshData } = useApp();
+}: OptimizedDayCellProps) {
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
-	const [showAdminModal, setShowAdminModal] = useState(false);
-	const [selectedHolidayEvent, setSelectedHolidayEvent] = useState<Event | null>(null);
 	const { getColumnColor } = useCalendarColors(currentUser);
 	
 	// Memoize expensive calculations
 	const formattedDate = useMemo(() => format(date, "yyyy-MM-dd"), [date]);
-	const dayEvents = useFilteredEvents(events, formattedDate, currentUser);
+	
+	const dayEvents = useMemo(() => 
+		getEventsForDate(formattedDate, eventsByDate, colleagueVisibility, colleagueOrder, currentUser),
+		[formattedDate, eventsByDate, colleagueVisibility, colleagueOrder, currentUser]
+	);
+	
 	const backgroundColor = useMemo(() => getColumnColor(date), [getColumnColor, date]);
 	const showMonthLabel = useMemo(() => isFirstDayOfMonth(date), [date]);
 	const isToday = useMemo(() => isSameDay(date, new Date()), [date]);
@@ -86,6 +87,7 @@ export const DayCell = memo(function DayCell({
 
 	// Memoize current user holiday event check
 	const currentUserHolidayEvent = useMemo(() => {
+		const events = eventsByDate.get(formattedDate) || [];
 		return events.find(
 			(event) =>
 				HOLIDAY_TYPES.includes(event.type) &&
@@ -95,7 +97,7 @@ export const DayCell = memo(function DayCell({
 						date >= parseISO(event.date) &&
 						date <= parseISO(event.endDate)))
 		);
-	}, [events, currentUser?.id, formattedDate, date]);
+	}, [eventsByDate, formattedDate, currentUser?.id, date]);
 
 	// Use useCallback for event handlers to prevent unnecessary re-renders
 	const handleContextMenu = useCallback((e: React.MouseEvent) => {
@@ -105,21 +107,11 @@ export const DayCell = memo(function DayCell({
 
 	const handleClick = useCallback(() => {
 		if (currentUserHolidayEvent) {
-			const isAdmin = currentUser?.role === "admin";
-			
-			if (isAdmin) {
-				// Admin can manage any holiday request
-				setSelectedHolidayEvent(currentUserHolidayEvent);
-				setShowAdminModal(true);
-			} else {
-				// Regular user can only view their own
-				setSelectedHolidayEvent(currentUserHolidayEvent);
-				setShowHolidayModal(true);
-			}
+			setShowHolidayModal(true);
 			return;
 		}
 		onDateClick(date);
-	}, [currentUserHolidayEvent, onDateClick, date, currentUser?.role]);
+	}, [currentUserHolidayEvent, onDateClick, date]);
 
 	const handleMouseEnter = useCallback(() => {
 		onDateHover(date);
@@ -129,17 +121,7 @@ export const DayCell = memo(function DayCell({
 		onDateHover(null);
 	}, [onDateHover]);
 
-	// Find the event owner for admin modal
-	const getEventOwner = (event: Event) => {
-		return event.userId === currentUser?.id 
-			? currentUser 
-			: colleagues.find(c => c.id === event.userId) || null;
-	};
-
 	const { isSelected, isEndDate, isHoverEndDate, isInRange } = selectionStates;
-
-	// Check if this day has approved holidays (remove stripes)
-	const hasApprovedHoliday = currentUserHolidayEvent?.status === 'approved';
 
 	return (
 		<>
@@ -149,8 +131,7 @@ export const DayCell = memo(function DayCell({
           ${isInRange ? "bg-blue-50 hover:bg-blue-100" : "hover:bg-opacity-90"}
           ${isHoverEndDate ? "ring-2 ring-blue-300" : ""}
           ${isSelected || isEndDate ? "z-10" : isInRange ? "z-5" : "z-0"}
-          ${currentUserHolidayEvent && !hasApprovedHoliday ? "bg-red-100 bg-stripes-red" : ""}
-          ${currentUserHolidayEvent && hasApprovedHoliday ? "bg-green-100" : ""}
+          ${currentUserHolidayEvent ? "bg-red-100 bg-stripes-red" : ""}
         `}
 				style={{
 					backgroundColor: currentUserHolidayEvent
@@ -163,7 +144,7 @@ export const DayCell = memo(function DayCell({
 				onMouseEnter={handleMouseEnter}
 				onMouseLeave={handleMouseLeave}
 				onContextMenu={handleContextMenu}
-				data-tsx-id="day-cell"
+				data-tsx-id="optimized-day-cell"
 			>
 				{/* Availability background layers */}
 				{!isLoadingAvailability ? (
@@ -228,26 +209,11 @@ export const DayCell = memo(function DayCell({
 				</div>
 			</div>
 
-			{showHolidayModal && selectedHolidayEvent && (
+			{showHolidayModal && currentUserHolidayEvent && (
 				<EventDetailsModal
-					event={selectedHolidayEvent}
-					onClose={() => {
-						setShowHolidayModal(false);
-						setSelectedHolidayEvent(null);
-					}}
+					event={currentUserHolidayEvent}
+					onClose={() => setShowHolidayModal(false)}
 					onDelete={onEventDelete}
-				/>
-			)}
-
-			{showAdminModal && selectedHolidayEvent && (
-				<AdminHolidayModal
-					event={selectedHolidayEvent}
-					eventOwner={getEventOwner(selectedHolidayEvent)}
-					onClose={() => {
-						setShowAdminModal(false);
-						setSelectedHolidayEvent(null);
-					}}
-					onUpdate={refreshData}
 				/>
 			)}
 		</>

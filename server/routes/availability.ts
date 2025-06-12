@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authenticateToken } from "../middleware/auth.js";
 import { AuthRequest } from "../types.js";
 import { readUserSettings, writeUserSettings } from "../utils.js";
+import { getSocketManager } from "../websocket/socketManager.js";
 import { z } from "zod";
 
 const router = Router();
@@ -33,7 +34,7 @@ const scheduleSchema = z.object({
 			z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
 			z.literal(""),
 		])
-		.optional(), // Removed optional and preprocess
+		.optional(),
 	repeatPattern: z.enum(["all", "evenodd"]),
 });
 
@@ -71,6 +72,16 @@ router.post("/:userId/:index", async (req: AuthRequest, res) => {
 
 		settings.availability.splice(parseInt(req.params.index), 0, schedule);
 		await writeUserSettings(req.user!.site, req.params.userId, settings);
+
+		// Broadcast availability change to other users
+		const socketManager = getSocketManager();
+		if (socketManager) {
+			socketManager.broadcastAvailabilityChange(
+				req.user!.site,
+				req.params.userId,
+				settings.availability
+			);
+		}
 
 		res.status(201).json(schedule);
 	} catch (error) {
@@ -111,6 +122,16 @@ router.put("/:userId/:index", async (req: AuthRequest, res) => {
 		settings.availability[index] = schedule;
 		await writeUserSettings(req.user!.site, req.params.userId, settings);
 
+		// Broadcast availability change to other users
+		const socketManager = getSocketManager();
+		if (socketManager) {
+			socketManager.broadcastAvailabilityChange(
+				req.user!.site,
+				req.params.userId,
+				settings.availability
+			);
+		}
+
 		res.json(schedule);
 	} catch (error) {
 		if (error instanceof z.ZodError) {
@@ -149,6 +170,16 @@ router.delete("/:userId/:index", async (req: AuthRequest, res) => {
 		settings.availability.splice(index, 1);
 		await writeUserSettings(req.user!.site, req.params.userId, settings);
 
+		// Broadcast availability change to other users
+		const socketManager = getSocketManager();
+		if (socketManager) {
+			socketManager.broadcastAvailabilityChange(
+				req.user!.site,
+				req.params.userId,
+				settings.availability
+			);
+		}
+
 		res.sendStatus(204);
 	} catch (error) {
 		res.status(500).json({
@@ -175,6 +206,16 @@ router.put("/:userId/reorder", async (req: AuthRequest, res) => {
 		);
 		settings.availability = schedules;
 		await writeUserSettings(req.user!.site, req.params.userId, settings);
+
+		// Broadcast availability change to other users
+		const socketManager = getSocketManager();
+		if (socketManager) {
+			socketManager.broadcastAvailabilityChange(
+				req.user!.site,
+				req.params.userId,
+				schedules
+			);
+		}
 
 		res.json(schedules);
 	} catch (error) {

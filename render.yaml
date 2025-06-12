@@ -1,9 +1,24 @@
 services:
   - type: web
-    name: team-calendar
+    name: team-calendar-backend
     env: node
+    region: oregon
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: node dist/server/index.js
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+      - key: AWS_REGION
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_BUCKET_NAME
+        sync: false

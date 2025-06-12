@@ -6,6 +6,7 @@ export interface Event {
   description: string;
   date: string;
   endDate?: string;
+  status?: 'pending' | 'approved' | 'denied';
   createdAt: string;
   updatedAt: string;
 }

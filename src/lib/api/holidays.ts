@@ -1,4 +1,5 @@
 import { API_URL } from "./config";
+import { holidaysCache, getCacheKey } from "./cache";
 
 export interface Holiday {
   date: string;
@@ -10,6 +11,14 @@ export async function getHolidays(
   year: string,
   location: string = "BE",
 ): Promise<Holiday[]> {
+  const cacheKey = getCacheKey.holidays(year, location);
+  
+  // Check cache first
+  const cached = holidaysCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   try {
     const response = await fetch(
       `${API_URL}/holidays/${year}?location=${location}`,
@@ -19,7 +28,12 @@ export async function getHolidays(
       throw new Error(`Failed to fetch holidays: ${response.statusText}`);
     }
 
-    return response.json();
+    const data = await response.json();
+    
+    // Cache the result
+    holidaysCache.set(cacheKey, data);
+    
+    return data;
   } catch (error) {
     console.error("Error fetching holidays:", error);
     throw error;

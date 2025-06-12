@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DayCell } from "./DayCell";
 import { CalendarHeader } from "./CalendarHeader";
 import { WeekColumn } from "./WeekColumn";
@@ -8,6 +8,7 @@ import { User } from "../../types/user";
 import { Holiday, getHolidays } from "../../lib/api/holidays";
 import { format } from "date-fns";
 import { getSiteData } from "../../lib/api/client";
+import { useWebSocketContext } from "../../context/WebSocketContext";
 
 interface CalendarGridProps {
 	currentMonth: Date;
@@ -50,22 +51,68 @@ export function CalendarGrid({
 }: CalendarGridProps) {
 	const [loading, setLoading] = useState(false);
 	const [holidays, setHolidays] = useState<Holiday[]>([]);
+	const { joinCalendarDate, leaveCalendarDate } = useWebSocketContext();
 
-	const { days, emptyDays, weekDays } = getCalendarDays(
-		currentMonth,
-		weekStartsOn as any
+	// Memoize calendar calculations
+	const { days, emptyDays, weekDays } = useMemo(() => 
+		getCalendarDays(currentMonth, weekStartsOn as any),
+		[currentMonth, weekStartsOn]
 	);
 
+	// Memoize holidays map for faster lookups
+	const holidaysMap = useMemo(() => {
+		const map = new Map<string, Holiday>();
+		holidays.forEach(holiday => {
+			map.set(holiday.date, holiday);
+		});
+		return map;
+	}, [holidays]);
+
+	// Join/leave WebSocket rooms for visible dates
 	useEffect(() => {
+		const visibleDates = days.map(day => format(day, 'yyyy-MM-dd'));
+		
+		// Join rooms for all visible dates
+		visibleDates.forEach(date => {
+			joinCalendarDate(date);
+		});
+
+		// Cleanup: leave rooms when component unmounts or dates change
+		return () => {
+			visibleDates.forEach(date => {
+				leaveCalendarDate(date);
+			});
+		};
+	}, [days, joinCalendarDate, leaveCalendarDate]);
+
+	// Optimize holiday fetching with better caching
+	useEffect(() => {
+		let isCancelled = false;
+
 		const fetchHolidays = async () => {
-			// Skip fetch if no user or site data
 			if (!currentUser?.site) {
-				setHolidays([]); // Reset holidays when no site data
+				setHolidays([]);
 				return;
 			}
 
-			setLoading(true);
 			const year = format(currentMonth, "yyyy");
+			const cacheKey = `holidays-${currentUser.site}-${year}`;
+			
+			// Check if we already have this data cached
+			const cached = sessionStorage.getItem(cacheKey);
+			if (cached) {
+				try {
+					const cachedData = JSON.parse(cached);
+					if (!isCancelled) {
+						setHolidays(cachedData);
+					}
+					return;
+				} catch (e) {
+					// Invalid cache, continue with fetch
+				}
+			}
+
+			setLoading(true);
 			try {
 				const siteData = await getSiteData(currentUser.site);
 				if (!siteData?.app?.location) {
@@ -75,27 +122,100 @@ export function CalendarGrid({
 
 				const location = siteData.app.location;
 				const holidayData = await getHolidays(year, location);
-				setHolidays(holidayData);
+				
+				if (!isCancelled) {
+					setHolidays(holidayData);
+					// Cache the result
+					sessionStorage.setItem(cacheKey, JSON.stringify(holidayData));
+				}
 			} catch (err) {
 				console.error("Failed to fetch holidays:", err);
-				setHolidays([]);
+				if (!isCancelled) {
+					setHolidays([]);
+				}
 			} finally {
-				setLoading(false);
+				if (!isCancelled) {
+					setLoading(false);
+				}
 			}
 		};
 
 		fetchHolidays();
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [currentMonth, currentUser?.site]);
 
 	const showWeekNumber = currentUser?.settings?.showWeekNumber || "none";
 
-	const visibleColleagues = currentUser?.settings?.colleagues
-		? Object.values(currentUser.settings.colleagues).filter(
+	// Calculate row height based on visible colleagues
+	const visibleColleagues = useMemo(() => {
+		// For admin view, we need to count all visible colleagues
+		if (currentUser?.role === 'admin') {
+			if (!currentUser?.settings?.colleagues) return 1;
+			
+			// Count visible colleagues
+			const visibleCount = Object.values(currentUser.settings.colleagues).filter(
 				(c: any) => c.visible !== false
-			).length
-		: 1;
+			).length;
+			
+			// Add 1 for the current user
+			return visibleCount + 1;
+		}
+		
+		// For regular users
+		if (!currentUser?.settings?.colleagues) return 1;
+		return Object.values(currentUser.settings.colleagues).filter(
+			(c: any) => c.visible !== false
+		).length;
+	}, [currentUser?.settings?.colleagues, currentUser?.role]);
 
+	// Adjust row height based on number of visible colleagues
 	const rowHeight = Math.max(120, 42 + (visibleColleagues - 1) * 24);
+
+	// Memoize day cells to prevent unnecessary re-renders
+	const dayCells = useMemo(() => {
+		return days.map((day) => {
+			const formattedDate = format(day, "yyyy-MM-dd");
+			const holiday = holidaysMap.get(formattedDate);
+
+			return (
+				<DayCell
+					key={day.toISOString()}
+					date={day}
+					events={events}
+					onDateClick={onDateClick}
+					onDateHover={onDateHover}
+					userSettings={userSettings}
+					onEventDelete={onEventDelete}
+					currentUser={currentUser}
+					onEventResize={onEventResize}
+					holiday={holiday}
+					selectedStartDate={selectedStartDate}
+					selectedEndDate={selectedEndDate}
+					hoverDate={hoverDate}
+					availability={availabilityData[formattedDate]}
+					isLoadingAvailability={isLoadingAvailability}
+				/>
+			);
+		});
+	}, [
+		days,
+		holidaysMap,
+		events,
+		onDateClick,
+		onDateHover,
+		userSettings,
+		onEventDelete,
+		currentUser,
+		onEventResize,
+		selectedStartDate,
+		selectedEndDate,
+		hoverDate,
+		availabilityData,
+		isLoadingAvailability
+	]);
 
 	return (
 		<div className="bg-zinc-200" data-tsx-id="calendar-grid">
@@ -132,32 +252,7 @@ export function CalendarGrid({
 					{Array.from({ length: emptyDays }).map((_, index) => (
 						<div key={`empty-${index}`} className="bg-white p-2" />
 					))}
-					{days.map((day) => {
-						const formattedDate = format(day, "yyyy-MM-dd");
-						const holiday = holidays.find(
-							(h) => h.date === formattedDate
-						);
-
-						return (
-							<DayCell
-								key={day.toISOString()}
-								date={day}
-								events={events}
-								onDateClick={onDateClick}
-								onDateHover={onDateHover}
-								userSettings={userSettings}
-								onEventDelete={onEventDelete}
-								currentUser={currentUser}
-								onEventResize={onEventResize}
-								holiday={holiday}
-								selectedStartDate={selectedStartDate}
-								selectedEndDate={selectedEndDate}
-								hoverDate={hoverDate}
-								availability={availabilityData[formattedDate]}
-								isLoadingAvailability={isLoadingAvailability}
-							/>
-						);
-					})}
+					{dayCells}
 				</div>
 				{showWeekNumber === "right" && (
 					<WeekColumn

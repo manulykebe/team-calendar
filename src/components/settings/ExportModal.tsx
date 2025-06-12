@@ -3,6 +3,7 @@ import { X, Download, Calendar } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { API_URL } from "../../lib/api/config";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 interface ExportModalProps {
   userId: string;
@@ -15,9 +16,12 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [exportType, setExportType] = useState<"all" | "user">("all");
+  const [isExporting, setIsExporting] = useState(false);
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (!token) return;
+
+    setIsExporting(true);
 
     let url = `${API_URL}/export/${site}`;
     if (exportType === "user") {
@@ -28,27 +32,65 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
       url += `?startDate=${startDate}&endDate=${endDate}`;
     }
 
-    // Create a hidden anchor element to trigger the download
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "");
-    
-    // Add authorization header through a fetch request
-    fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(response => response.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        link.href = url;
-        link.click();
-        window.URL.revokeObjectURL(url);
-      })
-      .catch(error => {
-        console.error("Error downloading file:", error);
+    // Close the modal immediately
+    onClose();
+
+    // Show download progress toast
+    const toastId = toast.loading('Preparing your export file...', {
+      duration: Infinity, // Keep it until we manually dismiss it
+    });
+
+    try {
+      // Fetch the file
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to export events');
+      }
+
+      // Get the blob
+      const blob = await response.blob();
+      
+      // Create download link
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      
+      // Generate filename
+      const timestamp = format(new Date(), "yyyy-MM-dd");
+      const filename = exportType === "all" 
+        ? `events-${site}-${timestamp}.csv`
+        : `events-${site}-${userId}-${timestamp}.csv`;
+      
+      link.setAttribute("download", filename);
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(downloadUrl);
+
+      // Show success message
+      toast.success('Export file downloaded successfully!', { 
+        id: toastId,
+        duration: 3000 
+      });
+
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      toast.error('Failed to export events. Please try again.', { 
+        id: toastId,
+        duration: 4000 
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -64,6 +106,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
           <button
             onClick={onClose}
             className="text-zinc-400 hover:text-zinc-500"
+            disabled={isExporting}
           >
             <X className="w-6 h-6" />
           </button>
@@ -78,6 +121,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
               value={exportType}
               onChange={(e) => setExportType(e.target.value as "all" | "user")}
               className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              disabled={isExporting}
             >
               <option value="all">All Events</option>
               <option value="user">My Events Only</option>
@@ -94,6 +138,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                disabled={isExporting}
               />
             </div>
 
@@ -107,6 +152,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
                 min={startDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                disabled={isExporting}
               />
             </div>
           </div>
@@ -119,16 +165,18 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
         <div className="flex justify-end space-x-3 p-6 border-t bg-zinc-50">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+            className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50 disabled:opacity-50"
+            disabled={isExporting}
           >
             Cancel
           </button>
           <button
             onClick={handleExport}
-            className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            disabled={isExporting}
+            className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Download className="w-4 h-4 mr-2" />
-            Export
+            {isExporting ? 'Exporting...' : 'Export'}
           </button>
         </div>
       </div>

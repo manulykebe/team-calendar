@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { User } from "../types/user";
 import { Event } from "../types/event";
 import { getUsers, getEvents } from "../lib/api";
@@ -36,7 +36,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadAllData = async () => {
+  // Function to fetch events for all users in the site (admin view)
+  const fetchAllSiteEvents = useCallback(async (users: User[], token: string) => {
+    const allEvents: Event[] = [];
+    
+    // Fetch events for each user in the site
+    for (const user of users) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/events`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'X-User-Id': user.id, // Pass user ID to get their events
+          },
+        });
+        
+        if (response.ok) {
+          const userEvents = await response.json();
+          allEvents.push(...userEvents);
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch events for user ${user.id}:`, error);
+      }
+    }
+    
+    return allEvents;
+  }, []);
+
+  // Memoize the data loading function to prevent unnecessary re-renders
+  const loadAllData = useCallback(async () => {
     if (!token) {
       setIsLoading(false);
       return;
@@ -46,12 +74,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setError(null);
 
     try {
-      // Load data in parallel for better performance
-      const [users, eventsData] = await Promise.all([
-        getUsers(token),
-        getEvents(token)
-      ]);
-
+      // Load users first
+      const users = await getUsers(token);
       const userEmail = localStorage.getItem("userEmail");
       const user = users.find((u: User) => u.email === userEmail);
 
@@ -62,17 +86,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       // Set current user and colleagues
       setCurrentUser(user);
       setColleagues(users.filter((u:User) => u.id !== user.id));
+
+      // Load events based on user role
+      let eventsData: Event[] = [];
+      
+      if (user.role === 'admin') {
+        // For admins, fetch events from all users in the site
+        const siteUsers = users.filter((u: User) => u.site === user.site);
+        eventsData = await fetchAllSiteEvents(siteUsers, token);
+      } else {
+        // For regular users, only fetch their own events
+        eventsData = await getEvents(token);
+      }
+      
       setEvents(eventsData);
 
       // Fetch availability report for the current year
       const year = new Date().getFullYear().toString();
-      const report = await getAvailabilityReport(
-        token,
-        user.site,
-        user.id,
-        year
-      );
-      setAvailabilityData(report.availability);
+      
+      // Use a separate try-catch for availability to not fail the entire load
+      try {
+        const report = await getAvailabilityReport(
+          token,
+          user.site,
+          user.id,
+          year
+        );
+        setAvailabilityData(report.availability);
+      } catch (availabilityError) {
+        console.warn("Failed to load availability data:", availabilityError);
+        // Don't fail the entire load for availability issues
+        setAvailabilityData({});
+      }
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to load data";
@@ -81,22 +126,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token, fetchAllSiteEvents]);
 
   // Load data when token changes
   useEffect(() => {
     if (token) {
       loadAllData();
+    } else {
+      // Reset state when no token
+      setCurrentUser(null);
+      setColleagues([]);
+      setEvents([]);
+      setAvailabilityData({});
+      setIsLoading(false);
+      setError(null);
     }
-  }, [token]);
+  }, [token, loadAllData]);
 
-  // Listen for availability changes
+  // Optimize availability change handling
   useEffect(() => {
     const handleAvailabilityChange = async () => {
       if (!token || !currentUser) return;
 
       try {
-        // Fetch updated availability data
+        // Debounce availability updates to prevent excessive API calls
         const year = new Date().getFullYear().toString();
         const report = await getAvailabilityReport(
           token,
@@ -110,16 +163,55 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    userSettingsEmitter.on("availabilityChanged", handleAvailabilityChange);
+    // Debounce the availability change handler
+    let timeoutId: NodeJS.Timeout;
+    const debouncedHandler = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(handleAvailabilityChange, 300);
+    };
+
+    userSettingsEmitter.on("availabilityChanged", debouncedHandler);
+    
     return () => {
-      userSettingsEmitter.off("availabilityChanged", handleAvailabilityChange);
+      clearTimeout(timeoutId);
+      userSettingsEmitter.off("availabilityChanged", debouncedHandler);
     };
   }, [token, currentUser]);
 
-  // Provide a way to refresh data
-  const refreshData = async () => {
-    await loadAllData();
-  };
+  // Provide a way to refresh data without affecting calendar view
+  const refreshData = useCallback(async () => {
+    if (!token) return;
+
+    try {
+      // Only refresh events and users, don't change loading state
+      // This prevents the calendar from jumping around
+      const users = await getUsers(token);
+      const userEmail = localStorage.getItem("userEmail");
+      const user = users.find((u: User) => u.email === userEmail);
+
+      if (user) {
+        setCurrentUser(user);
+        setColleagues(users.filter((u:User) => u.id !== user.id));
+        
+        // Load events based on user role
+        let eventsData: Event[] = [];
+        
+        if (user.role === 'admin') {
+          // For admins, fetch events from all users in the site
+          const siteUsers = users.filter((u: User) => u.site === user.site);
+          eventsData = await fetchAllSiteEvents(siteUsers, token);
+        } else {
+          // For regular users, only fetch their own events
+          eventsData = await getEvents(token);
+        }
+        
+        setEvents(eventsData);
+      }
+    } catch (err) {
+      console.error("Failed to refresh data:", err);
+      // Don't show error toast for background refreshes
+    }
+  }, [token, fetchAllSiteEvents]);
 
   const value = {
     currentUser,

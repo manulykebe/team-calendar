@@ -9,6 +9,7 @@ import { EventModal } from "./EventModal";
 import { SettingsPanel } from "./settings/SettingsPanel";
 import { CalendarGrid } from "./calendar/CalendarGrid";
 import { MonthPicker } from "./calendar/MonthPicker";
+import { ConnectionStatus } from "./common/ConnectionStatus";
 import { useCalendarState } from "../hooks/useCalendarState";
 import { useApp } from "../context/AppContext";
 import {
@@ -94,6 +95,8 @@ export function Calendar() {
 
   return (
     <div className="max-w-7xl mx-auto px-2 sm:px-2 lg:px-4 py-4" data-tsx-id="calendar">
+      <ConnectionStatus />
+      
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center space-x-4">
           <h1 className="text-3xl font-bold text-zinc-900">

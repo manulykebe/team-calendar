@@ -6,10 +6,12 @@ import {
 	LogOut,
 	Clock,
 	Calendar,
-	Download
+	Download,
+	Shield
 } from "lucide-react";
 import { ColleagueSettings } from "./colleagues/ColleagueSettings";
 import { UserManagement } from "../users/UserManagement";
+import { PeriodManagementModal } from "../admin/PeriodManagementModal";
 import { useAuth } from "../../context/AuthContext";
 import { ColleagueAvatar } from "./colleagues/ColleagueAvatar";
 import { useUserSettings } from "./hooks/useUserSettings";
@@ -29,6 +31,7 @@ export function SettingsPanel({}: SettingsPanelProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [showColleagueSettings, setShowColleagueSettings] = useState(false);
 	const [showUserManagement, setShowUserManagement] = useState(false);
+	const [showPeriodManagement, setShowPeriodManagement] = useState(false);
 	const [showAvailability, setShowAvailability] = useState(false);
 	const [showSubscription, setShowSubscription] = useState(false);
 	const [showExport, setShowExport] = useState(false);
@@ -73,6 +76,20 @@ export function SettingsPanel({}: SettingsPanelProps) {
 		setShowExport(false);
 		setIsOpen(true);
 	};
+
+	const handleOpenPeriodManagement = () => {
+		if (currentUser) {
+			setShowPeriodManagement(true);
+			setIsOpen(false);
+		}
+	};
+
+	const handleClosePeriodManagement = () => {
+		setShowPeriodManagement(false);
+		setIsOpen(true);
+	};
+
+	const isAdmin = currentUser?.role === 'admin';
 
 	return (
 		<div data-tsx-id="settings-panel">
@@ -155,6 +172,23 @@ export function SettingsPanel({}: SettingsPanelProps) {
 							</div>
 						</div>
 
+						{isAdmin && (
+							<div>
+								<h3 className="text-sm font-medium text-zinc-900 mb-2">
+									Admin
+								</h3>
+								<div className="space-y-2">
+									<button
+										onClick={handleOpenPeriodManagement}
+										className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+									>
+										<Shield className="w-4 h-4 mr-2" />
+										Define/Edit Periods
+									</button>
+								</div>
+							</div>
+						)}
+
 						<DisplaySettings
 							currentUser={currentUser}
 							onWorkStartChange={updateWorkStartDay}
@@ -212,6 +246,12 @@ export function SettingsPanel({}: SettingsPanelProps) {
 
 			{showUserManagement && (
 				<UserManagement onClose={() => setShowUserManagement(false)} />
+			)}
+
+			{showPeriodManagement && (
+				<PeriodManagementModal
+					onClose={handleClosePeriodManagement}
+				/>
 			)}
 
 			{showAvailability && currentUser && (

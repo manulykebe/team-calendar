@@ -62,6 +62,7 @@ export async function updateEvent(
     date: string;
     endDate?: string;
     type: string;
+    status?: 'pending' | 'approved' | 'denied';
   },
 ) {
   if (!token) {

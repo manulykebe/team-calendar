@@ -41,8 +41,13 @@
   "colleagueOrder": [
     "SjFBqPWVxUVY",
     "XAefIrqLAeDy",
-    "bhhMvstlpwUG",
-    "KTHpbRLreSbC"
+    "mKtuftErhhnO",
+    "suuebRsdLhQv",
+    "CxuzKGosISkk",
+    "rwqJQFnAqWdn",
+    "ZIdGWxhnRSYw",
+    "OBOaSHVowagL",
+    "dijVShwJoKFD"
   ],
   "availability": [
     {
@@ -70,6 +75,12 @@
       },
       "startDate": "2025-01-01",
       "repeatPattern": "all"
+    }
+  ],
+  "availabilityExceptions": [
+    {
+      "date": "2025-02-12",
+      "pm": true
     }
   ]
 }

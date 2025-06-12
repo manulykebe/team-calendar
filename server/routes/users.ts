@@ -8,6 +8,7 @@ import {
 	deleteUser,
 } from "../services/users.js";
 import { readSiteData, writeSiteData, readUserSettings, writeUserSettings } from "../utils.js";
+import { getSocketManager } from "../websocket/socketManager.js";
 
 const router = Router();
 
@@ -30,6 +31,17 @@ router.post("/", async (req: AuthRequest, res) => {
 			...req.body,
 			site: req.user!.site,
 		});
+
+		// Broadcast user creation to other users in the site
+		const socketManager = getSocketManager();
+		if (socketManager) {
+			socketManager.broadcastUserSettingsChange(
+				req.user!.site,
+				user.id,
+				{ action: 'user_created', user }
+			);
+		}
+
 		res.status(201).json(user);
 	} catch (error) {
 		res.status(400).json({
@@ -48,6 +60,17 @@ router.put("/:id", async (req: AuthRequest, res) => {
 			...req.body,
 			site: req.user!.site,
 		});
+
+		// Broadcast user settings change to other users
+		const socketManager = getSocketManager();
+		if (socketManager) {
+			socketManager.broadcastUserSettingsChange(
+				req.user!.site,
+				req.params.id,
+				req.body.settings || {}
+			);
+		}
+
 		res.json(user);
 	} catch (error) {
 		res.status(400).json({
@@ -99,6 +122,16 @@ router.put("/:id/exceptions", async (req: AuthRequest, res) => {
 		// Write updated data back to file
 		await writeUserSettings(req.user!.site, req.user!.id, settings);
 
+		// Broadcast availability exception change
+		const socketManager = getSocketManager();
+		if (socketManager) {
+			socketManager.broadcastAvailabilityChange(
+				req.user!.site,
+				req.params.id,
+				{ exceptions: settings.availabilityExceptions }
+			);
+		}
+
 		res.json(settings);
 	} catch (error) {
 		res.status(400).json({
@@ -114,6 +147,17 @@ router.put("/:id/exceptions", async (req: AuthRequest, res) => {
 router.delete("/:id", async (req: AuthRequest, res) => {
 	try {
 		await deleteUser(req.params.id, req.user!.site);
+
+		// Broadcast user deletion to other users
+		const socketManager = getSocketManager();
+		if (socketManager) {
+			socketManager.broadcastUserSettingsChange(
+				req.user!.site,
+				req.params.id,
+				{ action: 'user_deleted', userId: req.params.id }
+			);
+		}
+
 		res.sendStatus(204);
 	} catch (error) {
 		res.status(400).json({

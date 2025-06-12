@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { X } from "lucide-react";
 import { Event } from "../types/event";
+import { Period } from "../types/period";
+import { useAuth } from "../context/AuthContext";
+import { useApp } from "../context/AppContext";
+import { getPeriods } from "../lib/api/periods";
 import toast from "react-hot-toast";
 
 interface EventModalProps {
@@ -27,48 +31,153 @@ export function EventModal({
 	onSubmit,
 	defaultEventType,
 }: EventModalProps) {
+	const { token } = useAuth();
+	const { currentUser } = useApp();
 	const [title, setTitle] = useState(event?.title || "");
 	const [description, setDescription] = useState(event?.description || "");
 	const [type, setType] = useState(
-		event?.type || defaultEventType || "requestedPeriod"
+		event?.type || defaultEventType || "requestedHoliday"
 	);
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [periods, setPeriods] = useState<Period[]>([]);
+	const [availableEventTypes, setAvailableEventTypes] = useState<string[]>([]);
 
-	const eventTypes = {
-		requestedHoliday: { period: "week-Saturday[-1]-Sunday[1]" },
-		requestedHolidayMandatory: { period: "week-Saturday[-1]-Sunday[1]" },
-		requestedPeriod: { period: "day|days[1-7]" },
+	// Load periods and determine available event types
+	useEffect(() => {
+		const loadPeriodsAndDetermineTypes = async () => {
+			if (!token || !currentUser) return;
+
+			try {
+				const year = date.getFullYear();
+				const data = await getPeriods(token, currentUser.site, year);
+				setPeriods(data.periods || []);
+
+				// Determine available event types based on periods
+				const dateStr = format(date, "yyyy-MM-dd");
+				const availableTypes = getAvailableEventTypes(dateStr, data.periods || []);
+				setAvailableEventTypes(availableTypes);
+
+				// Set default type if current type is not available
+				if (availableTypes.length > 0 && !availableTypes.includes(type)) {
+					setType(availableTypes[0]);
+				}
+			} catch (error) {
+				console.error("Failed to load periods:", error);
+				// Fallback to basic event types if periods can't be loaded
+				setAvailableEventTypes(["requestedHoliday"]);
+			}
+		};
+
+		loadPeriodsAndDetermineTypes();
+	}, [token, currentUser, date, type]);
+
+	const getAvailableEventTypes = (dateStr: string, periods: Period[]): string[] => {
+		const targetDate = new Date(dateStr);
+		const availableTypes: string[] = [];
+
+		// Find the period that contains this date
+		const currentPeriod = periods.find(period => {
+			const periodStart = new Date(period.startDate);
+			const periodEnd = new Date(period.endDate);
+			return targetDate >= periodStart && targetDate <= periodEnd;
+		});
+
+		if (!currentPeriod) {
+			// If no period is defined, default to holiday only
+			return ["requestedHoliday"];
+		}
+
+		// Cascaded system: first Holidays, then Desiderata
+		switch (currentPeriod.editingStatus) {
+			case 'open-holiday':
+				availableTypes.push("requestedHoliday");
+				break;
+			case 'open-desiderata':
+				// When desiderata is open, both holiday and desiderata are available
+				// But holiday has priority (cascaded system)
+				availableTypes.push("requestedHoliday", "requestedDesiderata");
+				break;
+			case 'closed':
+			default:
+				// When closed, no event types are available for regular users
+				// Admins might still be able to create events (could be added later)
+				break;
+		}
+
+		return availableTypes;
+	};
+
+	const getEventTypeLabel = (eventType: string): string => {
+		switch (eventType) {
+			case "requestedHoliday":
+				return "Requested Holiday";
+			case "requestedDesiderata":
+				return "Requested Desiderata";
+			default:
+				return eventType
+					.replace(/([A-Z])/g, " $1")
+					.replace(/^./, (str) => str.toUpperCase());
+		}
+	};
+
+	const getCurrentPeriodStatus = (): string => {
+		const dateStr = format(date, "yyyy-MM-dd");
+		const targetDate = new Date(dateStr);
+
+		const currentPeriod = periods.find(period => {
+			const periodStart = new Date(period.startDate);
+			const periodEnd = new Date(period.endDate);
+			return targetDate >= periodStart && targetDate <= periodEnd;
+		});
+
+		if (!currentPeriod) {
+			return "No period defined for this date";
+		}
+
+		switch (currentPeriod.editingStatus) {
+			case 'open-holiday':
+				return `Holiday requests are open (${currentPeriod.name})`;
+			case 'open-desiderata':
+				return `Holiday and Desiderata requests are open (${currentPeriod.name})`;
+			case 'closed':
+				return `Period is closed for requests (${currentPeriod.name})`;
+			default:
+				return `Unknown status (${currentPeriod.name})`;
+		}
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const toastId = toast.loading("Creating an event...");
+
+		// Check if any event types are available
+		if (availableEventTypes.length === 0) {
+			setError("No event types are available for this date. The period may be closed for requests.");
+			return;
+		}
+
+		// Validate that the selected type is available
+		if (!availableEventTypes.includes(type)) {
+			setError("The selected event type is not available for this date.");
+			return;
+		}
+
+		const toastId = toast.loading("Creating event...");
 
 		try {
 			setLoading(true);
 			setError("");
 
-			// Adjust start date for holiday types
-			let startDate = new Date(date);
-			// if (type === "requestedHoliday" || type === "requestedHolidayMandatory") {
-			//   // Find previous Saturday
-			//   while (startDate.getDay() !== 6) {
-			//     // 6 is Saturday
-			//     startDate = subDays(startDate, 1);
-			//   }
-			// }
-
 			const eventData = {
 				title: title.trim(),
 				description: description.trim(),
-				date: format(startDate, "yyyy-MM-dd"),
+				date: format(date, "yyyy-MM-dd"),
 				endDate: endDate ? format(endDate, "yyyy-MM-dd") : undefined,
 				type,
 			};
+
 			await onSubmit(eventData);
 			toast.success("Event created successfully", { id: toastId });
-
 			onClose();
 		} catch (err) {
 			toast.error("Failed to create event", { id: toastId });
@@ -105,63 +214,81 @@ export function EventModal({
 						</div>
 					)}
 
-					<div>
-						<label className="block text-sm font-medium text-zinc-700">
-							Event Type *
-						</label>
-						<select
-							value={type}
-							onChange={(e) => setType(e.target.value)}
-							className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-							disabled={loading}
-						>
-							{Object.keys(eventTypes).map((typeId) => (
-								<option key={typeId} value={typeId}>
-									{typeId
-										.replace(/([A-Z])/g, " $1")
-										.replace(/^./, (str) =>
-											str.toUpperCase()
-										)}
-								</option>
-							))}
-						</select>
+					{/* Period Status Information */}
+					<div className="p-3 text-sm bg-blue-50 rounded-md border border-blue-200">
+						<div className="font-medium text-blue-800 mb-1">Period Status</div>
+						<div className="text-blue-700">{getCurrentPeriodStatus()}</div>
 					</div>
 
-					<div>
-						<label
-							htmlFor="title"
-							className="block text-sm font-medium text-zinc-700"
-						>
-							Title
-						</label>
-						<input
-							type="text"
-							id="title"
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
-							className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-							maxLength={100}
-							disabled={loading}
-						/>
-					</div>
+					{availableEventTypes.length === 0 ? (
+						<div className="p-3 text-sm text-amber-700 bg-amber-50 rounded-md border border-amber-200">
+							<div className="font-medium mb-1">No Event Types Available</div>
+							<div>This date is in a closed period. Event creation is not allowed.</div>
+						</div>
+					) : (
+						<>
+							<div>
+								<label className="block text-sm font-medium text-zinc-700">
+									Event Type *
+								</label>
+								<select
+									value={type}
+									onChange={(e) => setType(e.target.value)}
+									className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+									disabled={loading || availableEventTypes.length <= 1}
+								>
+									{availableEventTypes.map((eventType) => (
+										<option key={eventType} value={eventType}>
+											{getEventTypeLabel(eventType)}
+										</option>
+									))}
+								</select>
+								{availableEventTypes.length > 1 && (
+									<p className="mt-1 text-xs text-zinc-500">
+										Cascaded system: Holiday requests have priority over Desiderata
+									</p>
+								)}
+							</div>
 
-					<div>
-						<label
-							htmlFor="description"
-							className="block text-sm font-medium text-zinc-700"
-						>
-							Description
-						</label>
-						<textarea
-							id="description"
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
-							rows={3}
-							className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-							maxLength={500}
-							disabled={loading}
-						/>
-					</div>
+							<div>
+								<label
+									htmlFor="title"
+									className="block text-sm font-medium text-zinc-700"
+								>
+									Title
+								</label>
+								<input
+									type="text"
+									id="title"
+									value={title}
+									onChange={(e) => setTitle(e.target.value)}
+									className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+									maxLength={100}
+									disabled={loading}
+									placeholder={`Enter ${getEventTypeLabel(type).toLowerCase()} title`}
+								/>
+							</div>
+
+							<div>
+								<label
+									htmlFor="description"
+									className="block text-sm font-medium text-zinc-700"
+								>
+									Description
+								</label>
+								<textarea
+									id="description"
+									value={description}
+									onChange={(e) => setDescription(e.target.value)}
+									rows={3}
+									className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+									maxLength={500}
+									disabled={loading}
+									placeholder={`Enter ${getEventTypeLabel(type).toLowerCase()} description`}
+								/>
+							</div>
+						</>
+					)}
 
 					<div className="flex justify-end space-x-3">
 						<button
@@ -172,13 +299,15 @@ export function EventModal({
 						>
 							Cancel
 						</button>
-						<button
-							type="submit"
-							className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
-							disabled={loading}
-						>
-							{loading ? "Saving..." : "Save"}
-						</button>
+						{availableEventTypes.length > 0 && (
+							<button
+								type="submit"
+								className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+								disabled={loading}
+							>
+								{loading ? "Saving..." : "Save"}
+							</button>
+						)}
 					</div>
 				</form>
 			</div>

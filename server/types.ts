@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { SocketManager } from './websocket/socketManager.js';
 
 export interface AuthRequest extends Request {
 	user?: {
@@ -7,6 +8,7 @@ export interface AuthRequest extends Request {
 		site: string;
 		role?: string;
 	  };
+	socketManager?: SocketManager;
 }
 export interface User {
 	id: string;
@@ -75,6 +77,7 @@ export interface Event {
 	description: string;
 	date: string;
 	endDate?: string;
+	status?: 'pending' | 'approved' | 'denied';
 	createdAt: string;
 	updatedAt: string;
 }

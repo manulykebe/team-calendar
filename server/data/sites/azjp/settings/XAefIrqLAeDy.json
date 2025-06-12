@@ -97,7 +97,7 @@
         }
       },
       "startDate": "2025-01-01",
-      "endDate": "",
+      "endDate": "2026-12-31",
       "repeatPattern": "all"
     }
   ],

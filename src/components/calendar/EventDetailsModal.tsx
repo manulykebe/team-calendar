@@ -55,6 +55,56 @@ export function EventDetailsModal({
     }
   };
 
+  const getEventTypeLabel = (eventType: string): string => {
+    switch (eventType) {
+      case "requestedHoliday":
+        return "Requested Holiday";
+      case "requestedDesiderata":
+        return "Requested Desiderata";
+      default:
+        return eventType
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase());
+    }
+  };
+
+  const getEventTypeColor = (eventType: string, status?: string): string => {
+    // Status takes precedence over type
+    if (status === 'approved') {
+      return "bg-green-100 text-green-800";
+    }
+    if (status === 'denied') {
+      return "bg-red-100 text-red-800";
+    }
+    
+    // Default colors based on type
+    switch (eventType) {
+      case "requestedHoliday":
+        return "bg-amber-100 text-amber-800";
+      case "requestedDesiderata":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-blue-100 text-blue-800";
+    }
+  };
+
+  // Get status label for display
+  const getStatusLabel = () => {
+    if (!event.status || event.status === 'pending') {
+      return null; // Don't show for pending
+    }
+    
+    return (
+      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full mr-2 ${
+        event.status === 'approved' 
+          ? 'bg-green-100 text-green-800' 
+          : 'bg-red-100 text-red-800'
+      }`}>
+        {event.status === 'approved' ? 'Approved' : 'Denied'}
+      </span>
+    );
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
@@ -74,15 +124,24 @@ export function EventDetailsModal({
         </div>
 
         <div className="p-4 space-y-4">
-
-        <div>
+          <div>
             <h4 className="text-sm font-medium text-zinc-500 mb-1">Date</h4>
             <p className="text-zinc-900">
               {format(new Date(event.date), "MMMM d, yyyy")}
-              {event.endDate && (
+              {event.endDate && event.endDate !== event.date && (
                 <> - {format(new Date(event.endDate), "MMMM d, yyyy")}</>
               )}
             </p>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-medium text-zinc-500 mb-1">Type</h4>
+            <div className="flex items-center">
+              {getStatusLabel()}
+              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getEventTypeColor(event.type, event.status)}`}>
+                {getEventTypeLabel(event.type)}
+              </span>
+            </div>
           </div>
           
           <div>
@@ -115,15 +174,6 @@ export function EventDetailsModal({
                 {description || "No description"}
               </p>
             )}
-          </div>
-
-          <div>
-            <h4 className="text-sm font-medium text-zinc-500 mb-1">Type</h4>
-            <p className="text-zinc-900">
-              {event.type
-                .replace(/([A-Z])/g, " $1")
-                .replace(/^./, (str) => str.toUpperCase())}
-            </p>
           </div>
         </div>
 

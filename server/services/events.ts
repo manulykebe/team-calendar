@@ -29,6 +29,7 @@ export async function createEvent(params: {
     description: params.description,
     date: params.date,
     endDate: params.endDate,
+    status: 'pending', // Default status for new events
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -44,6 +45,8 @@ export async function updateEvent(params: {
   description: string;
   date: string;
   endDate: string;
+  type: string;
+  status?: 'pending' | 'approved' | 'denied';
   userId: string;
   site: string;
 }) {
@@ -64,6 +67,8 @@ export async function updateEvent(params: {
     description: params.description,
     date: params.date,
     endDate: params.endDate,
+    type: params.type,
+    ...(params.status && { status: params.status }),
     updatedAt: new Date().toISOString(),
   };
 

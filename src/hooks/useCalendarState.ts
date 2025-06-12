@@ -25,7 +25,8 @@ export function useCalendarState() {
 
     try {
       await createEvent(token, eventData);
-      await refreshData(); // Refresh all data after creating event
+      // Refresh data in background without affecting calendar view
+      await refreshData();
       setShowModal(false);
     } catch (error) {
       console.error("Failed to create event:", error);
@@ -34,7 +35,8 @@ export function useCalendarState() {
   };
 
   const handleEventDelete = async (eventId: string) => {
-    await refreshData(); // Refresh all data after deleting event
+    // Refresh data in background without affecting calendar view
+    await refreshData();
   };
 
   const handleEventResize = async (
@@ -53,7 +55,8 @@ export function useCalendarState() {
         date: newDate,
         endDate: newEndDate,
       });
-      await refreshData(); // Refresh all data after updating event
+      // Refresh data in background without affecting calendar view
+      await refreshData();
     } catch (error) {
       console.error("Failed to resize event:", error);
     }
