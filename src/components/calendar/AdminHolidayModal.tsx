@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { updateEvent } from "../../lib/api";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
+import ReactDOM from "react-dom";
 
 interface AdminHolidayModalProps {
   event: Event;
@@ -114,7 +115,7 @@ export function AdminHolidayModal({
 
   const colleagueDisplay = getColleagueDisplay();
 
-  return (
+  const modalContent = (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
       onClick={(e) => {
@@ -259,4 +260,6 @@ export function AdminHolidayModal({
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 }

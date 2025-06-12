@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
 import { useEventPermissions } from "../../hooks/useEventPermissions";
-import { EventDetailsModal } from "./EventDetailsModal";
 import { AdminHolidayModal } from "./AdminHolidayModal";
 import { useApp } from "../../context/AppContext";
 
@@ -214,7 +213,13 @@ export function EventCard({
 	return (
 		<div data-tsx-id="event-card">
 			<div
-				onClick={handleClick}
+				onClick={(e) => {
+					// stop propagation only if user is admin
+					if (isAdmin) {
+						e.stopPropagation();
+					}
+					handleClick();
+				}}
 				className={`absolute left-0 right-0 flex items-center justify-between text-xs hover:opacity-90 transition-all duration-200 ${getCursorStyle()}`}
 				style={{
 					backgroundColor: eventStyle.backgroundColor,
@@ -243,13 +248,7 @@ export function EventCard({
 				)}
 			</div>
 
-			{showDetails && (
-				<EventDetailsModal
-					event={event}
-					onClose={() => setShowDetails(false)}
-					onDelete={canModify ? onDelete : undefined}
-				/>
-			)}
+			
 
 			{showAdminModal && (
 				<AdminHolidayModal

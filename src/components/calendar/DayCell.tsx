@@ -1,6 +1,5 @@
 import { memo, useState, useMemo, useCallback } from "react";
 import { format, isFirstDayOfMonth, isSameDay, parseISO } from "date-fns";
-import { getWeekNumber } from "../../utils/dateUtils";
 import { EventCard } from "./EventCard";
 import { MonthLabel } from "./MonthLabel";
 import { useFilteredEvents } from "../../hooks/useFilteredEvents";
@@ -53,13 +52,12 @@ export const DayCell = memo(function DayCell({
 	availability = { am: true, pm: true },
 	isLoadingAvailability,
 }: DayCellProps) {
-	const { token } = useAuth();
 	const { colleagues, refreshData } = useApp();
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const [selectedHolidayEvent, setSelectedHolidayEvent] = useState<Event | null>(null);
 	const { getColumnColor } = useCalendarColors(currentUser);
-	
+
 	// Memoize expensive calculations
 	const formattedDate = useMemo(() => format(date, "yyyy-MM-dd"), [date]);
 	const dayEvents = useFilteredEvents(events, formattedDate, currentUser);
@@ -106,7 +104,7 @@ export const DayCell = memo(function DayCell({
 	const handleClick = useCallback(() => {
 		if (currentUserHolidayEvent) {
 			const isAdmin = currentUser?.role === "admin";
-			
+
 			if (isAdmin) {
 				// Admin can manage any holiday request
 				setSelectedHolidayEvent(currentUserHolidayEvent);
@@ -131,8 +129,8 @@ export const DayCell = memo(function DayCell({
 
 	// Find the event owner for admin modal
 	const getEventOwner = (event: Event) => {
-		return event.userId === currentUser?.id 
-			? currentUser 
+		return event.userId === currentUser?.id
+			? currentUser
 			: colleagues.find(c => c.id === event.userId) || null;
 	};
 
@@ -149,20 +147,14 @@ export const DayCell = memo(function DayCell({
           ${isInRange ? "bg-blue-50 hover:bg-blue-100" : "hover:bg-opacity-90"}
           ${isHoverEndDate ? "ring-2 ring-blue-300" : ""}
           ${isSelected || isEndDate ? "z-10" : isInRange ? "z-5" : "z-0"}
-          ${currentUserHolidayEvent && !hasApprovedHoliday ? "bg-red-100 bg-stripes-red" : ""}
-          ${currentUserHolidayEvent && hasApprovedHoliday ? "bg-green-100" : ""}
         `}
 				style={{
-					backgroundColor: currentUserHolidayEvent
-						? undefined
-						: isInRange || isSelected || isEndDate
-							? undefined
-							: backgroundColor,
+					backgroundColor:  backgroundColor,
 				}}
 				onClick={handleClick}
-				onMouseEnter={handleMouseEnter}
-				onMouseLeave={handleMouseLeave}
-				onContextMenu={handleContextMenu}
+				// onMouseEnter={handleMouseEnter}
+				// onMouseLeave={handleMouseLeave}
+				// onContextMenu={handleContextMenu}
 				data-tsx-id="day-cell"
 			>
 				{/* Availability background layers */}

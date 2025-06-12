@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1975f2aa-28f7-41ef-8742-e4b242c543d5",
+    "userId": "SjFBqPWVxUVY",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-06-12",
+    "endDate": "2025-06-13",
+    "status": "approved",
+    "createdAt": "2025-06-12T20:45:54.443Z",
+    "updatedAt": "2025-06-12T20:55:25.818Z"
+  },
+  {
+    "id": "5e552021-257a-47a7-b513-281f3c77a22f",
+    "userId": "SjFBqPWVxUVY",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-06-09",
+    "endDate": "2025-06-11",
+    "status": "denied",
+    "createdAt": "2025-06-12T20:50:26.741Z",
+    "updatedAt": "2025-06-12T20:50:31.986Z"
+  }
+]

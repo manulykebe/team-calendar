@@ -11,15 +11,27 @@
     "updatedAt": "2025-06-12T18:48:07.544Z"
   },
   {
-    "id": "99e23c7e-d11f-4a32-817a-c260b85397ae",
+    "id": "4c3d5425-5723-4d32-a87d-22b60f052bff",
     "userId": "XAefIrqLAeDy",
     "type": "requestedHoliday",
     "title": "",
     "description": "",
-    "date": "2025-06-03",
-    "endDate": "2025-06-12",
+    "date": "2025-06-04",
+    "endDate": "2025-06-11",
     "status": "pending",
-    "createdAt": "2025-06-12T19:18:49.730Z",
-    "updatedAt": "2025-06-12T19:18:49.730Z"
+    "createdAt": "2025-06-12T20:15:34.684Z",
+    "updatedAt": "2025-06-12T20:15:34.684Z"
+  },
+  {
+    "id": "aa285660-5db6-459e-9446-8d0262ad87d6",
+    "userId": "XAefIrqLAeDy",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-06-18",
+    "endDate": "2025-06-20",
+    "status": "pending",
+    "createdAt": "2025-06-12T20:45:24.900Z",
+    "updatedAt": "2025-06-12T20:45:24.900Z"
   }
 ]
