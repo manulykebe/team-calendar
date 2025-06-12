@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Check, XCircle, User } from "lucide-react";
+import { X, Check, XCircle, User, Clock, Calendar } from "lucide-react";
 import { Event } from "../../types/event";
 import { User as UserType } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
@@ -30,6 +30,8 @@ export function AdminHolidayModal({
         return "Holiday Request";
       case "requestedDesiderata":
         return "Desiderata Request";
+      case "requestedPeriod":
+        return "Period Request";
       default:
         return eventType
           .replace(/([A-Z])/g, " $1")
@@ -62,28 +64,30 @@ export function AdminHolidayModal({
   };
 
   const handleStatusUpdate = async (newStatus: 'approved' | 'denied') => {
-    if (!token) return;
+    if (!token || !eventOwner) return;
 
     setIsUpdating(true);
-    const toastId = toast.loading(`${newStatus === 'approved' ? 'Approving' : 'Denying'} holiday request...`);
+    const toastId = toast.loading(`${newStatus === 'approved' ? 'Approving' : 'Denying'} request...`);
 
     try {
+      // Use the admin update endpoint with userId specified
       await updateEvent(token, event.id, {
         ...event,
         status: newStatus,
+        userId: eventOwner.id, // Specify which user's event to update
       });
 
       toast.success(
-        `Holiday request ${newStatus === 'approved' ? 'approved' : 'denied'} successfully`,
+        `Request ${newStatus === 'approved' ? 'approved' : 'denied'} successfully`,
         { id: toastId }
       );
 
       onUpdate();
       onClose();
     } catch (error) {
-      console.error('Failed to update holiday status:', error);
+      console.error('Failed to update event status:', error);
       toast.error(
-        `Failed to ${newStatus === 'approved' ? 'approve' : 'deny'} holiday request`,
+        `Failed to ${newStatus === 'approved' ? 'approve' : 'deny'} request`,
         { id: toastId }
       );
     } finally {
@@ -130,7 +134,7 @@ export function AdminHolidayModal({
             </div>
             <div>
               <h3 className="text-lg font-semibold text-zinc-900">
-                Holiday Request Management
+                Request Management
               </h3>
               <p className="text-sm text-zinc-500">Admin Review</p>
             </div>
@@ -180,19 +184,25 @@ export function AdminHolidayModal({
           <div>
             <h4 className="text-sm font-medium text-zinc-700 mb-2">Date Range</h4>
             <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-              <p className="text-blue-900 font-medium">
-                {format(new Date(event.date), "EEEE, MMMM d, yyyy")}
-                {event.endDate && event.endDate !== event.date && (
-                  <>
-                    <span className="text-blue-600 mx-2">→</span>
-                    {format(new Date(event.endDate), "EEEE, MMMM d, yyyy")}
-                  </>
-                )}
-              </p>
-              {event.endDate && event.endDate !== event.date && (
-                <p className="text-sm text-blue-600 mt-1">
-                  Duration: {Math.ceil((new Date(event.endDate).getTime() - new Date(event.date).getTime()) / (1000 * 60 * 60 * 24)) + 1} days
+              <div className="flex items-center space-x-2 mb-2">
+                <Calendar className="w-4 h-4 text-blue-600" />
+                <p className="text-blue-900 font-medium">
+                  {format(new Date(event.date), "EEEE, MMMM d, yyyy")}
+                  {event.endDate && event.endDate !== event.date && (
+                    <>
+                      <span className="text-blue-600 mx-2">→</span>
+                      {format(new Date(event.endDate), "EEEE, MMMM d, yyyy")}
+                    </>
+                  )}
                 </p>
+              </div>
+              {event.endDate && event.endDate !== event.date && (
+                <div className="flex items-center space-x-2">
+                  <Clock className="w-4 h-4 text-blue-600" />
+                  <p className="text-sm text-blue-600">
+                    Duration: {Math.ceil((new Date(event.endDate).getTime() - new Date(event.date).getTime()) / (1000 * 60 * 60 * 24)) + 1} days
+                  </p>
+                </div>
               )}
             </div>
           </div>

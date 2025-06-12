@@ -19,9 +19,15 @@ export class SocketManager {
     this.io = new SocketIOServer(server, {
       cors: {
         origin: process.env.NODE_ENV === 'production' 
-          ? ['https://superlative-longma-9e9cf8.netlify.app', 'https://jade-croissant-f8c630.netlify.app']
+          ? [
+              'https://superlative-longma-9e9cf8.netlify.app', 
+              'https://jade-croissant-f8c630.netlify.app',
+              'https://zesty-centaur-20f7b0.netlify.app'  // Add the new deployment domain
+            ]
           : ['http://localhost:5173', 'http://localhost:3000'],
-        credentials: true
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Id']
       },
       transports: ['websocket', 'polling']
     });

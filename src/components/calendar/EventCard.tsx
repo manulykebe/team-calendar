@@ -3,6 +3,7 @@ import { Event } from "../../types/event";
 import { User } from "../../types/user";
 import { useEventPermissions } from "../../hooks/useEventPermissions";
 import { AdminHolidayModal } from "./AdminHolidayModal";
+import { EventDetailsModal } from "./EventDetailsModal";
 import { useApp } from "../../context/AppContext";
 
 interface EventCardProps {
@@ -18,7 +19,7 @@ interface EventCardProps {
 	) => Promise<void>;
 }
 
-const HOLIDAY_TYPES = ["requestedHoliday", "requestedDesiderata"];
+const HOLIDAY_TYPES = ["requestedHoliday", "requestedDesiderata", "requestedPeriod"];
 
 export function EventCard({
 	event,
@@ -76,7 +77,7 @@ export function EventCard({
 
 	// Get event type styling based on status
 	const getEventTypeStyle = () => {
-		// For approved holidays, use green and remove stripes
+		// For approved events, use green
 		if (event.status === 'approved') {
 			return {
 				backgroundColor: "#10b981", // Green for approved
@@ -84,7 +85,7 @@ export function EventCard({
 			};
 		}
 		
-		// For denied holidays, use red
+		// For denied events, use red
 		if (event.status === 'denied') {
 			return {
 				backgroundColor: "#ef4444", // Red for denied
@@ -105,6 +106,12 @@ export function EventCard({
 				borderColor: "#d97706",
 			};
 		}
+		if (event.type === "requestedPeriod") {
+			return {
+				backgroundColor: "#8b5cf6", // Purple for period
+				borderColor: "#7c3aed",
+			};
+		}
 		return { 
 			backgroundColor,
 			borderColor: backgroundColor
@@ -123,7 +130,8 @@ export function EventCard({
 		if (isAdmin && isHolidayEvent && !isCurrentUserEvent) {
 			const statusText = event.status === 'approved' ? 'Approved' : 
 							  event.status === 'denied' ? 'Denied' : 'Requested';
-			const typeText = event.type === "requestedDesiderata" ? 'Desiderata' : 'Holiday';
+			const typeText = event.type === "requestedDesiderata" ? 'Desiderata' : 
+							 event.type === "requestedPeriod" ? 'Period' : 'Holiday';
 			return `${prefix}${statusText} ${typeText}`;
 		}
 		
@@ -133,6 +141,8 @@ export function EventCard({
 				return `${prefix}Holiday Request`;
 			case "requestedDesiderata":
 				return `${prefix}Desiderata Request`;
+			case "requestedPeriod":
+				return `${prefix}Period Request`;
 			default:
 				return `${prefix}${event.type}`;
 		}
@@ -202,7 +212,7 @@ export function EventCard({
 	// Get tooltip text
 	const getTooltipText = () => {
 		if (isAdmin && isHolidayEvent && !isCurrentUserEvent) {
-			return `Click to manage ${eventOwner?.firstName || 'colleague'}'s holiday request`;
+			return `Click to manage ${eventOwner?.firstName || 'colleague'}'s request`;
 		}
 		if (isHolidayEvent && isCurrentUserEvent) {
 			return "Click to view details";
@@ -214,8 +224,8 @@ export function EventCard({
 		<div data-tsx-id="event-card">
 			<div
 				onClick={(e) => {
-					// stop propagation only if user is admin
-					if (isAdmin) {
+					// stop propagation only if user is admin or it's a holiday event
+					if (isAdmin || isHolidayEvent) {
 						e.stopPropagation();
 					}
 					handleClick();
@@ -248,7 +258,13 @@ export function EventCard({
 				)}
 			</div>
 
-			
+			{showDetails && (
+				<EventDetailsModal
+					event={event}
+					onClose={() => setShowDetails(false)}
+					onDelete={onDelete}
+				/>
+			)}
 
 			{showAdminModal && (
 				<AdminHolidayModal

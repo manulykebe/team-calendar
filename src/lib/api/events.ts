@@ -57,12 +57,13 @@ export async function updateEvent(
   token: string,
   eventId: string,
   eventData: {
-    title: string;
-    description: string;
-    date: string;
+    title?: string;
+    description?: string;
+    date?: string;
     endDate?: string;
-    type: string;
+    type?: string;
     status?: 'pending' | 'approved' | 'denied';
+    userId?: string; // Allow admin to specify which user's event to update
   },
 ) {
   if (!token) {
@@ -82,6 +83,66 @@ export async function updateEvent(
     const error = await response
       .json()
       .catch(() => ({ message: "Failed to update event" }));
+    throw new Error(error.message);
+  }
+  return response.json();
+}
+
+export async function updateEventStatus(
+  token: string,
+  eventId: string,
+  status: 'pending' | 'approved' | 'denied',
+  userId?: string
+) {
+  if (!token) {
+    throw new Error("Authentication token is required");
+  }
+
+  const body: any = { status };
+  if (userId) {
+    body.userId = userId;
+  }
+
+  const response = await fetch(`${API_URL}/events/${eventId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Failed to update event status" }));
+    throw new Error(error.message);
+  }
+  return response.json();
+}
+
+export async function bulkUpdateEventStatus(
+  token: string,
+  eventIds: string[],
+  status: 'pending' | 'approved' | 'denied'
+) {
+  if (!token) {
+    throw new Error("Authentication token is required");
+  }
+
+  const response = await fetch(`${API_URL}/events/bulk-status`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ eventIds, status }),
+  });
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Failed to bulk update event status" }));
     throw new Error(error.message);
   }
   return response.json();

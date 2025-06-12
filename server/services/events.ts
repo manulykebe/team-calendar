@@ -1,5 +1,5 @@
 import { Event } from "../types.js";
-import { readUserEvents, writeUserEvents } from "../utils.js";
+import { readUserEvents, writeUserEvents, readSiteData } from "../utils.js";
 
 export async function getEvents(site: string) {
   // This will be deprecated once we migrate all events
@@ -41,14 +41,15 @@ export async function createEvent(params: {
 
 export async function updateEvent(params: {
   id: string;
-  title: string;
-  description: string;
-  date: string;
-  endDate: string;
-  type: string;
+  title?: string;
+  description?: string;
+  date?: string;
+  endDate?: string;
+  type?: string;
   status?: 'pending' | 'approved' | 'denied';
   userId: string;
   site: string;
+  isAdmin?: boolean;
 }) {
   const events = await readUserEvents(params.site, params.userId);
 
@@ -57,19 +58,30 @@ export async function updateEvent(params: {
     throw new Error("Event not found");
   }
 
-  if (events[eventIndex].userId !== params.userId) {
+  const existingEvent = events[eventIndex];
+  const isAdmin = params.isAdmin || false;
+  const isOwner = existingEvent.userId === params.userId;
+
+  // Allow update if user is admin or owns the event
+  if (!isAdmin && !isOwner) {
     throw new Error("Not authorized to update this event");
   }
 
-  const updatedEvent = {
-    ...events[eventIndex],
-    title: params.title,
-    description: params.description,
-    date: params.date,
-    endDate: params.endDate,
-    type: params.type,
-    ...(params.status && { status: params.status }),
+  // Build update object with only provided fields
+  const updateData: Partial<Event> = {
     updatedAt: new Date().toISOString(),
+  };
+
+  if (params.title !== undefined) updateData.title = params.title;
+  if (params.description !== undefined) updateData.description = params.description;
+  if (params.date !== undefined) updateData.date = params.date;
+  if (params.endDate !== undefined) updateData.endDate = params.endDate;
+  if (params.type !== undefined) updateData.type = params.type;
+  if (params.status !== undefined) updateData.status = params.status;
+
+  const updatedEvent = {
+    ...existingEvent,
+    ...updateData,
   };
 
   events[eventIndex] = updatedEvent;
@@ -81,7 +93,7 @@ export async function deleteEvent(params: {
   id: string;
   userId: string;
   site: string;
-  userRole?: string;
+  isAdmin?: boolean;
 }) {
   const events = await readUserEvents(params.site, params.userId);
 
@@ -91,7 +103,7 @@ export async function deleteEvent(params: {
   }
 
   // Allow deletion if user is admin or owns the event
-  const isAdmin = params.userRole === "admin";
+  const isAdmin = params.isAdmin || false;
   const isOwner = events[eventIndex].userId === params.userId;
 
   if (!isAdmin && !isOwner) {
@@ -100,4 +112,24 @@ export async function deleteEvent(params: {
 
   events.splice(eventIndex, 1);
   await writeUserEvents(params.site, params.userId, events);
+}
+
+// New function to find event across all users (admin only)
+export async function findEventAcrossSite(site: string, eventId: string): Promise<{ event: Event; userId: string } | null> {
+  const siteData = await readSiteData(site);
+  
+  for (const user of siteData.users) {
+    try {
+      const userEvents = await readUserEvents(site, user.id);
+      const event = userEvents.find((e: Event) => e.id === eventId);
+      if (event) {
+        return { event, userId: user.id };
+      }
+    } catch (error) {
+      // Continue searching if we can't read events for this user
+      continue;
+    }
+  }
+  
+  return null;
 }

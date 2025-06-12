@@ -30,6 +30,23 @@ const eventSchema = z.object({
   status: z.enum(['pending', 'approved', 'denied']).optional(),
 });
 
+// Admin-specific event update schema
+const adminEventUpdateSchema = z.object({
+  type: z.string().optional(),
+  title: z.string().optional(),
+  description: z.string().max(500).optional(),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
+    .optional(),
+  endDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
+    .optional(),
+  status: z.enum(['pending', 'approved', 'denied']).optional(),
+  userId: z.string().optional(), // Allow admin to specify which user's event to update
+});
+
 router.get("/", async (req: AuthRequest, res) => {
   try {
     // Check if this is an admin requesting specific user's events
@@ -109,15 +126,26 @@ router.post("/", async (req: AuthRequest, res) => {
 
 router.put("/:id", async (req: AuthRequest, res) => {
   try {
-    const validatedData = eventSchema.parse(req.body);
+    const isAdmin = req.user!.role === 'admin';
+    
+    // Use different validation schema for admins
+    const validatedData = isAdmin 
+      ? adminEventUpdateSchema.parse(req.body)
+      : eventSchema.parse(req.body);
+
+    // For admin updates, allow updating events of other users
+    let targetUserId = req.user!.id;
+    if (isAdmin && validatedData.userId) {
+      targetUserId = validatedData.userId;
+    }
 
     const event = await updateEvent({
       id: req.params.id,
       ...validatedData,
       endDate: validatedData.endDate || validatedData.date,
-      userId: req.user!.id,
+      userId: targetUserId,
       site: req.user!.site,
-      userRole: req.user!.role,
+      isAdmin: isAdmin,
     });
 
     // Broadcast event update to other users
@@ -146,6 +174,85 @@ router.put("/:id", async (req: AuthRequest, res) => {
   }
 });
 
+// New admin-only route for bulk status updates
+router.patch("/bulk-status", async (req: AuthRequest, res) => {
+  try {
+    if (req.user!.role !== 'admin') {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
+    const { eventIds, status } = z.object({
+      eventIds: z.array(z.string()),
+      status: z.enum(['pending', 'approved', 'denied'])
+    }).parse(req.body);
+
+    const updatedEvents = [];
+    
+    for (const eventId of eventIds) {
+      try {
+        // Get the event first to find the owner
+        const siteData = await readSiteData(req.user!.site);
+        let eventOwner = null;
+        let targetEvent = null;
+
+        // Find the event and its owner
+        for (const user of siteData.users) {
+          const userEvents = await getUserEvents(req.user!.site, user.id);
+          const foundEvent = userEvents.find(e => e.id === eventId);
+          if (foundEvent) {
+            eventOwner = user;
+            targetEvent = foundEvent;
+            break;
+          }
+        }
+
+        if (targetEvent && eventOwner) {
+          const updatedEvent = await updateEvent({
+            id: eventId,
+            status,
+            userId: eventOwner.id,
+            site: req.user!.site,
+            isAdmin: true,
+            ...targetEvent, // Include existing event data
+          });
+          updatedEvents.push(updatedEvent);
+        }
+      } catch (error) {
+        console.warn(`Failed to update event ${eventId}:`, error);
+      }
+    }
+
+    // Broadcast updates
+    const socketManager = getSocketManager();
+    if (socketManager) {
+      updatedEvents.forEach(event => {
+        socketManager.broadcastEventChange(
+          req.user!.site,
+          event,
+          'updated',
+          req.user!.id
+        );
+      });
+    }
+
+    res.json({ 
+      message: `Updated ${updatedEvents.length} events`,
+      updatedEvents 
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        message: "Validation error",
+        errors: error.errors,
+      });
+    } else {
+      res.status(500).json({
+        message: error instanceof Error ? error.message : "Failed to update events",
+      });
+    }
+  }
+});
+
 router.delete("/:id", async (req: AuthRequest, res) => {
   try {
     // Get the event before deletion for broadcasting
@@ -156,7 +263,7 @@ router.delete("/:id", async (req: AuthRequest, res) => {
       id: req.params.id,
       userId: req.user!.id,
       site: req.user!.site,
-      userRole: req.user!.role,
+      isAdmin: req.user!.role === 'admin',
     });
 
     // Broadcast event deletion to other users
