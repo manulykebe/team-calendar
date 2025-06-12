@@ -214,12 +214,12 @@ router.patch("/bulk-status", async (req: AuthRequest, res) => {
 
         if (targetEvent && eventOwner) {
           const updatedEvent = await updateEvent({
+            ...targetEvent, 
             id: eventId,
             status,
             userId: eventOwner.id,
             site: req.user!.site,
             isAdmin: true,
-            ...targetEvent, // Include existing event data
           });
           updatedEvents.push(updatedEvent);
         }
