@@ -129,14 +129,20 @@ router.put("/:id", async (req: AuthRequest, res) => {
     const isAdmin = req.user!.role === 'admin';
     
     // Use different validation schema for admins
-    const validatedData = isAdmin 
-      ? adminEventUpdateSchema.parse(req.body)
-      : eventSchema.parse(req.body);
+    let validatedData: any;
+    if (isAdmin) {
+      validatedData = adminEventUpdateSchema.parse(req.body);
+    } else {
+      validatedData = eventSchema.parse(req.body);
+    }
 
     // For admin updates, allow updating events of other users
     let targetUserId = req.user!.id;
     if (isAdmin && validatedData.userId) {
       targetUserId = validatedData.userId;
+      // Remove userId from the data to pass to updateEvent
+      const { userId, ...eventData } = validatedData;
+      validatedData = eventData;
     }
 
     const event = await updateEvent({
