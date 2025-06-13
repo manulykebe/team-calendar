@@ -1,9 +1,11 @@
-const IS_PRODUCTION = import.meta.env.PROD;
+export const API_URL = import.meta.env.VITE_API_URL;
 
-// Update this URL with your actual Render deployment URL
-export const API_URL = IS_PRODUCTION
-  ? "https://team-calendar.onrender.com/api"
-  : "http://localhost:3000/api";
+// Extend the Window interface to include VITE_API_URL
+declare global {
+  interface Window {
+    VITE_API_URL: string;
+  }
+}
 
 // Make API_URL available to the app context
 if (typeof window !== 'undefined') {
