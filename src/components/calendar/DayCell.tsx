@@ -12,6 +12,7 @@ import { EventDetailsModal } from "./EventDetailsModal";
 import { AdminHolidayModal } from "./AdminHolidayModal";
 import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
+import ReactDOM from "react-dom";
 
 interface DayCellProps {
 	date: Date;
@@ -188,7 +189,7 @@ export const DayCell = memo(function DayCell({
 						</span>
 						{holiday && (
 							<div
-								className="inline-flex items-center text-xs text-red-600 bg-red-50 rounded px-1.5 py-0.5"
+								className="inline-flex items-center text-xs text-red-600 bg-red-50 rounded px-0 py-0.5 cursor-pointer hover:bg-red-100 transition-colors duration-200"
 								title={holiday.name}
 							>
 								<Calendar className="w-3 h-3 mr-1" />
@@ -219,17 +220,20 @@ export const DayCell = memo(function DayCell({
 					))}
 				</div>
 			</div>
-
-			{showHolidayModal && selectedHolidayEvent && (
-				<EventDetailsModal
-					event={selectedHolidayEvent}
-					onClose={() => {
-						setShowHolidayModal(false);
-						setSelectedHolidayEvent(null);
-					}}
-					onDelete={onEventDelete}
-				/>
-			)}
+ 
+			{showHolidayModal && selectedHolidayEvent &&
+				ReactDOM.createPortal(
+					<EventDetailsModal
+						event={selectedHolidayEvent}
+						onClose={() => {
+							setShowHolidayModal(false);
+							setSelectedHolidayEvent(null);
+						}}
+						onDelete={onEventDelete}
+					/>,
+					document.body
+				)
+			}
 
 			{showAdminModal && selectedHolidayEvent && (
 				<AdminHolidayModal

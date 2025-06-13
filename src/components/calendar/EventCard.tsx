@@ -5,6 +5,7 @@ import { useEventPermissions } from "../../hooks/useEventPermissions";
 import { AdminHolidayModal } from "./AdminHolidayModal";
 import { EventDetailsModal } from "./EventDetailsModal";
 import { useApp } from "../../context/AppContext";
+import ReactDOM from "react-dom";
 
 interface EventCardProps {
 	event: Event & { verticalPosition: number };
@@ -258,13 +259,16 @@ export function EventCard({
 				)}
 			</div>
 
-			{showDetails && (
-				<EventDetailsModal
-					event={event}
-					onClose={() => setShowDetails(false)}
-					onDelete={onDelete}
-				/>
-			)}
+			{showDetails &&
+				ReactDOM.createPortal(
+					<EventDetailsModal
+						event={event}
+						onClose={() => setShowDetails(false)}
+						onDelete={onDelete}
+					/>,
+					document.body
+				)
+			}
 
 			{showAdminModal && (
 				<AdminHolidayModal
