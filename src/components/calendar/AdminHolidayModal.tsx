@@ -24,10 +24,19 @@ export function AdminHolidayModal({
   const { token } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const getEventTypeLabel = (eventType: string): string => {
+  const getEventTypeLabel = (eventType: string, eventStatus: string): string => {
     switch (eventType) {
       case "requestedHoliday":
+        switch (eventStatus) {
+          case "approved":
+            return "Approved Holiday";
+          case "denied":
+            return "Denied Holiday";
+          case "pending":
+            return "Pending Holiday";
+          default:
         return "Holiday Request";
+        }
       case "requestedDesiderata":
         return "Desiderata Request";
       case "requestedPeriod":
@@ -176,7 +185,7 @@ export function AdminHolidayModal({
             </div>
             <div className="text-right">
               <h4 className="text-sm font-medium text-zinc-700 mb-1">Request Type</h4>
-              <p className="text-sm text-zinc-900 font-medium">{getEventTypeLabel(event.type)}</p>
+              <p className="text-sm text-zinc-900 font-medium">{getEventTypeLabel(event.type, event.status||'')}</p>
             </div>
           </div>
 

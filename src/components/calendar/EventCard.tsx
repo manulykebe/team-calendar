@@ -139,7 +139,16 @@ export function EventCard({
 		// Default text based on event type
 		switch (event.type) {
 			case "requestedHoliday":
-				return `${prefix}Holiday Request`;
+			switch (event.status) {
+				case "approved":
+					return `${prefix}Approved Holiday`;
+				case "denied":
+					return `${prefix}Denied Holiday`;
+				case "pending":
+					return `${prefix}Pending Holiday`;
+				default:
+					return `${prefix}Holiday Request`;
+			}
 			case "requestedDesiderata":
 				return `${prefix}Desiderata Request`;
 			case "requestedPeriod":
