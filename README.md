@@ -7,7 +7,7 @@ A comprehensive team calendar application for managing availability, scheduling,
 
 ## 🌐 Live Application
 
-**Frontend**: https://superlative-longma-9e9cf8.netlify.app  
+**Frontend**: https://resonant-cupcake-77b900.netlify.app/  
 **Backend**: https://team-calendar.onrender.com
 
 ## ✨ Features
