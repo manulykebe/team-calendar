@@ -63,7 +63,7 @@ app.use("/api/sites", periodsRouter);
 app.get("/", (req, res) => {
   res.json({
     message: "Team Calendar API",
-    version: "1.0.0",
+    version: "1.2.14",
     status: "running",
     timestamp: new Date().toISOString(),
     websocket: "enabled"
