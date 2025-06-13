@@ -144,8 +144,8 @@ export function VersionDisplay() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-zinc-600">Environment:</span>
-                    <span className="font-mono">
-                      {import.meta.env.PROD ? 'Production' : 'Development'}
+                    <span className="font-mono " >
+                      {import.meta.env.PROD} {import.meta.env.PROD ? 'production' : 'development'}
                     </span>
                   </div>
                 </div>
@@ -190,7 +190,7 @@ export function VersionDisplay() {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-zinc-600">Version:</span>
-                        <span className="font-mono">{backendHealth.version}</span>
+                        <span className="font-mono">v{backendHealth.version}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-zinc-600">Environment:</span>
