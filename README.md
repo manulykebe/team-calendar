@@ -1,6 +1,6 @@
 # Team Calendar
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/f8c630c4-c5c4-4b5a-9c5e-9c5e9c5e9c5e/deploy-status)](https://app.netlify.com/sites/superlative-longma-9e9cf8/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/resonant-cupcake-77b900/deploy-status)](https://app.netlify.com/sites/resonant-cupcake-77b900/deploys)
 [![Render Status](https://img.shields.io/badge/dynamic/json?url=https://api.render.com/v1/services/prj-cu8go823esus73avqtcg&query=$.status&label=render&color=green)](https://dashboard.render.com/project/prj-cu8go823esus73avqtcg)
 
 A comprehensive team calendar application for managing availability, scheduling, and team coordination with real-time collaboration features.
@@ -152,6 +152,18 @@ npm run build
 npm start
 ```
 
+## 🔄 Version Management
+
+The application uses automatic version bumping:
+- Version is automatically incremented on each deployment
+- Version number is displayed in the bottom-right corner of the application
+- Build information is tracked in `src/version.json`
+
+To manually bump version:
+```bash
+npm run version:bump
+```
+
 ## 📡 API Documentation
 
 ### Authentication Endpoints
@@ -252,5 +264,5 @@ For support and questions:
 ---
 
 **Last Updated**: January 2025  
-**Version**: 2.0.0  
+**Version**: 1.0.1  
 **Status**: Production Ready ✅

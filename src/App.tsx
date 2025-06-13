@@ -9,6 +9,7 @@ import { Login } from "./components/Login";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { AppProvider, useApp } from "./context/AppContext";
 import { WebSocketProvider } from "./context/WebSocketContext";
+import { VersionDisplay } from "./components/common/VersionDisplay";
 import { Toaster } from "react-hot-toast";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -53,6 +54,7 @@ function App() {
                   }
                 />
               </Routes>
+              <VersionDisplay />
               <Toaster
                 position="top-right"
                 toastOptions={{

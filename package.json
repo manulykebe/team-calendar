@@ -1,7 +1,7 @@
 {
   "name": "team-calendar-app",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev:client": "vite",
@@ -14,7 +14,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"server/**/*.ts\"",
-    "postbuild": "echo 'Build completed successfully'"
+    "postbuild": "echo 'Build completed successfully'",
+    "version:bump": "node scripts/bump-version.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.732.0",
