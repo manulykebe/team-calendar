@@ -65,7 +65,7 @@ A comprehensive team calendar application for managing availability, scheduling,
 
 ### Frontend (Netlify)
 The frontend is automatically deployed to Netlify from the main branch:
-- **URL**: https://superlative-longma-9e9cf8.netlify.app
+- **URL**: https://resonant-cupcake-77b900.netlify.app/
 - **Build Command**: `npm run build`
 - **Publish Directory**: `dist`
 - **Environment Variables**: Automatically configured for production API endpoints
