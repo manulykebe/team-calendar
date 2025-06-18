@@ -92,7 +92,7 @@ export function VersionDisplay() {
 
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-[9999] pointer-events-none">
+      <div className="fixed bottom-4 left-4 z-[9999] pointer-events-none">
         <div
           className={`transition-all duration-300 ease-in-out pointer-events-auto ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-2 hover:opacity-60'

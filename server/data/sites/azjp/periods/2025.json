@@ -16,28 +16,28 @@
       "name": "Easter to June",
       "startDate": "2025-04-16",
       "endDate": "2025-06-30",
-      "editingStatus": "open-holiday",
+      "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-12T18:59:25.449Z"
+      "updatedAt": "2025-06-18T18:35:35.034Z"
     },
     {
       "id": "eddc4534-d85e-4a5d-8597-f81f4a74c9de",
       "name": "July to August",
       "startDate": "2025-07-01",
       "endDate": "2025-08-31",
-      "editingStatus": "open-holiday",
+      "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-12T18:47:22.816Z"
+      "updatedAt": "2025-06-18T18:35:39.610Z"
     },
     {
       "id": "1955706a-1011-4923-840b-641ee9a4eba6",
       "name": "September to Christmas",
       "startDate": "2025-09-01",
       "endDate": "2026-01-07",
-      "editingStatus": "open-holiday",
+      "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-12T18:47:12.480Z"
+      "updatedAt": "2025-06-18T18:35:43.116Z"
     }
   ],
-  "lastUpdated": "2025-06-12T18:59:26.923Z"
+  "lastUpdated": "2025-06-18T18:35:44.660Z"
 }
