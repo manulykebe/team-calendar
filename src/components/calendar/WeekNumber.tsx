@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { deleteEvent } from "../../lib/api";
 import toast from "react-hot-toast";
 import { useTranslation } from "../../context/TranslationContext";
+import { Tooltip } from "../common/Tooltip";
 
 interface WeekNumberProps {
 	date: Date;
@@ -96,40 +97,41 @@ export function WeekNumber({
 		}
 	};
 
+	const tooltipContent = existingHoliday
+		? t('calendar.deleteHoliday', { 
+			week: weekNumber, 
+			startDate: format(weekStart, "MMM d"), 
+			endDate: format(weekEnd, "MMM d") 
+		})
+		: t('calendar.createHoliday', { 
+			week: weekNumber, 
+			startDate: format(weekStart, "MMM d"), 
+			endDate: format(weekEnd, "MMM d") 
+		});
+
 	return (
-		<div
-			className={`relative flex items-center justify-center text-xs font-medium transition-colors duration-200 cursor-pointer
-        ${
-			isHovered
-				? "bg-blue-50 text-blue-600"
-				: existingHoliday
-					? "bg-red-50 text-red-600"
-					: "bg-white text-zinc-500"
-		}`}
-			onClick={handleClick}
-			onMouseEnter={() => setIsHovered(true)}
-			onMouseLeave={() => setIsHovered(false)}
-			title={
-				existingHoliday
-					? t('calendar.deleteHoliday', { 
-						week: weekNumber, 
-						startDate: format(weekStart, "MMM d"), 
-						endDate: format(weekEnd, "MMM d") 
-					})
-					: t('calendar.createHoliday', { 
-						week: weekNumber, 
-						startDate: format(weekStart, "MMM d"), 
-						endDate: format(weekEnd, "MMM d") 
-					})
-			}
-			data-tsx-id="week-number"
-		>
-			{weekNumber}
+		<Tooltip content={tooltipContent}>
 			<div
-				className={`text-xs absolute -top-0.5 font-medium text-zinc-400 z-30 ${position === "right" ? "-right-0.5" : "-left-0.5"}`}
+				className={`relative flex items-center justify-center text-xs font-medium transition-colors duration-200 cursor-pointer
+					${
+						isHovered
+							? "bg-blue-50 text-blue-600"
+							: existingHoliday
+								? "bg-red-50 text-red-600"
+								: "bg-white text-zinc-500"
+					}`}
+				onClick={handleClick}
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}
+				data-tsx-id="week-number"
 			>
-				{position === "left" ? getMonthTranslation(monthWeekStart) : getMonthTranslation(monthWeekEnd)}
+				{weekNumber}
+				<div
+					className={`text-xs absolute -top-0.5 font-medium text-zinc-400 z-30 ${position === "right" ? "-right-0.5" : "-left-0.5"}`}
+				>
+					{position === "left" ? getMonthTranslation(monthWeekStart) : getMonthTranslation(monthWeekEnd)}
+				</div>
 			</div>
-		</div>
+		</Tooltip>
 	);
 }

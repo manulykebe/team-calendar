@@ -21,6 +21,7 @@ import { AvailabilityModal } from "./availability/AvailabilityModal";
 import { SubscriptionModal } from "./SubscriptionModal";
 import { ExportModal } from "./ExportModal";
 import { useTranslation } from "../../context/TranslationContext";
+import { Tooltip } from "../common/Tooltip";
 
 interface SettingsPanelProps {
 	className?: string;
@@ -96,13 +97,14 @@ export function SettingsPanel({}: SettingsPanelProps) {
 
 	return (
 		<div data-tsx-id="settings-panel">
-			<button
-				onClick={() => setIsOpen(true)}
-				className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 z-10"
-				aria-label={t('common.settings')}
-			>
-				<SettingsIcon className="w-6 h-6" />
-			</button>
+			<Tooltip content={t('common.settings')}>
+				<button
+					onClick={() => setIsOpen(true)}
+					className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 z-10"
+				>
+					<SettingsIcon className="w-6 h-6" />
+				</button>
+			</Tooltip>
 
 			{isOpen && (
 				<div
@@ -120,12 +122,14 @@ export function SettingsPanel({}: SettingsPanelProps) {
 					<h2 className="text-lg font-semibold text-zinc-900">
 						{t('settings.settings')}
 					</h2>
-					<button
-						onClick={() => setIsOpen(false)}
-						className="p-2 text-zinc-500 hover:text-zinc-700 rounded-full transition-colors"
-					>
-						<X className="w-5 h-5" />
-					</button>
+					<Tooltip content={t('common.close')}>
+						<button
+							onClick={() => setIsOpen(false)}
+							className="p-2 text-zinc-500 hover:text-zinc-700 rounded-full transition-colors"
+						>
+							<X className="w-5 h-5" />
+						</button>
+					</Tooltip>
 				</div>
 
 				<div className="flex-1 p-4 overflow-y-auto">
@@ -135,43 +139,53 @@ export function SettingsPanel({}: SettingsPanelProps) {
 								{t('settings.colleagues')}
 							</h3>
 							<div className="space-y-2">
-								<button
-									onClick={() => setShowUserManagement(true)}
-									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-								>
-									<Users className="w-4 h-4 mr-2" />
-									{t('settings.manageUsers')}
-								</button>
-								<button
-									onClick={() =>
-										setShowColleagueSettings(true)
-									}
-									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-								>
-									<Users className="w-4 h-4 mr-2" />
-									{t('settings.manageColleagueDisplay')}
-								</button>
-								<button
-									onClick={handleOpenAvailability}
-									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-								>
-									<Clock className="w-4 h-4 mr-2" />
-									{t('settings.setAvailability')}
-								</button>
-								<button
-									onClick={handleOpenSubscription}
-									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-								>
-									<Calendar className="w-4 h-4 mr-2" />
-									{t('settings.subscribeToCalendar')}
-								</button>
-								<button
-									onClick={handleOpenExport}
-									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-								>
-									<Download className="w-4 h-4 mr-2" />
-									{t('settings.exportEvents')}
-								</button>
+								<Tooltip content={t('settings.manageUsers')}>
+									<button
+										onClick={() => setShowUserManagement(true)}
+										className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+									>
+										<Users className="w-4 h-4 mr-2" />
+										{t('settings.manageUsers')}
+									</button>
+								</Tooltip>
+								<Tooltip content={t('settings.manageColleagueDisplay')}>
+									<button
+										onClick={() =>
+											setShowColleagueSettings(true)
+										}
+										className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+									>
+										<Users className="w-4 h-4 mr-2" />
+										{t('settings.manageColleagueDisplay')}
+									</button>
+								</Tooltip>
+								<Tooltip content={t('settings.setAvailability')}>
+									<button
+										onClick={handleOpenAvailability}
+										className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+									>
+										<Clock className="w-4 h-4 mr-2" />
+										{t('settings.setAvailability')}
+									</button>
+								</Tooltip>
+								<Tooltip content={t('settings.subscribeToCalendar')}>
+									<button
+										onClick={handleOpenSubscription}
+										className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+									>
+										<Calendar className="w-4 h-4 mr-2" />
+										{t('settings.subscribeToCalendar')}
+									</button>
+								</Tooltip>
+								<Tooltip content={t('settings.exportEvents')}>
+									<button
+										onClick={handleOpenExport}
+										className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+									>
+										<Download className="w-4 h-4 mr-2" />
+										{t('settings.exportEvents')}
+									</button>
+								</Tooltip>
 							</div>
 						</div>
 
@@ -181,13 +195,15 @@ export function SettingsPanel({}: SettingsPanelProps) {
 									{t('settings.admin')}
 								</h3>
 								<div className="space-y-2">
-									<button
-										onClick={handleOpenPeriodManagement}
-										className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-									>
-										<Shield className="w-4 h-4 mr-2" />
-										{t('settings.definePeriods')}
-									</button>
+									<Tooltip content={t('settings.definePeriods')}>
+										<button
+											onClick={handleOpenPeriodManagement}
+											className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+										>
+											<Shield className="w-4 h-4 mr-2" />
+											{t('settings.definePeriods')}
+										</button>
+									</Tooltip>
 								</div>
 							</div>
 						)}
@@ -231,13 +247,14 @@ export function SettingsPanel({}: SettingsPanelProps) {
 									</p>
 								</div>
 							</div>
-							<button
-								onClick={handleLogout}
-								className="p-2 text-zinc-500 hover:text-zinc-700 rounded-full transition-colors"
-								aria-label={t('auth.signOut')}
-							>
-								<LogOut className="w-5 h-5" />
-							</button>
+							<Tooltip content={t('auth.signOut')}>
+								<button
+									onClick={handleLogout}
+									className="p-2 text-zinc-500 hover:text-zinc-700 rounded-full transition-colors"
+								>
+									<LogOut className="w-5 h-5" />
+								</button>
+							</Tooltip>
 						</div>
 					</div>
 				)}
