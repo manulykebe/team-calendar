@@ -318,7 +318,6 @@ export const nl = {
     defaultClosed: 'Standaard: Gesloten',
     enterPeriodName: 'Voer periodenaam in',
     updatePeriod: 'Periode bijwerken',
-    addPeriod: 'Periode toevoegen',
     noPeriodsForYear: 'Geen periodes gedefinieerd voor {{year}}. Klik op "Periode toevoegen" om te beginnen.',
     resetConfirmation: 'Weet u zeker dat u wilt terugzetten naar standaardperiodes? Dit overschrijft alle huidige periodes.',
     periodsSaved: 'Periodes succesvol opgeslagen',
