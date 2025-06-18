@@ -14,7 +14,6 @@ import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
 import { useTranslation } from "../../context/TranslationContext";
 import { formatDateWithLocale } from "../../utils/calendar";
-import { Tooltip } from "../common/Tooltip";
 import ReactDOM from "react-dom";
 
 interface DayCellProps {
@@ -192,16 +191,15 @@ export const DayCell = memo(function DayCell({
 							</span>
 						</span>
 						{holiday && (
-							<Tooltip content={holiday.name}>
-								<div
-									className="inline-flex items-center text-xs text-red-600 bg-red-50 rounded px-0 py-0.5 cursor-pointer hover:bg-red-100 transition-colors duration-200"
-								>
-									<Calendar className="w-3 h-3 mr-1" />
-									<span className="truncate max-w-[80px]">
-										{holiday.name}
-									</span>
-								</div>
-							</Tooltip>
+							<div
+								className="inline-flex items-center text-xs text-red-600 bg-red-50 rounded px-0 py-0.5 cursor-pointer hover:bg-red-100 transition-colors duration-200"
+								title={holiday.name}
+							>
+								<Calendar className="w-3 h-3 mr-1" />
+								<span className="truncate max-w-[80px]">
+									{holiday.name}
+								</span>
+							</div>
 						)}
 					</div>
 					{dayEvents.length > 0 && (

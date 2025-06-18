@@ -6,7 +6,6 @@ import { AdminHolidayModal } from "./AdminHolidayModal";
 import { EventDetailsModal } from "./EventDetailsModal";
 import { useApp } from "../../context/AppContext";
 import { useTranslation } from "../../context/TranslationContext";
-import { Tooltip } from "../common/Tooltip";
 import ReactDOM from "react-dom";
 
 interface EventCardProps {
@@ -243,42 +242,41 @@ export function EventCard({
 
 	return (
 		<div data-tsx-id="event-card">
-			<Tooltip content={getTooltipText()}>
-				<div
-					onClick={(e) => {
-						// stop propagation only if user is admin or it's a holiday event
-						if (isAdmin || isHolidayEvent) {
-							e.stopPropagation();
-						}
-						handleClick();
-					}}
-					className={`absolute left-0 right-0 flex items-center justify-between text-xs hover:opacity-90 transition-all duration-200 ${getCursorStyle()}`}
-					style={{
-						backgroundColor: eventStyle.backgroundColor,
-						color: "white",
-						top: `${topPosition}px`,
-						height: "20px",
-						zIndex: 10,
-						paddingLeft: isMultiDay && event.date === date ? "8px" : "8px",
-						paddingRight: isMultiDay && event.endDate === date ? "8px" : "8px",
-						marginLeft: isMultiDay && event.date !== date ? "-8px" : "0",
-						marginRight: isMultiDay && event.endDate !== date ? "-8px" : "0",
-						...getBorderStyles(),
-					}}
-				>
-					<span className="truncate font-medium flex-1">
-						{getEventDisplayText()}
-					</span>
+			<div
+				onClick={(e) => {
+					// stop propagation only if user is admin or it's a holiday event
+					if (isAdmin || isHolidayEvent) {
+						e.stopPropagation();
+					}
+					handleClick();
+				}}
+				className={`absolute left-0 right-0 flex items-center justify-between text-xs hover:opacity-90 transition-all duration-200 ${getCursorStyle()}`}
+				style={{
+					backgroundColor: eventStyle.backgroundColor,
+					color: "white",
+					top: `${topPosition}px`,
+					height: "20px",
+					zIndex: 10,
+					paddingLeft: isMultiDay && event.date === date ? "8px" : "8px",
+					paddingRight: isMultiDay && event.endDate === date ? "8px" : "8px",
+					marginLeft: isMultiDay && event.date !== date ? "-8px" : "0",
+					marginRight: isMultiDay && event.endDate !== date ? "-8px" : "0",
+					...getBorderStyles(),
+				}}
+				title={getTooltipText()}
+			>
+				<span className="truncate font-medium flex-1">
+					{getEventDisplayText()}
+				</span>
 
-					{isMultiDay && event.endDate === date && (
-						<div className="flex items-center shrink-0 ml-2">
-							<span className="text-xs">
-								{Math.ceil((new Date(event.endDate).getTime() - new Date(event.date).getTime()) / (1000 * 60 * 60 * 24)) + 1}d
-							</span>
-						</div>
-					)}
-				</div>
-			</Tooltip>
+				{isMultiDay && event.endDate === date && (
+					<div className="flex items-center shrink-0 ml-2">
+						<span className="text-xs">
+							{Math.ceil((new Date(event.endDate).getTime() - new Date(event.date).getTime()) / (1000 * 60 * 60 * 24)) + 1}d
+						</span>
+					</div>
+				)}
+			</div>
 
 			{showDetails &&
 				ReactDOM.createPortal(

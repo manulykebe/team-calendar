@@ -13,7 +13,6 @@ import { ConnectionStatus } from "./common/ConnectionStatus";
 import { useCalendarState } from "../hooks/useCalendarState";
 import { useApp } from "../context/AppContext";
 import { useTranslation } from "../context/TranslationContext";
-import { Tooltip } from "./common/Tooltip";
 import {
   subDays,
   addWeeks,
@@ -109,51 +108,46 @@ export function Calendar() {
             <div className="w-80 flex-1 items-center space-x-1">
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-1">
-                  <Tooltip content={t('calendar.goToToday')}>
-                    <button
-                      onClick={handleToday}
-                      className="flex items-center px-2 py-1 space-x-1 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
-                    >
-                      <CalendarIcon className="w-4 h-4" />
-                    </button>
-                  </Tooltip>
-                  <Tooltip content={t('calendar.previousMonth')}>
-                    <button
-                      onClick={handlePrevMonth}
-                      className="hover:bg-zinc-100 rounded-full"
-                    >
-                      <ChevronsLeft className="w-4 h-4" />
-                    </button>
-                  </Tooltip>
-                  <Tooltip content={t('calendar.previousWeek')}>
-                    <button
-                      onClick={handlePrevWeek}
-                      className="hover:bg-zinc-100 rounded-full"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                  </Tooltip>
+                  <button
+                    onClick={handleToday}
+                    className="flex items-center px-2 py-1 space-x-1 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
+                    title={t('calendar.goToToday')}
+                  >
+                    <CalendarIcon className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handlePrevMonth}
+                    className="hover:bg-zinc-100 rounded-full"
+                    aria-label={t('calendar.previousMonth')}
+                  >
+                    <ChevronsLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handlePrevWeek}
+                    className="hover:bg-zinc-100 rounded-full"
+                    aria-label={t('calendar.previousWeek')}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
                 </div>
                 <span className="text-sm font-medium text-zinc-600">
                   {dateRange}
                 </span>
                 <div className="flex items-center space-x-1">
-                  <Tooltip content={t('calendar.nextWeek')}>
-                    <button
-                      onClick={handleNextWeek}
-                      className="hover:bg-zinc-100 rounded-full"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </Tooltip>
-                  <Tooltip content={t('calendar.nextMonth')}>
-                    <button
-                      onClick={handleNextMonth}
-                      className="hover:bg-zinc-100 rounded-full"
-                    >
-                      <ChevronsRight className="w-4 h-4" />
-                    </button>
-                  </Tooltip>
+                  <button
+                    onClick={handleNextWeek}
+                    className="hover:bg-zinc-100 rounded-full"
+                    aria-label={t('calendar.nextWeek')}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleNextMonth}
+                    className="hover:bg-zinc-100 rounded-full"
+                    aria-label={t('calendar.nextMonth')}
+                  >
+                    <ChevronsRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
