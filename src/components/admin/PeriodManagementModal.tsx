@@ -7,6 +7,7 @@ import { Period, PeriodFormData } from "../../types/period";
 import { PeriodForm } from "./PeriodForm";
 import { format, parseISO, isAfter, isBefore } from "date-fns";
 import toast from "react-hot-toast";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface PeriodManagementModalProps {
   onClose: () => void;
@@ -15,6 +16,7 @@ interface PeriodManagementModalProps {
 export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
   const { token } = useAuth();
   const { currentUser } = useApp();
+  const { t } = useTranslation();
   const [periods, setPeriods] = useState<Period[]>([]);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [loading, setLoading] = useState(true);
@@ -84,9 +86,9 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
     try {
       setSaving(true);
       await savePeriods(token, currentUser.site, selectedYear, periods);
-      toast.success("Periods saved successfully");
+      toast.success(t('periods.periodsSaved'));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to save periods";
+      const errorMessage = err instanceof Error ? err.message : t('periods.failedToSavePeriods');
       toast.error(errorMessage);
     } finally {
       setSaving(false);
@@ -96,7 +98,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
   const handleResetToDefaults = async () => {
     if (!token || !currentUser) return;
 
-    if (!confirm("Are you sure you want to reset to default periods? This will overwrite all current periods.")) {
+    if (!confirm(t('periods.resetConfirmation'))) {
       return;
     }
 
@@ -104,9 +106,9 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
       setSaving(true);
       const data = await resetToDefaultPeriods(token, currentUser.site, selectedYear);
       setPeriods(data.periods || []);
-      toast.success("Periods reset to defaults");
+      toast.success(t('periods.periodsReset'));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to reset periods";
+      const errorMessage = err instanceof Error ? err.message : t('periods.failedToResetPeriods');
       toast.error(errorMessage);
       setPeriods([]); // Ensure periods is always an array
     } finally {
@@ -125,12 +127,12 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
   };
 
   const handleDeletePeriod = (periodId: string) => {
-    if (!confirm("Are you sure you want to delete this period?")) {
+    if (!confirm(t('common.confirm'))) {
       return;
     }
 
     setPeriods(prev => (prev || []).filter(p => p.id !== periodId));
-    toast.success("Period deleted");
+    toast.success(t('common.delete'));
   };
 
   const handleFormSubmit = (formData: PeriodFormData) => {
@@ -141,7 +143,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
           ? { ...p, ...formData, updatedAt: new Date().toISOString() }
           : p
       ));
-      toast.success("Period updated");
+      toast.success(t('common.success'));
     } else {
       // Add new period
       const newPeriod: Period = {
@@ -151,7 +153,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
         updatedAt: new Date().toISOString(),
       };
       setPeriods(prev => [...(prev || []), newPeriod]);
-      toast.success("Period added");
+      toast.success(t('common.success'));
     }
     setShowForm(false);
     setEditingPeriod(null);
@@ -168,9 +170,9 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
 
   const getEditingStatusLabel = (status: string) => {
     switch (status) {
-      case 'closed': return 'Closed';
-      case 'open-holiday': return 'Open - Holiday';
-      case 'open-desiderata': return 'Open - Desiderata';
+      case 'closed': return t('periods.closed');
+      case 'open-holiday': return t('periods.openHoliday');
+      case 'open-desiderata': return t('periods.openDesiderata');
       default: return status;
     }
   };
@@ -195,7 +197,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-xl font-semibold text-zinc-900">Period Management</h2>
+          <h2 className="text-xl font-semibold text-zinc-900">{t('periods.periodManagement')}</h2>
           <button
             onClick={onClose}
             className="text-zinc-400 hover:text-zinc-500"
@@ -216,7 +218,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
             <div className="flex items-center space-x-4">
               <div>
                 <label className="block text-sm font-medium text-zinc-700 mb-1">
-                  Site
+                  {t('common.site')}
                 </label>
                 <div className="px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-md text-sm font-medium">
                   {currentUser.site.toUpperCase()}
@@ -224,7 +226,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-700 mb-1">
-                  Year
+                  {t('common.year')}
                 </label>
                 <select
                   value={selectedYear}
@@ -249,7 +251,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
               disabled={saving || showForm}
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add Period
+              {t('periods.addPeriod')}
             </button>
           </div>
 
@@ -276,19 +278,19 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
                   <thead className="bg-zinc-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">
-                        Name/Label
+                        {t('periods.nameLabel')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">
-                        Start Date
+                        {t('events.startDate')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">
-                        End Date
+                        {t('events.endDate')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">
-                        Editing Status
+                        {t('periods.editingStatus')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">
-                        Actions
+                        {t('users.actions')}
                       </th>
                     </tr>
                   </thead>
@@ -296,7 +298,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
                     {safePeriods.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="px-6 py-8 text-center text-zinc-500">
-                          No periods defined for {selectedYear}. Click "Add Period" to get started.
+                          {t('periods.noPeriodsForYear', { year: selectedYear })}
                         </td>
                       </tr>
                     ) : (
@@ -353,7 +355,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
             disabled={saving || showForm}
           >
             <RotateCcw className="w-4 h-4 mr-2" />
-            Reset to Defaults
+            {t('periods.resetToDefaults')}
           </button>
           <div className="flex space-x-3">
             <button
@@ -361,7 +363,7 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
               className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50 disabled:opacity-50"
               disabled={saving}
             >
-              Close
+              {t('common.close')}
             </button>
             <button
               onClick={handleSavePeriods}
@@ -371,12 +373,12 @@ export function PeriodManagementModal({ onClose }: PeriodManagementModalProps) {
               {saving ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Saving...
+                  {t('common.saving')}
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4 mr-2" />
-                  Save Changes
+                  {t('periods.saveChanges')}
                 </>
               )}
             </button>
