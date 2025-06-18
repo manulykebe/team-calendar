@@ -314,7 +314,6 @@ export const fr = {
     defaultClosed: 'Par défaut : Fermé',
     enterPeriodName: 'Entrez le nom de la période',
     updatePeriod: 'Mettre à jour la période',
-    addPeriod: 'Ajouter une période',
     noPeriodsForYear: 'Aucune période définie pour {{year}}. Cliquez sur "Ajouter une période" pour commencer.',
     resetConfirmation: 'Êtes-vous sûr de vouloir réinitialiser aux périodes par défaut ? Cela écrasera toutes les périodes actuelles.',
     periodsSaved: 'Périodes enregistrées avec succès',
