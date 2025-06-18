@@ -20,7 +20,7 @@ export class SocketManager {
       cors: {
         origin: process.env.NODE_ENV === 'production' 
           ? [
-              'https://resonant-cupcake-77b900.netlify.app/'  // Add the new deployment domain
+              'https://dainty-frangollo-38ce07.netlify.app/'  // Add the new deployment domain
             ]
           : ['http://localhost:5173', 'http://localhost:3000'],
         credentials: true,

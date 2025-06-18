@@ -7,7 +7,7 @@ A comprehensive team calendar application for managing availability, scheduling,
 
 ## 🌐 Live Application
 
-**Frontend**: https://resonant-cupcake-77b900.netlify.app/  
+**Frontend**: https://dainty-frangollo-38ce07.netlify.app/  
 **Backend**: https://team-calendar.onrender.com
 
 ## ✨ Features
@@ -65,7 +65,7 @@ A comprehensive team calendar application for managing availability, scheduling,
 
 ### Frontend (Netlify)
 The frontend is automatically deployed to Netlify from the main branch:
-- **URL**: https://resonant-cupcake-77b900.netlify.app/
+- **URL**: https://dainty-frangollo-38ce07.netlify.app/
 - **Build Command**: `npm run build`
 - **Publish Directory**: `dist`
 - **Environment Variables**: Automatically configured for production API endpoints
