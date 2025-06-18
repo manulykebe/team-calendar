@@ -16,9 +16,11 @@ import { useAuth } from "../../context/AuthContext";
 import { ColleagueAvatar } from "./colleagues/ColleagueAvatar";
 import { useUserSettings } from "./hooks/useUserSettings";
 import { DisplaySettings } from "./DisplaySettings";
+import { LanguageSettings } from "./LanguageSettings";
 import { AvailabilityModal } from "./availability/AvailabilityModal";
 import { SubscriptionModal } from "./SubscriptionModal";
 import { ExportModal } from "./ExportModal";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface SettingsPanelProps {
 	className?: string;
@@ -26,6 +28,7 @@ interface SettingsPanelProps {
 
 export function SettingsPanel({}: SettingsPanelProps) {
 	const { logout } = useAuth();
+	const { t } = useTranslation();
 	const { currentUser, updateWorkStartDay, updateWeekNumberSetting } =
 		useUserSettings();
 	const [isOpen, setIsOpen] = useState(false);
@@ -96,7 +99,7 @@ export function SettingsPanel({}: SettingsPanelProps) {
 			<button
 				onClick={() => setIsOpen(true)}
 				className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 z-10"
-				aria-label="Open Settings"
+				aria-label={t('common.settings')}
 			>
 				<SettingsIcon className="w-6 h-6" />
 			</button>
@@ -115,7 +118,7 @@ export function SettingsPanel({}: SettingsPanelProps) {
 			>
 				<div className="flex items-center justify-between p-4 border-b">
 					<h2 className="text-lg font-semibold text-zinc-900">
-						Settings
+						{t('settings.settings')}
 					</h2>
 					<button
 						onClick={() => setIsOpen(false)}
@@ -129,7 +132,7 @@ export function SettingsPanel({}: SettingsPanelProps) {
 					<div className="space-y-6">
 						<div>
 							<h3 className="text-sm font-medium text-zinc-900 mb-2">
-								Colleagues
+								{t('settings.colleagues')}
 							</h3>
 							<div className="space-y-2">
 								<button
@@ -137,7 +140,7 @@ export function SettingsPanel({}: SettingsPanelProps) {
 									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 								>
 									<Users className="w-4 h-4 mr-2" />
-									Manage Users
+									{t('settings.manageUsers')}
 								</button>
 								<button
 									onClick={() =>
@@ -146,28 +149,28 @@ export function SettingsPanel({}: SettingsPanelProps) {
 									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 								>
 									<Users className="w-4 h-4 mr-2" />
-									Manage Colleague Display
+									{t('settings.manageColleagueDisplay')}
 								</button>
 								<button
 									onClick={handleOpenAvailability}
 									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 								>
 									<Clock className="w-4 h-4 mr-2" />
-									Set Availability
+									{t('settings.setAvailability')}
 								</button>
 								<button
 									onClick={handleOpenSubscription}
 									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 								>
 									<Calendar className="w-4 h-4 mr-2" />
-									Subscribe to Calendar
+									{t('settings.subscribeToCalendar')}
 								</button>
 								<button
 									onClick={handleOpenExport}
 									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 								>
 									<Download className="w-4 h-4 mr-2" />
-									Export Events
+									{t('settings.exportEvents')}
 								</button>
 							</div>
 						</div>
@@ -175,7 +178,7 @@ export function SettingsPanel({}: SettingsPanelProps) {
 						{isAdmin && (
 							<div>
 								<h3 className="text-sm font-medium text-zinc-900 mb-2">
-									Admin
+									{t('settings.admin')}
 								</h3>
 								<div className="space-y-2">
 									<button
@@ -183,7 +186,7 @@ export function SettingsPanel({}: SettingsPanelProps) {
 										className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 									>
 										<Shield className="w-4 h-4 mr-2" />
-										Define/Edit Periods
+										{t('settings.definePeriods')}
 									</button>
 								</div>
 							</div>
@@ -194,6 +197,8 @@ export function SettingsPanel({}: SettingsPanelProps) {
 							onWorkStartChange={updateWorkStartDay}
 							onWeekNumberChange={updateWeekNumberSetting}
 						/>
+
+						<LanguageSettings />
 					</div>
 				</div>
 
@@ -229,7 +234,7 @@ export function SettingsPanel({}: SettingsPanelProps) {
 							<button
 								onClick={handleLogout}
 								className="p-2 text-zinc-500 hover:text-zinc-700 rounded-full transition-colors"
-								aria-label="Logout"
+								aria-label={t('auth.signOut')}
 							>
 								<LogOut className="w-5 h-5" />
 							</button>

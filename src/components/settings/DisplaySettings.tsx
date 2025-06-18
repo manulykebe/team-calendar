@@ -1,4 +1,5 @@
 import { User } from "../../types/user";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface DisplaySettingsProps {
   currentUser: User | null;
@@ -11,25 +12,27 @@ export function DisplaySettings({
   onWorkStartChange,
   onWeekNumberChange,
 }: DisplaySettingsProps) {
+  const { t } = useTranslation();
+
   return (
     <div data-tsx-id="display-settings">
-      <h3 className="text-sm font-medium text-zinc-900 mb-2">Display</h3>
+      <h3 className="text-sm font-medium text-zinc-900 mb-2">{t('settings.display')}</h3>
       <div className="space-y-4">
         <div className="flex items-center space-x-2">
-          <label className="text-sm text-zinc-700">Week starts on:</label>
+          <label className="text-sm text-zinc-700">{t('settings.weekStartsOn')}</label>
           <select
             value={currentUser?.app?.weekStartsOn || "Monday"}
             onChange={(e) => onWorkStartChange(e.target.value)}
             className="mt-1 block w-40 rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           >
-            <option value="Monday">Monday</option>
-            <option value="Sunday">Sunday</option>
-            <option value="Saturday">Saturday</option>
+            <option value="Monday">{t('settings.monday')}</option>
+            <option value="Sunday">{t('settings.sunday')}</option>
+            <option value="Saturday">{t('settings.saturday')}</option>
           </select>
         </div>
 
         <div className="flex items-center space-x-2">
-          <label className="text-sm text-zinc-700">Show week number:</label>
+          <label className="text-sm text-zinc-700">{t('settings.showWeekNumber')}</label>
           <select
             value={currentUser?.settings?.showWeekNumber || "right"}
             onChange={(e) =>
@@ -37,9 +40,9 @@ export function DisplaySettings({
             }
             className="mt-1 block w-40 rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           >
-            <option value="left">Left</option>
-            <option value="right">Right</option>
-            <option value="none">None</option>
+            <option value="left">{t('settings.left')}</option>
+            <option value="right">{t('settings.right')}</option>
+            <option value="none">{t('settings.none')}</option>
           </select>
         </div>
 
@@ -48,7 +51,7 @@ export function DisplaySettings({
             type="checkbox"
             className="rounded border-zinc-300 text-blue-600"
           />
-          <span className="text-sm text-zinc-700">Show weekends</span>
+          <span className="text-sm text-zinc-700">{t('settings.showWeekends')}</span>
         </label>
       </div>
     </div>

@@ -4,10 +4,12 @@ import { useAuth } from "../context/AuthContext";
 import { login } from "../lib/api";
 import { Calendar } from "lucide-react";
 import { LoadingSpinner } from "./common/LoadingSpinner";
+import { useTranslation } from "../context/TranslationContext";
 
 export function Login() {
   const navigate = useNavigate();
   const { login: setAuth } = useAuth();
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [site, setSite] = useState("azjp");
@@ -25,7 +27,7 @@ export function Login() {
       setAuth(token);
       navigate("/");
     } catch (err) {
-      setError("Invalid credentials");
+      setError(t('auth.invalidCredentials'));
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +44,7 @@ export function Login() {
             <Calendar className="h-8 w-8 text-blue-600" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-zinc-900">
-            Sign in to your account
+            {t('auth.signInToAccount')}
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -54,7 +56,7 @@ export function Login() {
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email" className="sr-only">
-                Email address
+                {t('auth.email')}
               </label>
               <input
                 id="email"
@@ -64,14 +66,14 @@ export function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                placeholder={t('auth.email')}
                 autoComplete="username"
                 disabled={isLoading}
               />
             </div>
             <div>
               <label htmlFor="password" className="sr-only">
-                Password
+                {t('auth.password')}
               </label>
               <input
                 id="password"
@@ -81,14 +83,14 @@ export function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                placeholder={t('auth.password')}
                 autoComplete="current-password"
                 disabled={isLoading}
               />
             </div>
             <div>
               <label htmlFor="site" className="sr-only">
-                Site
+                {t('auth.site')}
               </label>
               <input
                 id="site"
@@ -98,7 +100,7 @@ export function Login() {
                 value={site}
                 onChange={(e) => setSite(e.target.value)}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Site"
+                placeholder={t('auth.site')}
                 disabled={isLoading}
               />
             </div>
@@ -113,10 +115,10 @@ export function Login() {
               {isLoading ? (
                 <div className="flex items-center">
                   <LoadingSpinner size="sm" />
-                  <span className="ml-2">Signing in...</span>
+                  <span className="ml-2">{t('auth.signingIn')}</span>
                 </div>
               ) : (
-                "Sign in"
+                t('auth.signIn')
               )}
             </button>
           </div>

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Wifi, WifiOff } from 'lucide-react';
 import { useWebSocketContext } from '../../context/WebSocketContext';
+import { useTranslation } from '../../context/TranslationContext';
 
 export function ConnectionStatus() {
   const { isConnected } = useWebSocketContext();
+  const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState(false);
   
   const connected = isConnected();
@@ -20,7 +22,7 @@ export function ConnectionStatus() {
               ? 'bg-green-600 hover:bg-green-700 text-white'
               : 'bg-red-600 hover:bg-red-700 text-white animate-pulse'
           }`}
-          aria-label={connected ? 'Connected to real-time updates' : 'Disconnected from real-time updates'}
+          aria-label={connected ? t('connection.connected') : t('connection.disconnected')}
         >
           {connected ? (
             <Wifi className="w-6 h-6" />
@@ -39,7 +41,7 @@ export function ConnectionStatus() {
               : 'opacity-0 translate-y-2 pointer-events-none'
           }`}
         >
-          {connected ? 'Connected to real-time updates' : 'Disconnected from real-time updates'}
+          {connected ? t('connection.connected') : t('connection.disconnected')}
           
           {/* Tooltip Arrow */}
           <div 

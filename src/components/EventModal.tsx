@@ -6,6 +6,7 @@ import { Period } from "../types/period";
 import { useAuth } from "../context/AuthContext";
 import { useApp } from "../context/AppContext";
 import { getPeriods } from "../lib/api/periods";
+import { useTranslation } from "../context/TranslationContext";
 import toast from "react-hot-toast";
 
 interface EventModalProps {
@@ -33,6 +34,7 @@ export function EventModal({
 }: EventModalProps) {
 	const { token } = useAuth();
 	const { currentUser } = useApp();
+	const { t } = useTranslation();
 	const [title, setTitle] = useState(event?.title || "");
 	const [description, setDescription] = useState(event?.description || "");
 	const [type, setType] = useState(
@@ -111,9 +113,9 @@ export function EventModal({
 	const getEventTypeLabel = (eventType: string): string => {
 		switch (eventType) {
 			case "requestedHoliday":
-				return "Requested Holiday";
+				return t('calendar.requestedHoliday');
 			case "requestedDesiderata":
-				return "Requested Desiderata";
+				return t('calendar.requestedDesiderata');
 			default:
 				return eventType
 					.replace(/([A-Z])/g, " $1")
@@ -132,18 +134,18 @@ export function EventModal({
 		});
 
 		if (!currentPeriod) {
-			return "No period defined for this date";
+			return t('events.unknownStatus', { period: '' });
 		}
 
 		switch (currentPeriod.editingStatus) {
 			case 'open-holiday':
-				return `Holiday requests are open (${currentPeriod.name})`;
+				return t('events.holidayRequestsOpen', { period: currentPeriod.name });
 			case 'open-desiderata':
-				return `Holiday and Desiderata requests are open (${currentPeriod.name})`;
+				return t('events.holidayDesiderataOpen', { period: currentPeriod.name });
 			case 'closed':
-				return `Period is closed for requests (${currentPeriod.name})`;
+				return t('events.periodClosed', { period: currentPeriod.name });
 			default:
-				return `Unknown status (${currentPeriod.name})`;
+				return t('events.unknownStatus', { period: currentPeriod.name });
 		}
 	};
 
@@ -152,17 +154,17 @@ export function EventModal({
 
 		// Check if any event types are available
 		if (availableEventTypes.length === 0) {
-			setError("No event types are available for this date. The period may be closed for requests.");
+			setError(t('events.periodClosedMessage'));
 			return;
 		}
 
 		// Validate that the selected type is available
 		if (!availableEventTypes.includes(type)) {
-			setError("The selected event type is not available for this date.");
+			setError(t('events.noEventTypesAvailable'));
 			return;
 		}
 
-		const toastId = toast.loading("Creating event...");
+		const toastId = toast.loading(t('common.loading'));
 
 		try {
 			setLoading(true);
@@ -177,12 +179,12 @@ export function EventModal({
 			};
 
 			await onSubmit(eventData);
-			toast.success("Event created successfully", { id: toastId });
+			toast.success(t('calendar.eventCreated'), { id: toastId });
 			onClose();
 		} catch (err) {
-			toast.error("Failed to create event", { id: toastId });
+			toast.error(t('calendar.failedToCreateEvent'), { id: toastId });
 			setError(
-				err instanceof Error ? err.message : "Failed to save event"
+				err instanceof Error ? err.message : t('errors.somethingWentWrong')
 			);
 		} finally {
 			setLoading(false);
@@ -194,7 +196,7 @@ export function EventModal({
 			<div className="bg-white rounded-lg shadow-xl max-w-md w-full">
 				<div className="flex justify-between items-center p-4 border-b">
 					<h3 className="text-lg font-semibold text-zinc-900">
-						{event ? "Edit Event" : "Add Event"} -{" "}
+						{event ? t('calendar.editEvent') : t('calendar.addEvent')} -{" "}
 						{format(date, "MMMM d, yyyy")}
 						{endDate && ` to ${format(endDate, "MMMM d, yyyy")}`}
 					</h3>
@@ -216,20 +218,20 @@ export function EventModal({
 
 					{/* Period Status Information */}
 					<div className="p-3 text-sm bg-blue-50 rounded-md border border-blue-200">
-						<div className="font-medium text-blue-800 mb-1">Period Status</div>
+						<div className="font-medium text-blue-800 mb-1">{t('events.periodStatus')}</div>
 						<div className="text-blue-700">{getCurrentPeriodStatus()}</div>
 					</div>
 
 					{availableEventTypes.length === 0 ? (
 						<div className="p-3 text-sm text-amber-700 bg-amber-50 rounded-md border border-amber-200">
-							<div className="font-medium mb-1">No Event Types Available</div>
-							<div>This date is in a closed period. Event creation is not allowed.</div>
+							<div className="font-medium mb-1">{t('events.noEventTypesAvailable')}</div>
+							<div>{t('events.periodClosedMessage')}</div>
 						</div>
 					) : (
 						<>
 							<div>
 								<label className="block text-sm font-medium text-zinc-700">
-									Event Type *
+									{t('events.eventType')} *
 								</label>
 								<select
 									value={type}
@@ -245,7 +247,7 @@ export function EventModal({
 								</select>
 								{availableEventTypes.length > 1 && (
 									<p className="mt-1 text-xs text-zinc-500">
-										Cascaded system: Holiday requests have priority over Desiderata
+										{t('events.cascadedSystem')}
 									</p>
 								)}
 							</div>
@@ -255,7 +257,7 @@ export function EventModal({
 									htmlFor="title"
 									className="block text-sm font-medium text-zinc-700"
 								>
-									Title
+									{t('events.title')}
 								</label>
 								<input
 									type="text"
@@ -265,7 +267,7 @@ export function EventModal({
 									className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
 									maxLength={100}
 									disabled={loading}
-									placeholder={`Enter ${getEventTypeLabel(type).toLowerCase()} title`}
+									placeholder={t('events.enterTitle', { type: getEventTypeLabel(type).toLowerCase() })}
 								/>
 							</div>
 
@@ -274,7 +276,7 @@ export function EventModal({
 									htmlFor="description"
 									className="block text-sm font-medium text-zinc-700"
 								>
-									Description
+									{t('events.description')}
 								</label>
 								<textarea
 									id="description"
@@ -284,7 +286,7 @@ export function EventModal({
 									className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
 									maxLength={500}
 									disabled={loading}
-									placeholder={`Enter ${getEventTypeLabel(type).toLowerCase()} description`}
+									placeholder={t('events.enterDescription', { type: getEventTypeLabel(type).toLowerCase() })}
 								/>
 							</div>
 						</>
@@ -297,7 +299,7 @@ export function EventModal({
 							className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50 disabled:opacity-50"
 							disabled={loading}
 						>
-							Cancel
+							{t('common.cancel')}
 						</button>
 						{availableEventTypes.length > 0 && (
 							<button
@@ -305,7 +307,7 @@ export function EventModal({
 								className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
 								disabled={loading}
 							>
-								{loading ? "Saving..." : "Save"}
+								{loading ? t('events.saving') : t('common.save')}
 							</button>
 						)}
 					</div>

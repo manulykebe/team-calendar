@@ -12,6 +12,7 @@ import { MonthPicker } from "./calendar/MonthPicker";
 import { ConnectionStatus } from "./common/ConnectionStatus";
 import { useCalendarState } from "../hooks/useCalendarState";
 import { useApp } from "../context/AppContext";
+import { useTranslation } from "../context/TranslationContext";
 import {
   subDays,
   addWeeks,
@@ -24,12 +25,13 @@ import {
 } from "date-fns";
 
 export function Calendar() {
-    const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
+  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
+  const { t } = useTranslation();
   
   if (!currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center text-red-600">
-        Error: User data not available
+        {t('errors.somethingWentWrong')}
       </div>
     );
   }
@@ -100,7 +102,7 @@ export function Calendar() {
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center space-x-4">
           <h1 className="text-3xl font-bold text-zinc-900">
-            Team Calendar: AZJP
+            {t('calendar.teamCalendar')}
           </h1>
           <div className="flex justify-between items-center">
             <div className="w-80 flex-1 items-center space-x-1">
@@ -109,21 +111,21 @@ export function Calendar() {
                   <button
                     onClick={handleToday}
                     className="flex items-center px-2 py-1 space-x-1 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
-                    title="Go to today"
+                    title={t('calendar.goToToday')}
                   >
                     <CalendarIcon className="w-4 h-4" />
                   </button>
                   <button
                     onClick={handlePrevMonth}
                     className="hover:bg-zinc-100 rounded-full"
-                    aria-label="Previous month"
+                    aria-label={t('calendar.previousMonth')}
                   >
                     <ChevronsLeft className="w-4 h-4" />
                   </button>
                   <button
                     onClick={handlePrevWeek}
                     className="hover:bg-zinc-100 rounded-full"
-                    aria-label="Previous week"
+                    aria-label={t('calendar.previousWeek')}
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -135,14 +137,14 @@ export function Calendar() {
                   <button
                     onClick={handleNextWeek}
                     className="hover:bg-zinc-100 rounded-full"
-                    aria-label="Next week"
+                    aria-label={t('calendar.nextWeek')}
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
                   <button
                     onClick={handleNextMonth}
                     className="hover:bg-zinc-100 rounded-full"
-                    aria-label="Next month"
+                    aria-label={t('calendar.nextMonth')}
                   >
                     <ChevronsRight className="w-4 h-4" />
                   </button>

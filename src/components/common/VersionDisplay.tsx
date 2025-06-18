@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Server, Activity, Globe, Clock } from 'lucide-react';
 import versionInfo from '../../version.json';
 import { API_URL } from '../../lib/api/config';
+import { useTranslation } from '../../context/TranslationContext';
 
 interface BackendHealth {
   status: string;
@@ -12,6 +13,7 @@ interface BackendHealth {
 }
 
 export function VersionDisplay() {
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [backendHealth, setBackendHealth] = useState<BackendHealth | null>(null);
@@ -48,7 +50,7 @@ export function VersionDisplay() {
       const healthData = await response.json();
       setBackendHealth(healthData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch backend health');
+      setError(err instanceof Error ? err.message : t('errors.failedToLoadData'));
       setBackendHealth(null);
     } finally {
       setLoading(false);
@@ -113,7 +115,7 @@ export function VersionDisplay() {
               <div className="flex items-center space-x-2">
                 <Activity className="w-5 h-5 text-blue-600" />
                 <h2 className="text-lg font-semibold text-zinc-900">
-                  System Information
+                  {t('version.systemInformation')}
                 </h2>
               </div>
               <button
@@ -129,23 +131,23 @@ export function VersionDisplay() {
               <div>
                 <h3 className="text-sm font-medium text-zinc-700 mb-3 flex items-center">
                   <Globe className="w-4 h-4 mr-2" />
-                  Frontend
+                  {t('version.frontend')}
                 </h3>
                 <div className="bg-zinc-50 p-3 rounded-lg space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-zinc-600">Version:</span>
+                    <span className="text-zinc-600">{t('version.version')}</span>
                     <span className="font-mono">v{versionInfo.version}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-zinc-600">Build Date:</span>
+                    <span className="text-zinc-600">{t('version.buildDate')}</span>
                     <span className="font-mono text-xs">
                       {new Date(versionInfo.buildDate).toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-zinc-600">Environment:</span>
+                    <span className="text-zinc-600">{t('version.environment')}</span>
                     <span className="font-mono" >
-                      {import.meta.env.PROD ? 'production' : 'development'}
+                      {import.meta.env.PROD ? t('version.production') : t('version.development')}
                     </span>
                   </div>
                 </div>
@@ -155,11 +157,11 @@ export function VersionDisplay() {
               <div>
                 <h3 className="text-sm font-medium text-zinc-700 mb-3 flex items-center">
                   <Server className="w-4 h-4 mr-2" />
-                  Backend
+                  {t('version.backend')}
                 </h3>
                 <div className="bg-zinc-50 p-3 rounded-lg space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-zinc-600">Target URL:</span>
+                    <span className="text-zinc-600">{t('version.targetUrl')}</span>
                     <span className="font-mono text-xs break-all">{API_URL}</span>
                   </div>
                   
@@ -173,7 +175,7 @@ export function VersionDisplay() {
                     <div className="p-3 bg-red-50 border border-red-200 rounded-md">
                       <div className="flex items-center">
                         <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 mr-2">
-                          Error
+                          {t('version.error')}
                         </span>
                         <span className="text-sm text-red-700">{error}</span>
                       </div>
@@ -183,25 +185,25 @@ export function VersionDisplay() {
                   {backendHealth && (
                     <>
                       <div className="flex justify-between text-sm items-center">
-                        <span className="text-zinc-600">Status:</span>
+                        <span className="text-zinc-600">{t('version.status')}</span>
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(backendHealth.status)}`}>
                           {backendHealth.status}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-zinc-600">Version:</span>
+                        <span className="text-zinc-600">{t('version.version')}</span>
                         <span className="font-mono">v{backendHealth.version}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-zinc-600">Environment:</span>
+                        <span className="text-zinc-600">{t('version.environment')}</span>
                         <span className="font-mono">{backendHealth.environment}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-zinc-600">Uptime:</span>
+                        <span className="text-zinc-600">{t('version.uptime')}</span>
                         <span className="font-mono">{formatUptime(backendHealth.uptime)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-zinc-600">Last Check:</span>
+                        <span className="text-zinc-600">{t('version.lastCheck')}</span>
                         <span className="font-mono text-xs">
                           {new Date(backendHealth.timestamp).toLocaleTimeString()}
                         </span>
@@ -219,7 +221,7 @@ export function VersionDisplay() {
                   className="flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <Activity className="w-4 h-4 mr-2" />
-                  {loading ? 'Checking...' : 'Refresh Health Check'}
+                  {loading ? t('version.checking') : t('version.refreshHealthCheck')}
                 </button>
               </div>
             </div>
