@@ -46,7 +46,7 @@ export const nl = {
     firstName: 'Voornaam',
     lastName: 'Achternaam',
     mobile: 'Mobiel',
-    signInToAccount: 'Log in op uw account',
+    signInToAccount: 'Aanmelden',
     invalidCredentials: 'Ongeldige inloggegevens',
     registrationFailed: 'Registratie mislukt',
     loginFailed: 'Inloggen mislukt',
