@@ -4,12 +4,12 @@
   "periods": [
     {
       "id": "f2f1e53f-4c62-4360-a828-533f70a4c53f",
-      "name": "Christmas to Easter",
+      "name": "Kerstmis tot Pasen",
       "startDate": "2024-12-23",
       "endDate": "2025-04-15",
       "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-12T14:40:01.477Z"
+      "updatedAt": "2025-06-18T19:22:00.667Z"
     },
     {
       "id": "fe2078ef-889c-41f4-849f-38cbac8d24ef",
@@ -39,5 +39,5 @@
       "updatedAt": "2025-06-18T18:35:43.116Z"
     }
   ],
-  "lastUpdated": "2025-06-18T18:35:44.660Z"
+  "lastUpdated": "2025-06-18T19:22:05.368Z"
 }
