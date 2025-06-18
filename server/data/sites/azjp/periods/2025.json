@@ -13,31 +13,31 @@
     },
     {
       "id": "fe2078ef-889c-41f4-849f-38cbac8d24ef",
-      "name": "Easter to June",
+      "name": "Pasen tot juni",
       "startDate": "2025-04-16",
       "endDate": "2025-06-30",
       "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-18T18:35:35.034Z"
+      "updatedAt": "2025-06-18T19:22:24.177Z"
     },
     {
       "id": "eddc4534-d85e-4a5d-8597-f81f4a74c9de",
-      "name": "July to August",
+      "name": "Juli en augustus",
       "startDate": "2025-07-01",
       "endDate": "2025-08-31",
       "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-18T18:35:39.610Z"
+      "updatedAt": "2025-06-18T19:22:33.441Z"
     },
     {
       "id": "1955706a-1011-4923-840b-641ee9a4eba6",
-      "name": "September to Christmas",
+      "name": "September tot nieuwjaar",
       "startDate": "2025-09-01",
       "endDate": "2026-01-07",
       "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-18T18:35:43.116Z"
+      "updatedAt": "2025-06-18T19:22:45.685Z"
     }
   ],
-  "lastUpdated": "2025-06-18T19:22:05.368Z"
+  "lastUpdated": "2025-06-18T19:22:47.871Z"
 }
