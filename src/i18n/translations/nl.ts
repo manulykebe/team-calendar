@@ -33,6 +33,9 @@ export const nl = {
     settings: 'Instellingen',
     language: 'Taal',
     colleague: 'Collega',
+    year: 'Jaar',
+    site: 'Site',
+    saving: 'Opslaan...',
   },
 
   // Authentication
@@ -91,6 +94,7 @@ export const nl = {
     failedToUpdateEvent: 'Bijwerken van gebeurtenis mislukt',
     failedToDeleteEvent: 'Verwijderen van gebeurtenis mislukt',
     dateNotAvailable: 'Datum niet beschikbaar',
+    scrollToNavigate: 'Scroll om door weken te navigeren',
   },
 
   // Events

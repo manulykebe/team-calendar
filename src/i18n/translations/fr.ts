@@ -33,6 +33,9 @@ export const fr = {
     settings: 'Paramètres',
     language: 'Langue',
     colleague: 'Collègue',
+    year: 'Année',
+    site: 'Site',
+    saving: 'Enregistrement...',
   },
 
   // Authentication
@@ -91,6 +94,7 @@ export const fr = {
     failedToUpdateEvent: 'Échec de la mise à jour de l\'événement',
     failedToDeleteEvent: 'Échec de la suppression de l\'événement',
     dateNotAvailable: 'Date non disponible',
+    scrollToNavigate: 'Faites défiler pour naviguer entre les semaines',
   },
 
   // Events

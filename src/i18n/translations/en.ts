@@ -33,6 +33,9 @@ export const en = {
     settings: 'Settings',
     language: 'Language',
     colleague: 'Colleague',
+    year: 'Year',
+    site: 'Site',
+    saving: 'Saving...',
   },
 
   // Authentication
@@ -91,6 +94,7 @@ export const en = {
     failedToUpdateEvent: 'Failed to update event',
     failedToDeleteEvent: 'Failed to delete event',
     dateNotAvailable: 'Date not available',
+    scrollToNavigate: 'Scroll to navigate weeks',
   },
 
   // Events

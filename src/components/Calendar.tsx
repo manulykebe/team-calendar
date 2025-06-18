@@ -11,6 +11,7 @@ import { CalendarGrid } from "./calendar/CalendarGrid";
 import { MonthPicker } from "./calendar/MonthPicker";
 import { ConnectionStatus } from "./common/ConnectionStatus";
 import { useCalendarState } from "../hooks/useCalendarState";
+import { useCalendarScroll } from "../hooks/useCalendarScroll";
 import { useApp } from "../context/AppContext";
 import { useTranslation } from "../context/TranslationContext";
 import {
@@ -56,6 +57,12 @@ export function Calendar() {
     setSelectedStartDate,
     setSelectedEndDate,
   } = useCalendarState();
+
+  // Use the calendar scroll hook
+  const { containerRef } = useCalendarScroll({
+    currentMonth,
+    setCurrentMonth,
+  });
 
   const handleToday = () => {
     const today = new Date();
@@ -163,7 +170,10 @@ export function Calendar() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
+      <div 
+        ref={containerRef}
+        className="bg-white rounded-lg shadow overflow-hidden"
+      >
         <CalendarGrid
           currentMonth={currentMonth}
           events={events}

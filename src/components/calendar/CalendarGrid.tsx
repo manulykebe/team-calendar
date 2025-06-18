@@ -53,7 +53,7 @@ export function CalendarGrid({
 	const [loading, setLoading] = useState(false);
 	const [holidays, setHolidays] = useState<Holiday[]>([]);
 	const { joinCalendarDate, leaveCalendarDate } = useWebSocketContext();
-	const { language } = useTranslation();
+	const { language, t } = useTranslation();
 
 	// Memoize calendar calculations
 	const { days, emptyDays, weekDays } = useMemo(() => 
@@ -267,6 +267,11 @@ export function CalendarGrid({
 						onEventDelete={onEventDelete}
 					/>
 				)}
+			</div>
+			
+			{/* Scroll hint tooltip */}
+			<div className="text-center py-2 text-xs text-zinc-500">
+				{t('calendar.scrollToNavigate')}
 			</div>
 		</div>
 	);
