@@ -1,12 +1,13 @@
 import { format } from "date-fns";
 import { useTranslation } from "../../context/TranslationContext";
+import { formatDateWithLocale } from "../../utils/calendar";
 
 interface MonthLabelProps {
   date: Date;
 }
 
 export function MonthLabel({ date }: MonthLabelProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   
   // Map month number to translation key
   const getMonthTranslation = (date: Date) => {

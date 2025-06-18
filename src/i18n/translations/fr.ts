@@ -431,4 +431,25 @@ export const fr = {
     validationError: 'Erreur de validation',
     unknownError: 'Erreur inconnue',
   },
+
+  // Public holidays
+  publicHolidays: {
+    newYearsDay: 'Jour de l\'An',
+    easterSunday: 'Dimanche de Pâques',
+    easterMonday: 'Lundi de Pâques',
+    labourDay: 'Fête du Travail',
+    ascensionDay: 'Ascension',
+    whitSunday: 'Pentecôte',
+    whitMonday: 'Lundi de Pentecôte',
+    belgianNationalDay: 'Fête nationale belge',
+    assumptionDay: 'Assomption',
+    allSaintsDay: 'Toussaint',
+    armisticeDay: 'Armistice',
+    christmasDay: 'Noël',
+    goodFriday: 'Vendredi Saint',
+    earlyMayBankHoliday: 'Jour férié de début mai',
+    springBankHoliday: 'Jour férié de printemps',
+    summerBankHoliday: 'Jour férié d\'été',
+    boxingDay: 'Lendemain de Noël',
+  },
 };

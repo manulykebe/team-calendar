@@ -23,6 +23,7 @@ import { useApp } from "../../context/AppContext";
 import { getPeriods } from "../../lib/api/periods";
 import { Period } from "../../types/period";
 import { useTranslation } from "../../context/TranslationContext";
+import { formatDateWithLocale } from "../../utils/calendar";
 
 interface MonthPickerProps {
 	currentMonth: Date;
@@ -41,7 +42,7 @@ export function MonthPicker({
 }: MonthPickerProps) {
 	const { token } = useAuth();
 	const { currentUser } = useApp();
-	const { t } = useTranslation();
+	const { t, language } = useTranslation();
 	const [isOpen, setIsOpen] = useState(false);
 	const [baseMonth, setBaseMonth] = useState(startOfMonth(currentMonth));
 	const [isHovered, setIsHovered] = useState(false);

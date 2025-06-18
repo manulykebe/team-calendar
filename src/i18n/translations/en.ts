@@ -431,4 +431,25 @@ export const en = {
     validationError: 'Validation error',
     unknownError: 'Unknown error',
   },
+
+  // Public holidays
+  publicHolidays: {
+    newYearsDay: 'New Year\'s Day',
+    easterSunday: 'Easter Sunday',
+    easterMonday: 'Easter Monday',
+    labourDay: 'Labour Day',
+    ascensionDay: 'Ascension Day',
+    whitSunday: 'Whit Sunday',
+    whitMonday: 'Whit Monday',
+    belgianNationalDay: 'Belgian National Day',
+    assumptionDay: 'Assumption Day',
+    allSaintsDay: 'All Saints\' Day',
+    armisticeDay: 'Armistice Day',
+    christmasDay: 'Christmas Day',
+    goodFriday: 'Good Friday',
+    earlyMayBankHoliday: 'Early May Bank Holiday',
+    springBankHoliday: 'Spring Bank Holiday',
+    summerBankHoliday: 'Summer Bank Holiday',
+    boxingDay: 'Boxing Day',
+  },
 };

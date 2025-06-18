@@ -9,6 +9,7 @@ import { Holiday, getHolidays } from "../../lib/api/holidays";
 import { format } from "date-fns";
 import { getSiteData } from "../../lib/api/client";
 import { useWebSocketContext } from "../../context/WebSocketContext";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface CalendarGridProps {
 	currentMonth: Date;
@@ -52,6 +53,7 @@ export function CalendarGrid({
 	const [loading, setLoading] = useState(false);
 	const [holidays, setHolidays] = useState<Holiday[]>([]);
 	const { joinCalendarDate, leaveCalendarDate } = useWebSocketContext();
+	const { language } = useTranslation();
 
 	// Memoize calendar calculations
 	const { days, emptyDays, weekDays } = useMemo(() => 

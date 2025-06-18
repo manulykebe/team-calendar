@@ -7,6 +7,7 @@ import { updateEvent } from "../../lib/api";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { useTranslation } from "../../context/TranslationContext";
+import { formatDateWithLocale } from "../../utils/calendar";
 import ReactDOM from "react-dom";
 
 interface AdminHolidayModalProps {
@@ -23,7 +24,7 @@ export function AdminHolidayModal({
   onUpdate,
 }: AdminHolidayModalProps) {
   const { token } = useAuth();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const getEventTypeLabel = (eventType: string, eventStatus: string): string => {
@@ -136,6 +137,11 @@ export function AdminHolidayModal({
 
   const colleagueDisplay = getColleagueDisplay();
 
+  // Format date with localization
+  const formatLocalizedDate = (date: string) => {
+    return formatDateWithLocale(new Date(date), "EEEE, MMMM d, yyyy", language);
+  };
+
   const modalContent = (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
@@ -204,11 +210,11 @@ export function AdminHolidayModal({
               <div className="flex items-center space-x-2 mb-2">
                 <Calendar className="w-4 h-4 text-blue-600" />
                 <p className="text-blue-900 font-medium">
-                  {format(new Date(event.date), "EEEE, MMMM d, yyyy")}
+                  {formatLocalizedDate(event.date)}
                   {event.endDate && event.endDate !== event.date && (
                     <>
                       <span className="text-blue-600 mx-2">→</span>
-                      {format(new Date(event.endDate), "EEEE, MMMM d, yyyy")}
+                      {formatLocalizedDate(event.endDate)}
                     </>
                   )}
                 </p>

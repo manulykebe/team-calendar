@@ -13,6 +13,7 @@ import { AdminHolidayModal } from "./AdminHolidayModal";
 import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
 import { useTranslation } from "../../context/TranslationContext";
+import { formatDateWithLocale } from "../../utils/calendar";
 import ReactDOM from "react-dom";
 
 interface DayCellProps {
@@ -55,7 +56,7 @@ export const DayCell = memo(function DayCell({
 	isLoadingAvailability,
 }: DayCellProps) {
 	const { colleagues, refreshData } = useApp();
-	const { t } = useTranslation();
+	const { t, language } = useTranslation();
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const [selectedHolidayEvent, setSelectedHolidayEvent] = useState<Event | null>(null);

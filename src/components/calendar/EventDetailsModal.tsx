@@ -6,6 +6,7 @@ import { deleteEvent, updateEvent } from "../../lib/api";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { useTranslation } from "../../context/TranslationContext";
+import { formatDateWithLocale } from "../../utils/calendar";
 
 interface EventDetailsModalProps {
   event: Event;
@@ -19,7 +20,7 @@ export function EventDetailsModal({
   onDelete,
 }: EventDetailsModalProps) {
   const { token } = useAuth();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(event.title);
   const [description, setDescription] = useState(event.description);
@@ -107,6 +108,11 @@ export function EventDetailsModal({
     );
   };
 
+  // Format date with localization
+  const formatLocalizedDate = (date: string) => {
+    return formatDateWithLocale(new Date(date), "MMMM d, yyyy", language);
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
@@ -129,9 +135,9 @@ export function EventDetailsModal({
           <div>
             <h4 className="text-sm font-medium text-zinc-500 mb-1">{t('events.date')}</h4>
             <p className="text-zinc-900">
-              {format(new Date(event.date), "MMMM d, yyyy")}
+              {formatLocalizedDate(event.date)}
               {event.endDate && event.endDate !== event.date && (
-                <> - {format(new Date(event.endDate), "MMMM d, yyyy")}</>
+                <> - {formatLocalizedDate(event.endDate)}</>
               )}
             </p>
           </div>
