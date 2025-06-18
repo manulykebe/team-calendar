@@ -4,40 +4,40 @@
   "periods": [
     {
       "id": "ff8a6bac-d228-4646-addd-d7379007ea45",
-      "name": "Christmas to Easter",
+      "name": "Kerstmis tot Pasen",
       "startDate": "2025-12-23",
       "endDate": "2026-04-15",
       "editingStatus": "closed",
       "createdAt": "2025-06-12T14:42:12.728Z",
-      "updatedAt": "2025-06-18T18:35:54.395Z"
+      "updatedAt": "2025-06-18T19:24:12.255Z"
     },
     {
       "id": "73cf93b4-74fc-4897-a933-7f0cb88e0a78",
-      "name": "Easter to June",
+      "name": "Pasen tot juni",
       "startDate": "2026-04-16",
       "endDate": "2026-06-30",
       "editingStatus": "closed",
       "createdAt": "2025-06-12T14:42:12.728Z",
-      "updatedAt": "2025-06-18T18:35:59.696Z"
+      "updatedAt": "2025-06-18T19:24:22.269Z"
     },
     {
       "id": "674be0cf-4fd6-4212-b140-928e1b1c1196",
-      "name": "July to August",
+      "name": "Juli en augustus",
       "startDate": "2026-07-01",
       "endDate": "2026-08-31",
       "editingStatus": "closed",
       "createdAt": "2025-06-12T14:42:12.728Z",
-      "updatedAt": "2025-06-18T18:36:04.502Z"
+      "updatedAt": "2025-06-18T19:24:36.049Z"
     },
     {
       "id": "785ef071-8525-4eac-8ac0-48e4156f3bda",
-      "name": "September to Christmas",
+      "name": "September tot nieuwjaar",
       "startDate": "2026-09-01",
       "endDate": "2027-01-07",
       "editingStatus": "closed",
       "createdAt": "2025-06-12T14:42:12.728Z",
-      "updatedAt": "2025-06-18T18:36:07.769Z"
+      "updatedAt": "2025-06-18T19:24:47.031Z"
     }
   ],
-  "lastUpdated": "2025-06-18T18:36:12.507Z"
+  "lastUpdated": "2025-06-18T19:24:48.270Z"
 }
