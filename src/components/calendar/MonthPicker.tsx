@@ -9,6 +9,7 @@ import {
 	isAfter,
 	isBefore,
 	isWithinInterval,
+	getMonth,
 } from "date-fns";
 import {
 	ChevronLeft,
@@ -21,6 +22,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
 import { getPeriods } from "../../lib/api/periods";
 import { Period } from "../../types/period";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface MonthPickerProps {
 	currentMonth: Date;
@@ -39,6 +41,7 @@ export function MonthPicker({
 }: MonthPickerProps) {
 	const { token } = useAuth();
 	const { currentUser } = useApp();
+	const { t } = useTranslation();
 	const [isOpen, setIsOpen] = useState(false);
 	const [baseMonth, setBaseMonth] = useState(startOfMonth(currentMonth));
 	const [isHovered, setIsHovered] = useState(false);
@@ -290,6 +293,33 @@ export function MonthPicker({
 		// Keep the panel open for better UX
 	};
 
+	// Get translated month name
+	const getMonthName = (date: Date) => {
+		const monthIndex = getMonth(date);
+		const monthKeys = [
+			'months.january',
+			'months.february',
+			'months.march',
+			'months.april',
+			'months.may',
+			'months.june',
+			'months.july',
+			'months.august',
+			'months.september',
+			'months.october',
+			'months.november',
+			'months.december'
+		];
+		
+		return t(monthKeys[monthIndex]);
+	};
+
+	// Get translated day abbreviation
+	const getDayAbbreviation = (dayIndex: number) => {
+		const dayKeys = ['days.sun', 'days.mon', 'days.tue', 'days.wed', 'days.thu', 'days.fri', 'days.sat'];
+		return t(dayKeys[dayIndex]);
+	};
+
 	const renderMonth = (monthDate: Date) => {
 		const daysInMonth = [];
 		const start = new Date(
@@ -360,9 +390,11 @@ export function MonthPicker({
 					className={dateClasses}
 					title={
 						isOpenForEditing 
-							? `Open for ${editingStatus === 'open-holiday' ? 'Holiday' : 'Desiderata'} editing`
+							? editingStatus === 'open-holiday' 
+								? t('periods.openHoliday')
+								: t('periods.openDesiderata')
 							: isDisabled 
-								? 'Date not available'
+								? t('calendar.dateNotAvailable')
 								: format(date, 'MMMM d, yyyy')
 					}
 				>
@@ -389,7 +421,7 @@ export function MonthPicker({
 				onMouseEnter={() => setIsHovered(true)}
 				onMouseLeave={() => setIsHovered(false)}
 				className={`fixed top-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 z-10 transition-all duration-200`}
-				aria-label={"Open month picker"}
+				aria-label={isOpen ? t('calendar.closeMonthPicker') : t('calendar.openMonthPicker')}
 			>
 				<Calendar
 					className={`w-5 h-5 transition-colors duration-200`}
@@ -401,7 +433,7 @@ export function MonthPicker({
 				className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-zinc-800 rounded whitespace-nowrap transition-opacity duration-200
           ${isHovered && !isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
 			>
-				{isOpen ? "Close month picker" : "Open month picker"}
+				{isOpen ? t('calendar.closeMonthPicker') : t('calendar.openMonthPicker')}
 				<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-zinc-800" />
 			</div>
 
@@ -421,7 +453,7 @@ export function MonthPicker({
 			>
 				<div className="flex flex-col h-full">
 					<div className="flex items-center justify-between p-2 border-b">
-						<h2 className="text-lg font-semibold text-zinc-900">Calendar</h2>
+						<h2 className="text-lg font-semibold text-zinc-900">{t('calendar.calendar')}</h2>
 						<button
 							onClick={() => setIsOpen(false)}
 							className="p-2 hover:bg-zinc-100 rounded-full"
@@ -436,41 +468,41 @@ export function MonthPicker({
 								<button
 									onClick={handleToday}
 									className="flex items-center px-2 py-1 space-x-1 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
-									title="Go to today"
+									title={t('common.today')}
 								>
 									<Calendar className="w-4 h-4" />
 								</button>
 								<button
 									onClick={handlePrevYear}
 									className="hover:bg-zinc-100 rounded-full"
-									aria-label="Previous year"
+									aria-label={t('calendar.previousYear')}
 								>
 									<ChevronsLeft className="w-4 h-4" />
 								</button>
 								<button
 									onClick={handlePrevMonth}
 									className="hover:bg-zinc-100 rounded-full"
-									aria-label="Previous month"
+									aria-label={t('calendar.previousMonth')}
 								>
 									<ChevronLeft className="w-4 h-4" />
 								</button>
 							</div>
 							<span className="text-sm font-medium">
-								{format(baseMonth, "MMM yyyy")} -{" "}
-								{format(addMonths(baseMonth, 2), "MMM yyyy")}
+								{getMonthName(baseMonth)} {format(baseMonth, "yyyy")} -{" "}
+								{getMonthName(addMonths(baseMonth, 2))} {format(addMonths(baseMonth, 2), "yyyy")}
 							</span>
 							<div className="flex items-center space-x-1">
 								<button
 									onClick={handleNextMonth}
 									className="hover:bg-zinc-100 rounded-full"
-									aria-label="Next month"
+									aria-label={t('calendar.nextMonth')}
 								>
 									<ChevronRight className="w-4 h-4" />
 								</button>
 								<button
 									onClick={handleNextYear}
 									className="hover:bg-zinc-100 rounded-full"
-									aria-label="Next year"
+									aria-label={t('calendar.nextYear')}
 								>
 									<ChevronsRight className="w-4 h-4" />
 								</button>
@@ -480,23 +512,23 @@ export function MonthPicker({
 						{/* Legend for editing status indicators with clickable navigation */}
 						{periods.length > 0 && (
 							<div className="mb-4 p-3 bg-zinc-50 rounded-lg">
-								<h4 className="text-xs font-medium text-zinc-700 mb-2">Editing Status</h4>
+								<h4 className="text-xs font-medium text-zinc-700 mb-2">{t('periods.editingStatus')}</h4>
 								<div className="space-y-1">
 									<button
 										onClick={() => handleEditingStatusClick('open-holiday')}
 										className="flex items-center space-x-2 text-xs w-full text-left hover:bg-zinc-100 rounded px-1 py-0.5 transition-colors"
-										title="Click to go to first Holiday editing period"
+										title={t('periods.openHoliday')}
 									>
 										<div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-										<span className="text-zinc-600">Open - Holiday</span>
+										<span className="text-zinc-600">{t('periods.openHoliday')}</span>
 									</button>
 									<button
 										onClick={() => handleEditingStatusClick('open-desiderata')}
 										className="flex items-center space-x-2 text-xs w-full text-left hover:bg-zinc-100 rounded px-1 py-0.5 transition-colors"
-										title="Click to go to first Desiderata editing period"
+										title={t('periods.openDesiderata')}
 									>
 										<div className="w-2 h-2 bg-green-400 rounded-full"></div>
-										<span className="text-zinc-600">Open - Desiderata</span>
+										<span className="text-zinc-600">{t('periods.openDesiderata')}</span>
 									</button>
 								</div>
 							</div>
@@ -514,36 +546,18 @@ export function MonthPicker({
 									className="text-center"
 								>
 									<div className="text-sm font-medium mb-2">
-										{format(month, "MMMM yyyy")}
+										{getMonthName(month)} {format(month, "yyyy")}
 									</div>
 									<div className="grid grid-cols-7 gap-0 text-left">
-										{[
-											"Su",
-											"Mo",
-											"Tu",
-											"We",
-											"Th",
-											"Fr",
-											"Sa",
-										]
+										{[0, 1, 2, 3, 4, 5, 6]
 											.slice(weekStartsOnNumber)
-											.concat(
-												[
-													"Su",
-													"Mo",
-													"Tu",
-													"We",
-													"Th",
-													"Fr",
-													"Sa",
-												].slice(0, weekStartsOnNumber)
-											)
-											.map((day) => (
+											.concat([0, 1, 2, 3, 4, 5, 6].slice(0, weekStartsOnNumber))
+											.map((dayIndex) => (
 												<div
-													key={day}
+													key={dayIndex}
 													className="text-xs text-zinc-500 text-center py-1"
 												>
-													{day}
+													{getDayAbbreviation(dayIndex)}
 												</div>
 											))}
 									</div>

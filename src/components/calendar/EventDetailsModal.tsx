@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { deleteEvent, updateEvent } from "../../lib/api";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface EventDetailsModalProps {
   event: Event;
@@ -18,6 +19,7 @@ export function EventDetailsModal({
   onDelete,
 }: EventDetailsModalProps) {
   const { token } = useAuth();
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(event.title);
   const [description, setDescription] = useState(event.description);
@@ -25,42 +27,42 @@ export function EventDetailsModal({
   const handleDelete = async () => {
     if (!token || !onDelete) return;
 
-    const toastId = toast.loading('Deleting event...');
+    const toastId = toast.loading(t('events.deleting'));
     try {
       await deleteEvent(token, event.id);
       onDelete(event.id);
-      toast.success('Event deleted successfully', { id: toastId });
+      toast.success(t('calendar.eventDeleted'), { id: toastId });
       onClose();
     } catch (error) {
       console.error('Failed to delete event:', error);
-      toast.error('Failed to delete event', { id: toastId });
+      toast.error(t('calendar.failedToDeleteEvent'), { id: toastId });
     }
   };
 
   const handleSave = async () => {
     if (!token) return;
 
-    const toastId = toast.loading('Saving changes...');
+    const toastId = toast.loading(t('events.saving'));
     try {
       await updateEvent(token, event.id, {
         ...event,
         title,
         description,
       });
-      toast.success('Changes saved successfully', { id: toastId });
+      toast.success(t('events.changesSaved'), { id: toastId });
       setIsEditing(false);
     } catch (error) {
       console.error('Failed to save changes:', error);
-      toast.error('Failed to save changes', { id: toastId });
+      toast.error(t('events.failedToSave'), { id: toastId });
     }
   };
 
   const getEventTypeLabel = (eventType: string): string => {
     switch (eventType) {
       case "requestedHoliday":
-        return "Requested Holiday";
+        return t('calendar.requestedHoliday');
       case "requestedDesiderata":
-        return "Requested Desiderata";
+        return t('calendar.requestedDesiderata');
       default:
         return eventType
           .replace(/([A-Z])/g, " $1")
@@ -100,7 +102,7 @@ export function EventDetailsModal({
           ? 'bg-green-100 text-green-800' 
           : 'bg-red-100 text-red-800'
       }`}>
-        {event.status === 'approved' ? 'Approved' : 'Denied'}
+        {event.status === 'approved' ? t('events.approved') : t('events.denied')}
       </span>
     );
   };
@@ -114,7 +116,7 @@ export function EventDetailsModal({
     >
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full" onClick={e => e.stopPropagation()}>
         <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="text-lg font-semibold text-zinc-900">Event Details</h3>
+          <h3 className="text-lg font-semibold text-zinc-900">{t('calendar.eventDetails')}</h3>
           <button
             onClick={onClose}
             className="text-zinc-400 hover:text-zinc-500"
@@ -125,7 +127,7 @@ export function EventDetailsModal({
 
         <div className="p-4 space-y-4">
           <div>
-            <h4 className="text-sm font-medium text-zinc-500 mb-1">Date</h4>
+            <h4 className="text-sm font-medium text-zinc-500 mb-1">{t('events.date')}</h4>
             <p className="text-zinc-900">
               {format(new Date(event.date), "MMMM d, yyyy")}
               {event.endDate && event.endDate !== event.date && (
@@ -135,7 +137,7 @@ export function EventDetailsModal({
           </div>
 
           <div>
-            <h4 className="text-sm font-medium text-zinc-500 mb-1">Type</h4>
+            <h4 className="text-sm font-medium text-zinc-500 mb-1">{t('events.type')}</h4>
             <div className="flex items-center">
               {getStatusLabel()}
               <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getEventTypeColor(event.type, event.status)}`}>
@@ -145,33 +147,33 @@ export function EventDetailsModal({
           </div>
           
           <div>
-            <h4 className="text-sm font-medium text-zinc-500 mb-1">Title</h4>
+            <h4 className="text-sm font-medium text-zinc-500 mb-1">{t('events.title')}</h4>
             {isEditing ? (
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter title"
+                placeholder={t('events.enterTitle', { type: '' })}
               />
             ) : (
-              <p className="text-zinc-900">{title || "Untitled Event"}</p>
+              <p className="text-zinc-900">{title || t('events.untitledEvent')}</p>
             )}
           </div>
 
           <div>
-            <h4 className="text-sm font-medium text-zinc-500 mb-1">Description</h4>
+            <h4 className="text-sm font-medium text-zinc-500 mb-1">{t('events.description')}</h4>
             {isEditing ? (
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={3}
-                placeholder="Enter description"
+                placeholder={t('events.enterDescription', { type: '' })}
               />
             ) : (
               <p className="text-zinc-900 whitespace-pre-wrap">
-                {description || "No description"}
+                {description || t('events.noDescription')}
               </p>
             )}
           </div>
@@ -184,7 +186,7 @@ export function EventDetailsModal({
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              Delete Event
+              {t('calendar.deleteEvent')}
             </button>
           )}
           {isEditing ? (
@@ -197,14 +199,14 @@ export function EventDetailsModal({
                 }}
                 className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleSave}
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 <Save className="w-4 h-4 mr-2" />
-                Save Changes
+                {t('common.save')}
               </button>
             </>
           ) : (
@@ -213,13 +215,13 @@ export function EventDetailsModal({
                 onClick={() => setIsEditing(true)}
                 className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
               >
-                Edit
+                {t('common.edit')}
               </button>
               <button
                 onClick={onClose}
                 className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
               >
-                Close
+                {t('common.close')}
               </button>
             </>
           )}

@@ -6,6 +6,7 @@ import { User } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
 import { deleteEvent } from "../../lib/api";
 import toast from "react-hot-toast";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface WeekNumberProps {
 	date: Date;
@@ -26,12 +27,34 @@ export function WeekNumber({
 }: WeekNumberProps) {
 	const [isHovered, setIsHovered] = useState(false);
 	const { token } = useAuth();
+	const { t } = useTranslation();
 	const weekNumber = getWeekNumber(date);
 	const weekStart = startOfWeek(date, { weekStartsOn: 1 }); // Start from Monday
 	const weekEnd = endOfWeek(date, { weekStartsOn: 1 }); // End on Sunday
 
 	const monthWeekStart = format(weekStart, "MMMM");
 	const monthWeekEnd = format(weekEnd, "MMMM");
+	
+	// Get translated month name
+	const getMonthTranslation = (monthName: string) => {
+		const monthMap: Record<string, string> = {
+			'January': 'months.january',
+			'February': 'months.february',
+			'March': 'months.march',
+			'April': 'months.april',
+			'May': 'months.may',
+			'June': 'months.june',
+			'July': 'months.july',
+			'August': 'months.august',
+			'September': 'months.september',
+			'October': 'months.october',
+			'November': 'months.november',
+			'December': 'months.december',
+		};
+		
+		return t(monthMap[monthName] || monthName);
+	};
+	
 	// Check if there's an existing holiday request for this week
 	const existingHoliday = events.find((event) => {
 		if (event.userId !== currentUser?.id) return false;
@@ -54,7 +77,7 @@ export function WeekNumber({
 
 	const handleClick = async () => {
 		if (!token || !currentUser) {
-			toast.error("You must be logged in to request holidays");
+			toast.error(t('auth.loginRequired'));
 			return;
 		}
 
@@ -63,9 +86,9 @@ export function WeekNumber({
 			try {
 				await deleteEvent(token, existingHoliday.id);
 				onEventDelete(existingHoliday.id);
-				toast.success("Holiday request deleted");
+				toast.success(t('calendar.eventDeleted'));
 			} catch (error) {
-				toast.error("Failed to delete holiday request");
+				toast.error(t('calendar.failedToDeleteEvent'));
 			}
 		} else if (onWeekClick) {
 			// Create new holiday request
@@ -88,8 +111,16 @@ export function WeekNumber({
 			onMouseLeave={() => setIsHovered(false)}
 			title={
 				existingHoliday
-					? `Click to delete holiday for week ${weekNumber} (${format(weekStart, "MMM d")} - ${format(weekEnd, "MMM d")})`
-					: `Click to create holiday for week ${weekNumber} (${format(weekStart, "MMM d")} - ${format(weekEnd, "MMM d")})`
+					? t('calendar.deleteHoliday', { 
+						week: weekNumber, 
+						startDate: format(weekStart, "MMM d"), 
+						endDate: format(weekEnd, "MMM d") 
+					})
+					: t('calendar.createHoliday', { 
+						week: weekNumber, 
+						startDate: format(weekStart, "MMM d"), 
+						endDate: format(weekEnd, "MMM d") 
+					})
 			}
 			data-tsx-id="week-number"
 		>
@@ -97,7 +128,7 @@ export function WeekNumber({
 			<div
 				className={`text-xs absolute -top-0.5 font-medium text-zinc-400 z-30 ${position === "right" ? "-right-0.5" : "-left-0.5"}`}
 			>
-				{position === "left" ? monthWeekStart : monthWeekEnd}
+				{position === "left" ? getMonthTranslation(monthWeekStart) : getMonthTranslation(monthWeekEnd)}
 			</div>
 		</div>
 	);

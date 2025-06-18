@@ -5,6 +5,7 @@ import { useEventPermissions } from "../../hooks/useEventPermissions";
 import { AdminHolidayModal } from "./AdminHolidayModal";
 import { EventDetailsModal } from "./EventDetailsModal";
 import { useApp } from "../../context/AppContext";
+import { useTranslation } from "../../context/TranslationContext";
 import ReactDOM from "react-dom";
 
 interface EventCardProps {
@@ -34,6 +35,7 @@ export function EventCard({
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const { canModify } = useEventPermissions(event, currentUser);
 	const { colleagues, refreshData } = useApp();
+	const { t } = useTranslation();
 	
 	const isHolidayEvent = HOLIDAY_TYPES.includes(event.type);
 	const isCurrentUserEvent = event.userId === currentUser?.id;
@@ -129,10 +131,18 @@ export function EventCard({
 		
 		// Show status in the display text for admin view of holiday events
 		if (isAdmin && isHolidayEvent && !isCurrentUserEvent) {
-			const statusText = event.status === 'approved' ? 'Approved' : 
-							  event.status === 'denied' ? 'Denied' : 'Requested';
-			const typeText = event.type === "requestedDesiderata" ? 'Desiderata' : 
-							 event.type === "requestedPeriod" ? 'Period' : 'Holiday';
+			const statusText = event.status === 'approved' ? t('events.approved') : 
+							  event.status === 'denied' ? t('events.denied') : t('events.pending');
+			
+			let typeText = '';
+			if (event.type === "requestedDesiderata") {
+				typeText = t('calendar.requestedDesiderata');
+			} else if (event.type === "requestedPeriod") {
+				typeText = t('calendar.requestedPeriod');
+			} else {
+				typeText = t('calendar.holiday');
+			}
+			
 			return `${prefix}${statusText} ${typeText}`;
 		}
 		
@@ -141,18 +151,18 @@ export function EventCard({
 			case "requestedHoliday":
 			switch (event.status) {
 				case "approved":
-					return `${prefix}Approved Holiday`;
+					return `${prefix}${t('calendar.approvedHoliday')}`;
 				case "denied":
-					return `${prefix}Denied Holiday`;
+					return `${prefix}${t('calendar.deniedHoliday')}`;
 				case "pending":
-					return `${prefix}Pending Holiday`;
+					return `${prefix}${t('calendar.pendingHoliday')}`;
 				default:
-					return `${prefix}Holiday Request`;
+					return `${prefix}${t('calendar.requestedHoliday')}`;
 			}
 			case "requestedDesiderata":
-				return `${prefix}Desiderata Request`;
+				return `${prefix}${t('calendar.requestedDesiderata')}`;
 			case "requestedPeriod":
-				return `${prefix}Period Request`;
+				return `${prefix}${t('calendar.requestedPeriod')}`;
 			default:
 				return `${prefix}${event.type}`;
 		}
@@ -222,10 +232,10 @@ export function EventCard({
 	// Get tooltip text
 	const getTooltipText = () => {
 		if (isAdmin && isHolidayEvent && !isCurrentUserEvent) {
-			return `Click to manage ${eventOwner?.firstName || 'colleague'}'s request`;
+			return t('adminHoliday.clickToManage', { name: eventOwner?.firstName || t('common.colleague') });
 		}
 		if (isHolidayEvent && isCurrentUserEvent) {
-			return "Click to view details";
+			return t('adminHoliday.clickToViewDetails');
 		}
 		return undefined;
 	};

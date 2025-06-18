@@ -32,6 +32,7 @@ export const en = {
     copied: 'Copied',
     settings: 'Settings',
     language: 'Language',
+    colleague: 'Colleague',
   },
 
   // Authentication
@@ -50,10 +51,12 @@ export const en = {
     registrationFailed: 'Registration failed',
     loginFailed: 'Login failed',
     signingIn: 'Signing in...',
+    loginRequired: 'You must be logged in to request holidays',
   },
 
   // Calendar
   calendar: {
+    calendar: 'Calendar',
     teamCalendar: 'Team Calendar: AZJP',
     goToToday: 'Go to today',
     previousWeek: 'Previous week',
@@ -87,6 +90,7 @@ export const en = {
     failedToCreateEvent: 'Failed to create event',
     failedToUpdateEvent: 'Failed to update event',
     failedToDeleteEvent: 'Failed to delete event',
+    dateNotAvailable: 'Date not available',
   },
 
   // Events
@@ -151,6 +155,7 @@ export const en = {
     passwordRequirements: 'Password must be at least 8 characters and contain at least one uppercase letter, one number, and one special character',
     leaveBlankToKeep: '(leave blank to keep current)',
     page: 'Page {{current}} of {{total}}',
+    unknownUser: 'Unknown User',
   },
 
   // Settings

@@ -32,6 +32,7 @@ export const fr = {
     copied: 'Copié',
     settings: 'Paramètres',
     language: 'Langue',
+    colleague: 'Collègue',
   },
 
   // Authentication
@@ -50,10 +51,12 @@ export const fr = {
     registrationFailed: 'Échec de l\'inscription',
     loginFailed: 'Échec de la connexion',
     signingIn: 'Connexion en cours...',
+    loginRequired: 'Vous devez être connecté pour demander des congés',
   },
 
   // Calendar
   calendar: {
+    calendar: 'Calendrier',
     teamCalendar: 'Calendrier d\'équipe : AZJP',
     goToToday: 'Aller à aujourd\'hui',
     previousWeek: 'Semaine précédente',
@@ -87,6 +90,7 @@ export const fr = {
     failedToCreateEvent: 'Échec de la création de l\'événement',
     failedToUpdateEvent: 'Échec de la mise à jour de l\'événement',
     failedToDeleteEvent: 'Échec de la suppression de l\'événement',
+    dateNotAvailable: 'Date non disponible',
   },
 
   // Events
@@ -151,6 +155,7 @@ export const fr = {
     passwordRequirements: 'Le mot de passe doit contenir au moins 8 caractères et inclure au moins une lettre majuscule, un chiffre et un caractère spécial',
     leaveBlankToKeep: '(laisser vide pour conserver l\'actuel)',
     page: 'Page {{current}} sur {{total}}',
+    unknownUser: 'Utilisateur inconnu',
   },
 
   // Settings

@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { updateEvent } from "../../lib/api";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
+import { useTranslation } from "../../context/TranslationContext";
 import ReactDOM from "react-dom";
 
 interface AdminHolidayModalProps {
@@ -22,6 +23,7 @@ export function AdminHolidayModal({
   onUpdate,
 }: AdminHolidayModalProps) {
   const { token } = useAuth();
+  const { t } = useTranslation();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const getEventTypeLabel = (eventType: string, eventStatus: string): string => {
@@ -29,18 +31,18 @@ export function AdminHolidayModal({
       case "requestedHoliday":
         switch (eventStatus) {
           case "approved":
-            return "Approved Holiday";
+            return t('calendar.approvedHoliday');
           case "denied":
-            return "Denied Holiday";
+            return t('calendar.deniedHoliday');
           case "pending":
-            return "Pending Holiday";
+            return t('calendar.pendingHoliday');
           default:
-        return "Holiday Request";
+            return t('calendar.requestedHoliday');
         }
       case "requestedDesiderata":
-        return "Desiderata Request";
+        return t('calendar.requestedDesiderata');
       case "requestedPeriod":
-        return "Period Request";
+        return t('calendar.requestedPeriod');
       default:
         return eventType
           .replace(/([A-Z])/g, " $1")
@@ -51,12 +53,12 @@ export function AdminHolidayModal({
   const getStatusLabel = (status?: string): string => {
     switch (status) {
       case "approved":
-        return "Approved";
+        return t('events.approved');
       case "denied":
-        return "Denied";
+        return t('events.denied');
       case "pending":
       default:
-        return "Pending";
+        return t('events.pending');
     }
   };
 
@@ -76,7 +78,9 @@ export function AdminHolidayModal({
     if (!token || !eventOwner) return;
 
     setIsUpdating(true);
-    const toastId = toast.loading(`${newStatus === 'approved' ? 'Approving' : 'Denying'} request...`);
+    const toastId = toast.loading(newStatus === 'approved' ? 
+      t('notifications.requestApproved') : 
+      t('notifications.requestDenied'));
 
     try {
       // Use the admin update endpoint with userId specified
@@ -87,7 +91,9 @@ export function AdminHolidayModal({
       });
 
       toast.success(
-        `Request ${newStatus === 'approved' ? 'approved' : 'denied'} successfully`,
+        newStatus === 'approved' ? 
+          t('notifications.requestApproved') : 
+          t('notifications.requestDenied'),
         { id: toastId }
       );
 
@@ -96,7 +102,9 @@ export function AdminHolidayModal({
     } catch (error) {
       console.error('Failed to update event status:', error);
       toast.error(
-        `Failed to ${newStatus === 'approved' ? 'approve' : 'deny'} request`,
+        newStatus === 'approved' ? 
+          t('notifications.failedToApprove') : 
+          t('notifications.failedToDeny'),
         { id: toastId }
       );
     } finally {
@@ -110,7 +118,7 @@ export function AdminHolidayModal({
       return {
         color: "#6b7280",
         initials: "?",
-        name: "Unknown User",
+        name: t('users.unknownUser'),
         email: ""
       };
     }
@@ -143,9 +151,9 @@ export function AdminHolidayModal({
             </div>
             <div>
               <h3 className="text-lg font-semibold text-zinc-900">
-                Request Management
+                {t('adminHoliday.requestManagement')}
               </h3>
-              <p className="text-sm text-zinc-500">Admin Review</p>
+              <p className="text-sm text-zinc-500">{t('adminHoliday.adminReview')}</p>
             </div>
           </div>
           <button
@@ -160,7 +168,7 @@ export function AdminHolidayModal({
         <div className="p-6 space-y-6">
           {/* Employee Information */}
           <div className="bg-zinc-50 p-4 rounded-lg border border-zinc-200">
-            <h4 className="text-sm font-medium text-zinc-700 mb-3">Employee Information</h4>
+            <h4 className="text-sm font-medium text-zinc-700 mb-3">{t('adminHoliday.employeeInformation')}</h4>
             <div className="flex items-center space-x-3">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium shadow-sm"
@@ -178,20 +186,20 @@ export function AdminHolidayModal({
           {/* Request Status */}
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="text-sm font-medium text-zinc-700 mb-1">Current Status</h4>
+              <h4 className="text-sm font-medium text-zinc-700 mb-1">{t('adminHoliday.currentStatus')}</h4>
               <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(event.status)}`}>
                 {getStatusLabel(event.status)}
               </span>
             </div>
             <div className="text-right">
-              <h4 className="text-sm font-medium text-zinc-700 mb-1">Request Type</h4>
+              <h4 className="text-sm font-medium text-zinc-700 mb-1">{t('adminHoliday.requestType')}</h4>
               <p className="text-sm text-zinc-900 font-medium">{getEventTypeLabel(event.type, event.status||'')}</p>
             </div>
           </div>
 
           {/* Date Information */}
           <div>
-            <h4 className="text-sm font-medium text-zinc-700 mb-2">Date Range</h4>
+            <h4 className="text-sm font-medium text-zinc-700 mb-2">{t('adminHoliday.dateRange')}</h4>
             <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
               <div className="flex items-center space-x-2 mb-2">
                 <Calendar className="w-4 h-4 text-blue-600" />
@@ -209,7 +217,7 @@ export function AdminHolidayModal({
                 <div className="flex items-center space-x-2">
                   <Clock className="w-4 h-4 text-blue-600" />
                   <p className="text-sm text-blue-600">
-                    Duration: {Math.ceil((new Date(event.endDate).getTime() - new Date(event.date).getTime()) / (1000 * 60 * 60 * 24)) + 1} days
+                    {t('events.duration', { days: Math.ceil((new Date(event.endDate).getTime() - new Date(event.date).getTime()) / (1000 * 60 * 60 * 24)) + 1 })}
                   </p>
                 </div>
               )}
@@ -221,14 +229,14 @@ export function AdminHolidayModal({
             <div className="space-y-3">
               {event.title && (
                 <div>
-                  <h4 className="text-sm font-medium text-zinc-700 mb-1">Title</h4>
+                  <h4 className="text-sm font-medium text-zinc-700 mb-1">{t('events.title')}</h4>
                   <p className="text-zinc-900 bg-zinc-50 p-2 rounded border">{event.title}</p>
                 </div>
               )}
 
               {event.description && (
                 <div>
-                  <h4 className="text-sm font-medium text-zinc-700 mb-1">Description</h4>
+                  <h4 className="text-sm font-medium text-zinc-700 mb-1">{t('events.description')}</h4>
                   <p className="text-zinc-900 bg-zinc-50 p-2 rounded border whitespace-pre-wrap">{event.description}</p>
                 </div>
               )}
@@ -237,9 +245,9 @@ export function AdminHolidayModal({
 
           {/* Submission Information */}
           <div className="text-xs text-zinc-500 bg-zinc-50 p-2 rounded border">
-            <p>Submitted on {format(new Date(event.createdAt), "MMMM d, yyyy 'at' h:mm a")}</p>
+            <p>{t('adminHoliday.submissionInfo', { date: format(new Date(event.createdAt), "MMMM d, yyyy 'at' h:mm a") })}</p>
             {event.updatedAt !== event.createdAt && (
-              <p>Last updated on {format(new Date(event.updatedAt), "MMMM d, yyyy 'at' h:mm a")}</p>
+              <p>{t('adminHoliday.lastUpdated', { date: format(new Date(event.updatedAt), "MMMM d, yyyy 'at' h:mm a") })}</p>
             )}
           </div>
         </div>
@@ -251,7 +259,7 @@ export function AdminHolidayModal({
             className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50 transition-colors disabled:opacity-50"
             disabled={isUpdating}
           >
-            Close
+            {t('common.close')}
           </button>
           
           {event.status !== 'denied' && (
@@ -261,7 +269,7 @@ export function AdminHolidayModal({
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <XCircle className="w-4 h-4 mr-2" />
-              {isUpdating ? 'Processing...' : 'Deny Request'}
+              {isUpdating ? t('adminHoliday.processing') : t('adminHoliday.denyRequest')}
             </button>
           )}
 
@@ -272,7 +280,7 @@ export function AdminHolidayModal({
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <Check className="w-4 h-4 mr-2" />
-              {isUpdating ? 'Processing...' : 'Approve Request'}
+              {isUpdating ? t('adminHoliday.processing') : t('adminHoliday.approveRequest')}
             </button>
           )}
         </div>

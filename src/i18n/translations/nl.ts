@@ -32,6 +32,7 @@ export const nl = {
     copied: 'Gekopieerd',
     settings: 'Instellingen',
     language: 'Taal',
+    colleague: 'Collega',
   },
 
   // Authentication
@@ -50,10 +51,12 @@ export const nl = {
     registrationFailed: 'Registratie mislukt',
     loginFailed: 'Inloggen mislukt',
     signingIn: 'Inloggen...',
+    loginRequired: 'U moet ingelogd zijn om vakantie aan te vragen',
   },
 
   // Calendar
   calendar: {
+    calendar: 'Kalender',
     teamCalendar: 'Teamkalender: AZJP',
     goToToday: 'Ga naar vandaag',
     previousWeek: 'Vorige week',
@@ -87,6 +90,7 @@ export const nl = {
     failedToCreateEvent: 'Aanmaken van gebeurtenis mislukt',
     failedToUpdateEvent: 'Bijwerken van gebeurtenis mislukt',
     failedToDeleteEvent: 'Verwijderen van gebeurtenis mislukt',
+    dateNotAvailable: 'Datum niet beschikbaar',
   },
 
   // Events
@@ -151,6 +155,7 @@ export const nl = {
     passwordRequirements: 'Wachtwoord moet minimaal 8 tekens bevatten en ten minste één hoofdletter, één cijfer en één speciaal teken hebben',
     leaveBlankToKeep: '(laat leeg om huidige te behouden)',
     page: 'Pagina {{current}} van {{total}}',
+    unknownUser: 'Onbekende gebruiker',
   },
 
   // Settings
