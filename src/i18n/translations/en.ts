@@ -318,7 +318,6 @@ export const en = {
     defaultClosed: 'Default: Closed',
     enterPeriodName: 'Enter period name',
     updatePeriod: 'Update Period',
-    addPeriod: 'Add Period',
     noPeriodsForYear: 'No periods defined for {{year}}. Click "Add Period" to get started.',
     resetConfirmation: 'Are you sure you want to reset to default periods? This will overwrite all current periods.',
     periodsSaved: 'Periods saved successfully',
