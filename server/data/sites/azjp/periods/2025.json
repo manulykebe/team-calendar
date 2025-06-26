@@ -7,37 +7,37 @@
       "name": "Kerstmis tot Pasen",
       "startDate": "2024-12-23",
       "endDate": "2025-04-15",
-      "editingStatus": "open-holiday",
+      "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-20T15:03:02.061Z"
+      "updatedAt": "2025-06-26T12:10:39.955Z"
     },
     {
       "id": "fe2078ef-889c-41f4-849f-38cbac8d24ef",
       "name": "Pasen tot juni",
       "startDate": "2025-04-16",
       "endDate": "2025-06-30",
-      "editingStatus": "open-holiday",
+      "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-20T15:02:58.162Z"
+      "updatedAt": "2025-06-26T12:10:43.782Z"
     },
     {
       "id": "eddc4534-d85e-4a5d-8597-f81f4a74c9de",
       "name": "Juli en augustus",
       "startDate": "2025-07-01",
       "endDate": "2025-08-31",
-      "editingStatus": "open-holiday",
+      "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-20T15:02:54.037Z"
+      "updatedAt": "2025-06-26T12:10:47.707Z"
     },
     {
       "id": "1955706a-1011-4923-840b-641ee9a4eba6",
       "name": "September tot nieuwjaar",
       "startDate": "2025-09-01",
       "endDate": "2026-01-07",
-      "editingStatus": "open-holiday",
+      "editingStatus": "closed",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-20T15:02:26.300Z"
+      "updatedAt": "2025-06-26T12:10:51.190Z"
     }
   ],
-  "lastUpdated": "2025-06-20T15:03:04.057Z"
+  "lastUpdated": "2025-06-26T12:10:52.253Z"
 }
