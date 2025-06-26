@@ -47,14 +47,14 @@ export function EventCard({
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const { colleagues, refreshData } = useApp();
 	const { t } = useTranslation();
-	
+
 	const isHolidayEvent = HOLIDAY_TYPES.includes(event.type);
 	const isCurrentUserEvent = event.userId === currentUser?.id;
 	const isAdmin = currentUser?.role === "admin";
 
 	// Find the event owner from colleagues or current user
-	const eventOwner = event.userId === currentUser?.id 
-		? currentUser 
+	const eventOwner = event.userId === currentUser?.id
+		? currentUser
 		: colleagues.find(c => c.id === event.userId) || null;
 
 	const handleClick = (e: React.MouseEvent) => {
@@ -62,7 +62,7 @@ export function EventCard({
 		if (e.button === 2 && isAdmin) {
 			return;
 		}
-		
+
 		// Admin can manage any holiday request
 		if (isAdmin && isHolidayEvent) {
 			setShowAdminModal(true);
@@ -75,7 +75,7 @@ export function EventCard({
 	// Get colleague settings for styling - use event owner's settings for proper display
 	const colleagueSettings = userSettings?.colleagues?.[event.userId];
 	const backgroundColor = colleagueSettings?.color || "#e2e8f0";
-	
+
 	// For admin view, show colleague initials for all events
 	const getEventPrefix = () => {
 		if (isAdmin && !isCurrentUserEvent && colleagueSettings?.initials) {
@@ -102,29 +102,29 @@ export function EventCard({
 
 		const startDate = parseISO(event.date);
 		const endDate = parseISO(event.endDate);
-		
+
 		// Get all days in the range
 		const daysInRange = eachDayOfInterval({ start: startDate, end: endDate });
-		
+
 		// Calculate working days (exclude weekends and holidays)
 		let workingDays = 0;
-		
+
 		for (const day of daysInRange) {
 			const dateStr = format(day, "yyyy-MM-dd");
-			
+
 			// Skip weekends
 			if (isWeekend(day)) {
 				continue;
 			}
-			
+
 			// Skip holidays if available
 			if (holidays?.has(dateStr)) {
 				continue;
 			}
-			
+
 			// Check availability for the day
 			const availability = availabilityData?.[dateStr];
-			
+
 			if (availability) {
 				// Add 0.5 for each half-day available
 				if (availability.am) workingDays += 0.5;
@@ -134,7 +134,7 @@ export function EventCard({
 				workingDays += 1;
 			}
 		}
-		
+
 		// Round to nearest 0.5 for display
 		return Math.max(0.5, Math.round(workingDays * 2) / 2);
 	};
@@ -148,7 +148,7 @@ export function EventCard({
 				borderColor: "#059669",
 			};
 		}
-		
+
 		// For denied events, use red
 		if (event.status === 'denied') {
 			return {
@@ -176,7 +176,7 @@ export function EventCard({
 				borderColor: "#7c3aed",
 			};
 		}
-		return { 
+		return {
 			backgroundColor,
 			borderColor: backgroundColor
 		};
@@ -189,12 +189,12 @@ export function EventCard({
 		if (event.title) {
 			return `${prefix}${event.title}`;
 		}
-		
+
 		// Show status in the display text for admin view of holiday events
 		if (isAdmin && isHolidayEvent && !isCurrentUserEvent) {
-			const statusText = event.status === 'approved' ? t('events.approved') : 
-							  event.status === 'denied' ? t('events.denied') : t('events.pending');
-			
+			const statusText = event.status === 'approved' ? t('events.approved') :
+				event.status === 'denied' ? t('events.denied') : t('events.pending');
+
 			let typeText = '';
 			if (event.type === "requestedDesiderata") {
 				typeText = t('calendar.requestedDesiderata');
@@ -203,29 +203,29 @@ export function EventCard({
 			} else {
 				typeText = t('calendar.holiday');
 			}
-			
-			return `${prefix}${statusText} ${typeText}`;
+
+			return `${typeText} (${statusText})`;
 		}
-		
+
 		// Default text based on event type
 		switch (event.type) {
 			case "requestedHoliday":
-			switch (event.status) {
-				case "approved":
-					return `${prefix}${t('calendar.approvedHoliday')}`;
-				case "denied":
-					return `${prefix}${t('calendar.deniedHoliday')}`;
-				case "pending":
-					return `${prefix}${t('calendar.pendingHoliday')}`;
-				default:
-					return `${prefix}${t('calendar.requestedHoliday')}`;
-			}
+				switch (event.status) {
+					case "approved":
+						return `${prefix}${t('calendar.approvedHoliday')}`;
+					case "denied":
+						return `${prefix}${t('calendar.deniedHoliday')}`;
+					case "pending":
+						return `${prefix}${t('calendar.pendingHoliday')}`;
+					default:
+						return `${prefix}${t('calendar.requestedHoliday')}`;
+				}
 			case "requestedDesiderata":
 				return `${prefix}${t('calendar.requestedDesiderata')}`;
 			case "requestedPeriod":
 				return `${prefix}${t('calendar.requestedPeriod')}`;
 			default:
-				return `${prefix}${event.type}`;
+				return `${event.type}`;
 		}
 	};
 
@@ -242,11 +242,11 @@ export function EventCard({
 		// Multi-day event logic
 		const isFirstDay = event.date === date;
 		const isLastDay = event.endDate === date;
-		
+
 		const borderWidth = "2px";
 		const borderStyle = "solid";
 		const borderColor = eventStyle.borderColor;
-		
+
 		let borderStyles: React.CSSProperties = {
 			borderTopWidth: borderWidth,
 			borderBottomWidth: borderWidth,
@@ -331,17 +331,46 @@ export function EventCard({
 				}}
 				title={getTooltipText()}
 			>
-				<span className="truncate font-medium flex-1">
-					{getEventDisplayText()}
-				</span>
-
-				{isMultiDay && event.endDate === date && (
-					<div className="flex items-center shrink-0 ml-2">
-						<span className="text-xs">
-							{calculatePreciseDuration()}d
-						</span>
-					</div>
-				)}
+				{
+					isMultiDay && event.date === date && (
+						<span className="truncate font-medium flex-1">
+							{prefix}{getEventDisplayText()}
+						</span>)
+				}
+				{
+					isMultiDay && event.date != date && event.endDate != date && (
+						<span className="truncate font-medium flex-1">
+							{prefix}
+						</span>)
+				}
+				{
+					isMultiDay && event.endDate === date && (
+						<>
+							<span className="truncate font-medium flex-1">
+								{prefix}
+							</span>
+							<div className="flex items-center shrink-0 ml-2">
+								<span className="text-xs">
+									{calculatePreciseDuration()}d
+								</span>
+							</div>
+						</>
+					)
+				}
+				{
+					!isMultiDay && (
+						<>
+							<span className="truncate font-medium flex-1">
+								{prefix}
+							</span>
+							<div className="flex items-center shrink-0 ml-2">
+								<span className="text-xs">
+									{calculatePreciseDuration()}d
+								</span>
+							</div>
+						</>
+					)
+				}
 			</div>
 
 			{showDetails &&
