@@ -106,17 +106,5 @@
     "status": "approved",
     "createdAt": "2025-06-26T10:49:42.262Z",
     "updatedAt": "2025-06-26T12:06:02.685Z"
-  },
-  {
-    "id": "4e9ba166-0195-4b52-b00c-ab3f67b2437c",
-    "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
-    "title": "",
-    "description": "",
-    "date": "2025-06-24",
-    "endDate": "2025-06-25",
-    "status": "denied",
-    "createdAt": "2025-06-26T17:09:00.368Z",
-    "updatedAt": "2025-06-26T17:10:24.594Z"
   }
 ]
