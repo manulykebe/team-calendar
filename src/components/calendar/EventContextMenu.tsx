@@ -6,7 +6,7 @@ import { useTranslation } from '../../context/TranslationContext';
 import { useAuth } from '../../context/AuthContext';
 import { updateEvent, deleteEvent } from '../../lib/api';
 import toast from 'react-hot-toast';
-import { format, addDays, parseISO, isWeekend, isSaturday, isSunday } from 'date-fns';
+import { format, addDays, subDays, parseISO, isWeekend, isSaturday, isSunday } from 'date-fns';
 import { useClickOutside } from '../../hooks/useClickOutside';
 
 interface EventContextMenuProps {
@@ -111,7 +111,7 @@ export function EventContextMenu({
     if (!token) return;
     
     setIsUpdating(true);
-    const toastId = toast.loading(t('events.deleting'));
+    const toastId = toast.loading(t('common.deleting'));
     
     try {
       await deleteEvent(token, event.id);
@@ -139,7 +139,7 @@ export function EventContextMenu({
       // Extend start date backward to include weekend
       // Keep going backward until we find a Saturday
       while (!isSaturday(newStartDate)) {
-        newStartDate = addDays(newStartDate, -1);
+        newStartDate = subDays(newStartDate, 1);
       }
       
       // Extend end date forward to include weekend
