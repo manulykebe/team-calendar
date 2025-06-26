@@ -154,17 +154,5 @@
     "status": "approved",
     "createdAt": "2025-06-26T10:32:15.759Z",
     "updatedAt": "2025-06-26T12:05:59.283Z"
-  },
-  {
-    "id": "9d32daac-046d-40ca-959c-755f0e8458a3",
-    "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
-    "title": "",
-    "description": "",
-    "date": "2025-06-26",
-    "endDate": "2025-06-29",
-    "status": "approved",
-    "createdAt": "2025-06-26T13:47:16.141Z",
-    "updatedAt": "2025-06-26T13:47:45.263Z"
   }
 ]
