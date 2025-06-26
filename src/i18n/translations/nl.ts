@@ -94,7 +94,6 @@ export const nl = {
     failedToUpdateEvent: 'Bijwerken van gebeurtenis mislukt',
     failedToDeleteEvent: 'Verwijderen van gebeurtenis mislukt',
     dateNotAvailable: 'Datum niet beschikbaar',
-    scrollToNavigate: 'Scroll om door weken te navigeren',
   },
 
   // Events
