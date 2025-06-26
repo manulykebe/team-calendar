@@ -6,7 +6,7 @@ import { useTranslation } from '../../context/TranslationContext';
 import { useAuth } from '../../context/AuthContext';
 import { updateEvent, deleteEvent } from '../../lib/api';
 import toast from 'react-hot-toast';
-import { format, addDays, subDays, parseISO, isWeekend, isSaturday, isSunday } from 'date-fns';
+import { format, addDays, subDays, parseISO, isWeekend, isSaturday, isSunday, isValid } from 'date-fns';
 import { useClickOutside } from '../../hooks/useClickOutside';
 
 interface EventContextMenuProps {
@@ -84,6 +84,12 @@ export function EventContextMenu({
   const handleDateModification = async () => {
     if (!token) return;
     
+    // Validate dates
+    if (!isValid(parseISO(startDate)) || !isValid(parseISO(endDate))) {
+      toast.error(t('errors.validationError'));
+      return;
+    }
+    
     setIsUpdating(true);
     const toastId = toast.loading(t('events.saving'));
     
@@ -131,6 +137,11 @@ export function EventContextMenu({
     try {
       const startDateObj = parseISO(startDate);
       const endDateObj = parseISO(endDate);
+      
+      if (!isValid(startDateObj) || !isValid(endDateObj)) {
+        toast.error(t('errors.validationError'));
+        return;
+      }
       
       // Find the nearest weekend days
       let newStartDate = startDateObj;
