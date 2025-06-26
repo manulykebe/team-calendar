@@ -133,6 +133,7 @@ export const fr = {
     confirmDelete: 'Confirmer la suppression',
     deleteWarning: 'Cette action ne peut pas être annulée.',
     createForColleague: 'Créer un événement pour un collègue',
+    selectAtLeastOneTimeSlot: 'Veuillez sélectionner au moins un créneau horaire',
   },
 
   // Users
@@ -239,6 +240,7 @@ export const fr = {
     am: 'AM',
     pm: 'PM',
     toggleAvailability: 'Basculer la disponibilité {{day}} {{period}}',
+    timeSlots: 'Créneaux horaires',
   },
 
   // Export

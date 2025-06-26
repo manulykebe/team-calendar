@@ -329,7 +329,7 @@ export function EventModal({
 							{showAmPmSelection && (
 								<div className="p-3 bg-zinc-50 rounded-md border border-zinc-200">
 									<label className="block text-sm font-medium text-zinc-700 mb-2">
-										Time Slots
+										{t('availability.timeSlots')}
 									</label>
 									<div className="flex space-x-4">
 										<label className="inline-flex items-center">
@@ -339,7 +339,7 @@ export function EventModal({
 												onChange={(e) => setAmSelected(e.target.checked)}
 												className="rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
 											/>
-											<span className="ml-2 text-sm text-zinc-700">Morning (AM)</span>
+											<span className="ml-2 text-sm text-zinc-700">{t('availability.morning')} ({t('availability.am')})</span>
 										</label>
 										<label className="inline-flex items-center">
 											<input
@@ -348,12 +348,12 @@ export function EventModal({
 												onChange={(e) => setPmSelected(e.target.checked)}
 												className="rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
 											/>
-											<span className="ml-2 text-sm text-zinc-700">Afternoon (PM)</span>
+											<span className="ml-2 text-sm text-zinc-700">{t('availability.afternoon')} ({t('availability.pm')})</span>
 										</label>
 									</div>
 									{!amSelected && !pmSelected && (
 										<p className="mt-2 text-xs text-red-600">
-											Please select at least one time slot
+											{t('events.selectAtLeastOneTimeSlot')}
 										</p>
 									)}
 								</div>

@@ -133,6 +133,7 @@ export const nl = {
     confirmDelete: 'Verwijderen bevestigen',
     deleteWarning: 'Deze actie kan niet ongedaan worden gemaakt.',
     createForColleague: 'Maak een gebeurtenis voor een collega',
+    selectAtLeastOneTimeSlot: 'Selecteer ten minste één tijdslot',
   },
 
   // Users
@@ -239,6 +240,7 @@ export const nl = {
     am: 'VM',
     pm: 'NM',
     toggleAvailability: '{{day}} {{period}} beschikbaarheid schakelen',
+    timeSlots: 'Tijdslots',
   },
 
   // Export

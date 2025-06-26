@@ -133,6 +133,7 @@ export const en = {
     confirmDelete: 'Confirm Deletion',
     deleteWarning: 'This action cannot be undone.',
     createForColleague: 'Create Event for Colleague',
+    selectAtLeastOneTimeSlot: 'Please select at least one time slot',
   },
 
   // Users
@@ -239,6 +240,7 @@ export const en = {
     am: 'AM',
     pm: 'PM',
     toggleAvailability: 'Toggle {{day}} {{period}} availability',
+    timeSlots: 'Time Slots',
   },
 
   // Export
