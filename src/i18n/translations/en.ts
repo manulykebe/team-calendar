@@ -132,6 +132,7 @@ export const en = {
     dateModificationNote: 'Changes will be applied immediately upon saving.',
     confirmDelete: 'Confirm Deletion',
     deleteWarning: 'This action cannot be undone.',
+    createForColleague: 'Create Event for Colleague',
   },
 
   // Users
@@ -165,6 +166,7 @@ export const en = {
     leaveBlankToKeep: '(leave blank to keep current)',
     page: 'Page {{current}} of {{total}}',
     unknownUser: 'Unknown User',
+    selectColleague: 'Select Colleague Name',
   },
 
   // Settings

@@ -132,6 +132,7 @@ export const fr = {
     dateModificationNote: 'Les modifications seront appliquées immédiatement après enregistrement.',
     confirmDelete: 'Confirmer la suppression',
     deleteWarning: 'Cette action ne peut pas être annulée.',
+    createForColleague: 'Créer un événement pour un collègue',
   },
 
   // Users
@@ -165,6 +166,7 @@ export const fr = {
     leaveBlankToKeep: '(laisser vide pour conserver l\'actuel)',
     page: 'Page {{current}} sur {{total}}',
     unknownUser: 'Utilisateur inconnu',
+    selectColleague: 'Sélectionner un collègue',
   },
 
   // Settings

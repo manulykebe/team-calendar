@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { X } from "lucide-react";
+import { X, User } from "lucide-react";
 import { Event } from "../types/event";
 import { Period } from "../types/period";
 import { useAuth } from "../context/AuthContext";
@@ -20,6 +20,7 @@ interface EventModalProps {
 		date: string;
 		endDate?: string;
 		type: string;
+		userId?: string; // Added userId for admin event creation
 	}) => Promise<void>;
 	defaultEventType?: string;
 }
@@ -33,7 +34,7 @@ export function EventModal({
 	defaultEventType,
 }: EventModalProps) {
 	const { token } = useAuth();
-	const { currentUser } = useApp();
+	const { currentUser, colleagues } = useApp();
 	const { t } = useTranslation();
 	const [title, setTitle] = useState(event?.title || "");
 	const [description, setDescription] = useState(event?.description || "");
@@ -44,6 +45,10 @@ export function EventModal({
 	const [loading, setLoading] = useState(false);
 	const [periods, setPeriods] = useState<Period[]>([]);
 	const [availableEventTypes, setAvailableEventTypes] = useState<string[]>([]);
+	const [selectedColleagueId, setSelectedColleagueId] = useState<string>("");
+
+	// Check if user is admin
+	const isAdmin = currentUser?.role === "admin";
 
 	// Load periods and determine available event types
 	useEffect(() => {
@@ -73,6 +78,13 @@ export function EventModal({
 
 		loadPeriodsAndDetermineTypes();
 	}, [token, currentUser, date, type]);
+
+	// Set current user as default selected colleague for admin
+	useEffect(() => {
+		if (isAdmin && currentUser) {
+			setSelectedColleagueId(currentUser.id);
+		}
+	}, [isAdmin, currentUser]);
 
 	const getAvailableEventTypes = (dateStr: string, periods: Period[]): string[] => {
 		const targetDate = new Date(dateStr);
@@ -164,6 +176,12 @@ export function EventModal({
 			return;
 		}
 
+		// For admin users, validate colleague selection
+		if (isAdmin && !selectedColleagueId) {
+			setError(t('users.selectColleague'));
+			return;
+		}
+
 		const toastId = toast.loading(t('common.loading'));
 
 		try {
@@ -176,6 +194,7 @@ export function EventModal({
 				date: format(date, "yyyy-MM-dd"),
 				endDate: endDate ? format(endDate, "yyyy-MM-dd") : undefined,
 				type,
+				...(isAdmin && { userId: selectedColleagueId }), // Include userId only for admin users
 			};
 
 			await onSubmit(eventData);
@@ -221,6 +240,40 @@ export function EventModal({
 						<div className="font-medium text-blue-800 mb-1">{t('events.periodStatus')}</div>
 						<div className="text-blue-700">{getCurrentPeriodStatus()}</div>
 					</div>
+
+					{/* Admin-only colleague selection */}
+					{isAdmin && (
+						<div>
+							<label htmlFor="colleague" className="block text-sm font-medium text-zinc-700 mb-1">
+								{t('users.selectColleague')} *
+							</label>
+							<div className="relative">
+								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+									<User className="h-5 w-5 text-zinc-400" />
+								</div>
+								<select
+									id="colleague"
+									value={selectedColleagueId}
+									onChange={(e) => setSelectedColleagueId(e.target.value)}
+									className="block w-full pl-10 pr-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+									required
+									aria-required="true"
+								>
+									<option value="">{t('users.selectColleague')}</option>
+									{colleagues.map((colleague) => (
+										<option key={colleague.id} value={colleague.id}>
+											{colleague.firstName} {colleague.lastName}
+										</option>
+									))}
+									{currentUser && (
+										<option value={currentUser.id}>
+											{currentUser.firstName} {currentUser.lastName} (You)
+										</option>
+									)}
+								</select>
+							</div>
+						</div>
+					)}
 
 					{availableEventTypes.length === 0 ? (
 						<div className="p-3 text-sm text-amber-700 bg-amber-50 rounded-md border border-amber-200">

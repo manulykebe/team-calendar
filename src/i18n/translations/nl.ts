@@ -132,6 +132,7 @@ export const nl = {
     dateModificationNote: 'Wijzigingen worden direct toegepast na opslaan.',
     confirmDelete: 'Verwijderen bevestigen',
     deleteWarning: 'Deze actie kan niet ongedaan worden gemaakt.',
+    createForColleague: 'Maak een gebeurtenis voor een collega',
   },
 
   // Users
@@ -165,6 +166,7 @@ export const nl = {
     leaveBlankToKeep: '(laat leeg om huidige te behouden)',
     page: 'Pagina {{current}} van {{total}}',
     unknownUser: 'Onbekende gebruiker',
+    selectColleague: 'Selecteer een collega',
   },
 
   // Settings
