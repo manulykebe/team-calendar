@@ -20,7 +20,8 @@ export class SocketManager {
       cors: {
         origin: process.env.NODE_ENV === 'production' 
           ? [
-              'https://phenomenal-tiramisu-77761c.netlify.app/'  // Add the new deployment domain
+              'https://dancing-cannoli-480b91.netlify.app',
+              'https://phenomenal-tiramisu-77761c.netlify.app'
             ]
           : ['http://localhost:5173', 'http://localhost:3000'],
         credentials: true,
