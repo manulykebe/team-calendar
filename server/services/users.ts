@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
-import { User, UserSettings } from "../types.js";
+import { UserSettings } from "../types.js";
+import { User } from "../types/user.js";
 import {
 	readSiteData,
 	writeSiteData,
@@ -21,16 +22,10 @@ export async function getUsers(site: string) {
 	return usersWithSettings;
 }
 
-export async function createUser(userData: {
-	firstName: string;
-	lastName: string;
-	email: string;
-	password: string;
-	mobile: string;
-	role: "admin" | "user";
-	status: "active" | "inactive";
-	site: string;
-}) {
+export async function createUser(
+  token: string,
+  userData: UserFormData,
+) {
 	const data = await readSiteData(userData.site);
 
 	if (data.users.some((u: User) => u.email === userData.email)) {

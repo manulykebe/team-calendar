@@ -2,14 +2,6 @@ import { API_URL } from "./api/config";
 
 import { Availability } from "./api/types";
 
-interface UserFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  mobile: string;
-  password: string;
-  site: string;
-}
 
 export async function login(email: string, password: string, site: string) {
   const response = await fetch(`${API_URL}/auth/login`, {
@@ -127,19 +119,6 @@ export async function getUsers(token: string) {
   return response.json();
 }
 
-export async function createUser(token: string, userData: UserFormData) {
-  const response = await fetch(`${API_URL}/users`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(userData),
-  });
-
-  if (!response.ok) throw new Error("Failed to create user");
-  return response.json();
-}
 
 export async function updateUser(
   token: string,
