@@ -49,6 +49,75 @@ export async function getEvents(token: string) {
   return response.json();
 }
 
+export async function createEvent(
+  token: string,
+  eventData: {
+    title: string;
+    description: string;
+    date: string;
+    endDate?: string;
+    type: string;
+    userId?: string; // Added userId for admin event creation
+  }
+) {
+  const response = await fetch(`${API_URL}/events`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(eventData),
+  });
+
+  if (!response.ok) throw new Error("Failed to create event");
+  return response.json();
+}
+
+export async function updateEvent(
+  token: string,
+  eventId: string,
+  eventData: {
+    title?: string;
+    description?: string;
+    date?: string;
+    endDate?: string;
+    type?: string;
+    status?: 'pending' | 'approved' | 'denied';
+    userId?: string; // Added userId for admin event updates
+  }
+) {
+  const response = await fetch(`${API_URL}/events/${eventId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(eventData),
+  });
+
+  if (!response.ok) throw new Error("Failed to update event");
+  return response.json();
+}
+
+export async function deleteEvent(token: string, eventId: string, ownerUserId?: string) {
+  const options: RequestInit = {
+    method: "DELETE",
+    headers: { 
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  };
+  
+  // Include the userId in the request body if provided
+  if (ownerUserId) {
+    options.body = JSON.stringify({ userId: ownerUserId });
+  }
+  
+  const response = await fetch(`${API_URL}/events/${eventId}`, options);
+
+  if (!response.ok) throw new Error("Failed to delete event");
+}
+
 export async function getUsers(token: string) {
   const response = await fetch(`${API_URL}/users`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -75,7 +144,7 @@ export async function createUser(token: string, userData: UserFormData) {
 export async function updateUser(
   token: string,
   userId: string,
-  userData: UserFormData,
+  userData: any
 ) {
   const response = await fetch(`${API_URL}/users/${userId}`, {
     method: "PUT",
