@@ -7,6 +7,8 @@ import { EventDetailsModal } from "./EventDetailsModal";
 import { useApp } from "../../context/AppContext";
 import { useTranslation } from "../../context/TranslationContext";
 import ReactDOM from "react-dom";
+import { parseISO, format, isWeekend, differenceInDays, eachDayOfInterval } from "date-fns";
+import { Holiday } from "../../lib/api/holidays";
 
 interface EventCardProps {
 	event: Event & { verticalPosition: number };
@@ -20,6 +22,8 @@ interface EventCardProps {
 		newEndDate?: string
 	) => Promise<void>;
 	onContextMenu?: (e: React.MouseEvent) => void;
+	holidays?: Map<string, Holiday>;
+	availabilityData?: Record<string, { am: boolean; pm: boolean }>;
 }
 
 const HOLIDAY_TYPES = ["requestedHoliday", "requestedDesiderata", "requestedPeriod"];
@@ -32,6 +36,8 @@ export function EventCard({
 	currentUser,
 	onResize,
 	onContextMenu,
+	holidays,
+	availabilityData,
 }: EventCardProps) {
 	const [showDetails, setShowDetails] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
@@ -84,6 +90,51 @@ export function EventCard({
 	const prefix = getEventPrefix();
 	const isMultiDay = event.endDate && event.endDate !== event.date;
 	const topPosition = event.verticalPosition * 24;
+
+	// Calculate precise duration excluding weekends, holidays, and unavailable days
+	const calculatePreciseDuration = () => {
+		if (!event.endDate || event.date === event.endDate) {
+			return 1; // Single day event
+		}
+
+		const startDate = parseISO(event.date);
+		const endDate = parseISO(event.endDate);
+		
+		// Get all days in the range
+		const daysInRange = eachDayOfInterval({ start: startDate, end: endDate });
+		
+		// Calculate working days (exclude weekends and holidays)
+		let workingDays = 0;
+		
+		for (const day of daysInRange) {
+			const dateStr = format(day, "yyyy-MM-dd");
+			
+			// Skip weekends
+			if (isWeekend(day)) {
+				continue;
+			}
+			
+			// Skip holidays if available
+			if (holidays?.has(dateStr)) {
+				continue;
+			}
+			
+			// Check availability for the day
+			const availability = availabilityData?.[dateStr];
+			
+			if (availability) {
+				// Add 0.5 for each half-day available
+				if (availability.am) workingDays += 0.5;
+				if (availability.pm) workingDays += 0.5;
+			} else {
+				// If no availability data, count as a full day
+				workingDays += 1;
+			}
+		}
+		
+		// Round to nearest 0.5 for display
+		return Math.max(0.5, Math.round(workingDays * 2) / 2);
+	};
 
 	// Get event type styling based on status
 	const getEventTypeStyle = () => {
@@ -284,7 +335,7 @@ export function EventCard({
 				{isMultiDay && event.endDate === date && (
 					<div className="flex items-center shrink-0 ml-2">
 						<span className="text-xs">
-							{Math.ceil((new Date(event.endDate).getTime() - new Date(event.date).getTime()) / (1000 * 60 * 60 * 24)) + 1}d
+							{calculatePreciseDuration()}d
 						</span>
 					</div>
 				)}
