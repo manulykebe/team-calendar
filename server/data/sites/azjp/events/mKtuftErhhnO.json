@@ -1,14 +1,110 @@
 [
   {
-    "id": "e03b1ae4-3a6f-42fb-b8dd-c43b92a57fb0",
+    "id": "187fec4a-e896-492a-b349-6239b8ca3ad8",
     "userId": "mKtuftErhhnO",
     "type": "requestedHoliday",
     "title": "",
     "description": "",
-    "date": "2025-06-10",
-    "endDate": "2025-06-13",
-    "status": "denied",
-    "createdAt": "2025-06-12T19:16:07.752Z",
-    "updatedAt": "2025-06-12T21:55:39.869Z"
+    "date": "2025-02-08",
+    "endDate": "2025-02-16",
+    "status": "approved",
+    "createdAt": "2025-06-26T10:45:07.472Z",
+    "updatedAt": "2025-06-26T12:03:22.883Z"
+  },
+  {
+    "id": "0f21db15-4e06-4cae-b7d4-37abb165c6c2",
+    "userId": "mKtuftErhhnO",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-03-01",
+    "endDate": "2025-03-09",
+    "status": "approved",
+    "createdAt": "2025-06-26T10:45:47.537Z",
+    "updatedAt": "2025-06-26T12:03:27.627Z"
+  },
+  {
+    "id": "15277ffe-55b6-4e7e-9549-4bd5b33c03b8",
+    "userId": "mKtuftErhhnO",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-04-12",
+    "endDate": "2025-04-27",
+    "status": "approved",
+    "createdAt": "2025-06-26T10:46:16.250Z",
+    "updatedAt": "2025-06-26T12:03:54.231Z"
+  },
+  {
+    "id": "9179a379-02e7-483a-b644-bb7140d0ff9d",
+    "userId": "mKtuftErhhnO",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-05-01",
+    "endDate": "2025-05-04",
+    "status": "approved",
+    "createdAt": "2025-06-26T10:46:55.067Z",
+    "updatedAt": "2025-06-26T12:04:12.123Z"
+  },
+  {
+    "id": "8644df31-3ae5-48eb-80ad-b1da52619707",
+    "userId": "mKtuftErhhnO",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-07-31",
+    "endDate": "2025-08-17",
+    "status": "approved",
+    "createdAt": "2025-06-26T10:48:21.299Z",
+    "updatedAt": "2025-06-26T12:05:01.869Z"
+  },
+  {
+    "id": "997184cf-be6a-4fbf-9dc9-bf6178066723",
+    "userId": "mKtuftErhhnO",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-09-20",
+    "endDate": "2025-09-28",
+    "status": "approved",
+    "createdAt": "2025-06-26T10:48:44.773Z",
+    "updatedAt": "2025-06-26T12:05:21.370Z"
+  },
+  {
+    "id": "99b02fea-c694-415c-ab53-de06f3e5b9ae",
+    "userId": "mKtuftErhhnO",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-11-08",
+    "endDate": "2025-11-11",
+    "status": "approved",
+    "createdAt": "2025-06-26T10:49:05.495Z",
+    "updatedAt": "2025-06-26T12:05:42.559Z"
+  },
+  {
+    "id": "e26593c7-8c0d-46f8-999e-059da9515251",
+    "userId": "mKtuftErhhnO",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-11-15",
+    "endDate": "2025-11-23",
+    "status": "approved",
+    "createdAt": "2025-06-26T10:49:19.832Z",
+    "updatedAt": "2025-06-26T12:05:49.066Z"
+  },
+  {
+    "id": "ec734332-0f46-41e7-b0a5-c9abaf4f1278",
+    "userId": "mKtuftErhhnO",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-12-20",
+    "endDate": "2025-12-28",
+    "status": "approved",
+    "createdAt": "2025-06-26T10:49:42.262Z",
+    "updatedAt": "2025-06-26T12:06:02.685Z"
   }
 ]
