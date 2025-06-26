@@ -25,7 +25,6 @@ const socketManager = initializeSocketManager(server);
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? [
-        'https://dancing-cannoli-480b91.netlify.app',
         'https://phenomenal-tiramisu-77761c.netlify.app'
       ]
     : ['http://localhost:5173', 'http://localhost:3000'],
