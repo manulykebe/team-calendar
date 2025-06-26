@@ -22,5 +22,17 @@
     "status": "approved",
     "createdAt": "2025-06-12T20:50:26.741Z",
     "updatedAt": "2025-06-13T07:26:24.912Z"
+  },
+  {
+    "id": "172be614-e30f-4a80-b7d1-1caedaf8a671",
+    "userId": "SjFBqPWVxUVY",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-06-27",
+    "endDate": "2025-06-27",
+    "status": "pending",
+    "createdAt": "2025-06-26T12:15:27.539Z",
+    "updatedAt": "2025-06-26T12:15:27.539Z"
   }
 ]
