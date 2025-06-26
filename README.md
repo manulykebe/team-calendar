@@ -1,13 +1,13 @@
 # Team Calendar
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/resonant-cupcake-77b900/deploy-status)](https://app.netlify.com/sites/resonant-cupcake-77b900/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/phenomenal-tiramisu-77761c/deploy-status)](https://app.netlify.com/sites/phenomenal-tiramisu-77761c/deploys)
 [![Render Status](https://img.shields.io/badge/dynamic/json?url=https://api.render.com/v1/services/prj-cu8go823esus73avqtcg&query=$.status&label=render&color=green)](https://dashboard.render.com/project/prj-cu8go823esus73avqtcg)
 
 A comprehensive team calendar application for managing availability, scheduling, and team coordination with real-time collaboration features.
 
 ## 🌐 Live Application
 
-**Frontend**: https://dancing-cannoli-480b91.netlify.app/  
+**Frontend**: https://phenomenal-tiramisu-77761c.netlify.app/  
 **Backend**: https://team-calendar.onrender.com
 
 ## ✨ Features
@@ -65,7 +65,7 @@ A comprehensive team calendar application for managing availability, scheduling,
 
 ### Frontend (Netlify)
 The frontend is automatically deployed to Netlify from the main branch:
-- **URL**: https://dancing-cannoli-480b91.netlify.app/
+- **URL**: https://phenomenal-tiramisu-77761c.netlify.app/
 - **Build Command**: `npm run build`
 - **Publish Directory**: `dist`
 - **Environment Variables**: Automatically configured for production API endpoints
