@@ -161,22 +161,27 @@ export async function deleteEvent(token: string, eventId: string, ownerUserId?: 
 
   const body = ownerUserId ? JSON.stringify({ userId: ownerUserId }) : undefined;
 
-  const response = await fetch(`${API_URL}/events/${eventId}`, {
-    method: "DELETE",
-    headers,
-    body,
-  });
+  try {
+    const response = await fetch(`${API_URL}/events/${eventId}`, {
+      method: "DELETE",
+      headers,
+      body,
+    });
 
-  if (!response.ok) {
-    let errorMessage = "Failed to delete event";
-    try {
-      const errorData = await response.json();
-      if (errorData?.message) {
-        errorMessage = errorData.message;
+    if (!response.ok) {
+      let errorMessage = "Failed to delete event";
+      try {
+        const errorData = await response.json();
+        if (errorData?.message) {
+          errorMessage = errorData.message;
+        }
+      } catch {
+        // do nothing, keep default error message
       }
-    } catch {
-      // do nothing, keep default error message
+      throw new Error(errorMessage);
     }
-    throw new Error(errorMessage);
-  }
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    throw error;
+  }
 }
