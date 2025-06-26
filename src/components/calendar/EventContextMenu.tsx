@@ -6,7 +6,7 @@ import { useTranslation } from '../../context/TranslationContext';
 import { useAuth } from '../../context/AuthContext';
 import { updateEvent, deleteEvent } from '../../lib/api';
 import toast from 'react-hot-toast';
-import { format, addDays, parseISO, isWeekend } from 'date-fns';
+import { format, addDays, parseISO, isWeekend, isSaturday, isSunday } from 'date-fns';
 import { useClickOutside } from '../../hooks/useClickOutside';
 
 interface EventContextMenuProps {
@@ -32,6 +32,35 @@ export function EventContextMenu({
   const [startDate, setStartDate] = useState(event.date);
   const [endDate, setEndDate] = useState(event.endDate || event.date);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [menuPosition, setMenuPosition] = useState(position);
+  
+  // Adjust menu position to ensure it's fully visible on screen
+  useEffect(() => {
+    if (menuRef.current) {
+      const rect = menuRef.current.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      let newX = position.x;
+      let newY = position.y;
+      
+      // Check if menu extends beyond right edge of viewport
+      if (position.x + rect.width > viewportWidth) {
+        newX = viewportWidth - rect.width - 10; // 10px padding
+      }
+      
+      // Check if menu extends beyond bottom edge of viewport
+      if (position.y + rect.height > viewportHeight) {
+        newY = viewportHeight - rect.height - 10; // 10px padding
+      }
+      
+      // Ensure menu doesn't go off the left or top edge
+      newX = Math.max(10, newX);
+      newY = Math.max(10, newY);
+      
+      setMenuPosition({ x: newX, y: newY });
+    }
+  }, [position, showDateModifier, showDeleteConfirm]);
   
   // Close menu when clicking outside
   useClickOutside(menuRef, onClose);
@@ -108,12 +137,14 @@ export function EventContextMenu({
       let newEndDate = endDateObj;
       
       // Extend start date backward to include weekend
-      while (!isWeekend(newStartDate) && newStartDate > addDays(startDateObj, -7)) {
+      // Keep going backward until we find a Saturday
+      while (!isSaturday(newStartDate)) {
         newStartDate = addDays(newStartDate, -1);
       }
       
       // Extend end date forward to include weekend
-      while (!isWeekend(newEndDate) && newEndDate < addDays(endDateObj, 7)) {
+      // Keep going forward until we find a Sunday
+      while (!isSunday(newEndDate)) {
         newEndDate = addDays(newEndDate, 1);
       }
       
@@ -156,10 +187,10 @@ export function EventContextMenu({
   return (
     <div 
       ref={menuRef}
-      className="absolute z-50 bg-white rounded-lg shadow-lg border border-zinc-200 overflow-hidden"
+      className="fixed z-50 bg-white rounded-lg shadow-lg border border-zinc-200 overflow-hidden"
       style={{ 
-        left: position.x, 
-        top: position.y,
+        left: menuPosition.x, 
+        top: menuPosition.y,
         minWidth: '240px',
         maxWidth: '320px'
       }}

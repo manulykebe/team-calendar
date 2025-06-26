@@ -36,6 +36,7 @@ export const fr = {
     year: 'Année',
     site: 'Site',
     saving: 'Enregistrement...',
+    deleting: 'Suppression...',
   },
 
   // Authentication
@@ -94,7 +95,6 @@ export const fr = {
     failedToUpdateEvent: 'Échec de la mise à jour de l\'événement',
     failedToDeleteEvent: 'Échec de la suppression de l\'événement',
     dateNotAvailable: 'Date non disponible',
-    scrollToNavigate: 'Faites défiler pour naviguer entre les semaines',
   },
 
   // Events
@@ -127,6 +127,11 @@ export const fr = {
     deleting: 'Suppression...',
     changesSaved: 'Modifications enregistrées avec succès',
     failedToSave: 'Échec de l\'enregistrement des modifications',
+    modifyDates: 'Modifier les dates',
+    extendPeriod: 'Étendre aux week-ends',
+    dateModificationNote: 'Les modifications seront appliquées immédiatement après enregistrement.',
+    confirmDelete: 'Confirmer la suppression',
+    deleteWarning: 'Cette action ne peut pas être annulée.',
   },
 
   // Users
