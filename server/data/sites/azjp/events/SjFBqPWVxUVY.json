@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "9e62eb3a-2ebb-4afd-ad14-af69af2a7298",
+    "userId": "SjFBqPWVxUVY",
+    "type": "requestedHoliday",
+    "title": "",
+    "description": "",
+    "date": "2025-07-22",
+    "endDate": "2025-07-22",
+    "status": "approved",
+    "createdAt": "2025-06-26T13:21:40.869Z",
+    "updatedAt": "2025-06-26T13:21:43.913Z"
+  }
+]
