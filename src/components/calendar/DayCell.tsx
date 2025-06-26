@@ -52,7 +52,7 @@ export const DayCell = memo(function DayCell({
 	availability = { am: true, pm: true },
 	isLoadingAvailability,
 }: DayCellProps) {
-	const { colleagues, refreshData } = useApp();
+	const { colleagues, refreshData, availabilityData } = useApp();
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const [selectedHolidayEvent, setSelectedHolidayEvent] = useState<Event | null>(null);
@@ -61,6 +61,15 @@ export const DayCell = memo(function DayCell({
 		position: { x: number; y: number };
 	} | null>(null);
 	const { getColumnColor } = useCalendarColors(currentUser);
+
+	// Create a map of holidays for efficient lookup
+	const holidaysMap = useMemo(() => {
+		const map = new Map<string, Holiday>();
+		if (holiday) {
+			map.set(format(date, "yyyy-MM-dd"), holiday);
+		}
+		return map;
+	}, [holiday, date]);
 
 	// Memoize expensive calculations
 	const formattedDate = useMemo(() => format(date, "yyyy-MM-dd"), [date]);
@@ -213,6 +222,8 @@ export const DayCell = memo(function DayCell({
 							currentUser={currentUser}
 							onResize={onEventResize}
 							onContextMenu={(e) => handleContextMenu(e, event)}
+							holidays={holidaysMap}
+							availabilityData={availabilityData}
 						/>
 					))}
 				</div>
