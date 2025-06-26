@@ -31,6 +31,31 @@ const eventSchema = z.object({
   userId: z.string().optional() // For admin updates, allow specifying user
 });
 
+// Helper function to find an event across all users in a site
+async function findEventAcrossSite(site: string, eventId: string): Promise<{ event: any; userId: string } | null> {
+  try {
+    const siteData = await readSiteData(site);
+    
+    for (const user of siteData.users) {
+      try {
+        const userEvents = await getUserEvents(site, user.id);
+        const foundEvent = userEvents.find(e => e.id === eventId);
+        if (foundEvent) {
+          return { event: foundEvent, userId: user.id };
+        }
+      } catch (error) {
+        // Continue searching if we can't access this user's events
+        console.warn(`Failed to get events for user ${user.id}:`, error);
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error(`Failed to search for event ${eventId} across site ${site}:`, error);
+    return null;
+  }
+}
+
 router.get("/", async (req: AuthRequest, res) => {
   try {
     // Check if this is an admin requesting specific user's events
@@ -241,14 +266,34 @@ router.patch("/bulk-status", async (req: AuthRequest, res) => {
 
 router.delete("/:id", async (req: AuthRequest, res) => {
   try {
-    // Check if userId is provided in the request body (for admin deletions)
     const requestBody = req.body || {};
-    const targetUserId = requestBody.userId || req.user!.id;
     const isAdmin = req.user!.role === 'admin';
+    let targetUserId = requestBody.userId || req.user!.id;
+    let eventToDelete = null;
 
-    // Get the event before deletion for broadcasting
-    const events = await getUserEvents(req.user!.site, targetUserId);
-    const eventToDelete = events.find(e => e.id === req.params.id);
+    if (isAdmin) {
+      // For admin users, use robust search to find the event across all users
+      const eventResult = await findEventAcrossSite(req.user!.site, req.params.id);
+      
+      if (!eventResult) {
+        return res.status(404).json({
+          message: "Event not found"
+        });
+      }
+      
+      eventToDelete = eventResult.event;
+      targetUserId = eventResult.userId;
+    } else {
+      // For regular users, get the event from their own events
+      const events = await getUserEvents(req.user!.site, req.user!.id);
+      eventToDelete = events.find(e => e.id === req.params.id);
+      
+      if (!eventToDelete) {
+        return res.status(404).json({
+          message: "Event not found"
+        });
+      }
+    }
 
     await deleteEvent({
       id: req.params.id,
@@ -270,8 +315,8 @@ router.delete("/:id", async (req: AuthRequest, res) => {
 
     res.sendStatus(204);
   } catch (error) {
-    res.status(403).json({
-      message: error instanceof Error ? error.message : "Not authorized",
+    res.status(500).json({
+      message: error instanceof Error ? error.message : "Failed to delete event",
     });
   }
 });
