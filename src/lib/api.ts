@@ -55,7 +55,10 @@ export async function createEvent(
     title: string;
     description: string;
     date: string;
-  },
+    endDate?: string;
+    type: string;
+    userId?: string; // Added userId for admin event creation
+  }
 ) {
   const response = await fetch(`${API_URL}/events`, {
     method: "POST",
@@ -74,10 +77,14 @@ export async function updateEvent(
   token: string,
   eventId: string,
   eventData: {
-    title: string;
-    description: string;
-    date: string;
-  },
+    title?: string;
+    description?: string;
+    date?: string;
+    endDate?: string;
+    type?: string;
+    status?: 'pending' | 'approved' | 'denied';
+    userId?: string; // Added userId for admin event updates
+  }
 ) {
   const response = await fetch(`${API_URL}/events/${eventId}`, {
     method: "PUT",
@@ -92,11 +99,21 @@ export async function updateEvent(
   return response.json();
 }
 
-export async function deleteEvent(token: string, eventId: string) {
-  const response = await fetch(`${API_URL}/events/${eventId}`, {
+export async function deleteEvent(token: string, eventId: string, ownerUserId?: string) {
+  const options: RequestInit = {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  });
+    headers: { 
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  };
+  
+  // Include the userId in the request body if provided
+  if (ownerUserId) {
+    options.body = JSON.stringify({ userId: ownerUserId });
+  }
+  
+  const response = await fetch(`${API_URL}/events/${eventId}`, options);
 
   if (!response.ok) throw new Error("Failed to delete event");
 }
@@ -127,7 +144,7 @@ export async function createUser(token: string, userData: UserFormData) {
 export async function updateUser(
   token: string,
   userId: string,
-  userData: UserFormData,
+  userData: any
 ) {
   const response = await fetch(`${API_URL}/users/${userId}`, {
     method: "PUT",
