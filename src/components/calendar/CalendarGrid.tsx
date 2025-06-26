@@ -268,11 +268,6 @@ export function CalendarGrid({
 					/>
 				)}
 			</div>
-			
-			{/* Scroll hint tooltip */}
-			<div className="text-center py-2 text-xs text-zinc-500">
-				{t('calendar.scrollToNavigate')}
-			</div>
 		</div>
 	);
 }
