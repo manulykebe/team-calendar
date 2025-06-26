@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
-import { useEventPermissions } from "../../hooks/useEventPermissions";
 import { AdminHolidayModal } from "./AdminHolidayModal";
 import { EventDetailsModal } from "./EventDetailsModal";
 import { useApp } from "../../context/AppContext";
 import { useTranslation } from "../../context/TranslationContext";
 import ReactDOM from "react-dom";
+import { UserSettings } from "../../../src/lib/api/types";
 
 interface EventCardProps {
 	event: Event & { verticalPosition: number };
@@ -30,12 +30,10 @@ export function EventCard({
 	userSettings,
 	onDelete,
 	currentUser,
-	onResize,
 	onContextMenu,
 }: EventCardProps) {
 	const [showDetails, setShowDetails] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
-	const { canModify } = useEventPermissions(event, currentUser);
 	const { colleagues, refreshData } = useApp();
 	const { t } = useTranslation();
 	
