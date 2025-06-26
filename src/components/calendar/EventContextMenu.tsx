@@ -5,6 +5,7 @@ import { User } from '../../types/user';
 import { useTranslation } from '../../context/TranslationContext';
 import { useAuth } from '../../context/AuthContext';
 import { updateEvent, deleteEvent } from '../../lib/api';
+import { getHolidays } from '../../lib/api/holidays';
 import toast from 'react-hot-toast';
 import { format, addDays, subDays, parseISO, isWeekend, isSaturday, isSunday, isValid } from 'date-fns';
 import { useClickOutside } from '../../hooks/useClickOutside';
@@ -33,6 +34,27 @@ export function EventContextMenu({
   const [endDate, setEndDate] = useState(event.endDate || event.date);
   const [isUpdating, setIsUpdating] = useState(false);
   const [menuPosition, setMenuPosition] = useState(position);
+  const [holidays, setHolidays] = useState<string[]>([]);
+
+  // Fetch holidays when component mounts
+  useEffect(() => {
+    const fetchHolidays = async () => {
+      if (!token || !eventOwner) return;
+      
+      try {
+        const year = new Date(event.date).getFullYear();
+        const holidayData = await getHolidays(year.toString(), eventOwner.site === 'london' ? 'GB' : 'BE');
+        
+        // Extract holiday dates
+        const holidayDates = holidayData.map(holiday => holiday.date);
+        setHolidays(holidayDates);
+      } catch (error) {
+        console.error('Failed to fetch holidays:', error);
+      }
+    };
+    
+    fetchHolidays();
+  }, [token, event.date, eventOwner]);
 
   // Adjust menu position to ensure it's fully visible on screen
   useEffect(() => {
@@ -79,6 +101,12 @@ export function EventContextMenu({
 
   // Calculate if this is a holiday-type event
   const isHolidayType = event.type === 'requestedHoliday' || event.type === 'requestedHolidayMandatory';
+
+  // Check if a date is a public holiday
+  const isPublicHoliday = (date: Date): boolean => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return holidays.includes(dateStr);
+  };
 
   // Handle date modification
   const handleDateModification = async () => {
@@ -132,7 +160,7 @@ export function EventContextMenu({
     }
   };
 
-  // Handle extending period to include weekends
+  // Handle extending period to include weekends and public holidays
   const handleExtendPeriod = () => {
     try {
       const startDateObj = parseISO(startDate);
@@ -143,20 +171,22 @@ export function EventContextMenu({
         return;
       }
 
-      // Find the nearest weekend days
+      // Find the nearest weekend days and public holidays
       let newStartDate = startDateObj;
       let newEndDate = endDateObj;
 
-      // Extend start date backward to include weekend
-      // Keep going backward until we find a Saturday
-      while (isSaturday(subDays(newStartDate, 1)) || isSunday(subDays(newStartDate, 1))) {
-        newStartDate = subDays(newStartDate, 1);
+      // Extend start date backward
+      let currentDate = subDays(newStartDate, 1);
+      while (isSaturday(currentDate) || isSunday(currentDate) || isPublicHoliday(currentDate)) {
+        newStartDate = currentDate;
+        currentDate = subDays(currentDate, 1);
       }
 
-      // Extend end date forward to include weekend
-      // Keep going forward until we find a Sunday
-      while (isSunday(addDays(newEndDate, 1)) || isSaturday(addDays(newEndDate, 1))) {
-        newEndDate = addDays(newEndDate, 1);
+      // Extend end date forward
+      currentDate = addDays(newEndDate, 1);
+      while (isSaturday(currentDate) || isSunday(currentDate) || isPublicHoliday(currentDate)) {
+        newEndDate = currentDate;
+        currentDate = addDays(currentDate, 1);
       }
 
       // Update state with new dates
