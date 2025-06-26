@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { parseISO, eachDayOfInterval, format, isWeekend } from "date-fns";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
 import { AdminHolidayModal } from "./AdminHolidayModal";
@@ -7,6 +8,12 @@ import { useApp } from "../../context/AppContext";
 import { useTranslation } from "../../context/TranslationContext";
 import ReactDOM from "react-dom";
 import { UserSettings } from "../../../src/lib/api/types";
+
+interface Holiday {
+	date: string;
+	name: string;
+	type: string;
+}
 
 interface EventCardProps {
 	event: Event & { verticalPosition: number };
