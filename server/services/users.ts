@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { UserSettings } from "../types.js";
-import { User } from "../types/user.js";
+import { User } from "../types.js";
 import {
 	readSiteData,
 	writeSiteData,
@@ -23,8 +23,7 @@ export async function getUsers(site: string) {
 }
 
 export async function createUser(
-  token: string,
-  userData: UserFormData,
+  userData: User,
 ) {
 	const data = await readSiteData(userData.site);
 
@@ -33,9 +32,10 @@ export async function createUser(
 	}
 
 	const hashedPassword = await bcrypt.hash(userData.password, 10);
+	const { id, ...userDataWithoutId } = userData;
 	const newUser: User = {
 		id: crypto.randomUUID(),
-		...userData,
+		...userDataWithoutId,
 		password: hashedPassword,
 		createdAt: new Date().toISOString(),
 		updatedAt: new Date().toISOString(),

@@ -28,7 +28,7 @@ const eventSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
     .optional(),
   status: z.enum(['pending', 'approved', 'denied']).optional(),
-  userId: z.string() // For admin updates, allow specifying user
+  userId: z.string().optional() // For admin updates, allow specifying user
 });
 
 router.get("/", async (req: AuthRequest, res) => {
@@ -77,7 +77,7 @@ router.post("/", async (req: AuthRequest, res) => {
 
     const event = await createEvent({
       ...validatedData,
-      userId: req.user!.id,
+      userId: validatedData.userId || req.user!.id,
       site: req.user!.site,
     });
 

@@ -11,6 +11,18 @@ export interface AuthRequest extends Request {
 	socketManager?: SocketManager;
 }
 
+export interface User {
+	id: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	mobile: string;
+	password: string;
+	site: string;
+	role: "admin" | "user";
+	createdAt: string;
+	updatedAt: string;
+}
 
 export type ColleagueID = string;
 export interface ColleagueCalendarSettings {
