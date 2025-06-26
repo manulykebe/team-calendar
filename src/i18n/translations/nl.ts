@@ -237,10 +237,10 @@ export const nl = {
     failedToUpdateAvailability: 'Bijwerken van beschikbaarheid mislukt',
     morning: 'Ochtend',
     afternoon: 'Middag',
-    am: 'VM',
-    pm: 'NM',
+    am: 'voormiddag',
+    pm: 'namiddag',
     toggleAvailability: '{{day}} {{period}} beschikbaarheid schakelen',
-    timeSlots: 'Tijdslots',
+    timeSlots: 'Tijdslot',
   },
 
   // Export

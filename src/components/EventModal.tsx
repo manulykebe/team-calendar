@@ -53,10 +53,10 @@ export function EventModal({
 
 	// Check if this is a single day event (same start and end date)
 	const isSingleDayEvent = !endDate || date.getTime() === endDate.getTime();
-	
+
 	// Check if this is a holiday type event
 	const isHolidayType = type === "requestedHoliday" || type === "requestedHolidayMandatory";
-	
+
 	// Show AM/PM selection only for single day holiday events
 	const showAmPmSelection = isSingleDayEvent && isHolidayType;
 
@@ -255,12 +255,6 @@ export function EventModal({
 						</div>
 					)}
 
-					{/* Period Status Information */}
-					<div className="p-3 text-sm bg-blue-50 rounded-md border border-blue-200">
-						<div className="font-medium text-blue-800 mb-1">{t('events.periodStatus')}</div>
-						<div className="text-blue-700">{getCurrentPeriodStatus()}</div>
-					</div>
-
 					{/* Admin-only colleague selection */}
 					{isAdmin && (
 						<div>
@@ -327,7 +321,7 @@ export function EventModal({
 
 							{/* AM/PM Selection for single day holiday events */}
 							{showAmPmSelection && (
-								<div className="p-3 bg-zinc-50 rounded-md border border-zinc-200">
+								<>
 									<label className="block text-sm font-medium text-zinc-700 mb-2">
 										{t('availability.timeSlots')}
 									</label>
@@ -339,7 +333,7 @@ export function EventModal({
 												onChange={(e) => setAmSelected(e.target.checked)}
 												className="rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
 											/>
-											<span className="ml-2 text-sm text-zinc-700">{t('availability.morning')} ({t('availability.am')})</span>
+											<span className="ml-2 text-sm text-zinc-700">{t('availability.morning')}</span>
 										</label>
 										<label className="inline-flex items-center">
 											<input
@@ -348,7 +342,7 @@ export function EventModal({
 												onChange={(e) => setPmSelected(e.target.checked)}
 												className="rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
 											/>
-											<span className="ml-2 text-sm text-zinc-700">{t('availability.afternoon')} ({t('availability.pm')})</span>
+											<span className="ml-2 text-sm text-zinc-700">{t('availability.afternoon')}</span>
 										</label>
 									</div>
 									{!amSelected && !pmSelected && (
@@ -356,7 +350,7 @@ export function EventModal({
 											{t('events.selectAtLeastOneTimeSlot')}
 										</p>
 									)}
-								</div>
+								</>
 							)}
 
 							<div>
