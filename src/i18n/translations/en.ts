@@ -94,7 +94,6 @@ export const en = {
     failedToUpdateEvent: 'Failed to update event',
     failedToDeleteEvent: 'Failed to delete event',
     dateNotAvailable: 'Date not available',
-    scrollToNavigate: 'Scroll to navigate weeks',
   },
 
   // Events
