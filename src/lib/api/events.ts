@@ -29,6 +29,7 @@ export async function createEvent(
     date: string;
     endDate?: string;
     type: string;
+    userId?: string; // Allow specifying which user's event to create
   },
 ) {
   if (!token) {
