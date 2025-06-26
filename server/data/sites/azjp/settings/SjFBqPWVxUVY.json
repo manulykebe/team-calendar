@@ -10,31 +10,38 @@
     },
     "mKtuftErhhnO": {
       "color": "#f46d43",
-      "initials": "MS"
+      "initials": "MS",
+      "visible": false
     },
     "suuebRsdLhQv": {
       "color": "#fdae61",
-      "initials": "KC"
+      "initials": "KC",
+      "visible": false
     },
     "CxuzKGosISkk": {
       "color": "#fee090",
-      "initials": "SD"
+      "initials": "SD",
+      "visible": false
     },
     "rwqJQFnAqWdn": {
       "color": "#e0f3f8",
-      "initials": "EV"
+      "initials": "EV",
+      "visible": false
     },
     "ZIdGWxhnRSYw": {
       "color": "#abd9e9",
-      "initials": "KV"
+      "initials": "KV",
+      "visible": false
     },
     "OBOaSHVowagL": {
       "color": "#74add1",
-      "initials": "HG"
+      "initials": "HG",
+      "visible": false
     },
     "dijVShwJoKFD": {
       "color": "#4575b4",
-      "initials": "AY"
+      "initials": "AY",
+      "visible": false
     }
   },
   "showWeekNumber": "left",

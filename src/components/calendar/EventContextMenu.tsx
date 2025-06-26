@@ -17,12 +17,12 @@ interface EventContextMenuProps {
   onUpdate: () => void;
 }
 
-export function EventContextMenu({ 
-  event, 
-  eventOwner, 
-  position, 
-  onClose, 
-  onUpdate 
+export function EventContextMenu({
+  event,
+  eventOwner,
+  position,
+  onClose,
+  onUpdate
 }: EventContextMenuProps) {
   const { t } = useTranslation();
   const { token } = useAuth();
@@ -33,38 +33,38 @@ export function EventContextMenu({
   const [endDate, setEndDate] = useState(event.endDate || event.date);
   const [isUpdating, setIsUpdating] = useState(false);
   const [menuPosition, setMenuPosition] = useState(position);
-  
+
   // Adjust menu position to ensure it's fully visible on screen
   useEffect(() => {
     if (menuRef.current) {
       const rect = menuRef.current.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      
+
       let newX = position.x;
       let newY = position.y;
-      
+
       // Check if menu extends beyond right edge of viewport
       if (position.x + rect.width > viewportWidth) {
         newX = viewportWidth - rect.width - 10; // 10px padding
       }
-      
+
       // Check if menu extends beyond bottom edge of viewport
       if (position.y + rect.height > viewportHeight) {
         newY = viewportHeight - rect.height - 10; // 10px padding
       }
-      
+
       // Ensure menu doesn't go off the left or top edge
       newX = Math.max(10, newX);
       newY = Math.max(10, newY);
-      
+
       setMenuPosition({ x: newX, y: newY });
     }
   }, [position, showDateModifier, showDeleteConfirm]);
-  
+
   // Close menu when clicking outside
   useClickOutside(menuRef, onClose);
-  
+
   // Handle escape key to close menu
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -72,27 +72,27 @@ export function EventContextMenu({
         onClose();
       }
     };
-    
+
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [onClose]);
-  
+
   // Calculate if this is a holiday-type event
   const isHolidayType = event.type === 'requestedHoliday' || event.type === 'requestedHolidayMandatory';
-  
+
   // Handle date modification
   const handleDateModification = async () => {
     if (!token) return;
-    
+
     // Validate dates
     if (!isValid(parseISO(startDate)) || !isValid(parseISO(endDate))) {
       toast.error(t('errors.validationError'));
       return;
     }
-    
+
     setIsUpdating(true);
     const toastId = toast.loading(t('events.saving'));
-    
+
     try {
       await updateEvent(token, event.id, {
         ...event,
@@ -100,7 +100,7 @@ export function EventContextMenu({
         endDate: endDate,
         userId: event.userId
       });
-      
+
       toast.success(t('events.changesSaved'), { id: toastId });
       onUpdate();
       onClose();
@@ -111,14 +111,14 @@ export function EventContextMenu({
       setIsUpdating(false);
     }
   };
-  
+
   // Handle event deletion
   const handleDeleteEvent = async () => {
     if (!token) return;
-    
+
     setIsUpdating(true);
     const toastId = toast.loading(t('common.deleting'));
-    
+
     try {
       await deleteEvent(token, event.id);
       toast.success(t('calendar.eventDeleted'), { id: toastId });
@@ -131,34 +131,34 @@ export function EventContextMenu({
       setIsUpdating(false);
     }
   };
-  
+
   // Handle extending period to include weekends
   const handleExtendPeriod = () => {
     try {
       const startDateObj = parseISO(startDate);
       const endDateObj = parseISO(endDate);
-      
+
       if (!isValid(startDateObj) || !isValid(endDateObj)) {
         toast.error(t('errors.validationError'));
         return;
       }
-      
+
       // Find the nearest weekend days
       let newStartDate = startDateObj;
       let newEndDate = endDateObj;
-      
+
       // Extend start date backward to include weekend
       // Keep going backward until we find a Saturday
-      while (!isSaturday(newStartDate)) {
+      while (isSaturday(subDays(newStartDate, 1)) || isSunday(subDays(newStartDate, 1))) {
         newStartDate = subDays(newStartDate, 1);
       }
-      
+
       // Extend end date forward to include weekend
       // Keep going forward until we find a Sunday
-      while (!isSunday(newEndDate)) {
+      while (isSunday(addDays(newEndDate, 1)) || isSaturday(addDays(newEndDate, 1))) {
         newEndDate = addDays(newEndDate, 1);
       }
-      
+
       // Update state with new dates
       setStartDate(format(newStartDate, 'yyyy-MM-dd'));
       setEndDate(format(newEndDate, 'yyyy-MM-dd'));
@@ -167,7 +167,7 @@ export function EventContextMenu({
       toast.error(t('errors.somethingWentWrong'));
     }
   };
-  
+
   // Get event type label
   const getEventTypeLabel = (eventType: string, eventStatus?: string): string => {
     switch (eventType) {
@@ -194,13 +194,13 @@ export function EventContextMenu({
           .replace(/^./, (str) => str.toUpperCase());
     }
   };
-  
+
   return (
-    <div 
+    <div
       ref={menuRef}
       className="fixed z-50 bg-white rounded-lg shadow-lg border border-zinc-200 overflow-hidden"
-      style={{ 
-        left: menuPosition.x, 
+      style={{
+        left: menuPosition.x,
         top: menuPosition.y,
         minWidth: '240px',
         maxWidth: '320px'
@@ -211,21 +211,21 @@ export function EventContextMenu({
         <div className="font-medium text-zinc-800 truncate">
           {getEventTypeLabel(event.type, event.status)}
         </div>
-        <button 
+        <button
           onClick={onClose}
           className="text-zinc-500 hover:text-zinc-700"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
-      
+
       {/* Main content */}
       {!showDateModifier && !showDeleteConfirm && (
         <div className="p-2">
           <div className="text-xs text-zinc-500 mb-2">
             {eventOwner ? `${eventOwner.firstName} ${eventOwner.lastName}` : t('users.unknownUser')}
           </div>
-          
+
           <div className="space-y-1">
             <button
               onClick={() => setShowDateModifier(true)}
@@ -234,7 +234,7 @@ export function EventContextMenu({
               <Edit3 className="w-4 h-4 mr-2 text-blue-600" />
               {t('events.modifyDates')}
             </button>
-            
+
             <button
               onClick={() => setShowDeleteConfirm(true)}
               className="w-full text-left px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100 rounded-md flex items-center"
@@ -245,12 +245,12 @@ export function EventContextMenu({
           </div>
         </div>
       )}
-      
+
       {/* Date Modifier */}
       {showDateModifier && (
         <div className="p-3 space-y-3">
           <h3 className="text-sm font-medium text-zinc-800">{t('events.modifyDates')}</h3>
-          
+
           <div className="space-y-2">
             <div>
               <label className="block text-xs font-medium text-zinc-700 mb-1">
@@ -263,7 +263,7 @@ export function EventContextMenu({
                 className="w-full px-2 py-1 text-sm border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
               <label className="block text-xs font-medium text-zinc-700 mb-1">
                 {t('events.endDate')}
@@ -276,7 +276,7 @@ export function EventContextMenu({
                 className="w-full px-2 py-1 text-sm border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             {isHolidayType && (
               <button
                 onClick={handleExtendPeriod}
@@ -286,12 +286,12 @@ export function EventContextMenu({
                 {t('events.extendPeriod')}
               </button>
             )}
-            
+
             <div className="text-xs text-zinc-500 bg-zinc-50 p-2 rounded">
               {t('events.dateModificationNote')}
             </div>
           </div>
-          
+
           <div className="flex justify-end space-x-2 pt-2">
             <button
               onClick={() => setShowDateModifier(false)}
@@ -310,31 +310,31 @@ export function EventContextMenu({
           </div>
         </div>
       )}
-      
+
       {/* Delete Confirmation */}
       {showDeleteConfirm && (
         <div className="p-3 space-y-3">
           <div className="flex items-center justify-center w-10 h-10 mx-auto rounded-full bg-red-100">
             <Trash2 className="w-5 h-5 text-red-600" />
           </div>
-          
+
           <h3 className="text-sm font-medium text-center text-zinc-800">
             {t('events.confirmDelete')}
           </h3>
-          
+
           <p className="text-xs text-zinc-600 text-center">
             {t('events.deleteWarning')}
           </p>
-          
+
           <div className="bg-zinc-50 p-2 rounded text-xs">
             <div className="font-medium">{getEventTypeLabel(event.type, event.status)}</div>
-            <div>{format(parseISO(event.date), 'MMM d, yyyy')} 
-              {event.endDate && event.endDate !== event.date && 
+            <div>{format(parseISO(event.date), 'MMM d, yyyy')}
+              {event.endDate && event.endDate !== event.date &&
                 ` - ${format(parseISO(event.endDate), 'MMM d, yyyy')}`}
             </div>
             {event.title && <div className="truncate">{event.title}</div>}
           </div>
-          
+
           <div className="flex justify-end space-x-2 pt-2">
             <button
               onClick={() => setShowDeleteConfirm(false)}
