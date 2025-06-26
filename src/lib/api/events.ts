@@ -149,9 +149,14 @@ export async function bulkUpdateEventStatus(
   return response.json();
 }
 
-export async function deleteEvent(token: string, eventId: string) {
+export async function deleteEvent(token: string, eventId: string, ownerUserId?: string) {
   if (!token) {
     throw new Error("Authentication token is required");
+  }
+
+  const body: any = {};
+  if (ownerUserId) {
+    body.userId = ownerUserId;
   }
 
   const response = await fetch(`${API_URL}/events/${eventId}`, {
@@ -160,6 +165,7 @@ export async function deleteEvent(token: string, eventId: string) {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
+    body: Object.keys(body).length > 0 ? JSON.stringify(body) : undefined,
   });
 
   if (!response.ok) {

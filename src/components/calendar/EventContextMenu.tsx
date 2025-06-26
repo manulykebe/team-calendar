@@ -148,9 +148,8 @@ export function EventContextMenu({
     const toastId = toast.loading(t('common.deleting'));
 
     try {
-      // For admin users, we need to pass the event's userId to properly delete it
-      // This is because admins can delete events that belong to other users
-      await deleteEvent(token, event.id);
+      // Pass the event's actual owner ID to ensure the backend can find the event
+      await deleteEvent(token, event.id, event.userId);
       toast.success(t('calendar.eventDeleted'), { id: toastId });
       onUpdate();
       onClose();

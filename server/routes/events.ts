@@ -261,15 +261,20 @@ router.patch("/bulk-status", async (req: AuthRequest, res) => {
 
 router.delete("/:id", async (req: AuthRequest, res) => {
   try {
+    // Check if userId is provided in the request body (for admin deletions)
+    const requestBody = req.body || {};
+    const targetUserId = requestBody.userId || req.user!.id;
+    const isAdmin = req.user!.role === 'admin';
+
     // Get the event before deletion for broadcasting
-    const events = await getUserEvents(req.user!.site, req.user!.id);
+    const events = await getUserEvents(req.user!.site, targetUserId);
     const eventToDelete = events.find(e => e.id === req.params.id);
 
     await deleteEvent({
       id: req.params.id,
-      userId: req.user!.id,
+      userId: targetUserId,
       site: req.user!.site,
-      isAdmin: req.user!.role === 'admin',
+      isAdmin: isAdmin,
     });
 
     // Broadcast event deletion to other users
