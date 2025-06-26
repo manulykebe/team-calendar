@@ -16,18 +16,18 @@
       "name": "Pasen tot juni",
       "startDate": "2025-04-16",
       "endDate": "2025-06-30",
-      "editingStatus": "closed",
+      "editingStatus": "open-holiday",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-26T12:10:43.782Z"
+      "updatedAt": "2025-06-26T12:15:05.015Z"
     },
     {
       "id": "eddc4534-d85e-4a5d-8597-f81f4a74c9de",
       "name": "Juli en augustus",
       "startDate": "2025-07-01",
       "endDate": "2025-08-31",
-      "editingStatus": "closed",
+      "editingStatus": "open-holiday",
       "createdAt": "2025-06-12T14:40:01.477Z",
-      "updatedAt": "2025-06-26T12:10:47.707Z"
+      "updatedAt": "2025-06-26T12:15:14.257Z"
     },
     {
       "id": "1955706a-1011-4923-840b-641ee9a4eba6",
@@ -39,5 +39,5 @@
       "updatedAt": "2025-06-26T12:10:51.190Z"
     }
   ],
-  "lastUpdated": "2025-06-26T12:10:52.253Z"
+  "lastUpdated": "2025-06-26T12:15:14.895Z"
 }
