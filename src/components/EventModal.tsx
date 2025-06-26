@@ -21,6 +21,8 @@ interface EventModalProps {
 		endDate?: string;
 		type: string;
 		userId?: string; // Added userId for admin event creation
+		amSelected?: boolean; // Added for AM selection
+		pmSelected?: boolean; // Added for PM selection
 	}) => Promise<void>;
 	defaultEventType?: string;
 }
@@ -46,6 +48,17 @@ export function EventModal({
 	const [periods, setPeriods] = useState<Period[]>([]);
 	const [availableEventTypes, setAvailableEventTypes] = useState<string[]>([]);
 	const [selectedColleagueId, setSelectedColleagueId] = useState<string>("");
+	const [amSelected, setAmSelected] = useState<boolean>(true);
+	const [pmSelected, setPmSelected] = useState<boolean>(true);
+
+	// Check if this is a single day event (same start and end date)
+	const isSingleDayEvent = !endDate || date.getTime() === endDate.getTime();
+	
+	// Check if this is a holiday type event
+	const isHolidayType = type === "requestedHoliday" || type === "requestedHolidayMandatory";
+	
+	// Show AM/PM selection only for single day holiday events
+	const showAmPmSelection = isSingleDayEvent && isHolidayType;
 
 	// Check if user is admin
 	const isAdmin = currentUser?.role === "admin";
@@ -182,6 +195,12 @@ export function EventModal({
 			return;
 		}
 
+		// For single day holiday events, validate that at least one time slot is selected
+		if (showAmPmSelection && !amSelected && !pmSelected) {
+			setError(t('events.selectAtLeastOneTimeSlot'));
+			return;
+		}
+
 		const toastId = toast.loading(t('common.loading'));
 
 		try {
@@ -195,6 +214,7 @@ export function EventModal({
 				endDate: endDate ? format(endDate, "yyyy-MM-dd") : undefined,
 				type,
 				...(isAdmin && { userId: selectedColleagueId }), // Include userId only for admin users
+				...(showAmPmSelection && { amSelected, pmSelected }), // Include AM/PM selection for single day holiday events
 			};
 
 			await onSubmit(eventData);
@@ -217,7 +237,7 @@ export function EventModal({
 					<h3 className="text-lg font-semibold text-zinc-900">
 						{event ? t('calendar.editEvent') : t('calendar.addEvent')} -{" "}
 						{format(date, "MMMM d, yyyy")}
-						{endDate && ` to ${format(endDate, "MMMM d, yyyy")}`}
+						{endDate && endDate.getTime() !== date.getTime() && ` to ${format(endDate, "MMMM d, yyyy")}`}
 					</h3>
 					<button
 						onClick={onClose}
@@ -305,6 +325,40 @@ export function EventModal({
 								)}
 							</div>
 
+							{/* AM/PM Selection for single day holiday events */}
+							{showAmPmSelection && (
+								<div className="p-3 bg-zinc-50 rounded-md border border-zinc-200">
+									<label className="block text-sm font-medium text-zinc-700 mb-2">
+										Time Slots
+									</label>
+									<div className="flex space-x-4">
+										<label className="inline-flex items-center">
+											<input
+												type="checkbox"
+												checked={amSelected}
+												onChange={(e) => setAmSelected(e.target.checked)}
+												className="rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+											/>
+											<span className="ml-2 text-sm text-zinc-700">Morning (AM)</span>
+										</label>
+										<label className="inline-flex items-center">
+											<input
+												type="checkbox"
+												checked={pmSelected}
+												onChange={(e) => setPmSelected(e.target.checked)}
+												className="rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+											/>
+											<span className="ml-2 text-sm text-zinc-700">Afternoon (PM)</span>
+										</label>
+									</div>
+									{!amSelected && !pmSelected && (
+										<p className="mt-2 text-xs text-red-600">
+											Please select at least one time slot
+										</p>
+									)}
+								</div>
+							)}
+
 							<div>
 								<label
 									htmlFor="title"
@@ -358,7 +412,7 @@ export function EventModal({
 							<button
 								type="submit"
 								className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
-								disabled={loading}
+								disabled={loading || (showAmPmSelection && !amSelected && !pmSelected)}
 							>
 								{loading ? t('events.saving') : t('common.save')}
 							</button>

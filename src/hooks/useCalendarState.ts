@@ -21,11 +21,28 @@ export function useCalendarState() {
     endDate?: string;
     type: string;
     userId?: string;
+    amSelected?: boolean;
+    pmSelected?: boolean;
   }) => {
     if (!token) return;
 
     try {
-      await createEvent(token, eventData);
+      // Handle AM/PM selection for single day events
+      let title = eventData.title;
+      if (eventData.amSelected !== undefined && eventData.pmSelected !== undefined) {
+        // If both AM and PM are selected, no need to modify title
+        if (eventData.amSelected && !eventData.pmSelected) {
+          title = title ? `${title} (AM)` : "AM only";
+        } else if (!eventData.amSelected && eventData.pmSelected) {
+          title = title ? `${title} (PM)` : "PM only";
+        }
+      }
+
+      await createEvent(token, {
+        ...eventData,
+        title
+      });
+      
       // Refresh data in background without affecting calendar view
       await refreshData();
       setShowModal(false);
