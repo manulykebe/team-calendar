@@ -25,7 +25,7 @@ const socketManager = initializeSocketManager(server);
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? [
-        'https://dancing-cannoli-480b91.netlify.app'  // Add the new deployment domain
+        'https://phenomenal-tiramisu-77761c.app'  // Add the new deployment domain
       ]
     : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
