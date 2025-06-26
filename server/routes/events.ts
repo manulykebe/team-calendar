@@ -266,34 +266,14 @@ router.patch("/bulk-status", async (req: AuthRequest, res) => {
 
 router.delete("/:id", async (req: AuthRequest, res) => {
   try {
+    // Check if userId is provided in the request body (for admin deletions)
     const requestBody = req.body || {};
+    const targetUserId = requestBody.userId || req.user!.id;
     const isAdmin = req.user!.role === 'admin';
-    let targetUserId = requestBody.userId || req.user!.id;
-    let eventToDelete = null;
 
-    if (isAdmin) {
-      // For admin users, use robust search to find the event across all users
-      const eventResult = await findEventAcrossSite(req.user!.site, req.params.id);
-      
-      if (!eventResult) {
-        return res.status(404).json({
-          message: "Event not found"
-        });
-      }
-      
-      eventToDelete = eventResult.event;
-      targetUserId = eventResult.userId;
-    } else {
-      // For regular users, get the event from their own events
-      const events = await getUserEvents(req.user!.site, req.user!.id);
-      eventToDelete = events.find(e => e.id === req.params.id);
-      
-      if (!eventToDelete) {
-        return res.status(404).json({
-          message: "Event not found"
-        });
-      }
-    }
+    // Get the event before deletion for broadcasting
+    const events = await getUserEvents(req.user!.site, targetUserId);
+    const eventToDelete = events.find(e => e.id === req.params.id);
 
     await deleteEvent({
       id: req.params.id,

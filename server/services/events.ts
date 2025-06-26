@@ -99,9 +99,7 @@ export async function deleteEvent(params: {
 
   const eventIndex = events.findIndex((e: Event) => e.id === params.id);
   if (eventIndex === -1) {
-    // Event not found - this is acceptable for delete operations (idempotent)
-    // The desired outcome (event being deleted) is already achieved
-    return;
+    throw new Error("Event not found");
   }
 
   // Allow deletion if user is admin or owns the event
