@@ -154,24 +154,29 @@ export async function deleteEvent(token: string, eventId: string, ownerUserId?: 
     throw new Error("Authentication token is required");
   }
 
-  const body: any = {};
-  if (ownerUserId) {
-    body.userId = ownerUserId;
-  }
+  const headers: HeadersInit = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  const body = ownerUserId ? JSON.stringify({ userId: ownerUserId }) : undefined;
 
   const response = await fetch(`${API_URL}/events/${eventId}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: Object.keys(body).length > 0 ? JSON.stringify(body) : undefined,
+    headers,
+    body,
   });
 
   if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ message: "Failed to delete event" }));
-    throw new Error(error.message);
-  }
+    let errorMessage = "Failed to delete event";
+    try {
+      const errorData = await response.json();
+      if (errorData?.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      // do nothing, keep default error message
+    }
+    throw new Error(errorMessage);
+  }
 }

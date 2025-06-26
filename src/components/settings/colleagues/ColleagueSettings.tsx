@@ -5,7 +5,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { ColleagueRow } from "./ColleagueRow";
 import { useApp } from "../../../context/AppContext";
 import { useAuth } from "../../../context/AuthContext";
-import { updateUser } from "../../../lib/api";
+import { updateUser } from "../../../lib/api/users";
 import { User } from "../../../types/user";
 import toast from "react-hot-toast";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";

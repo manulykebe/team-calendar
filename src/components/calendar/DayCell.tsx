@@ -11,10 +11,7 @@ import { Calendar } from "lucide-react";
 import { EventDetailsModal } from "./EventDetailsModal";
 import { AdminHolidayModal } from "./AdminHolidayModal";
 import { EventContextMenu } from "./EventContextMenu";
-import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
-import { useTranslation } from "../../context/TranslationContext";
-import { formatDateWithLocale } from "../../utils/calendar";
 import ReactDOM from "react-dom";
 
 interface DayCellProps {
@@ -44,7 +41,6 @@ export const DayCell = memo(function DayCell({
 	date,
 	events,
 	onDateClick,
-	onDateHover,
 	userSettings,
 	onEventDelete,
 	currentUser,
@@ -57,7 +53,6 @@ export const DayCell = memo(function DayCell({
 	isLoadingAvailability,
 }: DayCellProps) {
 	const { colleagues, refreshData } = useApp();
-	const { t, language } = useTranslation();
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const [selectedHolidayEvent, setSelectedHolidayEvent] = useState<Event | null>(null);
@@ -108,10 +103,10 @@ export const DayCell = memo(function DayCell({
 	const handleContextMenu = useCallback((e: React.MouseEvent, event: Event) => {
 		e.preventDefault();
 		e.stopPropagation();
-		
+
 		// Only admin can access context menu
 		if (currentUser?.role !== 'admin') return;
-		
+
 		setContextMenu({
 			event,
 			position: { x: e.clientX, y: e.clientY }
@@ -136,14 +131,6 @@ export const DayCell = memo(function DayCell({
 		onDateClick(date);
 	}, [currentUserHolidayEvent, onDateClick, date, currentUser?.role]);
 
-	const handleMouseEnter = useCallback(() => {
-		onDateHover(date);
-	}, [onDateHover, date]);
-
-	const handleMouseLeave = useCallback(() => {
-		onDateHover(null);
-	}, [onDateHover]);
-
 	// Find the event owner for admin modal
 	const getEventOwner = (event: Event) => {
 		return event.userId === currentUser?.id
@@ -152,9 +139,6 @@ export const DayCell = memo(function DayCell({
 	};
 
 	const { isSelected, isEndDate, isHoverEndDate, isInRange } = selectionStates;
-
-	// Check if this day has approved holidays (remove stripes)
-	const hasApprovedHoliday = currentUserHolidayEvent?.status === 'approved';
 
 	return (
 		<>
@@ -166,7 +150,7 @@ export const DayCell = memo(function DayCell({
           ${isSelected || isEndDate ? "z-10" : isInRange ? "z-5" : "z-0"}
         `}
 				style={{
-					backgroundColor:  backgroundColor,
+					backgroundColor: backgroundColor,
 				}}
 				onClick={handleClick}
 				data-tsx-id="day-cell"
@@ -189,15 +173,14 @@ export const DayCell = memo(function DayCell({
 				<div className="flex items-start justify-between relative">
 					<div className="flex items-center space-x-1">
 						<span
-							className={`relative text-sm font-medium ${
-								holiday ? "text-red-600" : "text-zinc-700"
-							}`}
+							className={`relative text-sm font-medium ${holiday ? "text-red-600" : "text-zinc-700"
+								}`}
 						>
 							{isToday && (
-									<span className="absolute inset-0 w-7 h-7 border-2 border-blue-500 rounded-full -m-[6px]" />
+								<span className="absolute inset-0 w-7 h-7 border-2 border-blue-500 rounded-full -m-[6px]" />
 							)}
 							<span className="absolute inset-2 flex items-center justify-center">
-							{format(date, "d")}
+								{format(date, "d")}
 							</span>
 						</span>
 						{holiday && (
@@ -234,7 +217,7 @@ export const DayCell = memo(function DayCell({
 					))}
 				</div>
 			</div>
- 
+
 			{showHolidayModal && selectedHolidayEvent &&
 				ReactDOM.createPortal(
 					<EventDetailsModal

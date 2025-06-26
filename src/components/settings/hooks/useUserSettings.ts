@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { getUsers, updateUser } from "../../../lib/api";
+import { getUsers, updateUser } from "../../../lib/api/users";
 import { User } from "../../../types/user";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
-import { getEvents, createEvent } from "../lib/api";
+import { getEvents, createEvent } from "../lib/api/events";
 import type { Event } from "../types/event";
 
 export function useCalendarEvents() {

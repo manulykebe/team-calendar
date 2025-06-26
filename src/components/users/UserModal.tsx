@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { User, UserFormData } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
-import { updateUser } from "../../lib/api";
+import { updateUser } from "../../lib/api/users";
 import { createUser } from "../../lib/api/users";
 import { X } from "lucide-react";
 

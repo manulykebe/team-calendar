@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getUsers } from "../../lib/api";
+import { getUsers } from "../../lib/api/users";
 import { User, UserFilters, SortConfig } from "../../types/user";
 import { UserListFilters } from "./UserListFilters";
 import { Loader2, ArrowUpDown } from "lucide-react";

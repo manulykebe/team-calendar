@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
-import { getUsers, updateUser } from "../lib/api";
+import { getUsers } from "../lib/api/users";
+import { updateUser } from "../lib/api/users";
 import { User } from "../types/user";
 import { EventEmitter } from "../utils/eventEmitter";
 
@@ -31,13 +32,13 @@ export function useColleagueSettings() {
 		try {
 			const users = await getUsers(token);
 			const userEmail = localStorage.getItem("userEmail");
-			const current = users.find((u) => u.email === userEmail);
+			const current = users.find((u: User) => u.email === userEmail);
 
 			if (current) {
 				setCurrentUser(current);
 				setColleagues([
 					current,
-					...users.filter((u) => u.id !== current.id),
+					...users.filter((u: User) => u.id !== current.id),
 				]);
 			} else {
 				throw new Error("Current user not found");

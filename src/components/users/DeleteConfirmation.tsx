@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { deleteUser } from "../../lib/api";
+import { deleteUser } from "../../lib/api/users";
 import { User } from "../../types/user";
 import { AlertTriangle } from "lucide-react";
 

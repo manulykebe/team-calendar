@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { User } from "../types/user";
 import { Event } from "../types/event";
-import { getUsers, getEvents } from "../lib/api";
+import { getUsers } from "../lib/api/users";
+import { getEvents } from "../lib/api/events";
 import { getAvailabilityReport } from "../lib/api/report";
 import { useAuth } from "./AuthContext";
 import { userSettingsEmitter } from "../hooks/useColleagueSettings";
