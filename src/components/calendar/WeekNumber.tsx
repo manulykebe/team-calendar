@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { getWeekNumber } from "../../utils/dateUtils";
-import { startOfWeek, endOfWeek, format, parseISO, getMonth } from "date-fns";
+import { startOfWeek, endOfWeek, format, parseISO } from "date-fns";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
-import { deleteEvent } from "../../lib/api";
+import { deleteEvent } from "../../lib/api/events";
 import toast from "react-hot-toast";
 import { useTranslation } from "../../context/TranslationContext";
 

@@ -28,30 +28,14 @@ const eventSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
     .optional(),
   status: z.enum(['pending', 'approved', 'denied']).optional(),
-});
-
-// Admin-specific event update schema
-const adminEventUpdateSchema = z.object({
-  type: z.string().optional(),
-  title: z.string().optional(),
-  description: z.string().max(500).optional(),
-  date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
-    .optional(),
-  endDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD")
-    .optional(),
-  status: z.enum(['pending', 'approved', 'denied']).optional(),
-  userId: z.string().optional(), // Allow admin to specify which user's event to update
+  userId: z.string() // For admin updates, allow specifying user
 });
 
 router.get("/", async (req: AuthRequest, res) => {
   try {
     // Check if this is an admin requesting specific user's events
     const requestedUserId = req.headers['x-user-id'] as string;
-    
+
     if (requestedUserId && req.user!.role === 'admin') {
       // Admin requesting specific user's events
       const events = await getUserEvents(req.user!.site, requestedUserId);
@@ -61,7 +45,7 @@ router.get("/", async (req: AuthRequest, res) => {
       // but keeping as fallback
       const siteData = await readSiteData(req.user!.site);
       const allEvents: any[] = [];
-      
+
       // Collect events from all users in the site
       for (const user of siteData.users) {
         try {
@@ -72,7 +56,7 @@ router.get("/", async (req: AuthRequest, res) => {
           console.warn(`Failed to get events for user ${user.id}:`, error);
         }
       }
-      
+
       res.json(allEvents);
     } else {
       // Regular user requesting their own events
@@ -127,14 +111,10 @@ router.post("/", async (req: AuthRequest, res) => {
 router.put("/:id", async (req: AuthRequest, res) => {
   try {
     const isAdmin = req.user!.role === 'admin';
-    
+
     // Use different validation schema for admins
     let validatedData: any;
-    if (isAdmin) {
-      validatedData = adminEventUpdateSchema.parse(req.body);
-    } else {
-      validatedData = eventSchema.parse(req.body);
-    }
+    validatedData = eventSchema.parse(req.body);
 
     // For admin updates, allow updating events of other users
     let targetUserId = req.user!.id;
@@ -193,7 +173,7 @@ router.patch("/bulk-status", async (req: AuthRequest, res) => {
     }).parse(req.body);
 
     const updatedEvents = [];
-    
+
     for (const eventId of eventIds) {
       try {
         // Get the event first to find the owner
@@ -214,7 +194,7 @@ router.patch("/bulk-status", async (req: AuthRequest, res) => {
 
         if (targetEvent && eventOwner) {
           const updatedEvent = await updateEvent({
-            ...targetEvent, 
+            ...targetEvent,
             id: eventId,
             status,
             userId: eventOwner.id,
@@ -241,9 +221,9 @@ router.patch("/bulk-status", async (req: AuthRequest, res) => {
       });
     }
 
-    res.json({ 
+    res.json({
       message: `Updated ${updatedEvents.length} events`,
-      updatedEvents 
+      updatedEvents
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

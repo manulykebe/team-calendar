@@ -56,10 +56,10 @@ export async function writeFile(key: string, data: string) {
 export async function readFile(key: string): Promise<string> {
   try {
     if ((IS_PRODUCTION || FORCE_S3) && !FORCE_FS)  {
-      console.log(`[Storage] Reading from S3: ${key}`);
+      // console.log(`[Storage] Reading from S3: ${key}`);
       return await getFromS3(key);
     } else {
-      console.log(`[Storage] Reading from local file: ${key}`);
+      // console.log(`[Storage] Reading from local file: ${key}`);
       return await readLocalFile(key);
     }
   } catch (error) {

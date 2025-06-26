@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Event } from "../types/event";
-import { createEvent, updateEvent } from "../lib/api";
+import { createEvent, updateEvent } from "../lib/api/events";
 import { useApp } from "../context/AppContext";
 import { useAuth } from "../context/AuthContext";
 

@@ -4,10 +4,10 @@ import { Event } from '../../types/event';
 import { User } from '../../types/user';
 import { useTranslation } from '../../context/TranslationContext';
 import { useAuth } from '../../context/AuthContext';
-import { updateEvent, deleteEvent } from '../../lib/api';
+import { updateEvent, deleteEvent } from '../../lib/api/events';
 import { getHolidays } from '../../lib/api/holidays';
 import toast from 'react-hot-toast';
-import { format, addDays, subDays, parseISO, isWeekend, isSaturday, isSunday, isValid } from 'date-fns';
+import { format, addDays, subDays, parseISO, isSaturday, isSunday, isValid } from 'date-fns';
 import { useClickOutside } from '../../hooks/useClickOutside';
 
 interface EventContextMenuProps {

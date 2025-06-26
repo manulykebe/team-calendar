@@ -1,8 +1,7 @@
-import { format } from "date-fns";
 import { X, Trash2, Save } from "lucide-react";
 import { Event } from "../../types/event";
 import { useAuth } from "../../context/AuthContext";
-import { deleteEvent, updateEvent } from "../../lib/api";
+import { deleteEvent, updateEvent } from "../../lib/api/events";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { useTranslation } from "../../context/TranslationContext";

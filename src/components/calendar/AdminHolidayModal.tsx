@@ -3,7 +3,7 @@ import { X, Check, XCircle, User, Clock, Calendar } from "lucide-react";
 import { Event } from "../../types/event";
 import { User as UserType } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
-import { updateEvent } from "../../lib/api";
+import { updateEvent } from "../../lib/api/events";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { useTranslation } from "../../context/TranslationContext";
