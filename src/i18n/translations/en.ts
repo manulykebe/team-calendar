@@ -36,6 +36,7 @@ export const en = {
     year: 'Year',
     site: 'Site',
     saving: 'Saving...',
+    deleting: 'Deleting...',
   },
 
   // Authentication
@@ -126,6 +127,11 @@ export const en = {
     deleting: 'Deleting...',
     changesSaved: 'Changes saved successfully',
     failedToSave: 'Failed to save changes',
+    modifyDates: 'Modify Dates',
+    extendPeriod: 'Extend to Include Weekends',
+    dateModificationNote: 'Changes will be applied immediately upon saving.',
+    confirmDelete: 'Confirm Deletion',
+    deleteWarning: 'This action cannot be undone.',
   },
 
   // Users

@@ -19,6 +19,7 @@ interface EventCardProps {
 		newDate: string,
 		newEndDate?: string
 	) => Promise<void>;
+	onContextMenu?: (e: React.MouseEvent) => void;
 }
 
 const HOLIDAY_TYPES = ["requestedHoliday", "requestedDesiderata", "requestedPeriod"];
@@ -30,6 +31,7 @@ export function EventCard({
 	onDelete,
 	currentUser,
 	onResize,
+	onContextMenu,
 }: EventCardProps) {
 	const [showDetails, setShowDetails] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
@@ -46,7 +48,12 @@ export function EventCard({
 		? currentUser 
 		: colleagues.find(c => c.id === event.userId) || null;
 
-	const handleClick = () => {
+	const handleClick = (e: React.MouseEvent) => {
+		// If right-click and admin, let the context menu handle it
+		if (e.button === 2 && isAdmin) {
+			return;
+		}
+		
 		// Admin can manage any holiday request
 		if (isAdmin && isHolidayEvent) {
 			setShowAdminModal(true);
@@ -248,7 +255,12 @@ export function EventCard({
 					if (isAdmin || isHolidayEvent) {
 						e.stopPropagation();
 					}
-					handleClick();
+					handleClick(e as React.MouseEvent);
+				}}
+				onContextMenu={(e) => {
+					if (onContextMenu && isAdmin) {
+						onContextMenu(e);
+					}
 				}}
 				className={`absolute left-0 right-0 flex items-center justify-between text-xs hover:opacity-90 transition-all duration-200 ${getCursorStyle()}`}
 				style={{

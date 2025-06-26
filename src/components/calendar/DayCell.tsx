@@ -10,6 +10,7 @@ import { Holiday } from "../../lib/api/holidays";
 import { Calendar } from "lucide-react";
 import { EventDetailsModal } from "./EventDetailsModal";
 import { AdminHolidayModal } from "./AdminHolidayModal";
+import { EventContextMenu } from "./EventContextMenu";
 import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
 import { useTranslation } from "../../context/TranslationContext";
@@ -60,6 +61,10 @@ export const DayCell = memo(function DayCell({
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const [selectedHolidayEvent, setSelectedHolidayEvent] = useState<Event | null>(null);
+	const [contextMenu, setContextMenu] = useState<{
+		event: Event;
+		position: { x: number; y: number };
+	} | null>(null);
 	const { getColumnColor } = useCalendarColors(currentUser);
 
 	// Memoize expensive calculations
@@ -100,10 +105,18 @@ export const DayCell = memo(function DayCell({
 	}, [events, currentUser?.id, formattedDate, date]);
 
 	// Use useCallback for event handlers to prevent unnecessary re-renders
-	const handleContextMenu = useCallback((e: React.MouseEvent) => {
+	const handleContextMenu = useCallback((e: React.MouseEvent, event: Event) => {
 		e.preventDefault();
-		onDateClick(date);
-	}, [onDateClick, date]);
+		e.stopPropagation();
+		
+		// Only admin can access context menu
+		if (currentUser?.role !== 'admin') return;
+		
+		setContextMenu({
+			event,
+			position: { x: e.clientX, y: e.clientY }
+		});
+	}, [currentUser?.role]);
 
 	const handleClick = useCallback(() => {
 		if (currentUserHolidayEvent) {
@@ -156,9 +169,6 @@ export const DayCell = memo(function DayCell({
 					backgroundColor:  backgroundColor,
 				}}
 				onClick={handleClick}
-				// onMouseEnter={handleMouseEnter}
-				// onMouseLeave={handleMouseLeave}
-				// onContextMenu={handleContextMenu}
 				data-tsx-id="day-cell"
 			>
 				{/* Availability background layers */}
@@ -219,6 +229,7 @@ export const DayCell = memo(function DayCell({
 							onDelete={onEventDelete}
 							currentUser={currentUser}
 							onResize={onEventResize}
+							onContextMenu={(e) => handleContextMenu(e, event)}
 						/>
 					))}
 				</div>
@@ -246,6 +257,16 @@ export const DayCell = memo(function DayCell({
 						setShowAdminModal(false);
 						setSelectedHolidayEvent(null);
 					}}
+					onUpdate={refreshData}
+				/>
+			)}
+
+			{contextMenu && (
+				<EventContextMenu
+					event={contextMenu.event}
+					eventOwner={getEventOwner(contextMenu.event)}
+					position={contextMenu.position}
+					onClose={() => setContextMenu(null)}
 					onUpdate={refreshData}
 				/>
 			)}

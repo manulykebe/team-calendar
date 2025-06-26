@@ -36,6 +36,7 @@ export const nl = {
     year: 'Jaar',
     site: 'Site',
     saving: 'Opslaan...',
+    deleting: 'Verwijderen...',
   },
 
   // Authentication
@@ -126,6 +127,11 @@ export const nl = {
     deleting: 'Verwijderen...',
     changesSaved: 'Wijzigingen succesvol opgeslagen',
     failedToSave: 'Opslaan van wijzigingen mislukt',
+    modifyDates: 'Datums wijzigen',
+    extendPeriod: 'Uitbreiden met weekenden',
+    dateModificationNote: 'Wijzigingen worden direct toegepast na opslaan.',
+    confirmDelete: 'Verwijderen bevestigen',
+    deleteWarning: 'Deze actie kan niet ongedaan worden gemaakt.',
   },
 
   // Users
