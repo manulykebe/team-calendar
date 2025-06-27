@@ -26,7 +26,7 @@ interface SettingsPanelProps {
 	className?: string;
 }
 
-export function SettingsPanel({}: SettingsPanelProps) {
+export function SettingsPanel({ }: SettingsPanelProps) {
 	const { logout } = useAuth();
 	const { t } = useTranslation();
 	const { currentUser, updateWorkStartDay, updateWeekNumberSetting } =
@@ -112,9 +112,8 @@ export function SettingsPanel({}: SettingsPanelProps) {
 			)}
 
 			<div
-				className={`fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-					isOpen ? "translate-x-0" : "translate-x-full"
-				} flex flex-col`}
+				className={`fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"
+					} flex flex-col`}
 			>
 				<div className="flex items-center justify-between p-4 border-b">
 					<h2 className="text-lg font-semibold text-zinc-900">
@@ -135,22 +134,6 @@ export function SettingsPanel({}: SettingsPanelProps) {
 								{t('settings.colleagues')}
 							</h3>
 							<div className="space-y-2">
-								<button
-									onClick={() => setShowUserManagement(true)}
-									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-								>
-									<Users className="w-4 h-4 mr-2" />
-									{t('settings.manageUsers')}
-								</button>
-								<button
-									onClick={() =>
-										setShowColleagueSettings(true)
-									}
-									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-								>
-									<Users className="w-4 h-4 mr-2" />
-									{t('settings.manageColleagueDisplay')}
-								</button>
 								<button
 									onClick={handleOpenAvailability}
 									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
@@ -180,6 +163,22 @@ export function SettingsPanel({}: SettingsPanelProps) {
 								<h3 className="text-sm font-medium text-zinc-900 mb-2">
 									{t('settings.admin')}
 								</h3>
+								<button
+									onClick={() => setShowUserManagement(true)}
+									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+								>
+									<Users className="w-4 h-4 mr-2" />
+									{t('settings.manageUsers')}
+								</button>
+								<button
+									onClick={() =>
+										setShowColleagueSettings(true)
+									}
+									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+								>
+									<Users className="w-4 h-4 mr-2" />
+									{t('settings.manageColleagueDisplay')}
+								</button>
 								<div className="space-y-2">
 									<button
 										onClick={handleOpenPeriodManagement}
