@@ -179,7 +179,21 @@ export const DayCell = memo(function DayCell({
 				)}
 
 				{showMonthLabel && <MonthLabel date={date} />}
-				<div className="flex items-start justify-between relative">
+				
+				{/* Public holiday indicator at the top of the cell */}
+				{holiday && (
+					<div
+						className="absolute top-1 left-0 right-0 flex items-center justify-center text-xs text-red-600 bg-red-50 rounded px-1 py-0.5 mx-1"
+						title={holiday.name}
+					>
+						<Calendar className="w-3 h-3 mr-1" />
+						<span className="truncate max-w-[80px]">
+							{holiday.name}
+						</span>
+					</div>
+				)}
+				
+				<div className="flex items-start justify-between relative mt-6">
 					<div className="flex items-center space-x-1">
 						<span
 							className={`relative text-sm font-medium ${isHoliday ? "text-red-600" : "text-zinc-700"
@@ -192,17 +206,6 @@ export const DayCell = memo(function DayCell({
 								{format(date, "d")}
 							</span>
 						</span>
-						{holiday && (
-							<div
-								className="float-right inline-flex items-center text-xs text-red-600 bg-red-50 rounded px-0 py-0.5 cursor-pointer hover:bg-red-100 transition-colors duration-200"
-								title={holiday.name}
-							>
-								<Calendar className="w-3 h-3 mr-1" />
-								<span className="truncate max-w-[80px]">
-									{holiday.name}
-								</span>
-							</div>
-						)}
 					</div>
 					{dayEvents.length > 0 && (
 						<span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
