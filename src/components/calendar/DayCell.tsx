@@ -178,6 +178,7 @@ export const DayCell = memo(function DayCell({
 					<div className={`absolute inset-0 animate-pulse`} />
 				)}
 
+				{/* Only show month label if it's the first day of the month and not in the first column */}
 				{showMonthLabel && <MonthLabel date={date} />}
 				
 				<div className="flex items-start justify-between relative">
@@ -212,7 +213,7 @@ export const DayCell = memo(function DayCell({
 					)}
 				</div>
 
-				<div className="mt-2 relative">
+				<div className="mt-6 relative">
 					{dayEvents.map((event) => (
 						<EventCard
 							key={event.id}
