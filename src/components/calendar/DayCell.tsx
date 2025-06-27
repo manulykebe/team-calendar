@@ -65,15 +65,6 @@ export const DayCell = memo(function DayCell({
 	} | null>(null);
 	const { getColumnColor } = useCalendarColors(currentUser);
 
-	// Create a map of holidays for efficient lookup
-	const holidaysMap = useMemo(() => {
-		const map = new Map<string, Holiday>();
-		if (holiday) {
-			map.set(format(date, "yyyy-MM-dd"), holiday);
-		}
-		return map;
-	}, [holiday, date]);
-
 	// Check if this date is a public holiday using the global context
 	const isHoliday = useMemo(() => {
 		return isPublicHoliday(date, globalHolidays) || !!holiday;
@@ -165,10 +156,9 @@ export const DayCell = memo(function DayCell({
           ${isInRange ? "bg-blue-50 hover:bg-blue-100" : "hover:bg-opacity-90"}
           ${isHoverEndDate ? "ring-2 ring-blue-300" : ""}
           ${isSelected || isEndDate ? "z-10" : isInRange ? "z-5" : "z-0"}
+		  ${isPublicHoliday(date, globalHolidays) ? "bg-red-50" : isWeekday(date) ? "bg-white" : "bg-zinc-50"}
         `}
-				style={{
-					backgroundColor: backgroundColor,
-				}}
+
 				onClick={handleClick}
 				data-tsx-id="day-cell"
 			>
@@ -176,14 +166,16 @@ export const DayCell = memo(function DayCell({
 				{(!isLoadingAvailability && isWeekday(date)) ? (
 					<>
 						{!availability.am && (
-							<div className="absolute inset-x-0 top-0 h-1/2 bg-zinc-100 opacity-50" />
+							<div className={`absolute inset-x-0 top-0 h-1/2 opacity-50
+								${isPublicHoliday(date, globalHolidays) ? "bg-red-100" : "bg-zinc-100"}`} />
 						)}
 						{!availability.pm && (
-							<div className="absolute inset-x-0 bottom-0 h-1/2 bg-zinc-100 opacity-50" />
+							<div className={`absolute inset-x-0 bottom-0 h-1/2 opacity-50
+								${isPublicHoliday(date, globalHolidays) ? "bg-red-100" : "bg-zinc-100"}`} />
 						)}
 					</>
 				) : (
-					<div className="absolute inset-0 bg-zinc-100 animate-pulse" />
+					<div className={`absolute inset-0 animate-pulse`} />
 				)}
 
 				{showMonthLabel && <MonthLabel date={date} />}
@@ -202,7 +194,7 @@ export const DayCell = memo(function DayCell({
 						</span>
 						{holiday && (
 							<div
-								className="inline-flex items-center text-xs text-red-600 bg-red-50 rounded px-0 py-0.5 cursor-pointer hover:bg-red-100 transition-colors duration-200"
+								className="float-right inline-flex items-center text-xs text-red-600 bg-red-50 rounded px-0 py-0.5 cursor-pointer hover:bg-red-100 transition-colors duration-200"
 								title={holiday.name}
 							>
 								<Calendar className="w-3 h-3 mr-1" />
@@ -230,7 +222,6 @@ export const DayCell = memo(function DayCell({
 							currentUser={currentUser}
 							onResize={onEventResize}
 							onContextMenu={(e) => handleContextMenu(e, event)}
-							holidays={holidaysMap}
 							availabilityData={availabilityData}
 						/>
 					))}

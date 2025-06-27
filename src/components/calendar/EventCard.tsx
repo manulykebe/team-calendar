@@ -41,7 +41,6 @@ export function EventCard({
 	onDelete,
 	currentUser,
 	onContextMenu,
-	holidays,
 	availabilityData,
 }: EventCardProps) {
 	const [showDetails, setShowDetails] = useState(false);
@@ -120,8 +119,7 @@ export function EventCard({
 			}
 
 			// Skip holidays - use either provided holidays or global holidays
-			if ((holidays && isPublicHoliday(day, holidays)) || 
-			    isPublicHoliday(day, globalHolidays)) {
+			if (isPublicHoliday(day, globalHolidays)) {
 				continue;
 			}
 
