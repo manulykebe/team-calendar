@@ -154,5 +154,17 @@
     "status": "approved",
     "createdAt": "2025-06-26T10:32:15.759Z",
     "updatedAt": "2025-06-26T12:05:59.283Z"
+  },
+  {
+    "id": "0e7a2a04-ca53-4cf0-b971-84be5a4c1958",
+    "userId": "XAefIrqLAeDy",
+    "type": "requestedLeave",
+    "title": "",
+    "description": "",
+    "date": "2025-07-24",
+    "endDate": "2025-07-25",
+    "status": "pending",
+    "createdAt": "2025-06-27T12:08:24.598Z",
+    "updatedAt": "2025-06-27T12:08:24.598Z"
   }
 ]
