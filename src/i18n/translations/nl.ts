@@ -96,8 +96,9 @@ export const nl = {
     failedToUpdateEvent: 'Bijwerken van gebeurtenis mislukt',
     failedToDeleteEvent: 'Verwijderen van gebeurtenis mislukt',
     dateNotAvailable: 'Datum niet beschikbaar',
-    onDuty: 'van dienst',
+    onDuty: 'van dienst, vanaf {{start}} tot {{end}}',
     noOnDutyStaff: 'Geen radioloog van dienst toegewezen',
+    showMobile: 'Toon mobiel nummer',
   },
 
   // Events

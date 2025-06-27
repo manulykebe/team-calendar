@@ -73,7 +73,6 @@ export const DayCell = memo(function DayCell({
 	// Memoize expensive calculations
 	const formattedDate = useMemo(() => format(date, "yyyy-MM-dd"), [date]);
 	const dayEvents = useFilteredEvents(events, formattedDate, currentUser);
-	const backgroundColor = useMemo(() => getColumnColor(date), [getColumnColor, date]);
 	const showMonthLabel = useMemo(() => isFirstDayOfMonth(date), [date]);
 	const isToday = useMemo(() => isSameDay(date, new Date()), [date]);
 

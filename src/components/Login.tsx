@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { login } from "../lib/api";
-import { Calendar, Phone, LogIn } from "lucide-react";
+import { Calendar, Phone, LogIn, X } from "lucide-react";
 import { LoadingSpinner } from "./common/LoadingSpinner";
 import { useTranslation } from "../context/TranslationContext";
 import { getOnDutyStaff, getOnDutyDate, OnDutyStaff } from "../lib/api/on-duty";
@@ -17,14 +17,12 @@ export function Login() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [onDutyStaff, setOnDutyStaff] = useState<OnDutyStaff | null>(null);
-  const [isLoadingOnDuty, setIsLoadingOnDuty] = useState(true);
   const [showMobile, setShowMobile] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     const fetchOnDutyStaff = async () => {
       try {
-        setIsLoadingOnDuty(true);
         // Get the appropriate date for on-duty lookup
         const onDutyDate = getOnDutyDate();
         const staffData = await getOnDutyStaff(site, onDutyDate);
@@ -32,7 +30,6 @@ export function Login() {
       } catch (error) {
         console.error("Failed to fetch on-duty staff:", error);
       } finally {
-        setIsLoadingOnDuty(false);
       }
     };
 
@@ -55,6 +52,31 @@ export function Login() {
       setIsLoading(false);
     }
   };
+
+  // Helper for closing modals when clicking outside
+  function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+        onClick={onClose}
+      >
+        <div
+          className="relative bg-white rounded-lg shadow-lg p-6 flex flex-col items-center w-full max-w-md border border-zinc-200"
+          onClick={e => e.stopPropagation()}
+        >
+          <button
+            className="absolute top-3 right-3 text-zinc-400 hover:text-zinc-700"
+            onClick={onClose}
+            aria-label="Close"
+            type="button"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {children}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -79,18 +101,10 @@ export function Login() {
           </div>
           {/* Popup for mobile */}
           {showMobile && onDutyStaff?.mobile && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-              <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center">
-                <p className="text-lg font-semibold mb-2">{onDutyStaff.name}</p>
-                <p className="text-zinc-700 text-xl mb-4">{onDutyStaff.mobile}</p>
-                <button
-                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  onClick={() => setShowMobile(false)}
-                >
-                  {t('common.close')}
-                </button>
-              </div>
-            </div>
+            <Modal onClose={() => setShowMobile(false)}>
+              <p className="text-lg font-semibold mb-2">{onDutyStaff.name}</p>
+              <p className="text-zinc-700 text-xl mb-2">{onDutyStaff.mobile}</p>
+            </Modal>
           )}
         </div>
       </div>
@@ -114,96 +128,87 @@ export function Login() {
         </div>
         {/* Modal for login */}
         {showLoginModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-            <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center w-full max-w-md">
-              <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-100 mb-4">
-                <Calendar className="h-8 w-8 text-blue-600" />
-              </div>
-              <h2 className="text-center text-2xl font-bold text-zinc-900 mb-4">
-                {t('auth.signInToAccount')}
-              </h2>
-              <form className="w-full space-y-4" onSubmit={handleSubmit}>
-                {error && (
-                  <div className="rounded-md bg-red-50 p-4">
-                    <div className="text-sm text-red-700">{error}</div>
-                  </div>
-                )}
-                <div>
-                  <label htmlFor="email" className="sr-only">
-                    {t('auth.email')}
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                    placeholder={t('auth.email')}
-                    autoComplete="username"
-                    disabled={isLoading}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="password" className="sr-only">
-                    {t('auth.password')}
-                  </label>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                    placeholder={t('auth.password')}
-                    autoComplete="current-password"
-                    disabled={isLoading}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="site" className="sr-only">
-                    {t('auth.site')}
-                  </label>
-                  <input
-                    id="site"
-                    name="site"
-                    type="text"
-                    required
-                    value={site}
-                    onChange={(e) => setSite(e.target.value)}
-                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                    placeholder={t('auth.site')}
-                    disabled={isLoading}
-                  />
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isLoading ? (
-                      <div className="flex items-center">
-                        <LoadingSpinner size="sm" />
-                        <span className="ml-2">{t('auth.signingIn')}</span>
-                      </div>
-                    ) : (
-                      t('auth.signIn')
-                    )}
-                  </button>
-                </div>
-              </form>
-              <button
-                className="mt-4 px-4 py-2 bg-zinc-200 text-zinc-700 rounded hover:bg-zinc-300"
-                onClick={() => setShowLoginModal(false)}
-                type="button"
-              >
-                {t('common.close')}
-              </button>
+          <Modal onClose={() => setShowLoginModal(false)}>
+            <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-100 mb-4">
+              <Calendar className="h-8 w-8 text-blue-600" />
             </div>
-          </div>
+            <h2 className="text-center text-2xl font-bold text-zinc-900 mb-4">
+              {t('auth.signInToAccount')}
+            </h2>
+            <form className="w-full space-y-4" onSubmit={handleSubmit}>
+              {error && (
+                <div className="rounded-md bg-red-50 p-4">
+                  <div className="text-sm text-red-700">{error}</div>
+                </div>
+              )}
+              <div>
+                <label htmlFor="email" className="sr-only">
+                  {t('auth.email')}
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder={t('auth.email')}
+                  autoComplete="username"
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="sr-only">
+                  {t('auth.password')}
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder={t('auth.password')}
+                  autoComplete="current-password"
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <label htmlFor="site" className="sr-only">
+                  {t('auth.site')}
+                </label>
+                <input
+                  id="site"
+                  name="site"
+                  type="text"
+                  required
+                  value={site}
+                  onChange={(e) => setSite(e.target.value)}
+                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder={t('auth.site')}
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center">
+                      <LoadingSpinner size="sm" />
+                      <span className="ml-2">{t('auth.signingIn')}</span>
+                    </div>
+                  ) : (
+                    t('auth.signIn')
+                  )}
+                </button>
+              </div>
+            </form>
+          </Modal>
         )}
       </div>
     </div>
