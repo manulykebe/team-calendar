@@ -8,6 +8,7 @@ import { useApp } from "../../context/AppContext";
 import { useTranslation } from "../../context/TranslationContext";
 import ReactDOM from "react-dom";
 import { UserSettings } from "../../../src/lib/api/types";
+import { isPublicHoliday } from "../../utils/holidayUtils";
 
 interface Holiday {
 	date: string;
@@ -118,7 +119,7 @@ export function EventCard({
 			}
 
 			// Skip holidays if available
-			if (holidays?.has(dateStr)) {
+			if (holidays && isPublicHoliday(day, holidays)) {
 				continue;
 			}
 

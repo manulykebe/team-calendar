@@ -9,6 +9,7 @@ import { getHolidays } from '../../lib/api/holidays';
 import toast from 'react-hot-toast';
 import { format, addDays, subDays, parseISO, isSaturday, isSunday, isValid } from 'date-fns';
 import { useClickOutside } from '../../hooks/useClickOutside';
+import { isPublicHoliday } from '../../utils/holidayUtils';
 
 interface EventContextMenuProps {
   event: Event;
@@ -34,7 +35,7 @@ export function EventContextMenu({
   const [endDate, setEndDate] = useState(event.endDate || event.date);
   const [isUpdating, setIsUpdating] = useState(false);
   const [menuPosition, setMenuPosition] = useState(position);
-  const [holidays, setHolidays] = useState<string[]>([]);
+  const [holidays, setHolidays] = useState<any[]>([]);
 
   // Fetch holidays when component mounts
   useEffect(() => {
@@ -46,8 +47,7 @@ export function EventContextMenu({
         const holidayData = await getHolidays(year.toString(), eventOwner.site === 'london' ? 'GB' : 'BE');
         
         // Extract holiday dates
-        const holidayDates = holidayData.map(holiday => holiday.date);
-        setHolidays(holidayDates);
+        setHolidays(holidayData);
       } catch (error) {
         console.error('Failed to fetch holidays:', error);
       }
@@ -101,12 +101,6 @@ export function EventContextMenu({
 
   // Calculate if this is a holiday-type event
   const isHolidayType = event.type === 'requestedLeave' || event.type === 'requestedLeaveMandatory';
-
-  // Check if a date is a public holiday
-  const isPublicHoliday = (date: Date): boolean => {
-    const dateStr = format(date, 'yyyy-MM-dd');
-    return holidays.includes(dateStr);
-  };
 
   // Handle date modification
   const handleDateModification = async () => {
@@ -178,14 +172,14 @@ export function EventContextMenu({
 
       // Extend start date backward
       let currentDate = subDays(newStartDate, 1);
-      while (isSaturday(currentDate) || isSunday(currentDate) || isPublicHoliday(currentDate)) {
+      while (isSaturday(currentDate) || isSunday(currentDate) || isPublicHoliday(currentDate, holidays)) {
         newStartDate = currentDate;
         currentDate = subDays(currentDate, 1);
       }
 
       // Extend end date forward
       currentDate = addDays(newEndDate, 1);
-      while (isSaturday(currentDate) || isSunday(currentDate) || isPublicHoliday(currentDate)) {
+      while (isSaturday(currentDate) || isSunday(currentDate) || isPublicHoliday(currentDate, holidays)) {
         newEndDate = currentDate;
         currentDate = addDays(currentDate, 1);
       }
@@ -260,7 +254,7 @@ export function EventContextMenu({
           <div className="space-y-1">
             <button
               onClick={() => setShowDateModifier(true)}
-              className="w-full text-left px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100 rounded-md flex items-center"
+              className="w-full text-left px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50 rounded-md flex items-center"
             >
               <Edit3 className="w-4 h-4 mr-2 text-blue-600" />
               {t('events.modifyDates')}
@@ -268,7 +262,7 @@ export function EventContextMenu({
 
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="w-full text-left px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100 rounded-md flex items-center"
+              className="w-full text-left px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50 rounded-md flex items-center"
             >
               <Trash2 className="w-4 h-4 mr-2 text-red-600" />
               {t('common.delete')}

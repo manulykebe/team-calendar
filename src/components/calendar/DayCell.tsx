@@ -14,6 +14,7 @@ import { EventContextMenu } from "./EventContextMenu";
 import { useApp } from "../../context/AppContext";
 import ReactDOM from "react-dom";
 import { isWeekday } from "../../utils/dateUtils";
+import { isPublicHoliday } from "../../utils/holidayUtils";
 
 interface DayCellProps {
 	date: Date;
