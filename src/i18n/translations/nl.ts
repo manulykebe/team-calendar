@@ -95,6 +95,8 @@ export const nl = {
     failedToUpdateEvent: 'Bijwerken van gebeurtenis mislukt',
     failedToDeleteEvent: 'Verwijderen van gebeurtenis mislukt',
     dateNotAvailable: 'Datum niet beschikbaar',
+    onDuty: 'Van Dienst',
+    noOnDutyStaff: 'Geen personeel van dienst toegewezen',
   },
 
   // Events

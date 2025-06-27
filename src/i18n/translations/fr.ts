@@ -95,6 +95,8 @@ export const fr = {
     failedToUpdateEvent: 'Échec de la mise à jour de l\'événement',
     failedToDeleteEvent: 'Échec de la suppression de l\'événement',
     dateNotAvailable: 'Date non disponible',
+    onDuty: 'De garde',
+    noOnDutyStaff: 'Aucun personnel de garde assigné',
   },
 
   // Events

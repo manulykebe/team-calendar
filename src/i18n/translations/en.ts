@@ -95,6 +95,8 @@ export const en = {
     failedToUpdateEvent: 'Failed to update event',
     failedToDeleteEvent: 'Failed to delete event',
     dateNotAvailable: 'Date not available',
+    onDuty: 'On Duty',
+    noOnDutyStaff: 'No on-duty staff assigned',
   },
 
   // Events

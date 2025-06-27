@@ -13,6 +13,7 @@ import { agendaRouter } from "./routes/agenda.js";
 import { exportRouter } from "./routes/export.js";
 import { healthRouter } from "./routes/health.js";
 import { periodsRouter } from "./routes/periods.js";
+import { onDutyRouter } from "./routes/on-duty.js";
 import { initializeSocketManager } from "./websocket/socketManager.js";
 
 const app = express();
@@ -58,6 +59,7 @@ app.use("/api/sites", sitesRouter);
 app.use("/api/users", userRouter);
 app.use("/api/export", exportRouter);
 app.use("/api/sites", periodsRouter);
+app.use("/api/on-duty", onDutyRouter);
 
 // Root endpoint
 app.get("/", (req, res) => {
