@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { login } from "../lib/api";
@@ -19,6 +19,11 @@ export function Login() {
   const [onDutyStaff, setOnDutyStaff] = useState<OnDutyStaff | null>(null);
   const [showMobile, setShowMobile] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  
+  // Add refs for input fields to maintain focus
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+  const siteInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchOnDutyStaff = async () => {
@@ -29,7 +34,6 @@ export function Login() {
         setOnDutyStaff(staffData);
       } catch (error) {
         console.error("Failed to fetch on-duty staff:", error);
-      } finally {
       }
     };
 
@@ -53,16 +57,41 @@ export function Login() {
     }
   };
 
+  // Controlled input handlers with focus preservation
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    // No need to manually set focus as the input already has it
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    // No need to manually set focus as the input already has it
+  };
+
+  const handleSiteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSite(e.target.value);
+    // No need to manually set focus as the input already has it
+  };
+
   // Helper for closing modals when clicking outside
   function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
+    const modalRef = useRef<HTMLDivElement>(null);
+    
+    // Handle click outside to close modal
+    const handleOutsideClick = (e: React.MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+
     return (
       <div
         className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
-        onClick={onClose}
+        onClick={handleOutsideClick}
       >
         <div
+          ref={modalRef}
           className="relative bg-white rounded-lg shadow-lg p-6 flex flex-col items-center w-full max-w-md border border-zinc-200"
-          onClick={e => e.stopPropagation()}
         >
           <button
             className="absolute top-3 right-3 text-zinc-400 hover:text-zinc-700"
@@ -152,7 +181,8 @@ export function Login() {
                   type="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
+                  ref={emailInputRef}
                   className="appearance-none rounded-md relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder={t('auth.email')}
                   autoComplete="username"
@@ -169,7 +199,8 @@ export function Login() {
                   type="password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
+                  ref={passwordInputRef}
                   className="appearance-none rounded-md relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder={t('auth.password')}
                   autoComplete="current-password"
@@ -186,7 +217,8 @@ export function Login() {
                   type="text"
                   required
                   value={site}
-                  onChange={(e) => setSite(e.target.value)}
+                  onChange={handleSiteChange}
+                  ref={siteInputRef}
                   className="appearance-none rounded-md relative block w-full px-3 py-2 border border-zinc-300 placeholder-zinc-500 text-zinc-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder={t('auth.site')}
                   disabled={isLoading}
