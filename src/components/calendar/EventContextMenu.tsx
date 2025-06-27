@@ -100,7 +100,7 @@ export function EventContextMenu({
   }, [onClose]);
 
   // Calculate if this is a holiday-type event
-  const isHolidayType = event.type === 'requestedHoliday' || event.type === 'requestedHolidayMandatory';
+  const isHolidayType = event.type === 'requestedLeave' || event.type === 'requestedLeaveMandatory';
 
   // Check if a date is a public holiday
   const isPublicHoliday = (date: Date): boolean => {
@@ -202,7 +202,7 @@ export function EventContextMenu({
   // Get event type label
   const getEventTypeLabel = (eventType: string, eventStatus?: string): string => {
     switch (eventType) {
-      case "requestedHoliday":
+      case "requestedLeave":
         switch (eventStatus) {
           case "approved":
             return t('calendar.approvedHoliday');
@@ -211,10 +211,10 @@ export function EventContextMenu({
           case "pending":
             return t('calendar.pendingHoliday');
           default:
-            return t('calendar.requestedHoliday');
+            return t('calendar.requestedLeave');
         }
-      case "requestedHolidayMandatory":
-        return t('calendar.requestedHoliday');
+      case "requestedLeaveMandatory":
+        return t('calendar.requestedLeave');
       case "requestedDesiderata":
         return t('calendar.requestedDesiderata');
       case "requestedPeriod":

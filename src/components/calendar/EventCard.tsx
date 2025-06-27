@@ -31,7 +31,7 @@ interface EventCardProps {
 	availabilityData?: Record<string, { am: boolean; pm: boolean }>;
 }
 
-const HOLIDAY_TYPES = ["requestedHoliday", "requestedDesiderata", "requestedPeriod"];
+const HOLIDAY_TYPES = ["requestedLeave", "requestedDesiderata", "requestedPeriod"];
 
 export function EventCard({
 	event,
@@ -164,7 +164,7 @@ export function EventCard({
 				borderColor: "#059669",
 			};
 		}
-		if (event.type === "requestedHoliday") {
+		if (event.type === "requestedLeave") {
 			return {
 				backgroundColor: "#f59e0b", // Amber for holiday
 				borderColor: "#d97706",
@@ -209,7 +209,7 @@ export function EventCard({
 
 		// Default text based on event type
 		switch (event.type) {
-			case "requestedHoliday":
+			case "requestedLeave":
 				switch (event.status) {
 					case "approved":
 						return `${prefix}${t('calendar.approvedHoliday')}`;
@@ -218,7 +218,7 @@ export function EventCard({
 					case "pending":
 						return `${prefix}${t('calendar.pendingHoliday')}`;
 					default:
-						return `${prefix}${t('calendar.requestedHoliday')}`;
+						return `${prefix}${t('calendar.requestedLeave')}`;
 				}
 			case "requestedDesiderata":
 				return `${prefix}${t('calendar.requestedDesiderata')}`;

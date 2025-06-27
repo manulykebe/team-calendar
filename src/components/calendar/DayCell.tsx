@@ -13,6 +13,7 @@ import { AdminHolidayModal } from "./AdminHolidayModal";
 import { EventContextMenu } from "./EventContextMenu";
 import { useApp } from "../../context/AppContext";
 import ReactDOM from "react-dom";
+import { isWeekday } from "../../utils/dateUtils";
 
 interface DayCellProps {
 	date: Date;
@@ -35,7 +36,7 @@ interface DayCellProps {
 	isLoadingAvailability: boolean;
 }
 
-const HOLIDAY_TYPES = ["requestedHoliday", "requestedHolidayMandatory"];
+const HOLIDAY_TYPES = ["requestedLeave", "requestedLeaveMandatory"];
 
 export const DayCell = memo(function DayCell({
 	date,
@@ -165,13 +166,13 @@ export const DayCell = memo(function DayCell({
 				data-tsx-id="day-cell"
 			>
 				{/* Availability background layers */}
-				{!isLoadingAvailability ? (
+				{(!isLoadingAvailability && isWeekday(date)) ? (
 					<>
 						{!availability.am && (
-							<div className="absolute inset-x-0 top-0 h-1/2 bg-zinc-200 opacity-50" />
+							<div className="absolute inset-x-0 top-0 h-1/2 bg-zinc-100 opacity-50" />
 						)}
 						{!availability.pm && (
-							<div className="absolute inset-x-0 bottom-0 h-1/2 bg-zinc-200 opacity-50" />
+							<div className="absolute inset-x-0 bottom-0 h-1/2 bg-zinc-100 opacity-50" />
 						)}
 					</>
 				) : (

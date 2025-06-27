@@ -41,7 +41,7 @@ export function EventModal({
 	const [title, setTitle] = useState(event?.title || "");
 	const [description, setDescription] = useState(event?.description || "");
 	const [type, setType] = useState(
-		event?.type || defaultEventType || "requestedHoliday"
+		event?.type || defaultEventType || "requestedLeave"
 	);
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -55,7 +55,7 @@ export function EventModal({
 	const isSingleDayEvent = !endDate || date.getTime() === endDate.getTime();
 
 	// Check if this is a holiday type event
-	const isHolidayType = type === "requestedHoliday" || type === "requestedHolidayMandatory";
+	const isHolidayType = type === "requestedLeave" || type === "requestedLeaveMandatory";
 
 	// Show AM/PM selection only for single day holiday events
 	const showAmPmSelection = isSingleDayEvent && isHolidayType;
@@ -85,7 +85,7 @@ export function EventModal({
 			} catch (error) {
 				console.error("Failed to load periods:", error);
 				// Fallback to basic event types if periods can't be loaded
-				setAvailableEventTypes(["requestedHoliday"]);
+				setAvailableEventTypes(["requestedLeave"]);
 			}
 		};
 
@@ -112,18 +112,18 @@ export function EventModal({
 
 		if (!currentPeriod) {
 			// If no period is defined, default to holiday only
-			return ["requestedHoliday"];
+			return ["requestedLeave"];
 		}
 
 		// Cascaded system: first Holidays, then Desiderata
 		switch (currentPeriod.editingStatus) {
 			case 'open-holiday':
-				availableTypes.push("requestedHoliday");
+				availableTypes.push("requestedLeave");
 				break;
 			case 'open-desiderata':
 				// When desiderata is open, both holiday and desiderata are available
 				// But holiday has priority (cascaded system)
-				availableTypes.push("requestedHoliday", "requestedDesiderata");
+				availableTypes.push("requestedLeave", "requestedDesiderata");
 				break;
 			case 'closed':
 			default:
@@ -137,8 +137,8 @@ export function EventModal({
 
 	const getEventTypeLabel = (eventType: string): string => {
 		switch (eventType) {
-			case "requestedHoliday":
-				return t('calendar.requestedHoliday');
+			case "requestedLeave":
+				return t('calendar.requestedLeave');
 			case "requestedDesiderata":
 				return t('calendar.requestedDesiderata');
 			default:

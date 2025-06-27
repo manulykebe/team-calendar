@@ -193,7 +193,7 @@ function generateICalContent(events: Event[], user: any): string {
 				? format(addDays(parseISO(event.endDate), 0), "yyyyMMdd")
 				: format(addDays(parseISO(event.date), 0), "yyyyMMdd");
 			const eventUid = `${event.id}-${startDate}@teamcalendar`;
-			const summary =( event.type=== "requestedHoliday"?`Holiday (${event.status})`:"xxx")
+			const summary =( event.type=== "requestedLeave"?`Holiday (${event.status})`:"xxx")
 				.replace(/[\\;,]/g, (match) => "\\" + match)
 				.replace(/\n/g, "\\n");
 			const description = event.description

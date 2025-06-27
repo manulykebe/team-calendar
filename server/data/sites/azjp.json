@@ -48,12 +48,12 @@
     "location": "BE",
     "eventTypes": [
       {
-        "requestedHoliday": {
+        "requestedLeave": {
           "period": "week-Saturday[-1]-Sunday[1]"
         }
       },
       {
-        "requestedHolidayMandatory": {
+        "requestedLeaveMandatory": {
           "period": "week-Saturday[-1]-Sunday[1]"
         }
       },

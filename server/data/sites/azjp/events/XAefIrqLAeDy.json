@@ -2,7 +2,7 @@
   {
     "id": "1c67231f-cf2b-477a-87a9-82bcc0b6c1fb",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2024-12-28",
@@ -14,7 +14,7 @@
   {
     "id": "6e3f3ba7-c96d-4347-b4d5-c9733671f467",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-02-01",
@@ -26,7 +26,7 @@
   {
     "id": "6fcf0e4e-3048-4078-b012-9da5202cb712",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-04-12",
@@ -38,7 +38,7 @@
   {
     "id": "f30ee32f-faa1-4972-94c3-97666d7a6c63",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-04-26",
@@ -50,7 +50,7 @@
   {
     "id": "c0eb6b5b-765c-4c63-8c6d-1f553a69526c",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-05-28",
@@ -62,7 +62,7 @@
   {
     "id": "ca0fd80a-16f7-4214-b2f8-31d3aad9cc87",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-05-31",
@@ -74,7 +74,7 @@
   {
     "id": "2c01a550-6c1d-4b7e-b1a9-6bafa175f3b6",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-06-21",
@@ -86,7 +86,7 @@
   {
     "id": "45fcbb97-9605-41f3-b66a-fd465618bfd0",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-07-05",
@@ -98,7 +98,7 @@
   {
     "id": "a04c738e-18be-46e7-925b-9f9d5af6a16c",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-09-06",
@@ -110,7 +110,7 @@
   {
     "id": "66f40144-6589-43c0-8e97-de03d871ea5b",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-10-02",
@@ -122,7 +122,7 @@
   {
     "id": "eb3f2f06-d949-4d63-8254-7693cff7a477",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-10-17",
@@ -134,7 +134,7 @@
   {
     "id": "c060732d-a648-41d8-8832-22c31a2756ee",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-11-22",
@@ -146,7 +146,7 @@
   {
     "id": "c418b7ea-8bca-4992-96db-4969c19410a0",
     "userId": "XAefIrqLAeDy",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-12-20",

@@ -59,7 +59,7 @@ export function WeekNumber({
 	const existingHoliday = events.find((event) => {
 		if (event.userId !== currentUser?.id) return false;
 		if (
-			!["requestedHoliday", "requestedHolidayMandatory"].includes(
+			!["requestedLeave", "requestedLeaveMandatory"].includes(
 				event.type
 			)
 		)

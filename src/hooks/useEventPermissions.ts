@@ -7,7 +7,7 @@ export function useEventPermissions(event: Event, currentUser?: User | null) {
   
   // Admins can modify any holiday request
   const canModifyHoliday = isAdmin && 
-    (event.type === "requestedHoliday" || event.type === "requestedDesiderata");
+    (event.type === "requestedLeave" || event.type === "requestedDesiderata");
   
   // Users can modify their own events
   const canModify = isAdmin || isOwner || canModifyHoliday;

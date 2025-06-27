@@ -82,7 +82,7 @@ export const en = {
     unavailable: 'Unavailable',
     weekend: 'Weekend',
     holiday: 'Holiday',
-    requestedHoliday: 'Requested Holiday',
+    requestedLeave: 'Requested Holiday',
     approvedHoliday: 'Approved Holiday',
     deniedHoliday: 'Denied Holiday',
     pendingHoliday: 'Pending Holiday',

@@ -2,7 +2,7 @@
   {
     "id": "187fec4a-e896-492a-b349-6239b8ca3ad8",
     "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-02-08",
@@ -14,7 +14,7 @@
   {
     "id": "0f21db15-4e06-4cae-b7d4-37abb165c6c2",
     "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-03-01",
@@ -26,7 +26,7 @@
   {
     "id": "15277ffe-55b6-4e7e-9549-4bd5b33c03b8",
     "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-04-12",
@@ -38,7 +38,7 @@
   {
     "id": "9179a379-02e7-483a-b644-bb7140d0ff9d",
     "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-05-01",
@@ -50,7 +50,7 @@
   {
     "id": "8644df31-3ae5-48eb-80ad-b1da52619707",
     "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-07-31",
@@ -62,7 +62,7 @@
   {
     "id": "997184cf-be6a-4fbf-9dc9-bf6178066723",
     "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-09-20",
@@ -74,7 +74,7 @@
   {
     "id": "99b02fea-c694-415c-ab53-de06f3e5b9ae",
     "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-11-08",
@@ -86,7 +86,7 @@
   {
     "id": "e26593c7-8c0d-46f8-999e-059da9515251",
     "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-11-15",
@@ -98,7 +98,7 @@
   {
     "id": "ec734332-0f46-41e7-b0a5-c9abaf4f1278",
     "userId": "mKtuftErhhnO",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-12-20",

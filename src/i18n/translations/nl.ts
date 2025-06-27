@@ -82,7 +82,7 @@ export const nl = {
     unavailable: 'Niet beschikbaar',
     weekend: 'Weekend',
     holiday: 'Verlof',
-    requestedHoliday: 'Verlof aanvraag',
+    requestedLeave: 'Verlof aanvraag',
     approvedHoliday: 'Verlof (OK)',
     deniedHoliday: 'Verlof geweigerd',
     pendingHoliday: 'Verlof in behandeling',

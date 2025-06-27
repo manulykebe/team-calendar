@@ -2,7 +2,7 @@
   {
     "id": "cab06de6-6c41-4648-8510-e73fa2c7fa49",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2024-12-28",
@@ -14,7 +14,7 @@
   {
     "id": "6e03e105-a9e2-42c7-beaa-fb90a39a9d42",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "Halve dag",
     "description": "",
     "date": "2025-01-22",
@@ -26,7 +26,7 @@
   {
     "id": "46089237-de20-453a-91f2-950fd9f6545a",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-02-24",
@@ -38,7 +38,7 @@
   {
     "id": "326af59f-de46-43e0-ae1f-31a9756e29e8",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-06-02",
@@ -50,7 +50,7 @@
   {
     "id": "7617b26e-d7fa-4af7-937f-b9440ab74331",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-08-21",
@@ -62,7 +62,7 @@
   {
     "id": "0b4389f1-ca98-45aa-be90-acf103935d58",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-06-12",
@@ -74,7 +74,7 @@
   {
     "id": "4240a941-5eb7-4984-82c1-fd5d8810c4de",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-07-11",
@@ -86,7 +86,7 @@
   {
     "id": "f08f6b24-786b-4c0f-9038-ce787b5d086a",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-10-17",
@@ -98,7 +98,7 @@
   {
     "id": "0be54913-83ab-45cd-9cf8-20333c54c040",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-11-22",
@@ -110,7 +110,7 @@
   {
     "id": "2d4a223b-966d-4d34-a272-02681a174f50",
     "userId": "ZIdGWxhnRSYw",
-    "type": "requestedHoliday",
+    "type": "requestedLeave",
     "title": "",
     "description": "",
     "date": "2025-12-30",

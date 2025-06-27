@@ -9,7 +9,7 @@ interface UseOptimizedEventsProps {
   currentUser?: User | null;
 }
 
-const HOLIDAY_TYPES = ["requestedHoliday", "requestedDesiderata"];
+const HOLIDAY_TYPES = ["requestedLeave", "requestedDesiderata"];
 
 /**
  * Optimized hook for filtering and processing events

@@ -82,7 +82,7 @@ export const fr = {
     unavailable: 'Indisponible',
     weekend: 'Week-end',
     holiday: 'Congé',
-    requestedHoliday: 'Congé demandé',
+    requestedLeave: 'Congé demandé',
     approvedHoliday: 'Congé approuvé',
     deniedHoliday: 'Congé refusé',
     pendingHoliday: 'Congé en attente',

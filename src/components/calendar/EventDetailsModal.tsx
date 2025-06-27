@@ -59,8 +59,8 @@ export function EventDetailsModal({
 
   const getEventTypeLabel = (eventType: string): string => {
     switch (eventType) {
-      case "requestedHoliday":
-        return t('calendar.requestedHoliday');
+      case "requestedLeave":
+        return t('calendar.requestedLeave');
       case "requestedDesiderata":
         return t('calendar.requestedDesiderata');
       default:
@@ -81,7 +81,7 @@ export function EventDetailsModal({
     
     // Default colors based on type
     switch (eventType) {
-      case "requestedHoliday":
+      case "requestedLeave":
         return "bg-amber-100 text-amber-800";
       case "requestedDesiderata":
         return "bg-green-100 text-green-800";

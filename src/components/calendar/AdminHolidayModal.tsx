@@ -29,7 +29,7 @@ export function AdminHolidayModal({
 
   const getEventTypeLabel = (eventType: string, eventStatus: string): string => {
     switch (eventType) {
-      case "requestedHoliday":
+      case "requestedLeave":
         switch (eventStatus) {
           case "approved":
             return t('calendar.approvedHoliday');
@@ -38,7 +38,7 @@ export function AdminHolidayModal({
           case "pending":
             return t('calendar.pendingHoliday');
           default:
-            return t('calendar.requestedHoliday');
+            return t('calendar.requestedLeave');
         }
       case "requestedDesiderata":
         return t('calendar.requestedDesiderata');

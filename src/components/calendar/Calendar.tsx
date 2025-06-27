@@ -207,7 +207,7 @@ export function Calendar() {
           onSubmit={handleCreateEvent}
           defaultEventType={
             selectedStartDate && selectedEndDate
-              ? "requestedHoliday"
+              ? "requestedLeave"
               : undefined
           }
         />

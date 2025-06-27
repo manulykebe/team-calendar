@@ -3,7 +3,7 @@ import { Event } from "../types/event";
 import { User } from "../types/user";
 import { isWithinInterval, parseISO } from "date-fns";
 
-const HOLIDAY_TYPES = ["requestedHoliday", "requestedDesiderata"];
+const HOLIDAY_TYPES = ["requestedLeave", "requestedDesiderata"];
 
 export function useFilteredEvents(
   events: Event[],

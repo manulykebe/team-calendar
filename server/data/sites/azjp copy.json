@@ -48,12 +48,12 @@
     "location": "BE",
     "eventTypes": [
       {
-        "requestedHoliday": {
+        "requestedLeave": {
           "period": "week-Saturday[-1]-Sunday[1]"
         }
       },
       {
-        "requestedHolidayMandatory": {
+        "requestedLeaveMandatory": {
           "period": "week-Saturday[-1]-Sunday[1]"
         }
       },
@@ -1057,7 +1057,7 @@
     {
       "id": "0f862bc7-465c-40e0-9046-45e59c0bb808",
       "userId": "XAefIrqLAeDy",
-      "type": "requestedHoliday",
+      "type": "requestedLeave",
       "title": "",
       "description": "",
       "date": "2025-01-01",
@@ -1068,7 +1068,7 @@
     {
       "id": "2bbf3174-9b42-4544-9637-ac55890a6c48",
       "userId": "XAefIrqLAeDy",
-      "type": "requestedHolidayMandatory",
+      "type": "requestedLeaveMandatory",
       "title": "",
       "description": "",
       "date": "2025-02-03",
@@ -1079,7 +1079,7 @@
     {
       "id": "3ba63f65-8b25-4398-bd19-817feb361edf",
       "userId": "XAefIrqLAeDy",
-      "type": "requestedHoliday",
+      "type": "requestedLeave",
       "title": "",
       "description": "",
       "date": "2025-04-28",
@@ -1090,7 +1090,7 @@
     {
       "id": "31b05cea-1ec2-42e3-8b20-c609d7fb2138",
       "userId": "XAefIrqLAeDy",
-      "type": "requestedHoliday",
+      "type": "requestedLeave",
       "title": "",
       "description": "",
       "date": "2025-05-28",
@@ -1101,7 +1101,7 @@
     {
       "id": "3b86c7dc-a330-4bf6-9833-0506f8e0725e",
       "userId": "XAefIrqLAeDy",
-      "type": "requestedHoliday",
+      "type": "requestedLeave",
       "title": "",
       "description": "",
       "date": "2025-06-02",
@@ -1112,7 +1112,7 @@
     {
       "id": "06f30372-756c-47ed-a1e1-690476a85e5f",
       "userId": "XAefIrqLAeDy",
-      "type": "requestedHoliday",
+      "type": "requestedLeave",
       "title": "",
       "description": "",
       "date": "2025-07-07",
@@ -1123,7 +1123,7 @@
     {
       "id": "b10ac36e-de01-4e41-aef3-5d3316f8623f",
       "userId": "XAefIrqLAeDy",
-      "type": "requestedHoliday",
+      "type": "requestedLeave",
       "title": "",
       "description": "",
       "date": "2025-07-14",
