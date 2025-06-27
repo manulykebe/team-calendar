@@ -40,7 +40,7 @@ export function Login() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    
+
     try {
       const { token } = await login(email, password, site);
       localStorage.setItem("userEmail", email);
@@ -84,7 +84,7 @@ export function Login() {
       data-tsx-id="login"
     >
       {/* On-duty staff display */}
-      <div className="w-full max-w-md mb-4 bg-white shadow-sm rounded-lg p-4 flex items-center justify-center">
+      <div className="w-full max-w-md mb-8 bg-white shadow-sm rounded-lg p-4 flex items-center justify-center">
         <div className="flex items-center space-x-3 min-h-[56px] w-full">
           <button
             type="button"
@@ -100,13 +100,14 @@ export function Login() {
             <p className="font-medium text-zinc-900">{onDutyStaff ? onDutyStaff.name : ""}</p>
           </div>
           {/* Popup for mobile */}
-          {showMobile && onDutyStaff?.mobile && (
-            <Modal onClose={() => setShowMobile(false)}>
-              <p className="text-lg font-semibold mb-2">{onDutyStaff.name}</p>
-              <p className="text-zinc-700 text-xl mb-2">{onDutyStaff.mobile}</p>
-            </Modal>
-          )}
         </div>
+
+        {showMobile && onDutyStaff?.mobile && (
+          <Modal onClose={() => setShowMobile(false)}>
+            <p className="text-lg font-semibold mb-2">{onDutyStaff.name}</p>
+            <p className="text-zinc-700 text-xl mb-2">{onDutyStaff.mobile}</p>
+          </Modal>
+        )}
       </div>
 
       {/* Login modal trigger */}
