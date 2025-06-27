@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { getSiteData } from "../../lib/api/client";
 import { useWebSocketContext } from "../../context/WebSocketContext";
 import { useTranslation } from "../../context/TranslationContext";
+import { useHolidays } from "../../context/HolidayContext";
 
 interface CalendarGridProps {
 	currentMonth: Date;
@@ -51,9 +52,9 @@ export function CalendarGrid({
 	isLoadingAvailability,
 }: CalendarGridProps) {
 	const [loading, setLoading] = useState(false);
-	const [holidays, setHolidays] = useState<Holiday[]>([]);
 	const { joinCalendarDate, leaveCalendarDate } = useWebSocketContext();
 	const { language, t } = useTranslation();
+	const { holidays, loadHolidays } = useHolidays();
 
 	// Memoize calendar calculations
 	const { days, emptyDays, weekDays } = useMemo(() => 
@@ -87,67 +88,11 @@ export function CalendarGrid({
 		};
 	}, [days, joinCalendarDate, leaveCalendarDate]);
 
-	// Optimize holiday fetching with better caching
+	// Load holidays for the current month's year
 	useEffect(() => {
-		let isCancelled = false;
-
-		const fetchHolidays = async () => {
-			if (!currentUser?.site) {
-				setHolidays([]);
-				return;
-			}
-
-			const year = format(currentMonth, "yyyy");
-			const cacheKey = `holidays-${currentUser.site}-${year}`;
-			
-			// Check if we already have this data cached
-			const cached = sessionStorage.getItem(cacheKey);
-			if (cached) {
-				try {
-					const cachedData = JSON.parse(cached);
-					if (!isCancelled) {
-						setHolidays(cachedData);
-					}
-					return;
-				} catch (e) {
-					// Invalid cache, continue with fetch
-				}
-			}
-
-			setLoading(true);
-			try {
-				const siteData = await getSiteData(currentUser.site);
-				if (!siteData?.app?.location) {
-					setHolidays([]);
-					return;
-				}
-
-				const location = siteData.app.location;
-				const holidayData = await getHolidays(year, location);
-				
-				if (!isCancelled) {
-					setHolidays(holidayData);
-					// Cache the result
-					sessionStorage.setItem(cacheKey, JSON.stringify(holidayData));
-				}
-			} catch (err) {
-				console.error("Failed to fetch holidays:", err);
-				if (!isCancelled) {
-					setHolidays([]);
-				}
-			} finally {
-				if (!isCancelled) {
-					setLoading(false);
-				}
-			}
-		};
-
-		fetchHolidays();
-
-		return () => {
-			isCancelled = true;
-		};
-	}, [currentMonth, currentUser?.site]);
+		const year = currentMonth.getFullYear();
+		loadHolidays(year);
+	}, [currentMonth, loadHolidays]);
 
 	const showWeekNumber = currentUser?.settings?.showWeekNumber || "none";
 

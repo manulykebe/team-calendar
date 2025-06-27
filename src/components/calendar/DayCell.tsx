@@ -12,9 +12,9 @@ import { EventDetailsModal } from "./EventDetailsModal";
 import { AdminHolidayModal } from "./AdminHolidayModal";
 import { EventContextMenu } from "./EventContextMenu";
 import { useApp } from "../../context/AppContext";
+import { useHolidays, isPublicHoliday } from "../../context/HolidayContext";
 import ReactDOM from "react-dom";
 import { isWeekday } from "../../utils/dateUtils";
-import { isPublicHoliday } from "../../utils/holidayUtils";
 
 interface DayCellProps {
 	date: Date;
@@ -55,6 +55,7 @@ export const DayCell = memo(function DayCell({
 	isLoadingAvailability,
 }: DayCellProps) {
 	const { colleagues, refreshData, availabilityData } = useApp();
+	const { holidays: globalHolidays } = useHolidays();
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const [selectedHolidayEvent, setSelectedHolidayEvent] = useState<Event | null>(null);
@@ -72,6 +73,11 @@ export const DayCell = memo(function DayCell({
 		}
 		return map;
 	}, [holiday, date]);
+
+	// Check if this date is a public holiday using the global context
+	const isHoliday = useMemo(() => {
+		return isPublicHoliday(date, globalHolidays) || !!holiday;
+	}, [date, globalHolidays, holiday]);
 
 	// Memoize expensive calculations
 	const formattedDate = useMemo(() => format(date, "yyyy-MM-dd"), [date]);
@@ -184,7 +190,7 @@ export const DayCell = memo(function DayCell({
 				<div className="flex items-start justify-between relative">
 					<div className="flex items-center space-x-1">
 						<span
-							className={`relative text-sm font-medium ${holiday ? "text-red-600" : "text-zinc-700"
+							className={`relative text-sm font-medium ${isHoliday ? "text-red-600" : "text-zinc-700"
 								}`}
 						>
 							{isToday && (

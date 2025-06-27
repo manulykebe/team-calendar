@@ -6,9 +6,9 @@ import { AdminHolidayModal } from "./AdminHolidayModal";
 import { EventDetailsModal } from "./EventDetailsModal";
 import { useApp } from "../../context/AppContext";
 import { useTranslation } from "../../context/TranslationContext";
+import { useHolidays, isPublicHoliday } from "../../context/HolidayContext";
 import ReactDOM from "react-dom";
 import { UserSettings } from "../../../src/lib/api/types";
-import { isPublicHoliday } from "../../utils/holidayUtils";
 
 interface Holiday {
 	date: string;
@@ -28,7 +28,7 @@ interface EventCardProps {
 		newEndDate?: string
 	) => Promise<void>;
 	onContextMenu?: (e: React.MouseEvent) => void;
-	holidays?: Map<string, Holiday>;
+	holidays?: Map<string, Holiday> | Holiday[];
 	availabilityData?: Record<string, { am: boolean; pm: boolean }>;
 }
 
@@ -48,6 +48,7 @@ export function EventCard({
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const { colleagues, refreshData } = useApp();
 	const { t } = useTranslation();
+	const { holidays: globalHolidays } = useHolidays();
 
 	const isHolidayEvent = HOLIDAY_TYPES.includes(event.type);
 	const isCurrentUserEvent = event.userId === currentUser?.id;
@@ -118,8 +119,9 @@ export function EventCard({
 				continue;
 			}
 
-			// Skip holidays if available
-			if (holidays && isPublicHoliday(day, holidays)) {
+			// Skip holidays - use either provided holidays or global holidays
+			if ((holidays && isPublicHoliday(day, holidays)) || 
+			    isPublicHoliday(day, globalHolidays)) {
 				continue;
 			}
 

@@ -6,10 +6,10 @@ import { useTranslation } from '../../context/TranslationContext';
 import { useAuth } from '../../context/AuthContext';
 import { updateEvent, deleteEvent } from '../../lib/api/events';
 import { getHolidays } from '../../lib/api/holidays';
+import { useHolidays, isPublicHoliday } from '../../context/HolidayContext';
 import toast from 'react-hot-toast';
 import { format, addDays, subDays, parseISO, isSaturday, isSunday, isValid } from 'date-fns';
 import { useClickOutside } from '../../hooks/useClickOutside';
-import { isPublicHoliday } from '../../utils/holidayUtils';
 
 interface EventContextMenuProps {
   event: Event;
@@ -36,6 +36,7 @@ export function EventContextMenu({
   const [isUpdating, setIsUpdating] = useState(false);
   const [menuPosition, setMenuPosition] = useState(position);
   const [holidays, setHolidays] = useState<any[]>([]);
+  const { holidays: globalHolidays } = useHolidays();
 
   // Fetch holidays when component mounts
   useEffect(() => {
@@ -46,7 +47,6 @@ export function EventContextMenu({
         const year = new Date(event.date).getFullYear();
         const holidayData = await getHolidays(year.toString(), eventOwner.site === 'london' ? 'GB' : 'BE');
         
-        // Extract holiday dates
         setHolidays(holidayData);
       } catch (error) {
         console.error('Failed to fetch holidays:', error);
