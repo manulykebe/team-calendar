@@ -13,8 +13,10 @@ import { AdminHolidayModal } from "./AdminHolidayModal";
 import { EventContextMenu } from "./EventContextMenu";
 import { useApp } from "../../context/AppContext";
 import { useHolidays, isPublicHoliday } from "../../context/HolidayContext";
+import { OnDutyBadge } from "./OnDutyBadge";
 import ReactDOM from "react-dom";
 import { isWeekday } from "../../utils/dateUtils";
+import { useOnDuty } from "../../hooks/useOnDuty";
 
 interface DayCellProps {
 	date: Date;
@@ -64,6 +66,7 @@ export const DayCell = memo(function DayCell({
 		position: { x: number; y: number };
 	} | null>(null);
 	const { getColumnColor } = useCalendarColors(currentUser);
+	const { onDutyUserId, isUserOnDuty } = useOnDuty(format(date, "yyyy-MM-dd"), currentUser?.id);
 
 	// Check if this date is a public holiday using the global context
 	const isHoliday = useMemo(() => {
@@ -147,6 +150,28 @@ export const DayCell = memo(function DayCell({
 
 	const { isSelected, isEndDate, isHoverEndDate, isInRange } = selectionStates;
 
+	// Get on-duty user details for admin view
+	const getOnDutyUserDetails = () => {
+		if (!onDutyUserId || currentUser?.role !== 'admin') return null;
+		
+		const onDutyUser = colleagues.find(c => c.id === onDutyUserId) || 
+						  (currentUser.id === onDutyUserId ? currentUser : null);
+		
+		if (!onDutyUser) return null;
+		
+		// Get initials from settings or generate from name
+		const colleagueSettings = currentUser?.settings?.colleagues?.[onDutyUserId];
+		const initials = colleagueSettings?.initials || 
+					   `${onDutyUser.firstName[0]}${onDutyUser.lastName[0]}`;
+		
+		return {
+			initials,
+			color: colleagueSettings?.color || "#4575b4"
+		};
+	};
+
+	const onDutyUserDetails = getOnDutyUserDetails();
+
 	return (
 		<>
 			<div
@@ -211,6 +236,22 @@ export const DayCell = memo(function DayCell({
 						</span>
 					)}
 				</div>
+
+				{/* On-duty badge */}
+				{isUserOnDuty && currentUser?.role !== 'admin' && (
+					<OnDutyBadge className="absolute top-1 right-1" />
+				)}
+
+				{/* Admin view: show on-duty user initials */}
+				{onDutyUserDetails && currentUser?.role === 'admin' && (
+					<div 
+						className="absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-medium"
+						style={{ backgroundColor: onDutyUserDetails.color }}
+						title={`On Duty: ${colleagues.find(c => c.id === onDutyUserId)?.firstName || ''} ${colleagues.find(c => c.id === onDutyUserId)?.lastName || ''}`}
+					>
+						{onDutyUserDetails.initials}
+					</div>
+				)}
 
 				<div className="mt-2 relative">
 					{dayEvents.map((event) => (

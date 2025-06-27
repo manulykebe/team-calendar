@@ -56,6 +56,7 @@ export const fr = {
     loginFailed: 'Échec de la connexion',
     signingIn: 'Connexion en cours...',
     loginRequired: 'Vous devez être connecté pour demander des congés',
+    loginSection: 'Mon Calendrier',
   },
 
   // Calendar
@@ -97,6 +98,7 @@ export const fr = {
     dateNotAvailable: 'Date non disponible',
     onDuty: 'De garde',
     noOnDutyStaff: 'Aucun personnel de garde assigné',
+    showMobile: 'Afficher le numéro mobile',
   },
 
   // Events

@@ -56,6 +56,7 @@ export const en = {
     loginFailed: 'Login failed',
     signingIn: 'Signing in...',
     loginRequired: 'You must be logged in to request holidays',
+    loginSection: 'My Calendar',
   },
 
   // Calendar
@@ -97,6 +98,7 @@ export const en = {
     dateNotAvailable: 'Date not available',
     onDuty: 'On Duty',
     noOnDutyStaff: 'No on-duty staff assigned',
+    showMobile: 'Show mobile number',
   },
 
   // Events
