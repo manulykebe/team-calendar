@@ -5,6 +5,7 @@ export interface OnDutyStaff {
   userId: string;
   name: string;
   email: string;
+  mobile: string;
 }
 
 export async function getOnDutyStaff(site: string, date?: string): Promise<OnDutyStaff> {

@@ -50,12 +50,13 @@ export const nl = {
     firstName: 'Voornaam',
     lastName: 'Achternaam',
     mobile: 'Mobiel',
-    signInToAccount: 'Aanmelden',
-    invalidCredentials: 'Ongeldige inloggegevens',
-    registrationFailed: 'Registratie mislukt',
+    signInToAccount: 'aanmelden',
+    invalidCredentials: 'ongeldige inloggegevens',
+    registrationFailed: 'registratie mislukt',
     loginFailed: 'Inloggen mislukt',
     signingIn: 'Inloggen...',
     loginRequired: 'U moet ingelogd zijn om verlof aan te vragen',
+    loginSection: 'Mijn kalender',
   },
 
   // Calendar
@@ -95,8 +96,8 @@ export const nl = {
     failedToUpdateEvent: 'Bijwerken van gebeurtenis mislukt',
     failedToDeleteEvent: 'Verwijderen van gebeurtenis mislukt',
     dateNotAvailable: 'Datum niet beschikbaar',
-    onDuty: 'Van Dienst',
-    noOnDutyStaff: 'Geen personeel van dienst toegewezen',
+    onDuty: 'van dienst',
+    noOnDutyStaff: 'Geen radioloog van dienst toegewezen',
   },
 
   // Events

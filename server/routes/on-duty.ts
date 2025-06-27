@@ -36,7 +36,7 @@ router.get("/:site", async (req, res) => {
     const onDutyEntry = onDutyData.schedule.find((entry: any) => entry.date === formattedDate);
     
     if (!onDutyEntry) {
-      return res.status(404).json({ message: "No on-duty staff found for the specified date" });
+      return res.status(404).json({ message: "No on-duty staff found for the specified date: " + formattedDate });
     }
     
     // Get user details
@@ -50,8 +50,9 @@ router.get("/:site", async (req, res) => {
     res.json({
       date: formattedDate,
       userId: onDutyEntry.userId,
-      name: `${user.firstName} ${user.lastName}`,
-      email: user.email
+      name: `dr. ${user.firstName} ${user.lastName}`,
+      email: user.email,
+      mobile: user.mobile,
     });
   } catch (error) {
     console.error("Error fetching on-duty staff:", error);
