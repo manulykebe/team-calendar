@@ -7,6 +7,39 @@ import { LoadingSpinner } from "./common/LoadingSpinner";
 import { useTranslation } from "../context/TranslationContext";
 import { getOnDutyStaff, getOnDutyDate, OnDutyStaff } from "../lib/api/on-duty";
 
+function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Handle click outside to close modal
+  const handleOutsideClick = (e: React.MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      onClose();
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+      onClick={handleOutsideClick}
+    >
+      <div
+        ref={modalRef}
+        className="relative bg-white rounded-lg shadow-lg p-6 flex flex-col items-center w-full max-w-md border border-zinc-200"
+      >
+        <button
+          className="absolute top-3 right-3 text-zinc-400 hover:text-zinc-700"
+          onClick={onClose}
+          aria-label="Close"
+          type="button"
+        >
+          <X className="h-5 w-5" />
+        </button>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export function Login() {
   const navigate = useNavigate();
   const { login: setAuth } = useAuth();
@@ -72,40 +105,6 @@ export function Login() {
     setSite(e.target.value);
     // No need to manually set focus as the input already has it
   };
-
-  // Helper for closing modals when clicking outside
-  function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
-    const modalRef = useRef<HTMLDivElement>(null);
-    
-    // Handle click outside to close modal
-    const handleOutsideClick = (e: React.MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onClose();
-      }
-    };
-
-    return (
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
-        onClick={handleOutsideClick}
-      >
-        <div
-          ref={modalRef}
-          className="relative bg-white rounded-lg shadow-lg p-6 flex flex-col items-center w-full max-w-md border border-zinc-200"
-        >
-          <button
-            className="absolute top-3 right-3 text-zinc-400 hover:text-zinc-700"
-            onClick={onClose}
-            aria-label="Close"
-            type="button"
-          >
-            <X className="h-5 w-5" />
-          </button>
-          {children}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
