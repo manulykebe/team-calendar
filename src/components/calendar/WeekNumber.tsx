@@ -126,7 +126,7 @@ export function WeekNumber({
 		>
 			{weekNumber}
 			<div
-				className={`text-xs absolute -top-0.5 font-medium text-zinc-400 z-30 ${position === "right" ? "-right-0.5" : "-left-0.5"}`}
+				className={`text-xs absolute -top-0.5 font-medium text-zinc-400 z-30 ${position === "right" ? "-right-0" : "-left-0"}`}
 			>
 				{position === "left" ? getMonthTranslation(monthWeekStart) : getMonthTranslation(monthWeekEnd)}
 			</div>

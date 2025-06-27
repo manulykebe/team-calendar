@@ -1,5 +1,5 @@
 import { memo, useState, useMemo, useCallback } from "react";
-import { format, isFirstDayOfMonth, isSameDay, parseISO } from "date-fns";
+import { format, isFirstDayOfMonth, isMonday, isSameDay, parseISO } from "date-fns";
 import { EventCard } from "./EventCard";
 import { MonthLabel } from "./MonthLabel";
 import { useFilteredEvents } from "../../hooks/useFilteredEvents";
@@ -179,7 +179,7 @@ export const DayCell = memo(function DayCell({
 				)}
 
 				{/* Only show month label if it's the first day of the month and not in the first column */}
-				{showMonthLabel && <MonthLabel date={date} />}
+				{showMonthLabel && !isMonday(date) && <MonthLabel date={date} />}
 				
 				<div className="flex items-start justify-between relative">
 					<div className="flex items-center space-x-0 space-y-0">
@@ -213,7 +213,7 @@ export const DayCell = memo(function DayCell({
 					)}
 				</div>
 
-				<div className="mt-6 relative">
+				<div className="mt-2 relative">
 					{dayEvents.map((event) => (
 						<EventCard
 							key={event.id}
