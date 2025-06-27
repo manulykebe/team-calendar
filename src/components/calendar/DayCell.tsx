@@ -212,7 +212,7 @@ export const DayCell = memo(function DayCell({
 								}`}
 						>
 							{isToday && (
-								<span className="absolute inset-0 w-7 h-7 border-2 border-blue-500 rounded-full -m-[6px]" />
+								<span className="absolute inset-0 w-7 h-7 border-2 border-blue-500 rounded-full -ml-[10px] -mt-[4px] bg-blue-100" />
 							)}
 							<span className="absolute top-0 -left-1 flex items-center justify-center">
 								{format(date, "d")}
