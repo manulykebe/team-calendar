@@ -84,9 +84,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         throw new Error("Current user not found");
       }
 
-      // Set current user and colleagues
+      // Set current user
       setCurrentUser(user);
-      setColleagues(users.filter((u:User) => u.id !== user.id));
+      
+      // Filter out admin users from colleagues list
+      const filteredColleagues = users.filter((u: User) => 
+        u.id !== user.id && u.role !== "admin"
+      );
+      setColleagues(filteredColleagues);
 
       // Load events based on user role
       let eventsData: Event[] = [];
@@ -192,7 +197,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       if (user) {
         setCurrentUser(user);
-        setColleagues(users.filter((u:User) => u.id !== user.id));
+        
+        // Filter out admin users from colleagues list
+        const filteredColleagues = users.filter((u: User) => 
+          u.id !== user.id && u.role !== "admin"
+        );
+        setColleagues(filteredColleagues);
         
         // Load events based on user role
         let eventsData: Event[] = [];

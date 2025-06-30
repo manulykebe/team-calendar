@@ -39,7 +39,10 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
   useEffect(() => {
     if (currentUser && colleagues) {
       const savedOrder = currentUser.settings?.colleagueOrder || [];
-      const allColleagues = [currentUser, ...colleagues];
+      
+      // Filter out admin users from the colleagues list
+      const nonAdminColleagues = colleagues.filter(c => c.role !== "admin");
+      const allColleagues = [currentUser, ...nonAdminColleagues];
       
       // Sort based on saved order
       const orderedList = [...allColleagues];

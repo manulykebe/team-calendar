@@ -36,10 +36,13 @@ export function useColleagueSettings() {
 
 			if (current) {
 				setCurrentUser(current);
-				setColleagues([
+				
+				// Filter out admin users from colleagues list
+				const filteredColleagues = [
 					current,
-					...users.filter((u: User) => u.id !== current.id),
-				]);
+					...users.filter((u: User) => u.id !== current.id && u.role !== "admin"),
+				];
+				setColleagues(filteredColleagues);
 			} else {
 				throw new Error("Current user not found");
 			}
@@ -116,14 +119,19 @@ export function useColleagueSettings() {
 			};
 		} else {
 			// Handle colleague-specific settings
+			// Ensure both color and initials are always present
+			const prev = currentUser.settings?.colleagues?.[colleagueId] || { color: undefined, initials: "", visible: undefined };
+			const newColleagueSettings = {
+				color: updates.color ?? prev.color ?? DEFAULT_COLORS[Math.floor(Math.random() * DEFAULT_COLORS.length)],
+				initials: updates.initials ?? prev.initials ?? "",
+				visible: updates.visible !== undefined ? updates.visible : prev.visible,
+			};
+
 			newSettings = {
 				...currentUser.settings,
 				colleagues: {
 					...currentUser.settings?.colleagues,
-					[colleagueId]: {
-						...currentUser.settings?.colleagues?.[colleagueId],
-						...updates,
-					},
+					[colleagueId]: newColleagueSettings,
 				},
 			};
 		}

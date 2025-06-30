@@ -205,9 +205,9 @@ export function AvailabilityModal({
 		);
 	};
 
-	// Filter colleagues for admin dropdown
+	// Filter colleagues for admin dropdown - exclude admin users
 	const filteredColleagues = isAdmin 
-		? [currentUser, ...colleagues.filter(c => c.id !== currentUser.id)]
+		? [currentUser, ...colleagues.filter(c => c.id !== currentUser.id && c.role !== "admin")]
 		: [];
 
 	const handleColleagueChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
