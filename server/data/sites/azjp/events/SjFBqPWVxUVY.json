@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "3de81860-3f0a-43ae-b408-dd5ceb5e66cd",
+    "userId": "SjFBqPWVxUVY",
+    "type": "requestedDesiderata",
+    "title": "",
+    "description": "",
+    "date": "2025-07-03",
+    "endDate": "2025-07-03",
+    "status": "pending",
+    "createdAt": "2025-06-30T16:10:13.460Z",
+    "updatedAt": "2025-06-30T16:10:13.460Z"
+  }
+]
