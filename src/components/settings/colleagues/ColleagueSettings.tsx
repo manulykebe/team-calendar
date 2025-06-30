@@ -82,14 +82,19 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
   ) => {
     if (!currentUser || !token) return;
 
+    // Ensure both color and initials are always present
+    const prev = localSettings.colleagues?.[colleagueId] || { color: undefined, initials: "", visible: undefined };
+    const newColleagueSettings = {
+      color: updates.color ?? prev.color ?? DEFAULT_COLORS[Math.floor(Math.random() * DEFAULT_COLORS.length)],
+      initials: updates.initials ?? prev.initials ?? "",
+      visible: updates.visible !== undefined ? updates.visible : prev.visible,
+    };
+
     const newSettings = {
       ...localSettings,
       colleagues: {
         ...localSettings.colleagues,
-        [colleagueId]: {
-          ...localSettings.colleagues?.[colleagueId],
-          ...updates,
-        },
+        [colleagueId]: newColleagueSettings,
       },
     };
 
