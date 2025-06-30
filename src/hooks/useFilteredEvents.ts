@@ -63,7 +63,7 @@ export function useFilteredEvents(
     if (currentUser) {
       orderMap.set(currentUser.id, 0);
     }
-    let position = 1;
+    let position = isAdmin?0:1;
 
     // Then add ordered colleagues
     for (const userId of colleagueOrder) {

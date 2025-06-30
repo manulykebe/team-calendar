@@ -27,10 +27,10 @@ export function AvailabilityModal({
 	colleague,
 	onClose,
 }: AvailabilityModalProps) {
-    const { t } = useTranslation();
-    const { token } = useAuth();
-    const { currentUser, colleagues } = useApp();
-    if (!token || !currentUser) return null;
+	const { t } = useTranslation();
+	const { token } = useAuth();
+	const { currentUser, colleagues } = useApp();
+	if (!token || !currentUser) return null;
 
 	const [showReport, setShowReport] = useState(false);
 	const [reportData, setReportData] = useState<any>(null);
@@ -42,7 +42,7 @@ export function AvailabilityModal({
 	const [selectedColleague, setSelectedColleague] = useState<User>(colleague);
 	const isAdmin = currentUser?.role === 'admin';
 	const isReadOnly = !isAdmin && currentUser?.id !== colleague.id;
-	
+
 	// Refs for input elements to maintain focus
 	const startDateRef = useRef<HTMLInputElement>(null);
 	const endDateRef = useRef<HTMLInputElement>(null);
@@ -85,7 +85,7 @@ export function AvailabilityModal({
 		token,
 		colleague: selectedColleague,
 		currentEntryIndex,
-		setCurrentEntryIndex: () => {},
+		setCurrentEntryIndex: () => { },
 		setStartDate,
 		setEndDate,
 		setSchedule,
@@ -194,7 +194,7 @@ export function AvailabilityModal({
 		isAlternate: boolean
 	) => {
 		if (isReadOnly) return;
-		
+
 		handleTimeSlotToggle(
 			token,
 			selectedColleague.id,
@@ -206,8 +206,8 @@ export function AvailabilityModal({
 	};
 
 	// Filter colleagues for admin dropdown - exclude admin users
-	const filteredColleagues = isAdmin 
-		? [currentUser, ...colleagues.filter(c => c.id !== currentUser.id && c.role !== "admin")]
+	const filteredColleagues = isAdmin
+		? colleagues.filter(c => c.id !== currentUser.id && c.role !== "admin")
 		: [];
 
 	const handleColleagueChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -287,13 +287,12 @@ export function AvailabilityModal({
 								<div className="flex-1 flex items-center">
 									<button
 										onClick={() => !isReadOnly && handleAdd(true)}
-										className={`space-x-2 ${
-											isReadOnly ? "text-zinc-300 cursor-not-allowed hidden" :
+										className={`space-x-2 ${isReadOnly ? "text-zinc-300 cursor-not-allowed hidden" :
 											currentEntryIndex === -1 ||
-											currentEntryIndex === 0
+												currentEntryIndex === 0
 												? "text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
 												: "text-zinc-300 cursor-not-allowed hidden"
-										}`}
+											}`}
 										title={t('availability.addScheduleBefore')}
 										disabled={isReadOnly}
 									>
@@ -304,11 +303,10 @@ export function AvailabilityModal({
 										type="date"
 										value={startDate}
 										onChange={handleStartDateChange}
-										className={`w-32 ${
-											currentEntryIndex === -1
-												? "opacity-50 cursor-not-allowed hidden"
-												: ""
-										}`}
+										className={`w-32 ${currentEntryIndex === -1
+											? "opacity-50 cursor-not-allowed hidden"
+											: ""
+											}`}
 										disabled={currentEntryIndex === -1 || isReadOnly}
 										readOnly={isReadOnly}
 									/>
@@ -318,11 +316,10 @@ export function AvailabilityModal({
 							<div className="col-span-1 flex items-end justify-center">
 								<button
 									onClick={() => setShowSplitModal(true)}
-									className={`p-2 text-zinc-600 hover:bg-purple-50 rounded-full transition-colors ${
-										isReadOnly || currentEntryIndex === -1 || !endDate
-											? "opacity-50 cursor-not-allowed hidden"
-											: ""
-									}`}
+									className={`p-2 text-zinc-600 hover:bg-purple-50 rounded-full transition-colors ${isReadOnly || currentEntryIndex === -1 || !endDate
+										? "opacity-50 cursor-not-allowed hidden"
+										: ""
+										}`}
 									title={t('availability.splitSchedule')}
 									disabled={
 										isReadOnly || currentEntryIndex === -1 || !endDate
@@ -343,24 +340,22 @@ export function AvailabilityModal({
 										value={endDate}
 										onChange={handleEndDateChange}
 										min={startDate}
-										className={`w-32 ${
-											currentEntryIndex === -1
-												? "opacity-50 cursor-not-allowed hidden"
-												: ""
-										}`}
+										className={`w-32 ${currentEntryIndex === -1
+											? "opacity-50 cursor-not-allowed hidden"
+											: ""
+											}`}
 										disabled={currentEntryIndex === -1 || isReadOnly}
 										readOnly={isReadOnly}
 									/>
 									<button
 										onClick={() => !isReadOnly && handleAdd(false)}
-										className={`space-x-2 ${
-											isReadOnly ? "text-zinc-300 cursor-not-allowed hidden" :
+										className={`space-x-2 ${isReadOnly ? "text-zinc-300 cursor-not-allowed hidden" :
 											currentEntryIndex === -1 ||
-											currentEntryIndex ===
+												currentEntryIndex ===
 												totalEntries - 1
 												? "text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
 												: "text-zinc-300 cursor-not-allowed hidden"
-										}`}
+											}`}
 										title={t('availability.addScheduleAfter')}
 										disabled={isReadOnly}
 									>
@@ -379,11 +374,10 @@ export function AvailabilityModal({
 											ref={repeatPatternRef}
 											value={repeatPattern}
 											onChange={handleRepeatPatternChange}
-											className={`w-32 rounded-md border-zinc-300 ${
-												currentEntryIndex === -1
-													? "opacity-50 cursor-not-allowed hidden"
-													: ""
-											}`}
+											className={`w-32 rounded-md border-zinc-300 ${currentEntryIndex === -1
+												? "opacity-50 cursor-not-allowed hidden"
+												: ""
+												}`}
 											disabled={currentEntryIndex === -1 || isReadOnly}
 										>
 											<option value="all">

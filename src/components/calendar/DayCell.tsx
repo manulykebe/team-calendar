@@ -65,7 +65,6 @@ export const DayCell = memo(function DayCell({
 		event: Event;
 		position: { x: number; y: number };
 	} | null>(null);
-	const { getColumnColor } = useCalendarColors(currentUser);
 	const { onDutyUserId, isUserOnDuty } = useOnDuty(format(date, "yyyy-MM-dd"), currentUser?.id);
 
 	// Check if this date is a public holiday using the global context

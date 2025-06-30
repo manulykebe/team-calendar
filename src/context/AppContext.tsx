@@ -98,7 +98,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       
       if (user.role === 'admin') {
         // For admins, fetch events from all users in the site
-        const siteUsers = users.filter((u: User) => u.site === user.site);
+        const siteUsers = users.filter((u: User) => u.site === user.site && u.role !== 'admin');
         eventsData = await fetchAllSiteEvents(siteUsers, token);
       } else {
         // For regular users, only fetch their own events
@@ -209,7 +209,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         
         if (user.role === 'admin') {
           // For admins, fetch events from all users in the site
-          const siteUsers = users.filter((u: User) => u.site === user.site);
+          const siteUsers = users.filter((u: User) => u.site === user.site && u.role !== 'admin');
           eventsData = await fetchAllSiteEvents(siteUsers, token);
         } else {
           // For regular users, only fetch their own events

@@ -41,8 +41,7 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
       const savedOrder = currentUser.settings?.colleagueOrder || [];
       
       // Filter out admin users from the colleagues list
-      const nonAdminColleagues = colleagues.filter(c => c.role !== "admin");
-      const allColleagues = [currentUser, ...nonAdminColleagues];
+      const allColleagues = colleagues.filter(c => c.role !== "admin");
       
       // Sort based on saved order
       const orderedList = [...allColleagues];
