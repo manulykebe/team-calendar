@@ -59,7 +59,7 @@
         },
         "Tuesday": {
           "am": true,
-          "pm": false
+          "pm": true
         },
         "Wednesday": {
           "am": true,
@@ -67,7 +67,7 @@
         },
         "Thursday": {
           "am": true,
-          "pm": false
+          "pm": true
         },
         "Friday": {
           "am": true,
