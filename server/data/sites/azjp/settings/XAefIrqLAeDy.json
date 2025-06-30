@@ -178,6 +178,33 @@
         }
       },
       "startDate": "2027-01-01",
+      "endDate": "2027-01-04",
+      "repeatPattern": "all"
+    },
+    {
+      "weeklySchedule": {
+        "Monday": {
+          "am": true,
+          "pm": true
+        },
+        "Tuesday": {
+          "am": false,
+          "pm": false
+        },
+        "Wednesday": {
+          "am": true,
+          "pm": true
+        },
+        "Thursday": {
+          "am": true,
+          "pm": true
+        },
+        "Friday": {
+          "am": true,
+          "pm": true
+        }
+      },
+      "startDate": "2027-01-05",
       "endDate": "",
       "repeatPattern": "all"
     }
