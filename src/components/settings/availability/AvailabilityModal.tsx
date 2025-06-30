@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, FileText, Plus, Scissors } from "lucide-react";
 import { User } from "../../../types/user";
 import { useAuth } from "../../../context/AuthContext";
@@ -29,7 +29,7 @@ export function AvailabilityModal({
 }: AvailabilityModalProps) {
     const { t } = useTranslation();
     const { token } = useAuth();
-    const { currentUser } = useApp();
+    const { currentUser, colleagues } = useApp();
     if (!token || !currentUser) return null;
 
 	const [showReport, setShowReport] = useState(false);
@@ -39,6 +39,9 @@ export function AvailabilityModal({
 	);
 	const [showSplitModal, setShowSplitModal] = useState(false);
 	const [hasChanges, setHasChanges] = useState(false);
+	const [selectedColleague, setSelectedColleague] = useState<User>(colleague);
+	const isAdmin = currentUser?.role === 'admin';
+	const isReadOnly = !isAdmin && currentUser?.id !== colleague.id;
 
 	const {
 		loading,
@@ -55,7 +58,7 @@ export function AvailabilityModal({
 		alternateSchedule,
 		setAlternateSchedule,
 		handleTimeSlotToggle,
-	} = useAvailabilityState(colleague);
+	} = useAvailabilityState(selectedColleague);
 
 	const {
 		currentEntryIndex,
@@ -65,7 +68,7 @@ export function AvailabilityModal({
 		handleNextEntry,
 		handleLastEntry,
 	} = useAvailabilityNavigation({
-		colleague,
+		colleague: selectedColleague,
 		setStartDate,
 		setEndDate,
 		setRepeatPattern,
@@ -75,7 +78,7 @@ export function AvailabilityModal({
 
 	const { handleAdd, handleSplit } = useScheduleNavigation({
 		token,
-		colleague,
+		colleague: selectedColleague,
 		currentEntryIndex,
 		setCurrentEntryIndex: () => {},
 		setStartDate,
@@ -84,6 +87,11 @@ export function AvailabilityModal({
 		setAlternateSchedule,
 		setError,
 	});
+
+	// Update selected colleague when colleague prop changes
+	useEffect(() => {
+		setSelectedColleague(colleague);
+	}, [colleague]);
 
 	const handleViewReport = async () => {
 		if (!token) return;
@@ -94,8 +102,8 @@ export function AvailabilityModal({
 			setError("");
 			const data = await getAvailabilityReport(
 				token,
-				colleague.site,
-				colleague.id,
+				selectedColleague.site,
+				selectedColleague.id,
 				reportYear
 			);
 			setReportData(data);
@@ -114,7 +122,7 @@ export function AvailabilityModal({
 	};
 
 	const handleSave = async () => {
-		if (!token || currentEntryIndex === -1) return;
+		if (!token || currentEntryIndex === -1 || isReadOnly) return;
 
 		const toastId = toast.loading(t('availability.savingChanges'));
 		try {
@@ -133,14 +141,14 @@ export function AvailabilityModal({
 
 			await updateUserAvailabilitySchedule(
 				token,
-				colleague.id,
+				selectedColleague.id,
 				currentEntryIndex,
 				availability
 			);
 
 			// Emit settings update event
 			userSettingsEmitter.emit("settingsUpdated", {
-				userId: colleague.id,
+				userId: selectedColleague.id,
 				settings: {
 					...currentUser.settings,
 					availability: [
@@ -169,7 +177,7 @@ export function AvailabilityModal({
 		if (hasChanges) {
 			// Trigger a refresh of the calendar grid
 			userSettingsEmitter.emit("availabilityChanged", {
-				userId: colleague.id
+				userId: selectedColleague.id
 			});
 		}
 		onClose();
@@ -180,9 +188,11 @@ export function AvailabilityModal({
 		slot: keyof TimeSlot,
 		isAlternate: boolean
 	) => {
+		if (isReadOnly) return;
+		
 		handleTimeSlotToggle(
 			token,
-			colleague.id,
+			selectedColleague.id,
 			currentEntryIndex,
 			day,
 			slot,
@@ -190,13 +200,41 @@ export function AvailabilityModal({
 		);
 	};
 
+	// Filter colleagues for admin dropdown
+	const filteredColleagues = isAdmin 
+		? [currentUser, ...colleagues.filter(c => c.id !== currentUser.id)]
+		: [];
+
+	const handleColleagueChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const selectedId = e.target.value;
+		const newColleague = filteredColleagues.find(c => c.id === selectedId);
+		if (newColleague) {
+			setSelectedColleague(newColleague);
+		}
+	};
+
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
 			<div className="bg-white rounded-lg shadow-xl max-w-4xl w-full">
 				<div className="flex justify-between items-center p-6 border-b">
-					<h2 className="text-xl font-semibold text-zinc-900">
-						{t('availability.setAvailabilityFor', { firstName: colleague.firstName, lastName: colleague.lastName })}
-					</h2>
+					<div className="flex items-center space-x-4">
+						<h2 className="text-xl font-semibold text-zinc-900">
+							{t('availability.setAvailabilityFor', { firstName: selectedColleague.firstName, lastName: selectedColleague.lastName })}
+						</h2>
+						{isAdmin && (
+							<select
+								value={selectedColleague.id}
+								onChange={handleColleagueChange}
+								className="ml-4 rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+							>
+								{filteredColleagues.map(c => (
+									<option key={c.id} value={c.id}>
+										{c.firstName} {c.lastName}{c.id === currentUser.id ? ' (You)' : ''}
+									</option>
+								))}
+							</select>
+						)}
+					</div>
 					<button
 						onClick={handleCloseModal}
 						className="text-zinc-400 hover:text-zinc-500"
@@ -227,14 +265,16 @@ export function AvailabilityModal({
 								</label>
 								<div className="flex-1 flex items-center">
 									<button
-										onClick={() => handleAdd(true)}
+										onClick={() => !isReadOnly && handleAdd(true)}
 										className={`space-x-2 ${
+											isReadOnly ? "text-zinc-300 cursor-not-allowed hidden" :
 											currentEntryIndex === -1 ||
 											currentEntryIndex === 0
 												? "text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
 												: "text-zinc-300 cursor-not-allowed hidden"
 										}`}
 										title={t('availability.addScheduleBefore')}
+										disabled={isReadOnly}
 									>
 										<Plus className="w-5 h-5" />
 									</button>
@@ -249,7 +289,8 @@ export function AvailabilityModal({
 												? "opacity-50 cursor-not-allowed hidden"
 												: ""
 										}`}
-										disabled={currentEntryIndex === -1}
+										disabled={currentEntryIndex === -1 || isReadOnly}
+										readOnly={isReadOnly}
 									/>
 								</div>
 							</div>
@@ -258,13 +299,13 @@ export function AvailabilityModal({
 								<button
 									onClick={() => setShowSplitModal(true)}
 									className={`p-2 text-zinc-600 hover:bg-purple-50 rounded-full transition-colors ${
-										currentEntryIndex === -1 || !endDate
+										isReadOnly || currentEntryIndex === -1 || !endDate
 											? "opacity-50 cursor-not-allowed hidden"
 											: ""
 									}`}
 									title={t('availability.splitSchedule')}
 									disabled={
-										currentEntryIndex === -1 || !endDate
+										isReadOnly || currentEntryIndex === -1 || !endDate
 									}
 								>
 									<Scissors className="w-5 h-5" />
@@ -288,11 +329,13 @@ export function AvailabilityModal({
 												? "opacity-50 cursor-not-allowed hidden"
 												: ""
 										}`}
-										disabled={currentEntryIndex === -1}
+										disabled={currentEntryIndex === -1 || isReadOnly}
+										readOnly={isReadOnly}
 									/>
 									<button
-										onClick={() => handleAdd(false)}
+										onClick={() => !isReadOnly && handleAdd(false)}
 										className={`space-x-2 ${
+											isReadOnly ? "text-zinc-300 cursor-not-allowed hidden" :
 											currentEntryIndex === -1 ||
 											currentEntryIndex ===
 												totalEntries - 1
@@ -300,6 +343,7 @@ export function AvailabilityModal({
 												: "text-zinc-300 cursor-not-allowed hidden"
 										}`}
 										title={t('availability.addScheduleAfter')}
+										disabled={isReadOnly}
 									>
 										<Plus className="w-5 h-5" />
 									</button>
@@ -326,7 +370,7 @@ export function AvailabilityModal({
 													? "opacity-50 cursor-not-allowed hidden"
 													: ""
 											}`}
-											disabled={currentEntryIndex === -1}
+											disabled={currentEntryIndex === -1 || isReadOnly}
 										>
 											<option value="all">
 												{t('availability.everyWeek')}
@@ -348,7 +392,7 @@ export function AvailabilityModal({
 									caption={t('availability.evenWeeks')}
 									schedule={schedule}
 									onTimeSlotToggle={onTimeSlotToggle}
-									disabled={currentEntryIndex === -1}
+									disabled={currentEntryIndex === -1 || isReadOnly}
 								/>
 							</div>
 						)}
@@ -367,7 +411,7 @@ export function AvailabilityModal({
 								}
 								isAlternate={repeatPattern === "evenodd"}
 								onTimeSlotToggle={onTimeSlotToggle}
-								disabled={currentEntryIndex === -1}
+								disabled={currentEntryIndex === -1 || isReadOnly}
 							/>
 						</div>
 					</div>
@@ -410,7 +454,7 @@ export function AvailabilityModal({
 						</button>
 						<button
 							onClick={handleSave}
-							disabled={loading || currentEntryIndex === -1}
+							disabled={loading || currentEntryIndex === -1 || isReadOnly}
 							className={`flex items-center px-4 py-2 w-32 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600`}
 						>
 							{loading ? (
@@ -448,7 +492,7 @@ export function AvailabilityModal({
 			{showReport && reportData && (
 				<AvailabilityReport
 					data={reportData}
-					colleague={colleague}
+					colleague={selectedColleague}
 					onClose={() => setShowReport(false)}
 				/>
 			)}
