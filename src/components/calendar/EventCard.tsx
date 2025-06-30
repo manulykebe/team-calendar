@@ -161,8 +161,8 @@ export function EventCard({
 		// Default styling for pending/other statuses
 		if (event.type === "requestedDesiderata") {
 			return {
-				backgroundColor: "#10b981", // Green for desiderata
-				borderColor: "#059669",
+				backgroundColor: "#3b82f6", // Blue for desiderata
+				borderColor: "#2563eb",
 			};
 		}
 		if (event.type === "requestedLeave") {
