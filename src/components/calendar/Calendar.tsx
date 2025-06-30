@@ -108,9 +108,6 @@ export function Calendar() {
       
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center space-x-4">
-          <h1 className="text-3xl font-bold text-zinc-900">
-            {t('calendar.teamCalendar')}
-          </h1>
           <div className="flex justify-between items-center">
             <div className="w-80 flex-1 items-center space-x-1">
               <div className="flex justify-between items-center">

@@ -62,7 +62,6 @@ export const nl = {
   // Calendar
   calendar: {
     calendar: 'Kalender',
-    teamCalendar: 'Teamkalender: AZJP',
     goToToday: 'Ga naar vandaag',
     previousWeek: 'Vorige week',
     nextWeek: 'Volgende week',
@@ -183,6 +182,7 @@ export const nl = {
     manageUsers: 'Gebruikers beheren',
     manageColleagueDisplay: 'Collega-weergave beheren',
     setAvailability: 'Beschikbaarheid instellen',
+    changeIndividualAvailability: 'Beschikbaarheid aanpassen',
     subscribeToCalendar: 'Abonneren op kalender',
     exportEvents: 'Gebeurtenissen exporteren',
     definePeriods: 'Periodes definiëren/bewerken',

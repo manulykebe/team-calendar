@@ -130,9 +130,6 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 				<div className="flex-1 p-4 overflow-y-auto">
 					<div className="space-y-6">
 						<div>
-							<h3 className="text-sm font-medium text-zinc-900 mb-2">
-								{t('settings.colleagues')}
-							</h3>
 							<div className="space-y-2">
 								<button
 									onClick={handleOpenAvailability}
@@ -159,7 +156,7 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 						</div>
 
 						{isAdmin && (
-							<div>
+							<div className="space-y-2">
 								<h3 className="text-sm font-medium text-zinc-900 mb-2">
 									{t('settings.admin')}
 								</h3>
@@ -179,15 +176,13 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 									<Users className="w-4 h-4 mr-2" />
 									{t('settings.manageColleagueDisplay')}
 								</button>
-								<div className="space-y-2">
-									<button
-										onClick={handleOpenPeriodManagement}
-										className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
-									>
-										<Shield className="w-4 h-4 mr-2" />
-										{t('settings.definePeriods')}
-									</button>
-								</div>
+								<button
+									onClick={handleOpenPeriodManagement}
+									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+								>
+									<Shield className="w-4 h-4 mr-2" />
+									{t('settings.definePeriods')}
+								</button>
 							</div>
 						)}
 
