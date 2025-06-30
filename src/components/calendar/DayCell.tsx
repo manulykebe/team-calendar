@@ -39,8 +39,6 @@ interface DayCellProps {
 	isLoadingAvailability: boolean;
 }
 
-const HOLIDAY_TYPES = ["requestedLeave", "requestedLeaveMandatory"];
-
 export const DayCell = memo(function DayCell({
 	date,
 	events,
@@ -65,6 +63,7 @@ export const DayCell = memo(function DayCell({
 		event: Event;
 		position: { x: number; y: number };
 	} | null>(null);
+	const { getColumnColor } = useCalendarColors(currentUser);
 	const { onDutyUserId, isUserOnDuty } = useOnDuty(format(date, "yyyy-MM-dd"), currentUser?.id);
 
 	// Check if this date is a public holiday using the global context
@@ -99,7 +98,7 @@ export const DayCell = memo(function DayCell({
 	const currentUserHolidayEvent = useMemo(() => {
 		return events.find(
 			(event) =>
-				HOLIDAY_TYPES.includes(event.type) &&
+				["requestedLeave", "requestedLeaveMandatory"].includes(event.type) &&
 				event.userId === currentUser?.id &&
 				(event.date === formattedDate ||
 					(event.endDate &&

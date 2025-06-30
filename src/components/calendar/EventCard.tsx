@@ -327,7 +327,11 @@ export function EventCard({
 				className={`absolute left-0 right-0 flex items-center justify-between text-xs hover:opacity-90 transition-all duration-200 ${getCursorStyle()}`}
 				style={{
 					backgroundColor: eventStyle.backgroundColor,
-					color: "white",
+					color:
+						backgroundColor === "#fee090" ||
+						backgroundColor === "#e0f3f8"
+							? "#1a202c"
+							: "white",
 					top: `${topPosition}px`,
 					height: "20px",
 					zIndex: 10,
