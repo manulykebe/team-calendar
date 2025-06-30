@@ -5,11 +5,11 @@
     {
       "id": "ff8a6bac-d228-4646-addd-d7379007ea45",
       "name": "Kerstmis tot Pasen",
-      "startDate": "2025-12-23",
+      "startDate": "2026-01-08",
       "endDate": "2026-04-15",
       "editingStatus": "open-holiday",
       "createdAt": "2025-06-12T14:42:12.728Z",
-      "updatedAt": "2025-06-30T16:03:14.852Z"
+      "updatedAt": "2025-06-30T16:29:49.466Z"
     },
     {
       "id": "73cf93b4-74fc-4897-a933-7f0cb88e0a78",
@@ -39,5 +39,5 @@
       "updatedAt": "2025-06-18T19:24:47.031Z"
     }
   ],
-  "lastUpdated": "2025-06-30T16:03:15.723Z"
+  "lastUpdated": "2025-06-30T16:29:51.528Z"
 }

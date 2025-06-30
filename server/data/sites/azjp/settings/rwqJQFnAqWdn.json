@@ -6,52 +6,49 @@
   },
   "colleagues": {
     "SjFBqPWVxUVY": {
-      "color": "#f46d43",
+      "color": "#a50026",
       "initials": "MV",
       "visible": false
     },
     "XAefIrqLAeDy": {
-      "color": "#fee090",
-      "initials": "KDJ"
-    },
-    "bhhMvstlpwUG": {
-      "visible": false,
-      "initials": "MS",
-      "color": "#74add1"
-    },
-    "KTHpbRLreSbC": {
-      "initials": "SD",
-      "color": "#4575b4",
+      "color": "#313695",
+      "initials": "KDJ",
       "visible": false
     },
-    "tTRjdtgFDDRN": {
-      "color": "#e0f3f8",
-      "initials": "KV",
+    "mKtuftErhhnO": {
+      "color": "#4575b4",
+      "initials": "MS",
+      "visible": false
+    },
+    "CxuzKGosISkk": {
+      "color": "#abd9e9",
+      "initials": "SD",
       "visible": false
     },
     "rwqJQFnAqWdn": {
+      "color": "#e0f3f8",
       "initials": "EV",
-      "color": "#313695"
-    },
-    "mKtuftErhhnO": {
-      "initials": "MS",
-      "color": "#74add1"
-    },
-    "CxuzKGosISkk": {
-      "initials": "SD",
-      "color": "#4575b4"
+      "visible": false
     },
     "ZIdGWxhnRSYw": {
+      "color": "#fee090",
       "initials": "KV",
-      "color": "#e0f3f8"
+      "visible": false
     },
     "OBOaSHVowagL": {
+      "color": "#fdae61",
       "initials": "HG",
-      "color": "#abd9e9"
+      "visible": false
     },
     "dijVShwJoKFD": {
+      "color": "#f46d43",
       "initials": "AY",
-      "color": "#fdae61"
+      "visible": false
+    },
+    "suuebRsdLhQv": {
+      "color": "#74add1",
+      "initials": "",
+      "visible": false
     }
   },
   "showWeekNumber": "left",
