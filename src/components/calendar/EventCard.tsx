@@ -167,8 +167,8 @@ export function EventCard({
 		}
 		if (event.type === "requestedLeave") {
 			return {
-				backgroundColor: "#f59e0b", // Amber for holiday
-				borderColor: "#d97706",
+				backgroundColor: backgroundColor, // Use colleague's color for holiday
+				borderColor: backgroundColor,
 			};
 		}
 		if (event.type === "requestedPeriod") {
