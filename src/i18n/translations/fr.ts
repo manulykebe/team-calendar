@@ -210,7 +210,7 @@ export const fr = {
 
   // Availability
   availability: {
-    setAvailabilityFor: 'Définir la disponibilité pour {{name}}',
+    setAvailabilityFor: 'Définir la disponibilité pour {{firstname}} {{lastname}}',
     weeklySchedule: 'Planning hebdomadaire',
     evenWeeks: 'Semaines paires',
     oddWeeks: 'Semaines impaires',

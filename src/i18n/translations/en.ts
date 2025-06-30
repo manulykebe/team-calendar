@@ -210,7 +210,7 @@ export const en = {
 
   // Availability
   availability: {
-    setAvailabilityFor: 'Set Availability for {{name}}',
+    setAvailabilityFor: 'Set Availability for {{firstname}} {{lastname}}',
     weeklySchedule: 'Weekly Schedule',
     evenWeeks: 'Even Weeks',
     oddWeeks: 'Odd Weeks',

@@ -16,6 +16,7 @@ import { SplitScheduleModal } from "./components/SplitScheduleModal";
 import toast from "react-hot-toast";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
 import { useApp } from "../../../context/AppContext";
+import { useTranslation } from "../../../context/TranslationContext";
 
 interface AvailabilityModalProps {
 	colleague: User;
@@ -26,9 +27,10 @@ export function AvailabilityModal({
 	colleague,
 	onClose,
 }: AvailabilityModalProps) {
-	const { token } = useAuth();
-	const { currentUser } = useApp();
-	if (!token || !currentUser) return null;
+    const { t } = useTranslation();
+    const { token } = useAuth();
+    const { currentUser } = useApp();
+    if (!token || !currentUser) return null;
 
 	const [showReport, setShowReport] = useState(false);
 	const [reportData, setReportData] = useState<any>(null);
@@ -86,7 +88,7 @@ export function AvailabilityModal({
 	const handleViewReport = async () => {
 		if (!token) return;
 
-		const toastId = toast.loading("Loading report...");
+		const toastId = toast.loading(t('availability.loadingReport'));
 		try {
 			setLoading(true);
 			setError("");
@@ -98,12 +100,12 @@ export function AvailabilityModal({
 			);
 			setReportData(data);
 			setShowReport(true);
-			toast.success("Report loaded successfully", { id: toastId });
+			toast.success(t('availability.reportLoadedSuccess'), { id: toastId });
 		} catch (err) {
 			const errorMessage =
 				err instanceof Error
 					? err.message
-					: "Failed to fetch availability report";
+					: t('availability.errors.fetchReportFailed');
 			setError(errorMessage);
 			toast.error(errorMessage, { id: toastId });
 		} finally {
@@ -114,7 +116,7 @@ export function AvailabilityModal({
 	const handleSave = async () => {
 		if (!token || currentEntryIndex === -1) return;
 
-		const toastId = toast.loading("Saving changes...");
+		const toastId = toast.loading(t('availability.savingChanges'));
 		try {
 			setLoading(true);
 			setError("");
@@ -150,12 +152,12 @@ export function AvailabilityModal({
 			});
 
 			setHasChanges(true);
-			toast.success("Changes saved successfully", { id: toastId });
+			toast.success(t('availability.changesSavedSuccess'), { id: toastId });
 		} catch (err) {
 			const errorMessage =
 				err instanceof Error
 					? err.message
-					: "Failed to save availability";
+					: t('availability.errors.saveFailed');
 			setError(errorMessage);
 			toast.error(errorMessage, { id: toastId });
 		} finally {
@@ -193,12 +195,12 @@ export function AvailabilityModal({
 			<div className="bg-white rounded-lg shadow-xl max-w-4xl w-full">
 				<div className="flex justify-between items-center p-6 border-b">
 					<h2 className="text-xl font-semibold text-zinc-900">
-						Set Availability for {colleague.firstName}{" "}
-						{colleague.lastName}
+						{t('availability.setAvailabilityFor', { firstName: colleague.firstName, lastName: colleague.lastName })}
 					</h2>
 					<button
 						onClick={handleCloseModal}
 						className="text-zinc-400 hover:text-zinc-500"
+						aria-label={t('common.close')}
 					>
 						<X className="w-6 h-6" />
 					</button>
@@ -221,7 +223,7 @@ export function AvailabilityModal({
 						<div className="col-span-10 grid grid-cols-9 gap-2">
 							<div className="p-2 col-span-3 border rounded-md border-zinc-300">
 								<label className="block text-sm font-medium text-zinc-700 mb-0">
-									Start Date
+									{t('common.startDate')}
 								</label>
 								<div className="flex-1 flex items-center">
 									<button
@@ -232,7 +234,7 @@ export function AvailabilityModal({
 												? "text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
 												: "text-zinc-300 cursor-not-allowed hidden"
 										}`}
-										title="Add schedule before"
+										title={t('availability.addScheduleBefore')}
 									>
 										<Plus className="w-5 h-5" />
 									</button>
@@ -260,7 +262,7 @@ export function AvailabilityModal({
 											? "opacity-50 cursor-not-allowed hidden"
 											: ""
 									}`}
-									title="Split schedule"
+									title={t('availability.splitSchedule')}
 									disabled={
 										currentEntryIndex === -1 || !endDate
 									}
@@ -271,7 +273,7 @@ export function AvailabilityModal({
 
 							<div className="p-2 col-span-3 border rounded-md border-zinc-300">
 								<label className="block text-sm font-medium text-zinc-700 mb-0">
-									End Date
+									{t('common.endDate')}
 								</label>
 								<div className="flex-1 flex items-center">
 									<input
@@ -297,7 +299,7 @@ export function AvailabilityModal({
 												? "text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
 												: "text-zinc-300 cursor-not-allowed hidden"
 										}`}
-										title="Add schedule after"
+										title={t('availability.addScheduleAfter')}
 									>
 										<Plus className="w-5 h-5" />
 									</button>
@@ -308,7 +310,7 @@ export function AvailabilityModal({
 								<div className="flex justify-end">
 									<div className="w-48">
 										<label className="block text-sm font-medium text-zinc-700 mb-1">
-											Repeat Pattern
+											{t('availability.repeatPattern')}
 										</label>
 										<select
 											value={repeatPattern}
@@ -327,10 +329,10 @@ export function AvailabilityModal({
 											disabled={currentEntryIndex === -1}
 										>
 											<option value="all">
-												Every Week
+												{t('availability.everyWeek')}
 											</option>
 											<option value="evenodd">
-												Alternate Weeks
+												{t('availability.alternateWeeks')}
 											</option>
 										</select>
 									</div>
@@ -343,7 +345,7 @@ export function AvailabilityModal({
 						{repeatPattern === "evenodd" && (
 							<div>
 								<ScheduleGrid
-									caption="Even Weeks"
+									caption={t('availability.evenWeeks')}
 									schedule={schedule}
 									onTimeSlotToggle={onTimeSlotToggle}
 									disabled={currentEntryIndex === -1}
@@ -355,8 +357,8 @@ export function AvailabilityModal({
 							<ScheduleGrid
 								caption={
 									repeatPattern === "all"
-										? "Weekly Schedule"
-										: "Odd Weeks"
+										? t('availability.weeklySchedule')
+										: t('availability.oddWeeks')
 								}
 								schedule={
 									repeatPattern === "evenodd"
@@ -393,7 +395,7 @@ export function AvailabilityModal({
 							className="flex items-center px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 						>
 							<FileText className="w-4 h-4 mr-2" />
-							View Report
+							{t('availability.viewReport')}
 						</button>
 					</div>
 
@@ -404,7 +406,7 @@ export function AvailabilityModal({
 							disabled={loading}
 						>
 							<X className="w-4 h-4 mr-2" />
-							Cancel
+							{t('common.cancel')}
 						</button>
 						<button
 							onClick={handleSave}
@@ -433,10 +435,10 @@ export function AvailabilityModal({
 											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 										></path>
 									</svg>
-									Saving...
+									{t('common.saving')}
 								</span>
 							) : (
-								"Save"
+								t('common.save')
 							)}
 						</button>
 					</div>

@@ -9,6 +9,7 @@ import { updateUser } from "../../../lib/api/users";
 import { User } from "../../../types/user";
 import toast from "react-hot-toast";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
+import { useTranslation } from "../../../context/TranslationContext";
 
 interface ColleagueSettingsProps {
   onClose: () => void;
@@ -28,6 +29,7 @@ export const DEFAULT_COLORS = [
 ];
 
 export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
+  const { t } = useTranslation();
   const { token } = useAuth();
   const { currentUser, colleagues } = useApp();
   const [error, setError] = useState("");
@@ -105,7 +107,7 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
       });
       
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to update settings";
+      const errorMessage = err instanceof Error ? err.message : t('settings.errors.updateFailed');
       setError(errorMessage);
       toast.error(errorMessage);
     }
@@ -147,9 +149,9 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
         settings: newSettings
       });
       
-      toast.success("Colleague order updated");
+      toast.success(t('settings.colleagueOrderUpdated'));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to update colleague order";
+      const errorMessage = err instanceof Error ? err.message : t('settings.errors.orderUpdateFailed');
       setError(errorMessage);
       toast.error(errorMessage);
       
@@ -164,12 +166,12 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
         <div className="bg-white rounded-lg shadow-xl max-w-5xl w-full">
           <div className="flex justify-between items-center p-6 border-b">
             <h2 className="text-xl font-semibold text-zinc-900">
-              Colleague Display Settings
+              {t('settings.colleagueDisplaySettings')}
             </h2>
             <button
               onClick={onClose}
               className="text-zinc-400 hover:text-zinc-500"
-              aria-label="Close"
+              aria-label={t('common.close')}
             >
               <X className="w-6 h-6" />
             </button>

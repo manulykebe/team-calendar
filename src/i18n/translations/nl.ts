@@ -210,7 +210,7 @@ export const nl = {
 
   // Availability
   availability: {
-    setAvailabilityFor: 'Beschikbaarheid instellen voor {{name}}',
+    setAvailabilityFor: 'Beschikbaarheid instellen voor {{firstname}} {{lastname}}',
     weeklySchedule: 'Weekschema',
     evenWeeks: 'Even weken',
     oddWeeks: 'Oneven weken',
