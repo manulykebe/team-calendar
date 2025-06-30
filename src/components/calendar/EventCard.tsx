@@ -144,10 +144,17 @@ export function EventCard({
 	const getEventTypeStyle = () => {
 		// For approved events, use green
 		if (event.status === 'approved') {
-			return {
-				backgroundColor: "#10b981", // Green for approved
-				borderColor: "#059669",
-			};
+			if (isAdmin) {
+				return {
+					backgroundColor: backgroundColor, // Use colleague's color for holiday
+					borderColor: backgroundColor,
+				};
+			} else {
+				return {
+					backgroundColor: "#10b981", // Green for approved
+					borderColor: "#059669",
+				};
+			}
 		}
 
 		// For denied events, use red
@@ -167,8 +174,8 @@ export function EventCard({
 		}
 		if (event.type === "requestedLeave") {
 			return {
-				backgroundColor: backgroundColor, // Use colleague's color for holiday
-				borderColor: backgroundColor,
+				backgroundColor: "#f59e0b", // Amber for holiday
+				borderColor: "#d97706",
 			};
 		}
 		if (event.type === "requestedPeriod") {

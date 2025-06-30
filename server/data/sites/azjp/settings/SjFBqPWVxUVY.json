@@ -6,15 +6,15 @@
       "visible": false
     },
     "XAefIrqLAeDy": {
-      "color": "#4575b4",
+      "color": "#313695",
       "initials": "KDJ"
     },
     "mKtuftErhhnO": {
-      "color": "#74add1",
+      "color": "#4575b4",
       "initials": "MS"
     },
     "CxuzKGosISkk": {
-      "color": "#e0f3f8",
+      "color": "#74add1",
       "initials": "SD"
     },
     "rwqJQFnAqWdn": {
@@ -22,19 +22,19 @@
       "initials": "EV"
     },
     "ZIdGWxhnRSYw": {
-      "color": "#74add1",
+      "color": "#f46d43",
       "initials": "KV"
     },
     "OBOaSHVowagL": {
-      "color": "#4575b4",
+      "color": "#a50026",
       "initials": "HG"
     },
     "dijVShwJoKFD": {
-      "color": "#313695",
+      "color": "#d73027",
       "initials": "AY"
     },
     "suuebRsdLhQv": {
-      "color": "#abd9e9",
+      "color": "#fdae61",
       "initials": ""
     }
   },
@@ -43,12 +43,12 @@
     "SjFBqPWVxUVY",
     "XAefIrqLAeDy",
     "mKtuftErhhnO",
-    "suuebRsdLhQv",
     "CxuzKGosISkk",
     "rwqJQFnAqWdn",
+    "suuebRsdLhQv",
     "ZIdGWxhnRSYw",
-    "OBOaSHVowagL",
-    "dijVShwJoKFD"
+    "dijVShwJoKFD",
+    "OBOaSHVowagL"
   ],
   "availability": [
     {

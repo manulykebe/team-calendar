@@ -156,18 +156,6 @@
     "updatedAt": "2025-06-26T12:05:59.283Z"
   },
   {
-    "id": "d2014434-a829-44ca-b617-a427c9bc7aaa",
-    "userId": "XAefIrqLAeDy",
-    "type": "requestedDesiderata",
-    "title": "",
-    "description": "",
-    "date": "2025-07-23",
-    "endDate": "2025-07-24",
-    "status": "pending",
-    "createdAt": "2025-06-30T16:01:48.975Z",
-    "updatedAt": "2025-06-30T16:01:48.975Z"
-  },
-  {
     "id": "53ac1876-93d0-4053-ab2c-3dfa76324ac8",
     "userId": "XAefIrqLAeDy",
     "type": "requestedDesiderata",
