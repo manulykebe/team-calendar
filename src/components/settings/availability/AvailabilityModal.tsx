@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, FileText, Plus, Scissors } from "lucide-react";
 import { User } from "../../../types/user";
 import { useAuth } from "../../../context/AuthContext";
@@ -42,6 +42,11 @@ export function AvailabilityModal({
 	const [selectedColleague, setSelectedColleague] = useState<User>(colleague);
 	const isAdmin = currentUser?.role === 'admin';
 	const isReadOnly = !isAdmin && currentUser?.id !== colleague.id;
+	
+	// Refs for input elements to maintain focus
+	const startDateRef = useRef<HTMLInputElement>(null);
+	const endDateRef = useRef<HTMLInputElement>(null);
+	const repeatPatternRef = useRef<HTMLSelectElement>(null);
 
 	const {
 		loading,
@@ -213,6 +218,22 @@ export function AvailabilityModal({
 		}
 	};
 
+	// Handle input changes with focus preservation
+	const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setStartDate(e.target.value);
+		// No need to manually set focus as the input already has it
+	};
+
+	const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setEndDate(e.target.value);
+		// No need to manually set focus as the input already has it
+	};
+
+	const handleRepeatPatternChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setRepeatPattern(e.target.value as "all" | "evenodd");
+		// No need to manually set focus as the select already has it
+	};
+
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
 			<div className="bg-white rounded-lg shadow-xl max-w-4xl w-full">
@@ -279,11 +300,10 @@ export function AvailabilityModal({
 										<Plus className="w-5 h-5" />
 									</button>
 									<input
+										ref={startDateRef}
 										type="date"
 										value={startDate}
-										onChange={(e) =>
-											setStartDate(e.target.value)
-										}
+										onChange={handleStartDateChange}
 										className={`w-32 ${
 											currentEntryIndex === -1
 												? "opacity-50 cursor-not-allowed hidden"
@@ -318,11 +338,10 @@ export function AvailabilityModal({
 								</label>
 								<div className="flex-1 flex items-center">
 									<input
+										ref={endDateRef}
 										type="date"
 										value={endDate}
-										onChange={(e) =>
-											setEndDate(e.target.value)
-										}
+										onChange={handleEndDateChange}
 										min={startDate}
 										className={`w-32 ${
 											currentEntryIndex === -1
@@ -357,14 +376,9 @@ export function AvailabilityModal({
 											{t('availability.repeatPattern')}
 										</label>
 										<select
+											ref={repeatPatternRef}
 											value={repeatPattern}
-											onChange={(e) =>
-												setRepeatPattern(
-													e.target.value as
-														| "all"
-														| "evenodd"
-												)
-											}
+											onChange={handleRepeatPatternChange}
 											className={`w-32 rounded-md border-zinc-300 ${
 												currentEntryIndex === -1
 													? "opacity-50 cursor-not-allowed hidden"
