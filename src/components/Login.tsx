@@ -126,6 +126,7 @@ export function Login() {
           <div className="flex flex-col justify-center">
             <p className="text-sm text-zinc-500">{t('calendar.onDuty')}</p>
             <p className="font-medium text-zinc-900">{onDutyStaff ? onDutyStaff.name : ""}</p>
+            <p className="text-sm text-zinc-300">{onDutyStaff ? (onDutyStaff.from + ' tot ' + onDutyStaff.to) : ""}</p>
           </div>
           {/* Popup for mobile */}
         </div>

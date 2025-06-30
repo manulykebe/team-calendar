@@ -62,7 +62,11 @@
           "period": "day|days[1-7]"
         }
       }
-    ]
+    ],
+    "duty": {
+      "startTime": "17:30",
+      "endTimeNextDay": "08:00"
+    }
   },
   "users": [
     {

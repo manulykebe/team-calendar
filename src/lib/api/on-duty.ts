@@ -6,6 +6,8 @@ export interface OnDutyStaff {
   name: string;
   email: string;
   mobile: string;
+  from: string; // Format: YYYY-MM-DD HH:mm
+  to: string;   // Format: YYYY-MM-DD HH:mm 
 }
 
 export async function getOnDutyStaff(site: string, date?: string): Promise<OnDutyStaff> {
