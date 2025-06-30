@@ -77,7 +77,7 @@
       "weeklySchedule": {
         "Monday": {
           "am": true,
-          "pm": true
+          "pm": false
         },
         "Tuesday": {
           "am": false,
