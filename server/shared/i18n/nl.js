@@ -119,7 +119,7 @@ export const nl = {
     onDutyUserNotFound: 'Dienstdoende gebruiker niet gevonden',
     failedToFetchOnDutyStaff: 'Ophalen van dienstdoende medewerker mislukt',
     invalidDateFormat: 'Ongeldig datumformaat',
-    onDutyShift: 'Dienst',
+    onDutyShift: 'Van wacht',
     onDutyShiftDescription: 'Dienstdoende shift voor {{firstName}} {{lastName}}',
   },
 
