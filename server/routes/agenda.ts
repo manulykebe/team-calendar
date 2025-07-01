@@ -83,6 +83,8 @@ router.get("/:site/:userId/calendar/:token", async (req: AuthRequest, res) => {
 
 		// Get user's events with optional date filtering
 		let events = await readUserEvents(site, userId);
+		// filter events where status is "approved"
+		events = events.filter((e: Event) => e.status === "approved");
 
 		// Filter by date range if provided
 		if (from && to) {

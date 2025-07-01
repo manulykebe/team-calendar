@@ -1,4 +1,10 @@
 {
+  "location": {
+    "address": "Gendarmeriestraat 1",
+    "postalCode": "1000",
+    "city": "Vilvoorde",
+    "country": "Belgium"
+  },
   "app": {
     "workWeekDays": [
       "Monday",
