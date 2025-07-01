@@ -5,7 +5,7 @@ export type Language = 'en' | 'fr' | 'nl';
 export interface TranslationContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string, params?: Record<string, string | number>) => string;
+  t: (key: string, params?: Record<string, any>) => string | string[];
 }
 
 export const TranslationContext = createContext<TranslationContextType>({
@@ -24,6 +24,6 @@ export function interpolate(text: string, params: Record<string, string | number
 }
 
 // Get nested translation value using dot notation
-export function getNestedValue(obj: any, path: string): string {
-  return path.split('.').reduce((current, key) => current?.[key], obj) || path;
+export function getNestedValue(obj: any, path: string): any {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
 }
