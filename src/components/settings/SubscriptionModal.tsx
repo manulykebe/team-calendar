@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X, Copy, Check, Calendar } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { API_URL } from "../../../src/lib/api/config";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface SubscriptionModalProps {
 	userId: string;
@@ -16,6 +17,7 @@ export function SubscriptionModal({
 	site,
 	onClose,
 }: SubscriptionModalProps) {
+	const { t } = useTranslation();
 	const { token } = useAuth();
 	const [subscriptionUrl, setSubscriptionUrl] = useState<string>("");
 	const [loading, setLoading] = useState(true);
@@ -36,14 +38,14 @@ export function SubscriptionModal({
 				);
 
 				if (!response.ok) {
-					throw new Error("Failed to fetch subscription URL");
+					throw new Error(t('subscription.failedToFetchUrl'));
 				}
 
 				const data = await response.json();
 				setSubscriptionUrl(data.subscriptionUrl);
 			} catch (err) {
 				setError(
-					err instanceof Error ? err.message : "An error occurred"
+					err instanceof Error ? err.message : t('errors.somethingWentWrong')
 				);
 			} finally {
 				setLoading(false);
@@ -51,7 +53,7 @@ export function SubscriptionModal({
 		};
 
 		fetchSubscriptionUrl();
-	}, [site, userId, token]);
+	}, [site, userId, token, t]);
 
 	const handleCopy = async () => {
 		try {
@@ -82,85 +84,42 @@ export function SubscriptionModal({
 			case "outlook":
 				return (
 					<ol className="list-decimal list-inside space-y-0 ml-4">
-						<li>Open Outlook Desktop or Outlook Web</li>
-						<li>Right-click on Calendar in the navigation pane</li>
-						<li>Select "Add Calendar" → "From Internet"</li>
-						<li>Paste the subscription URL</li>
-						<li>Click "OK" or "Save"</li>
-						<li>
-							Choose how often you want Outlook to sync the
-							calendar
-						</li>
-						<li>Click "Yes" to add the calendar</li>
+						{t('subscription.outlookInstructions', { returnObjects: true }).map((instruction, index) => (
+							<li key={index}>{instruction}</li>
+						))}
 					</ol>
 				);
 			case "google":
 				return (
 					<ol className="list-decimal list-inside space-y-0 ml-4">
-						<li>Open Google Calendar in your browser</li>
-						<li>
-							On the left side, find "Other calendars" and click
-							the "+" button
-						</li>
-						<li>Select "From URL" from the dropdown menu</li>
-						<li>Paste the subscription URL in the "URL" field</li>
-						<li>Click "Add calendar"</li>
-						<li>
-							The calendar will appear under "Other calendars" in
-							your calendar list
-						</li>
+						{t('subscription.googleInstructions', { returnObjects: true }).map((instruction, index) => (
+							<li key={index}>{instruction}</li>
+						))}
 					</ol>
 				);
 			case "apple":
 				return (
 					<ol className="list-decimal list-inside space-y-0 ml-4">
-						<li>Open the Calendar app on your Mac</li>
-						<li>From the menu bar, select File</li>
-						<li>Choose "New Calendar Subscription"</li>
-						<li>Paste the subscription URL</li>
-						<li>Click "Subscribe"</li>
-						<li>
-							Configure sync frequency and other options as needed
-						</li>
-						<li>Click "OK" to finish</li>
+						{t('subscription.appleInstructions', { returnObjects: true }).map((instruction, index) => (
+							<li key={index}>{instruction}</li>
+						))}
 						<p className="mt-4 text-sm text-zinc-600">
-							For iOS devices:
+							{t('subscription.appleIosInstructions', { returnObjects: true }).map((instruction, index) => (
+								<li key={`ios-${index}`}>{instruction}</li>
+							))}
 						</p>
-						<li>Go to Settings → Calendar → Accounts</li>
-						<li>
-							Tap "Add Account" → "Other" → "Add Subscribed
-							Calendar"
-						</li>
-						<li>Paste the subscription URL</li>
-						<li>Tap "Next" and then "Save"</li>
 					</ol>
 				);
 			case "other":
 				return (
 					<div className="space-y-4">
 						<p>
-							For other calendar applications that support
-							webcal:// or HTTP(S) calendar subscriptions:
+							{t('subscription.otherInstructions', { returnObjects: true }).map((instruction, index) => (
+								<li key={index}>{instruction}</li>
+							))}
 						</p>
-						<ol className="list-decimal list-inside space-y-0 ml-4">
-							<li>
-								Look for an option to add a calendar
-								subscription or "Subscribe to Calendar"
-							</li>
-							<li>
-								When prompted, paste the subscription URL
-								provided above
-							</li>
-							<li>
-								Configure sync frequency if the option is
-								available
-							</li>
-							<li>Save or confirm the subscription</li>
-						</ol>
 						<p className="mt-4 text-sm text-zinc-600">
-							Note: The calendar uses the iCalendar (.ics) format,
-							which is compatible with most modern calendar
-							applications.
+							{t('subscription.icalNote')}
 						</p>
 					</div>
 				);
@@ -174,7 +133,7 @@ export function SubscriptionModal({
 					<div className="flex items-center space-x-2">
 						<Calendar className="w-6 h-6 text-blue-600" />
 						<h2 className="text-xl font-semibold text-zinc-900">
-							Calendar Subscription
+							{t('subscription.calendarSubscription')}
 						</h2>
 					</div>
 					<button
@@ -198,11 +157,10 @@ export function SubscriptionModal({
 						<>
 							<div className="space-y-4">
 								<h3 className="text-lg font-medium text-zinc-900">
-									Subscribe to Your Calendar
+									{t('subscription.subscribeToYourCalendar')}
 								</h3>
 								<p className="text-zinc-600">
-									Use this URL to subscribe to your calendar
-									in your preferred calendar application:
+									{t('subscription.subscriptionInstructions')}
 								</p>
 
 								<div className="flex items-center space-x-2">
@@ -215,7 +173,7 @@ export function SubscriptionModal({
 									<button
 										onClick={handleCopy}
 										className="p-2 text-blue-600 hover:text-blue-700 rounded-md border border-blue-200 hover:bg-blue-50"
-										title="Copy URL"
+										title={t('subscription.copyUrl')}
 									>
 										{copied ? (
 											<Check className="w-5 h-5" />
@@ -231,33 +189,34 @@ export function SubscriptionModal({
 									<div className="flex space-x-2">
 										<TabButton
 											tab="outlook"
-											label="Outlook"
+											label={t('subscription.outlook')}
 										/>
 										<TabButton
 											tab="google"
-											label="Google Calendar"
+											label={t('subscription.googleCalendar')}
 										/>
 										<TabButton
 											tab="apple"
-											label="Apple Calendar"
+											label={t('subscription.appleCalendar')}
 										/>
 										<TabButton
 											tab="other"
-											label="Other Apps"
+											label={t('subscription.otherApplications')}
 										/>
 									</div>
 								</div>
 
 								<div className="min-h-[220px] p-2">
 									<h4 className="font-medium text-zinc-900 mb-4">
-										Instructions for{" "}
-										{activeTab === "outlook"
-											? "Microsoft Outlook"
-											: activeTab === "google"
-												? "Google Calendar"
-												: activeTab === "apple"
-													? "Apple Calendar"
-													: "Other Applications"}
+										{t('subscription.instructionsFor', { 
+											app: activeTab === "outlook"
+												? t('subscription.outlook')
+												: activeTab === "google"
+													? t('subscription.googleCalendar')
+													: activeTab === "apple"
+														? t('subscription.appleCalendar')
+														: t('subscription.otherApplications')
+										})}
 									</h4>
 									<div className="text-zinc-600">
 										<TabContent tab={activeTab} />
@@ -273,7 +232,7 @@ export function SubscriptionModal({
 						onClick={onClose}
 						className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 					>
-						Close
+						{t('common.close')}
 					</button>
 				</div>
 			</div>

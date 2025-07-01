@@ -4,12 +4,14 @@ import { UserModal } from "./UserModal";
 import { DeleteConfirmation } from "./DeleteConfirmation";
 import { User } from "../../types/user";
 import { X } from "lucide-react";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface UserManagementProps {
   onClose: () => void;
 }
 
 export function UserManagement({ onClose }: UserManagementProps) {
+  const { t } = useTranslation();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [deleteUser, setDeleteUser] = useState<User | null>(null);
 
@@ -26,7 +28,7 @@ export function UserManagement({ onClose }: UserManagementProps) {
       <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
         <div className="flex justify-between items-center p-6 border-b">
           <h2 className="text-2xl font-semibold text-zinc-900">
-            User Management
+            {t('users.userManagement')}
           </h2>
           <button
             onClick={onClose}

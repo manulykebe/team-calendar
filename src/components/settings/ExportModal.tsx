@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { API_URL } from "../../lib/api/config";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface ExportModalProps {
   userId: string;
@@ -12,6 +13,7 @@ interface ExportModalProps {
 }
 
 export function ExportModal({ userId, site, onClose }: ExportModalProps) {
+  const { t } = useTranslation();
   const { token } = useAuth();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -36,7 +38,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
     onClose();
 
     // Show download progress toast
-    const toastId = toast.loading('Preparing your export file...', {
+    const toastId = toast.loading(t('export.preparingExport'), {
       duration: Infinity, // Keep it until we manually dismiss it
     });
 
@@ -49,7 +51,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to export events');
+        throw new Error(t('export.failedToExport'));
       }
 
       // Get the blob
@@ -77,14 +79,14 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
       window.URL.revokeObjectURL(downloadUrl);
 
       // Show success message
-      toast.success('Export file downloaded successfully!', { 
+      toast.success(t('export.exportDownloaded'), { 
         id: toastId,
         duration: 3000 
       });
 
     } catch (error) {
       console.error("Error downloading file:", error);
-      toast.error('Failed to export events. Please try again.', { 
+      toast.error(t('export.failedToExport'), { 
         id: toastId,
         duration: 4000 
       });
@@ -100,7 +102,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
           <div className="flex items-center space-x-2">
             <Calendar className="w-6 h-6 text-blue-600" />
             <h2 className="text-xl font-semibold text-zinc-900">
-              Export Events
+              {t('export.exportEvents')}
             </h2>
           </div>
           <button
@@ -115,7 +117,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
         <div className="p-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1">
-              Export Type
+              {t('export.exportType')}
             </label>
             <select
               value={exportType}
@@ -123,15 +125,15 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
               className="mt-1 block w-full rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               disabled={isExporting}
             >
-              <option value="all">All Events</option>
-              <option value="user">My Events Only</option>
+              <option value="all">{t('export.allEvents')}</option>
+              <option value="user">{t('export.myEventsOnly')}</option>
             </select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-zinc-700 mb-1">
-                Start Date (Optional)
+                {t('export.startDateOptional')}
               </label>
               <input
                 type="date"
@@ -144,7 +146,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
 
             <div>
               <label className="block text-sm font-medium text-zinc-700 mb-1">
-                End Date (Optional)
+                {t('export.endDateOptional')}
               </label>
               <input
                 type="date"
@@ -158,7 +160,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
           </div>
 
           <div className="text-sm text-zinc-500">
-            Leave dates empty to export all events. If you specify a date range, only events within that range will be exported.
+            {t('export.leaveDatesEmpty')}
           </div>
         </div>
 
@@ -168,7 +170,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
             className="px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50 disabled:opacity-50"
             disabled={isExporting}
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             onClick={handleExport}
@@ -176,7 +178,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
             className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Download className="w-4 h-4 mr-2" />
-            {isExporting ? 'Exporting...' : 'Export'}
+            {isExporting ? t('export.exporting') : t('common.export')}
           </button>
         </div>
       </div>

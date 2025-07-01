@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Check, X } from "lucide-react";
 import { Period, PeriodFormData } from "../../types/period";
 import { format, parseISO, isAfter, isBefore } from "date-fns";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface PeriodFormProps {
   period?: Period | null;
@@ -18,6 +19,7 @@ export function PeriodForm({
   onCancel,
   existingPeriods,
 }: PeriodFormProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<PeriodFormData>({
     name: period?.name || defaultName || "",
     startDate: period?.startDate || "",
@@ -49,19 +51,19 @@ export function PeriodForm({
 
     // Required field validation
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+      newErrors.name = t('periods.validationErrors.nameRequired');
     }
     if (!formData.startDate) {
-      newErrors.startDate = "Start date is required";
+      newErrors.startDate = t('periods.validationErrors.startDateRequired');
     }
     if (!formData.endDate) {
-      newErrors.endDate = "End date is required";
+      newErrors.endDate = t('periods.validationErrors.endDateRequired');
     }
 
     // Date validation
     if (formData.startDate && formData.endDate) {
       if (!isAfter(parseISO(formData.endDate), parseISO(formData.startDate))) {
-        newErrors.endDate = "End date must be after start date";
+        newErrors.endDate = t('periods.validationErrors.endDateAfterStart');
       }
 
       // Check for overlaps with existing periods
@@ -79,8 +81,8 @@ export function PeriodForm({
       });
 
       if (hasOverlap) {
-        newErrors.startDate = "Period dates overlap with existing period";
-        newErrors.endDate = "Period dates overlap with existing period";
+        newErrors.startDate = t('periods.validationErrors.overlappingDates');
+        newErrors.endDate = t('periods.validationErrors.overlappingDates');
       }
     }
 
@@ -106,13 +108,13 @@ export function PeriodForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <h3 className="text-lg font-medium text-zinc-900 mb-4">
-        {period ? "Edit Period" : "Add New Period"}
+        {period ? t('periods.editPeriod') : t('periods.addPeriod')}
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Name/Label *
+            {t('periods.nameLabel')} *
           </label>
           <input
             type="text"
@@ -121,7 +123,7 @@ export function PeriodForm({
             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               errors.name ? "border-red-300" : "border-zinc-300"
             }`}
-            placeholder="Enter period name"
+            placeholder={t('periods.enterPeriodName')}
           />
           {errors.name && (
             <p className="mt-1 text-sm text-red-600">{errors.name}</p>
@@ -130,25 +132,25 @@ export function PeriodForm({
 
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Editing Status *
+            {t('periods.editingStatus')} *
           </label>
           <select
             value={formData.editingStatus}
             onChange={(e) => handleChange("editingStatus", e.target.value as any)}
             className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="closed">Closed</option>
-            <option value="open-holiday">Open - Holiday</option>
-            <option value="open-desiderata">Open - Desiderata</option>
+            <option value="closed">{t('periods.closed')}</option>
+            <option value="open-holiday">{t('periods.openHoliday')}</option>
+            <option value="open-desiderata">{t('periods.openDesiderata')}</option>
           </select>
           {!period && (
-            <p className="mt-1 text-xs text-zinc-500">Default: Closed</p>
+            <p className="mt-1 text-xs text-zinc-500">{t('periods.defaultClosed')}</p>
           )}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
-            Start Date *
+            {t('events.startDate')} *
           </label>
           <input
             type="date"
@@ -165,7 +167,7 @@ export function PeriodForm({
 
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
-            End Date *
+            {t('events.endDate')} *
           </label>
           <input
             type="date"
@@ -189,14 +191,14 @@ export function PeriodForm({
           className="flex items-center px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
         >
           <X className="w-4 h-4 mr-2" />
-          Cancel
+          {t('common.cancel')}
         </button>
         <button
           type="submit"
           className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
         >
           <Check className="w-4 h-4 mr-2" />
-          {period ? "Update Period" : "Add Period"}
+          {period ? t('periods.updatePeriod') : t('periods.addPeriod')}
         </button>
       </div>
     </form>
