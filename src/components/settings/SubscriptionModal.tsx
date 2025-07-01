@@ -38,14 +38,24 @@ export function SubscriptionModal({
 				);
 
 				if (!response.ok) {
-					throw new Error(t('subscription.failedToFetchUrl'));
+					const failedMsg = t('subscription.failedToFetchUrl');
+					throw new Error(
+						Array.isArray(failedMsg)
+							? failedMsg[0] || ''
+							: failedMsg || ''
+					);
 				}
 
 				const data = await response.json();
 				setSubscriptionUrl(data.subscriptionUrl);
 			} catch (err) {
+				const fallbackMsg = t('errors.somethingWentWrong');
 				setError(
-					err instanceof Error ? err.message : t('errors.somethingWentWrong')
+					err instanceof Error
+						? err.message
+						: Array.isArray(fallbackMsg)
+							? fallbackMsg[0] || ''
+							: fallbackMsg || ''
 				);
 			} finally {
 				setLoading(false);
@@ -69,11 +79,10 @@ export function SubscriptionModal({
 		<button
 			onClick={() => setActiveTab(tab)}
 			className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors
-        ${
-			activeTab === tab
-				? "bg-blue-100 text-blue-700"
-				: "text-zinc-600 hover:bg-zinc-100"
-		}`}
+        ${activeTab === tab
+					? "bg-blue-100 text-blue-700"
+					: "text-zinc-600 hover:bg-zinc-100"
+				}`}
 		>
 			{label}
 		</button>
@@ -103,11 +112,9 @@ export function SubscriptionModal({
 						{t('subscription.appleInstructions', { returnObjects: true }).map((instruction, index) => (
 							<li key={index}>{instruction}</li>
 						))}
-						<p className="mt-4 text-sm text-zinc-600">
-							{t('subscription.appleIosInstructions', { returnObjects: true }).map((instruction, index) => (
-								<li key={`ios-${index}`}>{instruction}</li>
-							))}
-						</p>
+						{t('subscription.appleIosInstructions', { returnObjects: true }).map((instruction, index) => (
+							<li key={`ios-${index}`}>{instruction}</li>
+						))}
 					</ol>
 				);
 			case "other":
@@ -118,9 +125,7 @@ export function SubscriptionModal({
 								<li key={index}>{instruction}</li>
 							))}
 						</p>
-						<p className="mt-4 text-sm text-zinc-600">
-							{t('subscription.icalNote')}
-						</p>
+						{t('subscription.icalNote')}
 					</div>
 				);
 		}
@@ -208,7 +213,7 @@ export function SubscriptionModal({
 
 								<div className="min-h-[220px] p-2">
 									<h4 className="font-medium text-zinc-900 mb-4">
-										{t('subscription.instructionsFor', { 
+										{t('subscription.instructionsFor', {
 											app: activeTab === "outlook"
 												? t('subscription.outlook')
 												: activeTab === "google"
