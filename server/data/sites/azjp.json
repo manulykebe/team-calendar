@@ -103,6 +103,10 @@
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-06-26T20:02:08.409Z",
       "app": {
+        "language": "nl",
+        "timezone": "Europe/Brussels",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
       }
     },
@@ -117,6 +121,13 @@
       "site": "azjp",
       "role": "user",
       "status": "active",
+      "app": {
+        "language": "nl",
+        "timezone": "Europe/Brussels",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm",
+        "weekStartsOn": "Monday"
+      },
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-17T11:26:37.583Z"
     },
@@ -131,6 +142,13 @@
       "site": "azjp",
       "role": "user",
       "status": "active",
+      "app": {
+        "language": "nl",
+        "timezone": "Europe/Brussels",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm",
+        "weekStartsOn": "Monday"
+      },
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-17T11:39:53.933Z"
     },
@@ -145,6 +163,13 @@
       "site": "azjp",
       "role": "user",
       "status": "active",
+      "app": {
+        "language": "nl",
+        "timezone": "Europe/Brussels",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm",
+        "weekStartsOn": "Monday"
+      },
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-17T11:30:51.066Z"
     },
@@ -159,6 +184,13 @@
       "site": "azjp",
       "role": "user",
       "status": "active",
+      "app": {
+        "language": "nl",
+        "timezone": "Europe/Brussels",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm",
+        "weekStartsOn": "Monday"
+      },
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-06-30T09:56:03.839Z"
     },
@@ -173,6 +205,13 @@
       "site": "azjp",
       "role": "user",
       "status": "active",
+      "app": {
+        "language": "nl",
+        "timezone": "Europe/Brussels",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm",
+        "weekStartsOn": "Monday"
+      },
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-16T09:32:52.343Z"
     },
@@ -187,6 +226,13 @@
       "site": "azjp",
       "role": "user",
       "status": "active",
+      "app": {
+        "language": "nl",
+        "timezone": "Europe/Brussels",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm",
+        "weekStartsOn": "Monday"
+      },
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-16T09:32:52.343Z"
     },
@@ -201,6 +247,13 @@
       "site": "azjp",
       "role": "user",
       "status": "active",
+      "app": {
+        "language": "nl",
+        "timezone": "Europe/Brussels",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm",
+        "weekStartsOn": "Monday"
+      },
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-17T11:16:40.456Z"
     }
