@@ -93,6 +93,7 @@ router.get("/:site/:userId/calendar/:token", async (req: AuthRequest, res) => {
 			events = events.filter((e: Event) => {
 				const eventStart = parseISO(e.date);
 				const eventEnd = e.endDate ? parseISO(e.endDate) : eventStart;
+
 				return eventStart <= endDate && eventEnd >= startDate;
 			});
 		}

@@ -89,46 +89,18 @@ export function SubscriptionModal({
 	);
 
 	const TabContent = ({ tab }: { tab: Tab }) => {
-		switch (tab) {
-			case "outlook":
-				return (
-					<ol className="list-decimal list-inside space-y-0 ml-4">
-						{t('subscription.outlookInstructions', { returnObjects: true }).map((instruction, index) => (
-							<li key={index}>{instruction}</li>
-						))}
-					</ol>
-				);
-			case "google":
-				return (
-					<ol className="list-decimal list-inside space-y-0 ml-4">
-						{t('subscription.googleInstructions', { returnObjects: true }).map((instruction, index) => (
-							<li key={index}>{instruction}</li>
-						))}
-					</ol>
-				);
-			case "apple":
-				return (
-					<ol className="list-decimal list-inside space-y-0 ml-4">
-						{t('subscription.appleInstructions', { returnObjects: true }).map((instruction, index) => (
-							<li key={index}>{instruction}</li>
-						))}
-						{t('subscription.appleIosInstructions', { returnObjects: true }).map((instruction, index) => (
-							<li key={`ios-${index}`}>{instruction}</li>
-						))}
-					</ol>
-				);
-			case "other":
-				return (
-					<div className="space-y-4">
-						<p>
-							{t('subscription.otherInstructions', { returnObjects: true }).map((instruction, index) => (
-								<li key={index}>{instruction}</li>
-							))}
-						</p>
-						{t('subscription.icalNote')}
-					</div>
-				);
-		}
+		const instructions = t(`subscription.${tab}Instructions`, { returnObjects: true });
+		
+		// Ensure instructions is an array before mapping
+		const instructionItems = Array.isArray(instructions) ? instructions : [];
+		
+		return (
+			<ol className="list-decimal list-inside space-y-0 ml-4">
+				{instructionItems.map((instruction, index) => (
+					<li key={index}>{instruction}</li>
+				))}
+			</ol>
+		);
 	};
 
 	return (
