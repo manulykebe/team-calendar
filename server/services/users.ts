@@ -7,6 +7,7 @@ import {
 	readUserSettings,
 	writeUserSettings,
 } from "../utils.js";
+import { I18n, globalI18n } from "../i18n/index.js";
 
 export async function getUsers(site: string) {
 	const data = await readSiteData(site);
@@ -25,10 +26,11 @@ export async function getUsers(site: string) {
 export async function createUser(
   userData: User,
 ) {
+	const i18n = globalI18n; // Use global i18n instance
 	const data = await readSiteData(userData.site);
 
 	if (data.users.some((u: User) => u.email === userData.email)) {
-		throw new Error("Email already exists");
+		throw new Error(i18n.t('users.emailAlreadyInUse'));
 	}
 
 	const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -71,11 +73,12 @@ export async function updateUser(
 		site: string;
 	}
 ) {
+	const i18n = globalI18n; // Use global i18n instance
 	const data = await readSiteData(userData.site);
 
 	const userIndex = data.users.findIndex((u: User) => u.id === userId);
 	if (userIndex === -1) {
-		throw new Error("User not found");
+		throw new Error(i18n.t('users.userNotFound'));
 	}
 
 	if (userData.email && userData.email !== data.users[userIndex].email) {
@@ -83,7 +86,7 @@ export async function updateUser(
 			(u: User) => u.id !== userId && u.email === userData.email
 		);
 		if (emailExists) {
-			throw new Error("Email already exists");
+			throw new Error(i18n.t('users.emailAlreadyInUse'));
 		}
 	}
 
@@ -113,11 +116,12 @@ export async function updateUser(
 }
 
 export async function deleteUser(userId: string, site: string) {
+	const i18n = globalI18n; // Use global i18n instance
 	const data = await readSiteData(site);
 
 	const userIndex = data.users.findIndex((u: User) => u.id === userId);
 	if (userIndex === -1) {
-		throw new Error("User not found");
+		throw new Error(i18n.t('users.userNotFound'));
 	}
 
 	// Prevent deleting the last admin user
@@ -127,7 +131,7 @@ export async function deleteUser(userId: string, site: string) {
 			(u: User) => u.role === "admin"
 		).length;
 		if (adminCount === 1) {
-			throw new Error("Cannot delete the last admin user");
+			throw new Error(i18n.t('users.cannotDeleteLastAdmin'));
 		}
 	}
 

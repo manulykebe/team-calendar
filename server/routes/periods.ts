@@ -83,7 +83,7 @@ router.get("/:site/periods/:year", async (req: AuthRequest, res) => {
     const yearNum = parseInt(year);
 
     if (isNaN(yearNum) || yearNum < 2020 || yearNum > 2030) {
-      return res.status(400).json({ message: "Invalid year" });
+      return res.status(400).json({ message: req.i18n.t('periods.invalidYear') });
     }
 
     // All authenticated users can read periods (no admin check here)
@@ -105,7 +105,7 @@ router.get("/:site/periods/:year", async (req: AuthRequest, res) => {
     }
   } catch (error) {
     console.error("Error fetching periods:", error);
-    res.status(500).json({ message: "Failed to fetch periods" });
+    res.status(500).json({ message: req.i18n.t('periods.failedToFetchPeriods') });
   }
 });
 
@@ -117,23 +117,23 @@ router.put("/:site/periods/:year", async (req: AuthRequest, res) => {
     const periodsData: PeriodsData = req.body;
 
     if (isNaN(yearNum) || yearNum < 2020 || yearNum > 2030) {
-      return res.status(400).json({ message: "Invalid year" });
+      return res.status(400).json({ message: req.i18n.t('periods.invalidYear') });
     }
 
     // Check if user has admin access for write operations
     if (req.user!.role !== 'admin') {
-      return res.status(403).json({ message: "Admin access required" });
+      return res.status(403).json({ message: req.i18n.t('periods.adminAccessRequired') });
     }
 
     // Validate periods data
     if (!Array.isArray(periodsData.periods)) {
-      return res.status(400).json({ message: "Invalid periods data" });
+      return res.status(400).json({ message: req.i18n.t('periods.invalidPeriodData') });
     }
 
     // Validate each period
     for (const period of periodsData.periods) {
       if (!period.name || !period.startDate || !period.endDate || !period.editingStatus) {
-        return res.status(400).json({ message: "All period fields are required" });
+        return res.status(400).json({ message: req.i18n.t('periods.allPeriodFieldsRequired') });
       }
 
       // Validate dates
@@ -142,12 +142,12 @@ router.put("/:site/periods/:year", async (req: AuthRequest, res) => {
         const endDate = parseISO(period.endDate);
         if (endDate <= startDate) {
           return res.status(400).json({ 
-            message: `Period "${period.name}": End date must be after start date` 
+            message: req.i18n.t('periods.endDateMustBeAfterStart', { name: period.name }) 
           });
         }
       } catch (error) {
         return res.status(400).json({ 
-          message: `Period "${period.name}": Invalid date format` 
+          message: req.i18n.t('periods.invalidDateFormat') 
         });
       }
     }
@@ -163,7 +163,10 @@ router.put("/:site/periods/:year", async (req: AuthRequest, res) => {
       
       if (new Date(current.endDate) >= new Date(next.startDate)) {
         return res.status(400).json({ 
-          message: `Periods "${current.name}" and "${next.name}" have overlapping dates` 
+          message: req.i18n.t('periods.periodsOverlap', { 
+            period1: current.name, 
+            period2: next.name 
+          }) 
         });
       }
     }
@@ -181,7 +184,7 @@ router.put("/:site/periods/:year", async (req: AuthRequest, res) => {
     res.json(updatedPeriodsData);
   } catch (error) {
     console.error("Error saving periods:", error);
-    res.status(500).json({ message: "Failed to save periods" });
+    res.status(500).json({ message: req.i18n.t('periods.failedToSavePeriods') });
   }
 });
 
@@ -192,12 +195,12 @@ router.post("/:site/periods/:year/reset", async (req: AuthRequest, res) => {
     const yearNum = parseInt(year);
 
     if (isNaN(yearNum) || yearNum < 2020 || yearNum > 2030) {
-      return res.status(400).json({ message: "Invalid year" });
+      return res.status(400).json({ message: req.i18n.t('periods.invalidYear') });
     }
 
     // Check if user has admin access for write operations
     if (req.user!.role !== 'admin') {
-      return res.status(403).json({ message: "Admin access required" });
+      return res.status(403).json({ message: req.i18n.t('periods.adminAccessRequired') });
     }
 
     const defaultPeriods = generateDefaultPeriods(yearNum);
@@ -214,7 +217,7 @@ router.post("/:site/periods/:year/reset", async (req: AuthRequest, res) => {
     res.json(periodsData);
   } catch (error) {
     console.error("Error resetting periods:", error);
-    res.status(500).json({ message: "Failed to reset periods" });
+    res.status(500).json({ message: req.i18n.t('periods.failedToResetPeriods') });
   }
 });
 

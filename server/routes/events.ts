@@ -90,8 +90,9 @@ router.get("/", async (req: AuthRequest, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      message:
-        error instanceof Error ? error.message : "Failed to fetch events",
+      message: error instanceof Error 
+        ? error.message 
+        : req.i18n.t('events.failedToFetchEvents'),
     });
   }
 });
@@ -121,13 +122,14 @@ router.post("/", async (req: AuthRequest, res) => {
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({
-        message: "Validation error",
+        message: req.i18n.t('common.validationError'),
         errors: error.errors,
       });
     } else {
       res.status(500).json({
-        message:
-          error instanceof Error ? error.message : "Failed to create event",
+        message: error instanceof Error 
+          ? error.message 
+          : req.i18n.t('events.failedToCreateEvent'),
       });
     }
   }
@@ -174,12 +176,14 @@ router.put("/:id", async (req: AuthRequest, res) => {
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({
-        message: "Validation error",
+        message: req.i18n.t('common.validationError'),
         errors: error.errors,
       });
     } else {
       res.status(403).json({
-        message: error instanceof Error ? error.message : "Not authorized",
+        message: error instanceof Error 
+          ? error.message 
+          : req.i18n.t('auth.notAuthorized'),
       });
     }
   }
@@ -189,7 +193,7 @@ router.put("/:id", async (req: AuthRequest, res) => {
 router.patch("/bulk-status", async (req: AuthRequest, res) => {
   try {
     if (req.user!.role !== 'admin') {
-      return res.status(403).json({ message: "Admin access required" });
+      return res.status(403).json({ message: req.i18n.t('periods.adminAccessRequired') });
     }
 
     const { eventIds, status } = z.object({
@@ -247,18 +251,20 @@ router.patch("/bulk-status", async (req: AuthRequest, res) => {
     }
 
     res.json({
-      message: `Updated ${updatedEvents.length} events`,
+      message: req.i18n.t('events.bulkUpdateSuccess', { count: updatedEvents.length }),
       updatedEvents
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({
-        message: "Validation error",
+        message: req.i18n.t('common.validationError'),
         errors: error.errors,
       });
     } else {
       res.status(500).json({
-        message: error instanceof Error ? error.message : "Failed to update events",
+        message: error instanceof Error 
+          ? error.message 
+          : req.i18n.t('events.failedToUpdateEvent'),
       });
     }
   }
@@ -296,7 +302,9 @@ router.delete("/:id", async (req: AuthRequest, res) => {
     res.sendStatus(204);
   } catch (error) {
     res.status(500).json({
-      message: error instanceof Error ? error.message : "Failed to delete event",
+      message: error instanceof Error 
+        ? error.message 
+        : req.i18n.t('events.failedToDeleteEvent'),
     });
   }
 });

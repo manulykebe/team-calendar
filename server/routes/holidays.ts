@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { readFile, getStorageKey } from "../services/storage.js";
+import { AuthRequest } from "../types.js";
 
 import { join } from "path";
 import { fileURLToPath } from "url";
@@ -8,7 +9,7 @@ import { dirname } from "path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const router = Router();
 
-router.get("/:year", async (req, res) => {
+router.get("/:year", async (req: AuthRequest, res) => {
 	try {
 		const key = getStorageKey("", `holidays.json`);
 		const data = await readFile(key);
@@ -19,14 +20,14 @@ router.get("/:year", async (req, res) => {
 
 		if (!holidays[location] || !holidays[location][year]) {
 			return res.status(404).json({
-				message: `No holidays found for year ${year} and location ${location}`,
+				message: req.i18n.t('holidays.holidaysNotFound', { year, location }),
 			});
 		}
 
 		res.json(holidays[location][year]);
 	} catch (error) {
 		console.error("Error fetching holidays:", error);
-		res.status(500).json({ message: "Failed to fetch holidays" });
+		res.status(500).json({ message: req.i18n.t('holidays.failedToFetchHolidays') });
 	}
 });
 

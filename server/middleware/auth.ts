@@ -13,7 +13,7 @@ export const authenticateToken = async (
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Access token required" });
+    return res.status(401).json({ message: req.i18n.t('auth.accessTokenRequired') });
   }
 
   try {
@@ -24,7 +24,7 @@ export const authenticateToken = async (
     const user = siteData.users.find((u: any) => u.id === decoded.id);
 
     if (!user) {
-      return res.status(403).json({ message: "User not found or access denied" });
+      return res.status(403).json({ message: req.i18n.t('auth.userNotFound') });
     }
 
     req.user = {
@@ -34,6 +34,6 @@ export const authenticateToken = async (
 
     next();
   } catch (err) {
-    return res.status(403).json({ message: "Invalid or expired token" });
+    return res.status(403).json({ message: req.i18n.t('auth.invalidToken') });
   }
 };

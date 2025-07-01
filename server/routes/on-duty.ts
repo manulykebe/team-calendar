@@ -2,11 +2,12 @@ import { Router } from "express";
 import { readFile, getStorageKey } from "../services/storage.js";
 import { readSiteData } from "../utils.js";
 import { format, parseISO, isValid } from "date-fns";
+import { AuthRequest } from "../types.js";
 
 const router = Router();
 
 // Get the on-duty staff member for a specific site and date
-router.get("/:site", async (req, res) => {
+router.get("/:site", async (req: AuthRequest, res) => {
   try {
     const { site } = req.params;
     const { date } = req.query;
@@ -33,7 +34,7 @@ router.get("/:site", async (req, res) => {
 
 
     if (!isValid(targetDate)) {
-      return res.status(400).json({ message: "Invalid date format" });
+      return res.status(400).json({ message: req.i18n.t('onDuty.invalidDateFormat') });
     }
 
     // Format date to YYYY-MM-DD
@@ -47,21 +48,23 @@ router.get("/:site", async (req, res) => {
       const data = await readFile(key);
       onDutyData = JSON.parse(data);
     } catch (error) {
-      return res.status(404).json({ message: "On-duty schedule not found" });
+      return res.status(404).json({ message: req.i18n.t('onDuty.onDutyScheduleNotFound') });
     }
 
     // Find the on-duty person for the target date
     const onDutyEntry = onDutyData.schedule.find((entry: any) => entry.date === formattedDate);
 
     if (!onDutyEntry) {
-      return res.status(404).json({ message: "No on-duty staff found for the specified date: " + formattedDate });
+      return res.status(404).json({ 
+        message: req.i18n.t('onDuty.noOnDutyStaffFound', { date: formattedDate }) 
+      });
     }
 
     // Get user details
     const user = siteData.users.find((u: any) => u.id === onDutyEntry.userId);
 
     if (!user) {
-      return res.status(404).json({ message: "On-duty user not found" });
+      return res.status(404).json({ message: req.i18n.t('onDuty.onDutyUserNotFound') });
     }
 
     res.json({
@@ -80,7 +83,7 @@ router.get("/:site", async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching on-duty staff:", error);
-    res.status(500).json({ message: "Failed to fetch on-duty staff" });
+    res.status(500).json({ message: req.i18n.t('onDuty.failedToFetchOnDutyStaff') });
   }
 });
 

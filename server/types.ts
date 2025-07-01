@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { SocketManager } from './websocket/socketManager.js';
+import { I18n } from './i18n/index.js';
 
 export interface AuthRequest extends Request {
 	user?: {
@@ -9,6 +10,7 @@ export interface AuthRequest extends Request {
 		role?: string;
 	  };
 	socketManager?: SocketManager;
+	i18n: I18n;
 }
 
 export interface User {
@@ -22,6 +24,14 @@ export interface User {
 	role: "admin" | "user";
 	createdAt: string;
 	updatedAt: string;
+	settings?: {
+		language?: string;
+		colleagues?: Record<string, any>;
+		showWeekNumber?: string;
+		colleagueOrder?: string[];
+		availability?: any[];
+		availabilityExceptions?: any[];
+	};
 }
 
 export type ColleagueID = string;
@@ -68,6 +78,7 @@ export interface UserSettings {
 	colleagueOrder: string[];
 	availability: Availability[];
 	availabilityExceptions: AvailabilityExceptions[];
+	language?: string;
 }
 
 export interface Event {

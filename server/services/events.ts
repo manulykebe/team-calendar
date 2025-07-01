@@ -1,5 +1,6 @@
 import { Event } from "../types.js";
 import { readUserEvents, writeUserEvents, readSiteData } from "../utils.js";
+import { I18n, globalI18n } from "../i18n/index.js";
 
 export async function getEvents(site: string) {
   // This will be deprecated once we migrate all events
@@ -52,10 +53,11 @@ export async function updateEvent(params: {
   isAdmin?: boolean;
 }) {
   const events = await readUserEvents(params.site, params.userId);
+  const i18n = globalI18n; // Use global i18n instance
 
   const eventIndex = events.findIndex((e: Event) => e.id === params.id);
   if (eventIndex === -1) {
-    throw new Error("Event not found");
+    throw new Error(i18n.t('events.eventNotFound'));
   }
 
   const existingEvent = events[eventIndex];
@@ -64,7 +66,7 @@ export async function updateEvent(params: {
 
   // Allow update if user is admin or owns the event
   if (!isAdmin && !isOwner) {
-    throw new Error("Not authorized to update this event");
+    throw new Error(i18n.t('events.notAuthorizedToModifyEvent'));
   }
 
   // Build update object with only provided fields
@@ -96,10 +98,11 @@ export async function deleteEvent(params: {
   isAdmin?: boolean;
 }) {
   const events = await readUserEvents(params.site, params.userId);
+  const i18n = globalI18n; // Use global i18n instance
 
   const eventIndex = events.findIndex((e: Event) => e.id === params.id);
   if (eventIndex === -1) {
-    throw new Error("Event not found");
+    throw new Error(i18n.t('events.eventNotFound'));
   }
 
   // Allow deletion if user is admin or owns the event
@@ -107,7 +110,7 @@ export async function deleteEvent(params: {
   const isOwner = events[eventIndex].userId === params.userId;
 
   if (!isAdmin && !isOwner) {
-    throw new Error("Not authorized to delete this event");
+    throw new Error(i18n.t('events.notAuthorizedToModifyEvent'));
   }
 
   events.splice(eventIndex, 1);

@@ -15,6 +15,7 @@ import { healthRouter } from "./routes/health.js";
 import { periodsRouter } from "./routes/periods.js";
 import { onDutyRouter } from "./routes/on-duty.js";
 import { initializeSocketManager } from "./websocket/socketManager.js";
+import { i18nMiddleware } from "./middleware/i18n.js";
 
 const app = express();
 const server = createServer(app);
@@ -32,7 +33,7 @@ const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Id']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Id', 'Accept-Language']
 };
 
 app.use(cors(corsOptions));
@@ -44,6 +45,9 @@ app.use((req, res, next) => {
   (req as any).socketManager = socketManager;
   next();
 });
+
+// Add i18n middleware
+app.use(i18nMiddleware);
 
 // Health check endpoint (must be before other routes)
 app.use("/api/health", healthRouter);
@@ -64,11 +68,12 @@ app.use("/api/on-duty", onDutyRouter);
 // Root endpoint
 app.get("/", (req, res) => {
   res.json({
-    message: "Team Calendar API",
+    message: req.i18n.t('common.teamCalendarAPI'),
     version: "1.2.14",
-    status: "running",
+    status: req.i18n.t('common.running'),
     timestamp: new Date().toISOString(),
-    websocket: "enabled"
+    websocket: "enabled",
+    language: req.i18n.getLanguage()
   });
 });
 
@@ -86,7 +91,7 @@ app.get("/api/websocket/status", (req, res) => {
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err);
   res.status(500).json({
-    message: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
+    message: process.env.NODE_ENV === 'production' ? req.i18n.t('common.internalServerError') : err.message,
     ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
   });
 });
@@ -94,7 +99,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 // 404 handler
 app.use("*", (req, res) => {
   res.status(404).json({
-    message: "Route not found",
+    message: req.i18n.t('common.notFound'),
     path: req.originalUrl
   });
 });
