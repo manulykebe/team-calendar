@@ -20,6 +20,7 @@ export const en = {
     validationError: 'Validation error',
     healthy: 'Healthy',
     running: 'Running',
+    teamCalendarAPI: 'Team Calendar API',
   },
 
   // Auth
@@ -74,6 +75,7 @@ export const en = {
     invalidEventStatus: 'Invalid event status',
     eventStatusUpdated: 'Event status updated successfully',
     bulkUpdateSuccess: 'Updated {{count}} events',
+    holiday: 'Holiday ({{status}})',
   },
 
   // Holidays
@@ -117,6 +119,8 @@ export const en = {
     onDutyUserNotFound: 'On-duty user not found',
     failedToFetchOnDutyStaff: 'Failed to fetch on-duty staff',
     invalidDateFormat: 'Invalid date format',
+    onDutyShift: 'On Duty Shift',
+    onDutyShiftDescription: 'On-call duty shift for {{firstName}} {{lastName}}',
   },
 
   // Export
@@ -132,6 +136,7 @@ export const en = {
     userNotFound: 'User not found',
     failedToServeCalendar: 'Failed to serve calendar',
     failedToFetchAgenda: 'Failed to fetch agenda',
+    subscriptionInstructions: 'To subscribe to this calendar, copy the URL and add it to your calendar application as a subscription calendar.',
   },
 
   // Health

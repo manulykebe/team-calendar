@@ -20,6 +20,7 @@ export const nl = {
     validationError: 'Validatiefout',
     healthy: 'Gezond',
     running: 'Actief',
+    teamCalendarAPI: 'Team Kalender API',
   },
 
   // Auth
@@ -74,6 +75,7 @@ export const nl = {
     invalidEventStatus: 'Ongeldige gebeurtenisstatus',
     eventStatusUpdated: 'Gebeurtenisstatus succesvol bijgewerkt',
     bulkUpdateSuccess: '{{count}} gebeurtenissen bijgewerkt',
+    holiday: 'Verlof ({{status}})',
   },
 
   // Holidays
@@ -117,6 +119,8 @@ export const nl = {
     onDutyUserNotFound: 'Dienstdoende gebruiker niet gevonden',
     failedToFetchOnDutyStaff: 'Ophalen van dienstdoende medewerker mislukt',
     invalidDateFormat: 'Ongeldig datumformaat',
+    onDutyShift: 'Dienst',
+    onDutyShiftDescription: 'Dienstdoende shift voor {{firstName}} {{lastName}}',
   },
 
   // Export
@@ -132,6 +136,7 @@ export const nl = {
     userNotFound: 'Gebruiker niet gevonden',
     failedToServeCalendar: 'Serveren van kalender mislukt',
     failedToFetchAgenda: 'Ophalen van agenda mislukt',
+    subscriptionInstructions: 'Om je te abonneren op deze kalender, kopieer de URL en voeg deze toe aan je kalender-applicatie als een abonnementskalender.',
   },
 
   // Health

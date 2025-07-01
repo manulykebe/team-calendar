@@ -20,6 +20,7 @@ export const fr = {
     validationError: 'Erreur de validation',
     healthy: 'En bonne santé',
     running: 'En cours d\'exécution',
+    teamCalendarAPI: 'API du Calendrier d\'Équipe',
   },
 
   // Auth
@@ -74,6 +75,7 @@ export const fr = {
     invalidEventStatus: 'Statut d\'événement invalide',
     eventStatusUpdated: 'Statut de l\'événement mis à jour avec succès',
     bulkUpdateSuccess: '{{count}} événements mis à jour',
+    holiday: 'Congé ({{status}})',
   },
 
   // Holidays
@@ -117,6 +119,8 @@ export const fr = {
     onDutyUserNotFound: 'Utilisateur de garde non trouvé',
     failedToFetchOnDutyStaff: 'Échec de la récupération du personnel de garde',
     invalidDateFormat: 'Format de date invalide',
+    onDutyShift: 'Garde',
+    onDutyShiftDescription: 'Garde pour {{firstName}} {{lastName}}',
   },
 
   // Export
@@ -132,6 +136,7 @@ export const fr = {
     userNotFound: 'Utilisateur non trouvé',
     failedToServeCalendar: 'Échec de la diffusion du calendrier',
     failedToFetchAgenda: 'Échec de la récupération de l\'agenda',
+    subscriptionInstructions: 'Pour vous abonner à ce calendrier, copiez l\'URL et ajoutez-la à votre application de calendrier en tant que calendrier d\'abonnement.',
   },
 
   // Health

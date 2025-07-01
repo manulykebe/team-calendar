@@ -38,7 +38,7 @@ router.get(
 			const user = siteData.users.find((u: any) => u.id === userId);
 
 			if (!user) {
-				return res.status(404).json({ message: "User not found" });
+				return res.status(404).json({ message: req.i18n.t('subscription.userNotFound') });
 			}
 
 			// Generate subscription token
@@ -50,20 +50,19 @@ router.get(
 
 			res.json({
 				subscriptionUrl,
-				instructions:
-					"To subscribe to this calendar, copy the URL and add it to your calendar application as a subscription calendar.",
+				instructions: req.i18n.t('subscription.subscriptionInstructions'),
 			});
 		} catch (error) {
 			console.error("Error generating subscription URL:", error);
 			res.status(500).json({
-				message: "Failed to generate subscription URL",
+				message: req.i18n.t('subscription.failedToGenerateSubscriptionURL'),
 			});
 		}
 	}
 );
 
 // Public calendar endpoint for subscriptions
-router.get("/:site/:userId/calendar/:token", async (req, res) => {
+router.get("/:site/:userId/calendar/:token", async (req: AuthRequest, res) => {
 	try {
 		const { site, userId, token } = req.params;
 		const { from, to } = req.query; // Add date range query parameters
@@ -72,14 +71,14 @@ router.get("/:site/:userId/calendar/:token", async (req, res) => {
 		if (!verifySubscriptionToken(token, userId, site)) {
 			return res
 				.status(401)
-				.json({ message: "Invalid subscription token" });
+				.json({ message: req.i18n.t('subscription.invalidSubscriptionToken') });
 		}
 
 		const siteData = await readSiteData(site);
 		const user = siteData.users.find((u: any) => u.id === userId);
 
 		if (!user) {
-			return res.status(404).json({ message: "User not found" });
+			return res.status(404).json({ message: req.i18n.t('subscription.userNotFound') });
 		}
 
 		// Get user's events with optional date filtering
@@ -113,8 +112,11 @@ router.get("/:site/:userId/calendar/:token", async (req, res) => {
 						id: `duty-${shiftDate}`,
 						userId: userId,
 						type: "onDuty",
-						title: "On Duty Shift",
-						description: `On-call duty shift for ${user.firstName} ${user.lastName}`,
+						title: req.i18n.t('onDuty.onDutyShift'),
+						description: req.i18n.t('onDuty.onDutyShiftDescription', { 
+							firstName: user.firstName, 
+							lastName: user.lastName 
+						}),
 						date: `${shiftDate}T${dutyConfig.startTime}:00`,
 						endDate: `${nextDay}T${dutyConfig.endTimeNextDay}:00`,
 						createdAt: new Date().toISOString(),
@@ -129,7 +131,7 @@ router.get("/:site/:userId/calendar/:token", async (req, res) => {
 		const allEvents = [...events, ...onDutyShifts];
 
 		// Generate and send iCal content
-		const icalContent = generateICalContent(allEvents, user);
+		const icalContent = generateICalContent(allEvents, user, req.i18n);
 		res.setHeader("Content-Type", "text/calendar"); // charset=UTF-8");
 		// res.setHeader(
 		// 	"Content-Disposition",
@@ -144,7 +146,7 @@ router.get("/:site/:userId/calendar/:token", async (req, res) => {
 		res.send(icalContent);
 	} catch (error) {
 		console.error("Error serving calendar:", error);
-		res.status(500).json({ message: "Failed to serve calendar" });
+		res.status(500).json({ message: req.i18n.t('subscription.failedToServeCalendar') });
 	}
 });
 
@@ -161,7 +163,7 @@ router.get(
 			// Find user
 			const user = siteData.users.find((u: any) => u.id === userId);
 			if (!user) {
-				return res.status(404).json({ message: "User not found" });
+				return res.status(404).json({ message: req.i18n.t('subscription.userNotFound') });
 			}
 
 			// Get user's events
@@ -203,13 +205,13 @@ router.get(
 			});
 		} catch (error) {
 			console.error("Error fetching agenda:", error);
-			res.status(500).json({ message: "Failed to fetch agenda" });
+			res.status(500).json({ message: req.i18n.t('subscription.failedToFetchAgenda') });
 		}
 	}
 );
 
 // Helper function to generate iCal content
-function generateICalContent(events: Event[], user: any): string {
+function generateICalContent(events: Event[], user: any, i18n: any): string {
 	const now = new Date();
 	const timestamp = format(now, "yyyyMMdd'T'HHmmss'Z'");
 	const prodId = "-//Team Calendar//AZJP Team Calendar V1.0//EN";
@@ -239,9 +241,9 @@ function generateICalContent(events: Event[], user: any): string {
 
 			let summary = "";
 			if (isOnDutyEvent) {
-				summary = "On Duty";
+				summary = i18n.t('onDuty.onDutyShift');
 			} else if (event.type === "requestedLeave") {
-				summary = `Holiday (${event.status || "pending"})`;
+				summary = i18n.t('events.holiday', { status: event.status || 'pending' });
 			} else {
 				summary = event.title || event.type;
 			}
