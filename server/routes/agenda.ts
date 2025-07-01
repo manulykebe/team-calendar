@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { authenticateToken } from "../middleware/auth.js";
 import { AuthRequest } from "../types.js";
-import { readSiteData, writeSiteData, readUserEvents, readFile, getStorageKey } from "../utils.js";
+import { readSiteData, readUserEvents } from "../utils.js";
+import { readFile, getStorageKey } from "../services/storage.js";
 import { format, parseISO, startOfDay, endOfDay, addDays } from "date-fns";
 import { Event } from "../types.js";
 import crypto from "crypto";
@@ -100,14 +101,14 @@ router.get("/:site/:userId/calendar/:token", async (req, res) => {
 		try {
 			const onDutyData = JSON.parse(await readFile(getStorageKey("sites", site, "events", "on-duty.json")));
 			const dutyConfig = siteData.app?.duty || { startTime: "17:30", endTimeNextDay: "08:00" };
-			
+
 			// Filter shifts for this user
 			onDutyShifts = onDutyData.schedule
 				.filter((shift: any) => shift.userId === userId)
 				.map((shift: any) => {
 					const shiftDate = shift.date;
 					const nextDay = format(addDays(parseISO(shiftDate), 1), "yyyy-MM-dd");
-					
+
 					return {
 						id: `duty-${shiftDate}`,
 						userId: userId,
@@ -222,20 +223,20 @@ function generateICalContent(events: Event[], user: any): string {
 		.map((event) => {
 			// Handle different date formats for regular events vs on-duty events
 			const isOnDutyEvent = event.type === "onDuty";
-			
+
 			// For on-duty events, the date already includes time
-			const startDate = isOnDutyEvent 
+			const startDate = isOnDutyEvent
 				? format(parseISO(event.date), "yyyyMMdd'T'HHmmss")
 				: format(parseISO(event.date), "yyyyMMdd");
-				
-			const endDate = event.endDate 
-				? (isOnDutyEvent 
+
+			const endDate = event.endDate
+				? (isOnDutyEvent
 					? format(parseISO(event.endDate), "yyyyMMdd'T'HHmmss")
 					: format(addDays(parseISO(event.endDate), 0), "yyyyMMdd"))
 				: startDate;
-				
+
 			const eventUid = `${event.id}-${startDate}@teamcalendar`;
-			
+
 			let summary = "";
 			if (isOnDutyEvent) {
 				summary = "On Duty";
@@ -244,20 +245,20 @@ function generateICalContent(events: Event[], user: any): string {
 			} else {
 				summary = event.title || event.type;
 			}
-			
+
 			summary = summary.replace(/[\\;,]/g, (match) => "\\" + match).replace(/\n/g, "\\n");
-			
+
 			const description = event.description
 				? event.description
-						.replace(/[\\;,]/g, (match) => "\\" + match)
-						.replace(/\n/g, "\\n")
+					.replace(/[\\;,]/g, (match) => "\\" + match)
+					.replace(/\n/g, "\\n")
 				: "";
 
 			// Different formatting for on-duty events that include time
 			const dtStart = isOnDutyEvent
 				? `DTSTART:${startDate}`
 				: `DTSTART;TZID=Europe/Amsterdam:${startDate}T000000`;
-				
+
 			const dtEnd = isOnDutyEvent
 				? `DTEND:${endDate}`
 				: `DTEND;TZID=Europe/Amsterdam:${endDate}T235959`;
