@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticateToken } from "../middleware/auth.js";
 import { AuthRequest } from "../types.js";
-import { readSiteData, writeSiteData, readUserEvents } from "../utils.js";
+import { readSiteData, writeSiteData, readUserEvents, readFile, getStorageKey } from "../utils.js";
 import { format, parseISO, startOfDay, endOfDay, addDays } from "date-fns";
 import { Event } from "../types.js";
 import crypto from "crypto";
@@ -95,8 +95,40 @@ router.get("/:site/:userId/calendar/:token", async (req, res) => {
 			});
 		}
 
+		// Get on-duty shifts for this user
+		let onDutyShifts: any[] = [];
+		try {
+			const onDutyData = JSON.parse(await readFile(getStorageKey("sites", site, "events", "on-duty.json")));
+			const dutyConfig = siteData.app?.duty || { startTime: "17:30", endTimeNextDay: "08:00" };
+			
+			// Filter shifts for this user
+			onDutyShifts = onDutyData.schedule
+				.filter((shift: any) => shift.userId === userId)
+				.map((shift: any) => {
+					const shiftDate = shift.date;
+					const nextDay = format(addDays(parseISO(shiftDate), 1), "yyyy-MM-dd");
+					
+					return {
+						id: `duty-${shiftDate}`,
+						userId: userId,
+						type: "onDuty",
+						title: "On Duty Shift",
+						description: `On-call duty shift for ${user.firstName} ${user.lastName}`,
+						date: `${shiftDate}T${dutyConfig.startTime}:00`,
+						endDate: `${nextDay}T${dutyConfig.endTimeNextDay}:00`,
+						createdAt: new Date().toISOString(),
+						updatedAt: new Date().toISOString()
+					};
+				});
+		} catch (error) {
+			console.warn("Could not load on-duty shifts:", error);
+		}
+
+		// Combine regular events with on-duty shifts
+		const allEvents = [...events, ...onDutyShifts];
+
 		// Generate and send iCal content
-		const icalContent = generateICalContent(events, user);
+		const icalContent = generateICalContent(allEvents, user);
 		res.setHeader("Content-Type", "text/calendar"); // charset=UTF-8");
 		// res.setHeader(
 		// 	"Content-Disposition",
@@ -188,19 +220,47 @@ function generateICalContent(events: Event[], user: any): string {
 
 	const icalEvents = events
 		.map((event) => {
-			const startDate = format(parseISO(event.date), "yyyyMMdd");
-			const endDate = event.endDate
-				? format(addDays(parseISO(event.endDate), 0), "yyyyMMdd")
-				: format(addDays(parseISO(event.date), 0), "yyyyMMdd");
+			// Handle different date formats for regular events vs on-duty events
+			const isOnDutyEvent = event.type === "onDuty";
+			
+			// For on-duty events, the date already includes time
+			const startDate = isOnDutyEvent 
+				? format(parseISO(event.date), "yyyyMMdd'T'HHmmss")
+				: format(parseISO(event.date), "yyyyMMdd");
+				
+			const endDate = event.endDate 
+				? (isOnDutyEvent 
+					? format(parseISO(event.endDate), "yyyyMMdd'T'HHmmss")
+					: format(addDays(parseISO(event.endDate), 0), "yyyyMMdd"))
+				: startDate;
+				
 			const eventUid = `${event.id}-${startDate}@teamcalendar`;
-			const summary =( event.type=== "requestedLeave"?`Holiday (${event.status})`:"xxx")
-				.replace(/[\\;,]/g, (match) => "\\" + match)
-				.replace(/\n/g, "\\n");
+			
+			let summary = "";
+			if (isOnDutyEvent) {
+				summary = "On Duty";
+			} else if (event.type === "requestedLeave") {
+				summary = `Holiday (${event.status || "pending"})`;
+			} else {
+				summary = event.title || event.type;
+			}
+			
+			summary = summary.replace(/[\\;,]/g, (match) => "\\" + match).replace(/\n/g, "\\n");
+			
 			const description = event.description
 				? event.description
 						.replace(/[\\;,]/g, (match) => "\\" + match)
 						.replace(/\n/g, "\\n")
 				: "";
+
+			// Different formatting for on-duty events that include time
+			const dtStart = isOnDutyEvent
+				? `DTSTART:${startDate}`
+				: `DTSTART;TZID=Europe/Amsterdam:${startDate}T000000`;
+				
+			const dtEnd = isOnDutyEvent
+				? `DTEND:${endDate}`
+				: `DTEND;TZID=Europe/Amsterdam:${endDate}T235959`;
 
 			return [
 				"BEGIN:VEVENT",
@@ -210,8 +270,8 @@ function generateICalContent(events: Event[], user: any): string {
 				`TRANSP:OPAQUE`,
 				`CLASS:PUBLIC`,
 				`SUMMARY:${summary}`,
-				`DTSTART;TZID=Europe/Amsterdam:${startDate}T000000`,
-				`DTEND;TZID=Europe/Amsterdam:${endDate}T235959`,
+				dtStart,
+				dtEnd,
 				`LOCATION:Better Place`,
 				description ? `DESCRIPTION:${description}` : "",
 				`ORGANIZER;CN=${user.site.toUpperCase()} Team Calendar:MAILTO:${user.site}-team-calendar@lyke.be`,
