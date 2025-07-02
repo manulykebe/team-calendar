@@ -266,8 +266,7 @@ function generateICalContent(events: Event[], user: any, i18n: any): string {
 
 			const dtEnd = isOnDutyEvent
 				? `DTEND:${endDate}`
-				: `` 
-				// `DTEND;TZID=Europe/Brussels:${endDate}T235959`;
+				: `DTEND;TZID=Europe/Brussels:${endDate}T235959`;
 
 			return [
 				"BEGIN:VEVENT",
