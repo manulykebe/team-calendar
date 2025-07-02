@@ -262,11 +262,12 @@ function generateICalContent(events: Event[], user: any, i18n: any): string {
 			// Different formatting for on-duty events that include time
 			const dtStart = isOnDutyEvent
 				? `DTSTART:${startDate}`
-				: `DTSTART;TZID=Europe/Amsterdam:${startDate}T000000`;
+				: `DTSTART;TZID=Europe/Brussels:${startDate}T000000`;
 
 			const dtEnd = isOnDutyEvent
 				? `DTEND:${endDate}`
-				: `DTEND;TZID=Europe/Amsterdam:${endDate}T235959`;
+				: `` 
+				// `DTEND;TZID=Europe/Brussels:${endDate}T235959`;
 
 			return [
 				"BEGIN:VEVENT",
@@ -299,9 +300,9 @@ function generateICalContent(events: Event[], user: any, i18n: any): string {
 		"X-PUBLISHED-TTL:PT10M",
 		"REFRESH-INTERVAL;VALUE=DURATION:PT1H",
 		"BEGIN:VTIMEZONE",
-		"TZID:Europe/Amsterdam",
-		"TZURL:http://tzurl.org/zoneinfo/Europe/Amsterdam",
-		"X-LIC-LOCATION:Europe/Amsterdam",
+		"TZID:Europe/Brussels",
+		"TZURL:http://tzurl.org/zoneinfo/Europe/Brussels",
+		"X-LIC-LOCATION:Europe/Brussels",
 		"BEGIN:DAYLIGHT",
 		"TZOFFSETFROM:+0100",
 		"TZOFFSETTO:+0200",
