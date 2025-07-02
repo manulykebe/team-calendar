@@ -259,14 +259,24 @@ function generateICalContent(events: Event[], user: any, i18n: any): string {
 					.replace(/\n/g, "\\n")
 				: "";
 
-			// Different formatting for on-duty events that include time
-			const dtStart = isOnDutyEvent
-				? `DTSTART:${startDate}`
-				: `DTSTART;TZID=Europe/Brussels:${startDate}T000000`;
+            // Different formatting for on-duty events vs. all-day events
+            let dtStart, dtEnd;
 
-			const dtEnd = isOnDutyEvent
-				? `DTEND:${endDate}`
-				: `DTEND;TZID=Europe/Brussels:${endDate}T235959`;
+            if (isOnDutyEvent) {
+                // For on-duty events with specific times
+                const startDateTime = format(parseISO(event.date), "yyyyMMdd'T'HHmmss");
+                const endDateTime = event.endDate ? format(parseISO(event.endDate), "yyyyMMdd'T'HHmmss") : startDateTime;
+                dtStart = `DTSTART:${startDateTime}`;
+                dtEnd = `DTEND:${endDateTime}`;
+            } else {
+                // For all-day events, use VALUE=DATE format
+                const allDayStartDate = format(parseISO(event.date), "yyyyMMdd");
+                // The end date for an all-day event is exclusive, so it must be the day AFTER the event ends.
+                const allDayEndDate = format(addDays(parseISO(event.endDate || event.date), 1), "yyyyMMdd");
+                
+                dtStart = `DTSTART;VALUE=DATE:${allDayStartDate}`;
+                dtEnd = `DTEND;VALUE=DATE:${allDayEndDate}`;
+            }
 
 			return [
 				"BEGIN:VEVENT",
