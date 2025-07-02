@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { I18n, Language, globalI18n } from '../i18n';
-import { AuthRequest } from '../types';
-import { getUsers } from '../services/users';
+import { I18n, Language, globalI18n } from '../i18n/index.js';
+import { AuthRequest } from '../types.js';
+import { getUsers } from '../services/users.js';
 
 // Extend Express Request to include i18n
 declare global {

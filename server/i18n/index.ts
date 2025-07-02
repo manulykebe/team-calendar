@@ -1,4 +1,4 @@
-import { translations } from './translations';
+import { translations } from './translations.js';
 
 export type Language = 'en' | 'fr' | 'nl';
 
