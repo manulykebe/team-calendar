@@ -277,7 +277,7 @@ function generateICalContent(events: Event[], user: any, i18n: any): string {
 				`SUMMARY:${summary}`,
 				dtStart,
 				dtEnd,
-				`LOCATION:Better Place`,
+				// `LOCATION:Better Place`,
 				description ? `DESCRIPTION:${description}` : "",
 				`ORGANIZER;CN=${user.site.toUpperCase()} Team Calendar:MAILTO:${user.site}-team-calendar@lyke.be`,
 				"END:VEVENT",

@@ -21,7 +21,7 @@ export async function i18nMiddleware(req: AuthRequest, res: Response, next: Next
     const i18n = new I18n();
     
     // Default language
-    let language: Language = 'en';
+    let language: Language = 'nl';
     
     // First priority: Check if language is specified in query params
     if (req.query.lang && ['en', 'fr', 'nl'].includes(req.query.lang as string)) {
