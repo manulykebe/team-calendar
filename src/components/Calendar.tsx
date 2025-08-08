@@ -10,6 +10,7 @@ import { SettingsPanel } from "./settings/SettingsPanel";
 import { CalendarGrid } from "./calendar/CalendarGrid";
 import { MonthPicker } from "./calendar/MonthPicker";
 import { ConnectionStatus } from "./common/ConnectionStatus";
+import { UndoRedoControls } from "./common/UndoRedoControls";
 import { useCalendarState } from "../hooks/useCalendarState";
 import { useCalendarScroll } from "../hooks/useCalendarScroll";
 import { useApp } from "../context/AppContext";
@@ -159,6 +160,7 @@ export function Calendar() {
         </div>
 
         <div className="flex items-center space-x-2">
+          <UndoRedoControls />
           <MonthPicker
             currentMonth={currentMonth}
             onDateSelect={setCurrentMonth}

@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Event } from "../types/event";
-import { createEvent, updateEvent } from "../lib/api/events";
+import { updateEvent } from "../lib/api/events";
 import { useApp } from "../context/AppContext";
 import { useAuth } from "../context/AuthContext";
+import { useEventOperations } from "./useEventOperations";
 
 export function useCalendarState() {
   const { token } = useAuth();
   const { events, refreshData } = useApp();
+  const { createEventWithUndo, updateEventWithUndo, deleteEventWithUndo } = useEventOperations();
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
@@ -27,24 +29,7 @@ export function useCalendarState() {
     if (!token) return;
 
     try {
-      // Handle AM/PM selection for single day events
-      let title = eventData.title;
-      if (eventData.amSelected !== undefined && eventData.pmSelected !== undefined) {
-        // If both AM and PM are selected, no need to modify title
-        if (eventData.amSelected && !eventData.pmSelected) {
-          title = title ? `${title} (AM)` : "AM only";
-        } else if (!eventData.amSelected && eventData.pmSelected) {
-          title = title ? `${title} (PM)` : "PM only";
-        }
-      }
-
-      await createEvent(token, {
-        ...eventData,
-        title
-      });
-      
-      // Refresh data in background without affecting calendar view
-      await refreshData();
+      await createEventWithUndo(eventData);
       setShowModal(false);
     } catch (error) {
       console.error("Failed to create event:", error);
@@ -53,8 +38,15 @@ export function useCalendarState() {
   };
 
   const handleEventDelete = async (eventId: string) => {
-    // Refresh data in background without affecting calendar view
-    await refreshData();
+    const event = events.find(e => e.id === eventId);
+    if (event) {
+      try {
+        await deleteEventWithUndo(event);
+      } catch (error) {
+        console.error("Failed to delete event:", error);
+        throw error;
+      }
+    }
   };
 
   const handleEventResize = async (
@@ -68,13 +60,13 @@ export function useCalendarState() {
     if (!event) return;
 
     try {
-      await updateEvent(token, eventId, {
-        ...event,
+      const originalEvent = { ...event };
+      const newEventData = {
         date: newDate,
         endDate: newEndDate,
-      });
-      // Refresh data in background without affecting calendar view
-      await refreshData();
+      };
+      
+      await updateEventWithUndo(eventId, newEventData, originalEvent);
     } catch (error) {
       console.error("Failed to resize event:", error);
     }

@@ -1,7 +1,7 @@
 import { X, Trash2, Save } from "lucide-react";
 import { Event } from "../../types/event";
 import { useAuth } from "../../context/AuthContext";
-import { deleteEvent, updateEvent } from "../../lib/api/events";
+import { useEventOperations } from "../../hooks/useEventOperations";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { useTranslation } from "../../context/TranslationContext";
@@ -20,17 +20,18 @@ export function EventDetailsModal({
 }: EventDetailsModalProps) {
   const { token } = useAuth();
   const { t, language } = useTranslation();
+  const { updateEventWithUndo, deleteEventWithUndo } = useEventOperations();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(event.title);
   const [description, setDescription] = useState(event.description);
 
   const handleDelete = async () => {
-    if (!token || !onDelete) return;
+    if (!token) return;
 
     const toastId = toast.loading(t('events.deleting'));
     try {
-      await deleteEvent(token, event.id);
-      onDelete(event.id);
+      await deleteEventWithUndo(event);
+      if (onDelete) onDelete(event.id);
       toast.success(t('calendar.eventDeleted'), { id: toastId });
       onClose();
     } catch (error) {
@@ -44,11 +45,13 @@ export function EventDetailsModal({
 
     const toastId = toast.loading(t('events.saving'));
     try {
-      await updateEvent(token, event.id, {
-        ...event,
+      const originalEvent = { ...event };
+      const newEventData = {
         title,
         description,
-      });
+      };
+      
+      await updateEventWithUndo(event.id, newEventData, originalEvent);
       toast.success(t('events.changesSaved'), { id: toastId });
       setIsEditing(false);
     } catch (error) {

@@ -4,9 +4,9 @@ import { Event } from '../../types/event';
 import { User } from '../../types/user';
 import { useTranslation } from '../../context/TranslationContext';
 import { useAuth } from '../../context/AuthContext';
-import { updateEvent, deleteEvent } from '../../lib/api/events';
 import { getHolidays } from '../../lib/api/holidays';
 import { useHolidays, isPublicHoliday } from '../../context/HolidayContext';
+import { useEventOperations } from '../../hooks/useEventOperations';
 import toast from 'react-hot-toast';
 import { format, addDays, subDays, parseISO, isSaturday, isSunday, isValid } from 'date-fns';
 import { useClickOutside } from '../../hooks/useClickOutside';
@@ -28,6 +28,7 @@ export function EventContextMenu({
 }: EventContextMenuProps) {
   const { t } = useTranslation();
   const { token } = useAuth();
+  const { updateEventWithUndo, deleteEventWithUndo } = useEventOperations();
   const menuRef = useRef<HTMLDivElement>(null);
   const [showDateModifier, setShowDateModifier] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -116,12 +117,13 @@ export function EventContextMenu({
     const toastId = toast.loading(t('events.saving'));
 
     try {
-      await updateEvent(token, event.id, {
-        ...event,
+      const originalEvent = { ...event };
+      const newEventData = {
         date: startDate,
         endDate: endDate,
-        userId: event.userId
-      });
+      };
+      
+      await updateEventWithUndo(event.id, newEventData, originalEvent);
 
       toast.success(t('events.changesSaved'), { id: toastId });
       onUpdate();
@@ -142,8 +144,7 @@ export function EventContextMenu({
     const toastId = toast.loading(t('common.deleting'));
 
     try {
-      // Pass the event's actual owner ID to ensure the backend can find the event
-      await deleteEvent(token, event.id, event.userId);
+      await deleteEventWithUndo(event);
       toast.success(t('calendar.eventDeleted'), { id: toastId });
       onUpdate();
       onClose();

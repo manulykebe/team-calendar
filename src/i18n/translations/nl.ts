@@ -468,4 +468,23 @@ export const nl = {
     summerBankHoliday: 'Zomerfeestdag',
     boxingDay: 'Tweede Kerstdag',
   },
+
+  // Undo/Redo
+  undoRedo: {
+    undo: 'Ongedaan maken',
+    redo: 'Opnieuw doen',
+    nothingToUndo: 'Niets om ongedaan te maken',
+    nothingToRedo: 'Niets om opnieuw te doen',
+    undoFailed: 'Ongedaan maken van actie mislukt',
+    redoFailed: 'Opnieuw doen van actie mislukt',
+    createdEvent: '"{{title}}" aangemaakt',
+    updatedEvent: '"{{title}}" bijgewerkt',
+    deletedEvent: '"{{title}}" verwijderd',
+    undoCreate: 'Gebeurtenis aanmaken ongedaan gemaakt',
+    redoCreate: 'Gebeurtenis aanmaken opnieuw gedaan',
+    undoUpdate: 'Gebeurtenis bijwerken ongedaan gemaakt',
+    redoUpdate: 'Gebeurtenis bijwerken opnieuw gedaan',
+    undoDelete: 'Gebeurtenis verwijderen ongedaan gemaakt',
+    redoDelete: 'Gebeurtenis verwijderen opnieuw gedaan',
+  },
 };

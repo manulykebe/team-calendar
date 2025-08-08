@@ -468,4 +468,23 @@ export const en = {
     summerBankHoliday: 'Summer Bank Holiday',
     boxingDay: 'Boxing Day',
   },
+
+  // Undo/Redo
+  undoRedo: {
+    undo: 'Undo',
+    redo: 'Redo',
+    nothingToUndo: 'Nothing to undo',
+    nothingToRedo: 'Nothing to redo',
+    undoFailed: 'Failed to undo action',
+    redoFailed: 'Failed to redo action',
+    createdEvent: 'Created "{{title}}"',
+    updatedEvent: 'Updated "{{title}}"',
+    deletedEvent: 'Deleted "{{title}}"',
+    undoCreate: 'Event creation undone',
+    redoCreate: 'Event creation redone',
+    undoUpdate: 'Event update undone',
+    redoUpdate: 'Event update redone',
+    undoDelete: 'Event deletion undone',
+    redoDelete: 'Event deletion redone',
+  },
 };
