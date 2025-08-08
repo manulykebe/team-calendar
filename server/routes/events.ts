@@ -318,11 +318,20 @@ router.delete("/:id", async (req: AuthRequest, res) => {
 
     res.sendStatus(204);
   } catch (error) {
-    res.status(500).json({
-      message: error instanceof Error 
-        ? error.message 
-        : req.i18n.t('events.failedToDeleteEvent'),
-    });
+    // Check if the error is about event not found
+    if (error instanceof Error && 
+        (error.message === 'Gebeurtenis niet gevonden' || 
+         error.message === req.i18n.t('events.eventNotFound'))) {
+      res.status(404).json({
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        message: error instanceof Error 
+          ? error.message 
+          : req.i18n.t('events.failedToDeleteEvent'),
+      });
+    }
   }
 });
 
