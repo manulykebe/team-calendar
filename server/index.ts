@@ -27,7 +27,8 @@ const socketManager = initializeSocketManager(server);
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? [
-        'https://phenomenal-tiramisu-77761c.netlify.app'
+        'https://phenomenal-tiramisu-77761c.netlify.app',
+        'https://azjp.radioloog.be',
       ]
     : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true,

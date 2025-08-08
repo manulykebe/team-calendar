@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Server, Activity, Globe, Clock } from 'lucide-react';
+import { X, Server, Activity, Globe } from 'lucide-react';
 import versionInfo from '../../version.json';
 import { API_URL } from '../../lib/api/config';
 import { useTranslation } from '../../context/TranslationContext';
@@ -34,7 +34,7 @@ export function VersionDisplay() {
   const fetchBackendHealth = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`${API_URL}/health`, {
         method: 'GET',
@@ -50,7 +50,14 @@ export function VersionDisplay() {
       const healthData = await response.json();
       setBackendHealth(healthData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('errors.failedToLoadData'));
+      setError(
+        err instanceof Error
+          ? err.message
+          : (() => {
+              const msg = t('errors.failedToLoadData');
+              return Array.isArray(msg) ? msg.join(', ') : msg;
+            })()
+      );
       setBackendHealth(null);
     } finally {
       setLoading(false);
@@ -67,7 +74,7 @@ export function VersionDisplay() {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    
+
     if (days > 0) {
       return `${days}d ${hours}h ${minutes}m`;
     } else if (hours > 0) {
@@ -80,10 +87,16 @@ export function VersionDisplay() {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'healthy':
+      case 'gezond':
+      case 'En bonne santé':
         return 'text-green-600 bg-green-100';
       case 'degraded':
+      case 'gedegradeerd':
+      case 'dégradé':
         return 'text-yellow-600 bg-yellow-100';
       case 'unhealthy':
+      case 'ongezond':
+      case 'malsain':
         return 'text-red-600 bg-red-100';
       default:
         return 'text-gray-600 bg-gray-100';
@@ -94,9 +107,8 @@ export function VersionDisplay() {
     <>
       <div className="fixed bottom-4 left-4 z-[9999] pointer-events-none">
         <div
-          className={`transition-all duration-300 ease-in-out pointer-events-auto ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-2 hover:opacity-60'
-          }`}
+          className={`transition-all duration-300 ease-in-out pointer-events-auto ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-2 hover:opacity-60'
+            }`}
         >
           <button
             onClick={handleClick}
@@ -164,7 +176,7 @@ export function VersionDisplay() {
                     <span className="text-zinc-600">{t('version.targetUrl')}</span>
                     <span className="font-mono text-xs break-all">{API_URL}</span>
                   </div>
-                  
+
                   {loading && (
                     <div className="flex items-center justify-center py-4">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
