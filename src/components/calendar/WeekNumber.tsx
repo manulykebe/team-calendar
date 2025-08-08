@@ -87,9 +87,14 @@ export function WeekNumber({
 			try {
 				await deleteEventWithUndo(existingHoliday);
 				onEventDelete(existingHoliday.id);
-				toast.success(t('calendar.eventDeleted'));
+				toast.success(t('calendar.eventDeleted'), {
+					duration: 6000,
+					icon: '↩️'
+				});
 			} catch (error) {
-				toast.error(t('calendar.failedToDeleteEvent'));
+				toast.error(t('calendar.failedToDeleteEvent'), {
+					duration: 5000
+				});
 			}
 		} else if (onWeekClick) {
 			// Create new holiday request
