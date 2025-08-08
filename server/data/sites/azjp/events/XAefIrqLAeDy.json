@@ -180,18 +180,6 @@
     "updatedAt": "2025-08-08T16:18:58.795Z"
   },
   {
-    "id": "98493c20-eada-440b-a9fb-91f8138888e2",
-    "userId": "XAefIrqLAeDy",
-    "type": "requestedLeave",
-    "title": "",
-    "description": "",
-    "date": "2025-08-06",
-    "endDate": "2025-08-06",
-    "status": "pending",
-    "createdAt": "2025-08-08T16:22:04.955Z",
-    "updatedAt": "2025-08-08T16:22:04.955Z"
-  },
-  {
     "id": "c5f55f70-f7f5-4689-9efe-7262c7e4cd0b",
     "userId": "XAefIrqLAeDy",
     "type": "requestedLeave",
