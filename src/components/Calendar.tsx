@@ -13,6 +13,7 @@ import { ConnectionStatus } from "./common/ConnectionStatus";
 import { UndoRedoControls } from "./common/UndoRedoControls";
 import { useCalendarState } from "../hooks/useCalendarState";
 import { useCalendarScroll } from "../hooks/useCalendarScroll";
+import { useEventOperations } from "../hooks/useEventOperations";
 import { useApp } from "../context/AppContext";
 import { useTranslation } from "../context/TranslationContext";
 import {
@@ -29,6 +30,7 @@ import {
 export function Calendar() {
   const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
   const { t } = useTranslation();
+  const { canUndo, canRedo } = useEventOperations();
   
   if (!currentUser) {
     return (
@@ -160,7 +162,7 @@ export function Calendar() {
         </div>
 
         <div className="flex items-center space-x-2">
-          <UndoRedoControls />
+          {(canUndo || canRedo) && <UndoRedoControls />}
           <MonthPicker
             currentMonth={currentMonth}
             onDateSelect={setCurrentMonth}
