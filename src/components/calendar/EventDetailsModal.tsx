@@ -32,11 +32,18 @@ export function EventDetailsModal({
     try {
       await deleteEventWithUndo(event);
       if (onDelete) onDelete(event.id);
-      toast.success(t('calendar.eventDeleted'), { id: toastId });
+      toast.success(t('calendar.eventDeleted'), { 
+        id: toastId,
+        duration: 6000,
+        icon: '↩️'
+      });
       onClose();
     } catch (error) {
       console.error('Failed to delete event:', error);
-      toast.error(t('calendar.failedToDeleteEvent'), { id: toastId });
+      toast.error(t('calendar.failedToDeleteEvent'), { 
+        id: toastId,
+        duration: 5000 
+      });
     }
   };
 
@@ -52,11 +59,18 @@ export function EventDetailsModal({
       };
       
       await updateEventWithUndo(event.id, newEventData, originalEvent);
-      toast.success(t('events.changesSaved'), { id: toastId });
+      toast.success(t('events.changesSaved'), { 
+        id: toastId,
+        duration: 6000,
+        icon: '↩️'
+      });
       setIsEditing(false);
     } catch (error) {
       console.error('Failed to save changes:', error);
-      toast.error(t('events.failedToSave'), { id: toastId });
+      toast.error(t('events.failedToSave'), { 
+        id: toastId,
+        duration: 5000 
+      });
     }
   };
 

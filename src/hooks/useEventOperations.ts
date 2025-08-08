@@ -52,12 +52,18 @@ export function useEventOperations() {
       undo: async () => {
         await deleteEvent(token, createdEvent.id, createdEvent.userId);
         await refreshData();
-        toast.success(t('undoRedo.undoCreate'));
+        toast.success(t('undoRedo.undoCreate'), {
+          duration: 5000,
+          icon: '↩️'
+        });
       },
       redo: async () => {
         await createEvent(token, finalEventData);
         await refreshData();
-        toast.success(t('undoRedo.redoCreate'));
+        toast.success(t('undoRedo.redoCreate'), {
+          duration: 5000,
+          icon: '↪️'
+        });
       }
     };
 
@@ -95,12 +101,18 @@ export function useEventOperations() {
           userId: originalEvent.userId
         });
         await refreshData();
-        toast.success(t('undoRedo.undoUpdate'));
+        toast.success(t('undoRedo.undoUpdate'), {
+          duration: 5000,
+          icon: '↩️'
+        });
       },
       redo: async () => {
         await updateEvent(token, eventId, newEventData);
         await refreshData();
-        toast.success(t('undoRedo.redoUpdate'));
+        toast.success(t('undoRedo.redoUpdate'), {
+          duration: 5000,
+          icon: '↪️'
+        });
       }
     };
 
@@ -133,12 +145,18 @@ export function useEventOperations() {
           userId: event.userId
         });
         await refreshData();
-        toast.success(t('undoRedo.undoDelete'));
+        toast.success(t('undoRedo.undoDelete'), {
+          duration: 5000,
+          icon: '↩️'
+        });
       },
       redo: async () => {
         await deleteEvent(token, event.id, event.userId);
         await refreshData();
-        toast.success(t('undoRedo.redoDelete'));
+        toast.success(t('undoRedo.redoDelete'), {
+          duration: 5000,
+          icon: '↪️'
+        });
       }
     };
 

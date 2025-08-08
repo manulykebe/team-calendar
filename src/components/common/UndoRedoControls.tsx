@@ -22,7 +22,10 @@ export function UndoRedoControls({ className = '' }: UndoRedoControlsProps) {
     try {
       await undo();
     } catch (error) {
-      toast.error(t('undoRedo.undoFailed'));
+      toast.error(t('undoRedo.undoFailed'), {
+        duration: 4000,
+        icon: '❌'
+      });
     }
   };
 
@@ -30,7 +33,10 @@ export function UndoRedoControls({ className = '' }: UndoRedoControlsProps) {
     try {
       await redo();
     } catch (error) {
-      toast.error(t('undoRedo.redoFailed'));
+      toast.error(t('undoRedo.redoFailed'), {
+        duration: 4000,
+        icon: '❌'
+      });
     }
   };
 

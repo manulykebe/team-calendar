@@ -97,7 +97,11 @@ export function AdminHolidayModal({
         newStatus === 'approved' ? 
           t('notifications.requestApproved') : 
           t('notifications.requestDenied'),
-        { id: toastId }
+        { 
+          id: toastId,
+          duration: 6000,
+          icon: '↩️'
+        }
       );
 
       onUpdate();
@@ -108,7 +112,10 @@ export function AdminHolidayModal({
         newStatus === 'approved' ? 
           t('notifications.failedToApprove') : 
           t('notifications.failedToDeny'),
-        { id: toastId }
+        { 
+          id: toastId,
+          duration: 5000 
+        }
       );
     } finally {
       setIsUpdating(false);
