@@ -168,6 +168,11 @@ export async function deleteEvent(token: string, eventId: string, ownerUserId?: 
       body,
     });
 
+    // If event is not found (404), treat as success since it's already gone
+    if (response.status === 404) {
+      return;
+    }
+
     if (!response.ok) {
       let errorMessage = "Failed to delete event";
       try {
