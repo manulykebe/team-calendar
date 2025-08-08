@@ -45,13 +45,13 @@ export function UndoRedoControls({ className = '' }: UndoRedoControlsProps) {
   const isVisible = canUndo || canRedo;
 
   return (
-    <div className={`flex items-center space-x-2 transition-opacity duration-200 ${className} ${
-      isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+    <div className={`flex items-center space-x-1 transition-opacity duration-200 ${className} ${
+      isVisible ? 'opacity-100' : 'opacity-0'
     }`}>
       <button
         onClick={handleUndo}
         disabled={!canUndo || isUndoing}
-        className={`p-2 rounded-full transition-all duration-200 ${
+        className={`p-2 rounded-full transition-all duration-200 z-10 ${
           canUndo && !isUndoing
             ? 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
             : 'text-zinc-300 cursor-not-allowed'
@@ -65,7 +65,7 @@ export function UndoRedoControls({ className = '' }: UndoRedoControlsProps) {
       <button
         onClick={handleRedo}
         disabled={!canRedo || isRedoing}
-        className={`p-2 rounded-full transition-all duration-200 ${
+        className={`p-2 rounded-full transition-all duration-200 z-10 ${
           canRedo && !isRedoing
             ? 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
             : 'text-zinc-300 cursor-not-allowed'

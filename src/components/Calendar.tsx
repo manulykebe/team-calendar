@@ -162,7 +162,7 @@ export function Calendar() {
         </div>
 
         <div className="flex items-center space-x-2">
-          {(canUndo || canRedo) && <UndoRedoControls />}
+          <UndoRedoControls />
           <MonthPicker
             currentMonth={currentMonth}
             onDateSelect={setCurrentMonth}
