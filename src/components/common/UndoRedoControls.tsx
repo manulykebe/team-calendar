@@ -41,12 +41,13 @@ export function UndoRedoControls({ className = '' }: UndoRedoControlsProps) {
   };
 
   // Don't render if no actions are available
-  if (!canUndo && !canRedo) {
-    return null;
-  }
+  // Always render but make invisible when no actions available
+  const isVisible = canUndo || canRedo;
 
   return (
-    <div className={`flex items-center space-x-2 ${className}`}>
+    <div className={`flex items-center space-x-2 transition-opacity duration-200 ${className} ${
+      isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+    }`}>
       <button
         onClick={handleUndo}
         disabled={!canUndo || isUndoing}
