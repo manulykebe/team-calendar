@@ -53,21 +53,28 @@ export function useEventOperations() {
         await deleteEvent(token, createdEvent.id, createdEvent.userId);
         await refreshData();
         toast.success(t('undoRedo.undoCreate'), {
-          duration: 5000,
-          icon: '↩️'
+          duration: 6000,
+          icon: '↩️',
         });
       },
       redo: async () => {
         await createEvent(token, finalEventData);
         await refreshData();
         toast.success(t('undoRedo.redoCreate'), {
-          duration: 5000,
-          icon: '↪️'
+          duration: 6000,
+          icon: '↪️',
         });
       }
     };
 
     addAction(undoAction);
+    
+    // Show success toast with undo icon
+    toast.success(t('calendar.eventCreated'), {
+      duration: 6000,
+      icon: '↩️',
+    });
+    
     return createdEvent;
   }, [token, refreshData, addAction, t]);
 
