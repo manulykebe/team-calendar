@@ -3,7 +3,7 @@ import { X, Check, XCircle, User, Clock, Calendar } from "lucide-react";
 import { Event } from "../../types/event";
 import { User as UserType } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
-import { useEventOperations } from "../../hooks/useEventOperations";
+import { updateEvent } from "../../lib/api/events";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { useTranslation } from "../../context/TranslationContext";
@@ -25,7 +25,6 @@ export function AdminHolidayModal({
 }: AdminHolidayModalProps) {
   const { token } = useAuth();
   const { t, language } = useTranslation();
-  const { updateEventWithUndo } = useEventOperations();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const getEventTypeLabel = (eventType: string, eventStatus: string): string => {
@@ -85,23 +84,18 @@ export function AdminHolidayModal({
       t('notifications.requestDenied'));
 
     try {
-      const originalEvent = { ...event };
-      const newEventData = {
+      // Use the admin update endpoint with userId specified
+      await updateEvent(token, event.id, {
+        ...event,
         status: newStatus,
         userId: eventOwner.id, // Specify which user's event to update
-      };
-      
-      await updateEventWithUndo(event.id, newEventData, originalEvent);
+      });
 
       toast.success(
         newStatus === 'approved' ? 
           t('notifications.requestApproved') : 
           t('notifications.requestDenied'),
-        { 
-          id: toastId,
-          duration: 6000,
-          icon: '↩️'
-        }
+        { id: toastId }
       );
 
       onUpdate();
@@ -112,10 +106,7 @@ export function AdminHolidayModal({
         newStatus === 'approved' ? 
           t('notifications.failedToApprove') : 
           t('notifications.failedToDeny'),
-        { 
-          id: toastId,
-          duration: 5000 
-        }
+        { id: toastId }
       );
     } finally {
       setIsUpdating(false);

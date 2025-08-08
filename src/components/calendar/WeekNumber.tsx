@@ -4,7 +4,7 @@ import { startOfWeek, endOfWeek, format, parseISO } from "date-fns";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
-import { useEventOperations } from "../../hooks/useEventOperations";
+import { deleteEvent } from "../../lib/api/events";
 import toast from "react-hot-toast";
 import { useTranslation } from "../../context/TranslationContext";
 
@@ -28,7 +28,6 @@ export function WeekNumber({
 	const [isHovered, setIsHovered] = useState(false);
 	const { token } = useAuth();
 	const { t } = useTranslation();
-	const { deleteEventWithUndo } = useEventOperations();
 	const weekNumber = getWeekNumber(date);
 	const weekStart = startOfWeek(date, { weekStartsOn: 1 }); // Start from Monday
 	const weekEnd = endOfWeek(date, { weekStartsOn: 1 }); // End on Sunday
@@ -85,16 +84,11 @@ export function WeekNumber({
 		if (existingHoliday && onEventDelete) {
 			// Delete existing holiday request
 			try {
-				await deleteEventWithUndo(existingHoliday);
+				await deleteEvent(token, existingHoliday.id);
 				onEventDelete(existingHoliday.id);
-				toast.success(t('calendar.eventDeleted'), {
-					duration: 6000,
-					icon: '↩️'
-				});
+				toast.success(t('calendar.eventDeleted'));
 			} catch (error) {
-				toast.error(t('calendar.failedToDeleteEvent'), {
-					duration: 5000
-				});
+				toast.error(t('calendar.failedToDeleteEvent'));
 			}
 		} else if (onWeekClick) {
 			// Create new holiday request

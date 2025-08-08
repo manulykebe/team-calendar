@@ -4,9 +4,9 @@ import { Event } from '../../types/event';
 import { User } from '../../types/user';
 import { useTranslation } from '../../context/TranslationContext';
 import { useAuth } from '../../context/AuthContext';
+import { updateEvent, deleteEvent } from '../../lib/api/events';
 import { getHolidays } from '../../lib/api/holidays';
 import { useHolidays, isPublicHoliday } from '../../context/HolidayContext';
-import { useEventOperations } from '../../hooks/useEventOperations';
 import toast from 'react-hot-toast';
 import { format, addDays, subDays, parseISO, isSaturday, isSunday, isValid } from 'date-fns';
 import { useClickOutside } from '../../hooks/useClickOutside';
@@ -28,7 +28,6 @@ export function EventContextMenu({
 }: EventContextMenuProps) {
   const { t } = useTranslation();
   const { token } = useAuth();
-  const { updateEventWithUndo, deleteEventWithUndo } = useEventOperations();
   const menuRef = useRef<HTMLDivElement>(null);
   const [showDateModifier, setShowDateModifier] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -117,27 +116,19 @@ export function EventContextMenu({
     const toastId = toast.loading(t('events.saving'));
 
     try {
-      const originalEvent = { ...event };
-      const newEventData = {
+      await updateEvent(token, event.id, {
+        ...event,
         date: startDate,
         endDate: endDate,
-      };
-      
-      await updateEventWithUndo(event.id, newEventData, originalEvent);
-
-      toast.success(t('events.changesSaved'), { 
-        id: toastId,
-        duration: 6000,
-        icon: '↩️'
+        userId: event.userId
       });
+
+      toast.success(t('events.changesSaved'), { id: toastId });
       onUpdate();
       onClose();
     } catch (error) {
       console.error('Failed to update event dates:', error);
-      toast.error(t('events.failedToSave'), { 
-        id: toastId,
-        duration: 5000 
-      });
+      toast.error(t('events.failedToSave'), { id: toastId });
     } finally {
       setIsUpdating(false);
     }
@@ -151,20 +142,14 @@ export function EventContextMenu({
     const toastId = toast.loading(t('common.deleting'));
 
     try {
-      await deleteEventWithUndo(event);
-      toast.success(t('calendar.eventDeleted'), { 
-        id: toastId,
-        duration: 6000,
-        icon: '↩️'
-      });
+      // Pass the event's actual owner ID to ensure the backend can find the event
+      await deleteEvent(token, event.id, event.userId);
+      toast.success(t('calendar.eventDeleted'), { id: toastId });
       onUpdate();
       onClose();
     } catch (error) {
       console.error('Failed to delete event:', error);
-      toast.error(t('calendar.failedToDeleteEvent'), { 
-        id: toastId,
-        duration: 5000 
-      });
+      toast.error(t('calendar.failedToDeleteEvent'), { id: toastId });
     } finally {
       setIsUpdating(false);
     }

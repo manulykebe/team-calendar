@@ -468,23 +468,4 @@ export const fr = {
     summerBankHoliday: 'Jour férié d\'été',
     boxingDay: 'Lendemain de Noël',
   },
-
-  // Undo/Redo
-  undoRedo: {
-    undo: 'Annuler',
-    redo: 'Refaire',
-    nothingToUndo: 'Rien à annuler',
-    nothingToRedo: 'Rien à refaire',
-    undoFailed: 'Échec de l\'annulation de l\'action',
-    redoFailed: 'Échec de la reprise de l\'action',
-    createdEvent: 'Créé "{{title}}"',
-    updatedEvent: 'Mis à jour "{{title}}"',
-    deletedEvent: 'Supprimé "{{title}}"',
-    undoCreate: 'Création d\'événement annulée',
-    redoCreate: 'Création d\'événement refaite',
-    undoUpdate: 'Mise à jour d\'événement annulée',
-    redoUpdate: 'Mise à jour d\'événement refaite',
-    undoDelete: 'Suppression d\'événement annulée',
-    redoDelete: 'Suppression d\'événement refaite',
-  },
 };

@@ -218,12 +218,10 @@ export function EventModal({
 			};
 
 			await onSubmit(eventData);
+			toast.success(t('calendar.eventCreated'), { id: toastId });
 			onClose();
 		} catch (err) {
-			toast.error(t('calendar.failedToCreateEvent'), { 
-				id: toastId,
-				duration: 5000,
-			});
+			toast.error(t('calendar.failedToCreateEvent'), { id: toastId });
 			setError(
 				err instanceof Error ? err.message : t('errors.somethingWentWrong')
 			);

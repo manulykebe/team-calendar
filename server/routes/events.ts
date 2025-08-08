@@ -272,31 +272,14 @@ router.patch("/bulk-status", async (req: AuthRequest, res) => {
 
 router.delete("/:id", async (req: AuthRequest, res) => {
   try {
+    // Check if userId is provided in the request body (for admin deletions)
+    const requestBody = req.body || {};
+    const targetUserId = requestBody.userId || req.user!.id;
     const isAdmin = req.user!.role === 'admin';
-    let targetUserId = req.user!.id;
-    let eventToDelete = null;
 
-    if (isAdmin) {
-      // For admins, find the event across the entire site to get the actual owner
-      const eventResult = await findEventAcrossSite(req.user!.site, req.params.id);
-      if (eventResult) {
-        targetUserId = eventResult.userId;
-        eventToDelete = eventResult.event;
-      } else {
-        return res.status(404).json({
-          message: req.i18n.t('events.eventNotFound'),
-        });
-      }
-    } else {
-      // For regular users, only look in their own events
-      const events = await getUserEvents(req.user!.site, req.user!.id);
-      eventToDelete = events.find(e => e.id === req.params.id);
-      if (!eventToDelete) {
-        return res.status(404).json({
-          message: req.i18n.t('events.eventNotFound'),
-        });
-      }
-    }
+    // Get the event before deletion for broadcasting
+    const events = await getUserEvents(req.user!.site, targetUserId);
+    const eventToDelete = events.find(e => e.id === req.params.id);
 
     await deleteEvent({
       id: req.params.id,
@@ -307,7 +290,7 @@ router.delete("/:id", async (req: AuthRequest, res) => {
 
     // Broadcast event deletion to other users
     const socketManager = getSocketManager();
-    if (socketManager) {
+    if (socketManager && eventToDelete) {
       socketManager.broadcastEventChange(
         req.user!.site,
         eventToDelete,
@@ -318,20 +301,11 @@ router.delete("/:id", async (req: AuthRequest, res) => {
 
     res.sendStatus(204);
   } catch (error) {
-    // Check if the error is about event not found
-    if (error instanceof Error && 
-        (error.message === 'Gebeurtenis niet gevonden' || 
-         error.message === req.i18n.t('events.eventNotFound'))) {
-      res.status(404).json({
-        message: error.message,
-      });
-    } else {
-      res.status(500).json({
-        message: error instanceof Error 
-          ? error.message 
-          : req.i18n.t('events.failedToDeleteEvent'),
-      });
-    }
+    res.status(500).json({
+      message: error instanceof Error 
+        ? error.message 
+        : req.i18n.t('events.failedToDeleteEvent'),
+    });
   }
 });
 

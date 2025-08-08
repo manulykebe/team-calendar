@@ -1,7 +1,7 @@
 import { X, Trash2, Save } from "lucide-react";
 import { Event } from "../../types/event";
 import { useAuth } from "../../context/AuthContext";
-import { useEventOperations } from "../../hooks/useEventOperations";
+import { deleteEvent, updateEvent } from "../../lib/api/events";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { useTranslation } from "../../context/TranslationContext";
@@ -20,30 +20,22 @@ export function EventDetailsModal({
 }: EventDetailsModalProps) {
   const { token } = useAuth();
   const { t, language } = useTranslation();
-  const { updateEventWithUndo, deleteEventWithUndo } = useEventOperations();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(event.title);
   const [description, setDescription] = useState(event.description);
 
   const handleDelete = async () => {
-    if (!token) return;
+    if (!token || !onDelete) return;
 
     const toastId = toast.loading(t('events.deleting'));
     try {
-      await deleteEventWithUndo(event);
-      if (onDelete) onDelete(event.id);
-      toast.success(t('calendar.eventDeleted'), { 
-        id: toastId,
-        duration: 6000,
-        icon: '↩️'
-      });
+      await deleteEvent(token, event.id);
+      onDelete(event.id);
+      toast.success(t('calendar.eventDeleted'), { id: toastId });
       onClose();
     } catch (error) {
       console.error('Failed to delete event:', error);
-      toast.error(t('calendar.failedToDeleteEvent'), { 
-        id: toastId,
-        duration: 5000 
-      });
+      toast.error(t('calendar.failedToDeleteEvent'), { id: toastId });
     }
   };
 
@@ -52,25 +44,16 @@ export function EventDetailsModal({
 
     const toastId = toast.loading(t('events.saving'));
     try {
-      const originalEvent = { ...event };
-      const newEventData = {
+      await updateEvent(token, event.id, {
+        ...event,
         title,
         description,
-      };
-      
-      await updateEventWithUndo(event.id, newEventData, originalEvent);
-      toast.success(t('events.changesSaved'), { 
-        id: toastId,
-        duration: 6000,
-        icon: '↩️'
       });
+      toast.success(t('events.changesSaved'), { id: toastId });
       setIsEditing(false);
     } catch (error) {
       console.error('Failed to save changes:', error);
-      toast.error(t('events.failedToSave'), { 
-        id: toastId,
-        duration: 5000 
-      });
+      toast.error(t('events.failedToSave'), { id: toastId });
     }
   };
 
