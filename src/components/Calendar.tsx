@@ -1,28 +1,13 @@
-import { useState, useRef, useCallback } from "react";
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+  CalendarIcon
 import { CalendarIcon } from "lucide-react";
+import Calendar from "calendar.io";
 import { EventModal } from "./EventModal";
 import { SettingsPanel } from "./settings/SettingsPanel";
-import { ConnectionStatus } from "./common/ConnectionStatus";
-import { useApp } from "../context/AppContext";
 import { useTranslation } from "../context/TranslationContext";
 import { useHolidays } from "../context/HolidayContext";
-import { format, parseISO } from "date-fns";
 import { Event } from "../types/event";
 import { User } from "../types/user";
-
-export function Calendar() {
-  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
-  const { t } = useTranslation();
-  const { holidays } = useHolidays();
-  const calendarRef = useRef<FullCalendar>(null);
-  
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [showModal, setShowModal] = useState(false);
+import { format } from "date-fns";
   
   if (!currentUser) {
     return (
@@ -32,48 +17,19 @@ export function Calendar() {
     );
   }
 
-  // Transform events for FullCalendar
   const calendarEvents = events.map(event => {
     const colleagueSettings = currentUser?.settings?.colleagues?.[event.userId];
     const backgroundColor = colleagueSettings?.color || "#3788d8";
     const initials = colleagueSettings?.initials || "";
-    
-    // Get event title with status
     let title = event.title || getEventTypeLabel(event.type, event.status);
     if (initials && event.userId !== currentUser.id) {
-      title = `[${initials}] ${title}`;
     }
 
-    return {
       id: event.id,
       title,
       start: event.date,
-      end: event.endDate ? format(new Date(new Date(event.endDate).getTime() + 24 * 60 * 60 * 1000), 'yyyy-MM-dd') : undefined,
-      allDay: true,
-      backgroundColor,
       borderColor: backgroundColor,
       textColor: getTextColor(backgroundColor),
-      extendedProps: {
-        originalEvent: event,
-        status: event.status,
-        type: event.type,
-        userId: event.userId,
-        description: event.description
-      }
-    };
-  });
-
-  // Add holidays as events
-  const holidayEvents = holidays.map(holiday => ({
-    id: `holiday-${holiday.date}`,
-    title: holiday.name,
-    start: holiday.date,
-    allDay: true,
-    backgroundColor: '#fee2e2',
-    borderColor: '#fca5a5',
-    textColor: '#991b1b',
-    display: 'background',
-    extendedProps: {
       isHoliday: true
     }
   }));
