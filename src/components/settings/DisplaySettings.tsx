@@ -25,9 +25,9 @@ export function DisplaySettings({
             onChange={(e) => onWorkStartChange(e.target.value)}
             className="mt-1 block w-40 rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           >
-            <option value="Monday">{t('settings.monday')}</option>
-            <option value="Sunday">{t('settings.sunday')}</option>
-            <option value="Saturday">{t('settings.saturday')}</option>
+            <option value="Monday">{t('common.monday')}</option>
+            <option value="Sunday">{t('common.sunday')}</option>
+            <option value="Saturday">{t('common.saturday')}</option>
           </select>
         </div>
 
