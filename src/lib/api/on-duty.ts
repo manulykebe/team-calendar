@@ -1,5 +1,3 @@
-import { API_URL } from "./config";
-
 export interface OnDutyStaff {
   date: string;
   userId: string;
@@ -10,25 +8,21 @@ export interface OnDutyStaff {
   to: string;   // Format: YYYY-MM-DD HH:mm 
 }
 
-export async function getOnDutyStaff(site: string, date?: string): Promise<OnDutyStaff> {
-  try {
-    let url = `${API_URL}/on-duty/${site}`;
-    
-    if (date) {
-      url += `?date=${date}`;
-    }
-    
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch on-duty staff: ${response.statusText}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching on-duty staff:", error);
-    throw error;
+export async function getOnDutyStaff(site: string, date?: string): Promise<OnDutyStaff | null> {
+  const url = `/api/on-duty/${encodeURIComponent(site)}${date ? `?date=${encodeURIComponent(date)}` : ""}`;
+  const res = await fetch(url, { credentials: "same-origin" });
+
+  // 204 -> no content, treat as "no on-duty data"
+  if (res.status === 204) return null;
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Failed to fetch on-duty staff: ${res.status}`);
   }
+
+  // safe to parse JSON now
+  const data = await res.json();
+  return data as OnDutyStaff;
 }
 
 /**
