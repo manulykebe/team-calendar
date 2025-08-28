@@ -1,4 +1,4 @@
-import { CalendarIcon } from "lucide-react";
+  import { CalendarIcon } from "lucide-react";
 import Calendar from "calendar.io";
 import { EventModal } from "./EventModal";
 import { SettingsPanel } from "./settings/SettingsPanel";
@@ -7,13 +7,8 @@ import { useHolidays } from "../context/HolidayContext";
 import { Event } from "../types/event";
 import { User } from "../types/user";
 import { format } from "date-fns";
-
-export function Calendar() {
-  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
-  const { token } = useAuth();
-  const { refreshData } = useApp();
-  const { t } = useTranslation();
   
+export default function CalendarComponent() {
   if (!currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center text-red-600">
@@ -28,16 +23,18 @@ export function Calendar() {
     const initials = colleagueSettings?.initials || "";
     let title = event.title || getEventTypeLabel(event.type, event.status);
     if (initials && event.userId !== currentUser.id) {
+      title = `${initials}: ${title}`;
     }
 
+    return {
       id: event.id,
       title,
       start: event.date,
       borderColor: backgroundColor,
       textColor: getTextColor(backgroundColor),
       isHoliday: true
-    }
-  }));
+    };
+  });
 
   // Add availability as background events
   const availabilityEvents = Object.entries(availabilityData).flatMap(([date, availability]) => {
