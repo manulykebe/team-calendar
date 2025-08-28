@@ -1,348 +1,480 @@
-import { format, getMonth, getDay } from "date-fns";
-import { getWeekNumber } from "../../../utils/dateUtils";
-import { X } from "lucide-react";
-import { updateAvailabilityException } from "../../../lib/api/users";
-import { useAuth } from "../../../context/AuthContext";
-import { useTranslation } from "../../../context/TranslationContext";
-import { useHolidays, isPublicHoliday } from "../../../context/HolidayContext";
-import toast from "react-hot-toast";
-import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
-import { useState, useEffect } from "react";
-import { User } from "../../../types";
+export const en = {
+  // Common
+  common: {
+    monday: 'Monday',
+    tuesday: 'Tuesday',
+    wednesday: 'Wednesday',
+    thursday: 'Thursday',
+    friday: 'Friday',
+    saturday: 'Saturday',
+    sunday: 'Sunday',
+    save: 'Save',
+    cancel: 'Cancel',
+    delete: 'Delete',
+    edit: 'Edit',
+    add: 'Add',
+    close: 'Close',
+    loading: 'Loading...',
+    error: 'Error',
+    success: 'Success',
+    confirm: 'Confirm',
+    yes: 'Yes',
+    no: 'No',
+    search: 'Search',
+    filter: 'Filter',
+    clear: 'Clear',
+    apply: 'Apply',
+    reset: 'Reset',
+    back: 'Back',
+    next: 'Next',
+    previous: 'Previous',
+    first: 'First',
+    last: 'Last',
+    today: 'Today',
+    export: 'Export',
+    import: 'Import',
+    download: 'Download',
+    upload: 'Upload',
+    copy: 'Copy',
+    copied: 'Copied',
+    settings: 'Settings',
+    language: 'Language',
+    colleague: 'Colleague',
+    year: 'Year',
+    site: 'Site',
+    saving: 'Saving...',
+    deleting: 'Deleting...',
+    startDate: 'Start Date',
+    endDate: 'End Date'
+  },
 
-interface AvailabilityReportProps {
-	data: {
-		year: string;
-		userId: string;
-		workWeekDays: string[];
-		dayParts: string[];
-		availability: {
-			[key: string]: {
-				am: boolean;
-				pm: boolean;
-			};
-		};
-	};
-	colleague: User;
-	onClose: () => void;
-}
+  // Authentication
+  auth: {
+    signIn: 'Sign in',
+    signOut: 'Sign out',
+    signUp: 'Sign up',
+    email: 'Email address',
+    password: 'Password',
+    site: 'Site',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    mobile: 'Mobile',
+    signInToAccount: 'Sign in to your account',
+    invalidCredentials: 'Invalid credentials',
+    registrationFailed: 'Registration failed',
+    loginFailed: 'Login failed',
+    signingIn: 'Signing in...',
+    loginRequired: 'You must be logged in to request holidays',
+    loginSection: 'My Calendar',
+  },
 
-export function AvailabilityReport({ data, colleague, onClose }: AvailabilityReportProps) {
-	const { token } = useAuth();
-	const { t } = useTranslation();
-	const { holidays, loadHolidays } = useHolidays();
+  // Calendar
+  calendar: {
+    calendar: 'Calendar',
+    teamCalendar: 'Team Calendar: AZJP',
+    goToToday: 'Go to today',
+    previousWeek: 'Previous week',
+    nextWeek: 'Next week',
+    previousMonth: 'Previous month',
+    nextMonth: 'Next month',
+    previousYear: 'Previous year',
+    nextYear: 'Next year',
+    openMonthPicker: 'Open month picker',
+    closeMonthPicker: 'Close month picker',
+    weekNumber: 'Week {{number}}',
+    addEvent: 'Add Event',
+    editEvent: 'Edit Event',
+    eventDetails: 'Event Details',
+    deleteEvent: 'Delete Event',
+    createHoliday: 'Click to create holiday for week {{week}} ({{startDate}} - {{endDate}})',
+    deleteHoliday: 'Click to delete holiday for week {{week}} ({{startDate}} - {{endDate}})',
+    available: 'Available',
+    unavailable: 'Unavailable',
+    weekend: 'Weekend',
+    holiday: 'Holiday',
+    requestedLeave: 'Requested Holiday',
+    approvedHoliday: 'Approved Holiday',
+    deniedHoliday: 'Denied Holiday',
+    pendingHoliday: 'Pending Holiday',
+    requestedDesiderata: 'Requested Desiderata',
+    requestedPeriod: 'Period Request',
+    eventCreated: 'Event created successfully',
+    eventUpdated: 'Event updated successfully',
+    eventDeleted: 'Event deleted successfully',
+    failedToCreateEvent: 'Failed to create event',
+    failedToUpdateEvent: 'Failed to update event',
+    failedToDeleteEvent: 'Failed to delete event',
+    dateNotAvailable: 'Date not available',
+    onDuty: 'On Duty',
+    noOnDutyStaff: 'No on-duty staff assigned',
+    showMobile: 'Show mobile number',
+  },
 
-	// Use translated day headers
-	const dayHeaders = [
-		t('days.mon'),
-		t('days.tue'),
-		t('days.wed'),
-		t('days.thu'),
-		t('days.fri'),
-		t('days.sat'),
-		t('days.sun')
-	];
+  // Events
+  events: {
+    title: 'Title',
+    description: 'Description',
+    date: 'Date',
+    startDate: 'Start Date',
+    endDate: 'End Date',
+    type: 'Type',
+    status: 'Status',
+    pending: 'Pending',
+    approved: 'Approved',
+    denied: 'Denied',
+    duration: 'Duration: {{days}} days',
+    untitledEvent: 'Untitled Event',
+    noDescription: 'No description',
+    enterTitle: 'Enter {{type}} title',
+    enterDescription: 'Enter {{type}} description',
+    eventType: 'Event Type',
+    periodStatus: 'Period Status',
+    holidayRequestsOpen: 'Holiday requests are open ({{period}})',
+    holidayDesiderataOpen: 'Holiday and Desiderata requests are open ({{period}})',
+    periodClosed: 'Period is closed for requests ({{period}})',
+    unknownStatus: 'Unknown status ({{period}})',
+    noEventTypesAvailable: 'No Event Types Available',
+    periodClosedMessage: 'This date is in a closed period. Event creation is not allowed.',
+    cascadedSystem: 'Cascaded system: Holiday requests have priority over Desiderata',
+    saving: 'Saving...',
+    deleting: 'Deleting...',
+    changesSaved: 'Changes saved successfully',
+    failedToSave: 'Failed to save changes',
+    modifyDates: 'Modify Dates',
+    extendPeriod: 'Extend to Include Weekends',
+    dateModificationNote: 'Changes will be applied immediately upon saving.',
+    confirmDelete: 'Confirm Deletion',
+    deleteWarning: 'This action cannot be undone.',
+    createForColleague: 'Create Event for Colleague',
+    selectAtLeastOneTimeSlot: 'Please select at least one time slot',
+  },
 
-	// Use translated month names
-	const months = [
-		t('months.january'),
-		t('months.february'),
-		t('months.march'),
-		t('months.april'),
-		t('months.may'),
-		t('months.june'),
-		t('months.july'),
-		t('months.august'),
-		t('months.september'),
-		t('months.october'),
-		t('months.november'),
-		t('months.december'),
-	];
+  // Users
+  users: {
+    userManagement: 'User Management',
+    addUser: 'Add User',
+    editUser: 'Edit User',
+    deleteUser: 'Delete User',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    email: 'Email',
+    role: 'Role',
+    status: 'Status',
+    admin: 'Admin',
+    user: 'User',
+    active: 'Active',
+    inactive: 'Inactive',
+    actions: 'Actions',
+    searchUsers: 'Search users...',
+    allRoles: 'All Roles',
+    allStatus: 'All Status',
+    deleteConfirmation: 'Are you sure you want to delete {{name}}? This action cannot be undone.',
+    cannotDeleteLastAdmin: 'Cannot delete the last admin user',
+    userCreated: 'User created successfully',
+    userUpdated: 'User updated successfully',
+    userDeleted: 'User deleted successfully',
+    failedToCreateUser: 'Failed to create user',
+    failedToUpdateUser: 'Failed to update user',
+    failedToDeleteUser: 'Failed to delete user',
+    passwordRequirements: 'Password must be at least 8 characters and contain at least one uppercase letter, one number, and one special character',
+    leaveBlankToKeep: '(leave blank to keep current)',
+    page: 'Page {{current}} of {{total}}',
+    unknownUser: 'Unknown User',
+    selectColleague: 'Select Colleague Name',
+  },
 
-	// Track both clicked slots and their current values
-	const [slotStates, setSlotStates] = useState<Record<string, boolean>>({});
-	const [loadingSlots, setLoadingSlots] = useState<Record<string, boolean>>(
-		{}
-	);
+  // Settings
+  settings: {
+    settings: 'Settings',
+    colleagues: 'Colleagues',
+    admin: 'Admin',
+    display: 'Display',
+    manageUsers: 'Manage Users',
+    manageColleagueDisplay: 'Manage Colleague Display',
+    subscribeToCalendar: 'Subscribe to Calendar',
+    exportEvents: 'Export Events',
+    definePeriods: 'Define/Edit Periods',
+    weekStartsOn: 'Week starts on:',
+    showWeekNumber: 'Show week number:',
+    showWeekends: 'Show weekends',
+    left: 'Left',
+    right: 'Right',
+    none: 'None',
+    colleagueDisplaySettings: 'Colleague Display Settings',
+    abbreviation: 'Abbreviation',
+    color: 'Color',
+    hideColleague: 'Hide colleague',
+    showColleague: 'Show colleague',
+    editInitials: 'Edit initials',
+    clickToEditInitials: 'Click to edit initials',
+    failedToUpdateSettings: 'Failed to update settings',
+    orderUpdated: 'Colleague order updated successfully',
+    failedToUpdateOrder: 'Failed to update colleague order',
+  },
 
-	// Load holidays for the report year
-	useEffect(() => {
-		const year = parseInt(data.year);
-		loadHolidays(year);
-	}, [data.year, loadHolidays]);
+  // Availability
+  availability: {
+    setAvailability: 'Availability',
+    setAvailabilityFor: 'Availability for {{firstname}} {{lastname}}',
+    weeklySchedule: 'Weekly Schedule',
+    evenWeeks: 'Even Weeks',
+    oddWeeks: 'Odd Weeks',
+    everyWeek: 'Every Week',
+    alternateWeeks: 'Alternate Weeks',
+    repeatPattern: 'Repeat Pattern',
+    addScheduleBefore: 'Add schedule before',
+    addScheduleAfter: 'Add schedule after',
+    splitSchedule: 'Split schedule',
+    deleteSchedule: 'Delete schedule',
+    extendPrecedingSchedule: 'Extend preceding schedule',
+    extendFollowingSchedule: 'Extend following schedule',
+    firstSchedule: 'First schedule',
+    previousSchedule: 'Previous schedule',
+    nextSchedule: 'Next schedule',
+    lastSchedule: 'Last schedule',
+    newSchedule: 'New',
+    addNewSchedule: 'Add New Schedule',
+    splitDate: 'Split Date',
+    endDateForCurrentSchedule: 'End Date for Current Schedule',
+    newScheduleWillStart: 'The new schedule will start on {{date}}',
+    selectDateBetween: 'Select a date between {{start}} and {{end}} to split the schedule.',
+    availabilityReport: 'Availability Report',
+    availabilityReportFor: 'Availability Report for {{name}} - {{year}}',
+    viewReport: 'View Report',
+    clickToToggle: 'Click on time slots to toggle individual updates. Changes are saved automatically.',
+    availabilityUpdated: 'Availability updated',
+    failedToUpdateAvailability: 'Failed to update availability',
+    morning: 'Morning',
+    afternoon: 'Afternoon',
+    am: 'AM',
+    pm: 'PM',
+    toggleAvailability: 'Toggle {{day}} {{period}} availability',
+    timeSlots: 'Time Slots',
+    reportLoaded: 'Report loaded successfully',
+    failedToCreateSchedule: 'Failed to create schedule',
+    failedToUpdateSchedule: 'Failed to update schedule',
+    failedToDeleteSchedule: 'Failed to delete schedule',
+  },
 
-	// Initialize slot states from data
-	useEffect(() => {
-		const initialStates: Record<string, boolean> = {};
-		Object.entries(data.availability).forEach(([date, dayData]) => {
-			["am", "pm"].forEach((part) => {
-				const slotKey = `${date}-${part}`;
-				initialStates[slotKey] = dayData[part as keyof typeof dayData];
-			});
-		});
-		setSlotStates(initialStates);
-	}, [data]);
+  // Export
+  export: {
+    exportEvents: 'Export Events',
+    exportType: 'Export Type',
+    allEvents: 'All Events',
+    myEventsOnly: 'My Events Only',
+    startDateOptional: 'Start Date (Optional)',
+    endDateOptional: 'End Date (Optional)',
+    leaveDatesEmpty: 'Leave dates empty to export all events. If you specify a date range, only events within that range will be exported.',
+    exporting: 'Exporting...',
+    preparingExport: 'Preparing your export file...',
+    exportDownloaded: 'Export file downloaded successfully!',
+    failedToExport: 'Failed to export events. Please try again.',
+  },
 
-	const handleTimeSlotClick = async (
-		dateStr: string,
-		part: "am" | "pm",
-		currentValue: boolean
-	) => {
-		if (!token) return;
+  // Subscription
+  subscription: {
+    calendarSubscription: 'Calendar Subscription',
+    subscribeToYourCalendar: 'Subscribe to Your Calendar',
+    subscriptionInstructions: 'Use this URL to subscribe to your calendar in your preferred calendar application:',
+    copyUrl: 'Copy URL',
+    instructionsFor: 'Instructions for {{app}}',
+    outlook: 'Microsoft Outlook',
+    googleCalendar: 'Google Calendar',
+    appleCalendar: 'Apple Calendar',
+    otherApplications: 'Other Applications',
+    outlookInstructions: [
+      'Open Outlook Desktop or Outlook Web',
+      'Right-click on Calendar in the navigation pane',
+      'Select "Add Calendar" → "From Internet"',
+      'Paste the subscription URL',
+      'Click "OK" or "Save"',
+      'Choose how often you want Outlook to sync the calendar',
+      'Click "Yes" to add the calendar'
+    ],
+    googleInstructions: [
+      'Open Google Calendar in your browser',
+      'On the left side, find "Other calendars" and click the "+" button',
+      'Select "From URL" from the dropdown menu',
+      'Paste the subscription URL in the "URL" field',
+      'Click "Add calendar"',
+      'The calendar will appear under "Other calendars" in your calendar list'
+    ],
+    appleInstructions: [
+      'Open the Calendar app on your Mac',
+      'From the menu bar, select File',
+      'Choose "New Calendar Subscription"',
+      'Paste the subscription URL',
+      'Click "Subscribe"',
+      'Configure sync frequency and other options as needed',
+      'Click "OK" to finish'
+    ],
+    appleIosInstructions: [
+      'Go to Settings → Calendar → Accounts',
+      'Tap "Add Account" → "Other" → "Add Subscribed Calendar"',
+      'Paste the subscription URL',
+      'Tap "Next" and then "Save"'
+    ],
+    otherInstructions: [
+      'Look for an option to add a calendar subscription or "Subscribe to Calendar"',
+      'When prompted, paste the subscription URL provided above',
+      'Configure sync frequency if the option is available',
+      'Save or confirm the subscription'
+    ],
+    icalNote: 'Note: The calendar uses the iCalendar (.ics) format, which is compatible with most modern calendar applications.',
+    failedToFetchUrl: 'Failed to fetch subscription URL',
+  },
 
-		const slotKey = `${dateStr}-${part}`;
-		const newValue = !currentValue;
+  // Periods
+  periods: {
+    periodManagement: 'Period Management',
+    addPeriod: 'Add Period',
+    editPeriod: 'Edit Period',
+    deletePeriod: 'Delete Period',
+    resetToDefaults: 'Reset to Defaults',
+    saveChanges: 'Save Changes',
+    nameLabel: 'Name/Label',
+    editingStatus: 'Editing Status',
+    closed: 'Closed',
+    openHoliday: 'Open - Holiday',
+    openDesiderata: 'Open - Desiderata',
+    defaultClosed: 'Default: Closed',
+    enterPeriodName: 'Enter period name',
+    updatePeriod: 'Update Period',
+    noPeriodsForYear: 'No periods defined for {{year}}. Click "Add Period" to get started.',
+    resetConfirmation: 'Are you sure you want to reset to default periods? This will overwrite all current periods.',
+    periodsSaved: 'Periods saved successfully',
+    periodsReset: 'Periods reset to defaults',
+    failedToSavePeriods: 'Failed to save periods',
+    failedToResetPeriods: 'Failed to reset periods',
+    failedToLoadPeriods: 'Failed to load periods',
+    validationErrors: {
+      nameRequired: 'Name is required',
+      startDateRequired: 'Start date is required',
+      endDateRequired: 'End date is required',
+      endDateAfterStart: 'End date must be after start date',
+      overlappingDates: 'Period dates overlap with existing period',
+      periodsOverlap: 'Periods "{{period1}}" and "{{period2}}" have overlapping dates',
+    },
+  },
 
-		// Update loading state
-		setLoadingSlots((prev) => ({ ...prev, [slotKey]: true }));
+  // Connection Status
+  connection: {
+    connected: 'Connected to real-time updates',
+    disconnected: 'Disconnected from real-time updates',
+    lostConnection: 'Lost connection to real-time updates',
+    reconnecting: 'Attempting to reconnect...',
+  },
 
-		try {
-			await updateAvailabilityException(token, data.userId, {
-				date: dateStr,
-				part,
-				value: newValue,
-			});
+  // Notifications
+  notifications: {
+    eventCreatedByColleague: 'Event {{action}} by colleague',
+    colleagueUpdatedAvailability: 'Colleague updated their availability',
+    userConnected: 'User connected',
+    userDisconnected: 'User disconnected',
+    requestApproved: 'Request approved successfully',
+    requestDenied: 'Request denied successfully',
+    failedToApprove: 'Failed to approve request',
+    failedToDeny: 'Failed to deny request',
+    updatedEvents: 'Updated {{count}} events',
+    failedToUpdateEvents: 'Failed to update events',
+  },
 
-			// Update local state
-			setSlotStates((prev) => ({ ...prev, [slotKey]: newValue }));
+  // Admin Holiday Modal
+  adminHoliday: {
+    requestManagement: 'Request Management',
+    adminReview: 'Admin Review',
+    employeeInformation: 'Employee Information',
+    currentStatus: 'Current Status',
+    requestType: 'Request Type',
+    dateRange: 'Date Range',
+    requestDetails: 'Request Details',
+    submissionInfo: 'Submitted on {{date}}',
+    lastUpdated: 'Last updated on {{date}}',
+    approveRequest: 'Approve Request',
+    denyRequest: 'Deny Request',
+    processing: 'Processing...',
+    clickToManage: 'Click to manage {{name}}\'s request',
+    clickToViewDetails: 'Click to view details',
+  },
 
-			// Emit event to update settings
-			userSettingsEmitter.emit("availabilityChanged", {
-				userId: data.userId,
-				type: "exception",
-				data: {
-					date: dateStr,
-					part,
-					value: newValue,
-				},
-			});
+  // Version Display
+  version: {
+    systemInformation: 'System Information',
+    frontend: 'Frontend',
+    backend: 'Backend',
+    version: 'Version:',
+    buildDate: 'Build Date:',
+    environment: 'Environment:',
+    targetUrl: 'Target URL:',
+    status: 'Status:',
+    uptime: 'Uptime:',
+    lastCheck: 'Last Check:',
+    refreshHealthCheck: 'Refresh Health Check',
+    checking: 'Checking...',
+    production: 'production',
+    development: 'development',
+    healthy: 'healthy',
+    error: 'Error',
+  },
 
-			toast.success(t('availability.availabilityUpdated'));
-		} catch (error) {
-			console.error(t('availability.failedToUpdateAvailability'), error);
-			toast.error(t('availability.failedToUpdateAvailability'));
-			// Don't update state on error
-		} finally {
-			setLoadingSlots((prev) => ({ ...prev, [slotKey]: false }));
-		}
-	};
+  // Days of the week (short)
+  days: {
+    sun: 'Sun',
+    mon: 'Mon',
+    tue: 'Tue',
+    wed: 'Wed',
+    thu: 'Thu',
+    fri: 'Fri',
+    sat: 'Sat',
+  },
 
-	return (
-		<div
-			className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-			data-tsx-id="availability-report"
-		>
-			<div className="bg-white rounded-lg shadow-xl max-w-[1400px] w-full max-h-[90vh] overflow-auto">
-				<div className="sticky top-0 bg-white z-10 flex justify-between items-center p-6 border-b">
-					<h2 className="text-xl font-semibold text-zinc-900">
-						{t('availability.availabilityReportFor', {
-							name: `${colleague.firstName} ${colleague.lastName}`,
-							year: data.year
-						})}
-					</h2>
-					<button
-						onClick={onClose}
-						className="text-zinc-400 hover:text-zinc-500"
-					>
-						<X className="w-6 h-6" />
-					</button>
-				</div>
+  // Months
+  months: {
+    january: 'January',
+    february: 'February',
+    march: 'March',
+    april: 'April',
+    may: 'May',
+    june: 'June',
+    july: 'July',
+    august: 'August',
+    september: 'September',
+    october: 'October',
+    november: 'November',
+    december: 'December',
+  },
 
-				<div className="p-6">
-					<div className="w-full">
-						{/* Header row with day names */}
-						<div className="grid grid-cols-[100px_repeat(37,1fr)] border-b">
-							<div className="p-2"></div>
-							{[...Array(5)].map((_, weekIndex) =>
-								dayHeaders.map((day, i) => (
-									<div
-										key={`header-${weekIndex}-${i}`}
-										className="text-center font-medium p-2 text-xs"
-									>
-										{day}
-									</div>
-								))
-							)}
-						</div>
+  // Error messages
+  errors: {
+    somethingWentWrong: 'Something went wrong',
+    failedToLoadData: 'Failed to load data',
+    networkError: 'Network error',
+    unauthorized: 'Unauthorized',
+    forbidden: 'Forbidden',
+    notFound: 'Not found',
+    internalServerError: 'Internal server error',
+    validationError: 'Validation error',
+    unknownError: 'Unknown error',
+  },
 
-						{/* Month rows */}
-						{months.map((monthName, monthIndex) => {
-							const firstDayOfMonth = new Date(
-								parseInt(data.year),
-								monthIndex,
-								1
-							);
-							const adjustedWeekday =
-								getMondayBasedDay(firstDayOfMonth);
-
-							return (
-								<div
-									key={monthName}
-									className="grid grid-cols-[100px_repeat(37,1fr)] border-b"
-								>
-									<div className="p-2 font-medium">
-										{monthName}
-									</div>
-									{Array(37)
-										.fill(0)
-										.map((_, index) => {
-											const dayOffset =
-												index - adjustedWeekday;
-											const currentDate = new Date(
-												firstDayOfMonth
-											);
-											currentDate.setDate(1 + dayOffset);
-
-											if (
-												getMonth(currentDate) !==
-												monthIndex
-											) {
-												return (
-													<div
-														key={index}
-														className="p-2"
-													/>
-												);
-											}
-
-											const dateStr = format(
-												currentDate,
-												"yyyy-MM-dd"
-											);
-											const dayData =
-												data.availability[dateStr];
-											const dayOfWeek =
-												getMondayBasedDay(currentDate);
-											const isWeekend = dayOfWeek >= 5; // 5=Sat, 6=Sun
-											const isHoliday = isPublicHoliday(currentDate, holidays);
-											const weekNumber =
-												getWeekNumber(currentDate);
-											const isEvenWeek =
-												weekNumber % 2 === 0;
-
-											// Determine background color based on day type
-											let bgColor = '';
-											if (isHoliday) {
-												bgColor = 'bg-red-100'; // Holiday background
-											} else if (isEvenWeek) {
-												if (isWeekend) {
-													bgColor = 'bg-zinc-100'; // Even week background
-												} else {
-													bgColor = 'bg-zinc-50'; // Regular day background
-												}
-											} else if (!isEvenWeek) {
-												if (isWeekend) {
-													bgColor = 'bg-zinc-200'; // Even week background
-												} else {
-													bgColor = 'bg-zinc-100'; // Regular day background
-												}
-											}
-
-											return (
-												<div
-													key={index}
-													className={`p-1 border-r border-zinc-100 ${bgColor}`}
-													title={format(
-														currentDate,
-														"MMMM d, yyyy"
-													)}
-												>
-													<div className="text-xs text-center">
-														{format(
-															currentDate,
-															"d"
-														)}
-													</div>
-													<div className="space-y-0.5 mt-1">
-														{data.dayParts.map(
-															(part) => {
-																const slotKey = `${dateStr}-${part}`;
-																const isLoading =
-																	loadingSlots[
-																	slotKey
-																	];
-																const currentValue =
-																	slotStates[
-																	slotKey
-																	] ??
-																	dayData?.[
-																	part as keyof typeof dayData
-																	] ??
-																	false;
-
-																return (
-																	<button
-																		key={
-																			part
-																		}
-																		onClick={() =>
-																			handleTimeSlotClick(
-																				dateStr,
-																				part as
-																				| "am"
-																				| "pm",
-																				currentValue
-																			)
-																		}
-																		className={`h-1.5 w-full transition-colors cursor-pointer ${isLoading
-																			? "bg-yellow-500"
-																			: currentValue
-																				? "bg-green-500 hover:bg-green-600"
-																				: isWeekend
-																					? "bg-zinc-300"
-																					: "bg-red-500 hover:bg-red-600"
-																			} rounded-sm`}
-																		disabled={
-																			isWeekend ||
-																			isHoliday ||
-																			isLoading
-																		}
-																		title={`${format(currentDate, "MMM d")} ${part.toUpperCase()}`}
-																	/>
-																);
-															}
-														)}
-													</div>
-												</div>
-											);
-										})}
-								</div>
-							);
-						})}
-					</div>
-
-					{/* Legend */}
-					<div className="mt-6 space-y-4">
-						<div className="flex items-center space-x-6 text-sm">
-							<div className="flex items-center space-x-2">
-								<div className="w-4 h-4 bg-green-500 rounded" />
-								<span>{t('calendar.available')}</span>
-							</div>
-							<div className="flex items-center space-x-2">
-								<div className="w-4 h-4 bg-red-500 rounded" />
-								<span>{t('calendar.unavailable')}</span>
-							</div>
-							<div className="flex items-center space-x-2">
-								<div className="w-4 h-4 bg-zinc-300 rounded" />
-								<span>{t('calendar.weekend')}</span>
-							</div>
-							<div className="flex items-center space-x-2">
-								<div className="w-4 h-4 bg-red-200 rounded" />
-								<span>{t('calendar.holiday')}</span>
-							</div>
-						</div>
-						<div className="text-sm text-zinc-600">
-							{t('availability.clickToToggle')}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-}
-
-// Helper to convert Sunday=0 to Monday=0
-const getMondayBasedDay = (date: Date): number => {
-	const day = getDay(date);
-	return day === 0 ? 6 : day - 1;
+  // Public holidays
+  publicHolidays: {
+    newYearsDay: 'New Year\'s Day',
+    easterSunday: 'Easter Sunday',
+    easterMonday: 'Easter Monday',
+    labourDay: 'Labour Day',
+    ascensionDay: 'Ascension Day',
+    whitSunday: 'Whit Sunday',
+    whitMonday: 'Whit Monday',
+    belgianNationalDay: 'Belgian National Day',
+    assumptionDay: 'Assumption Day',
+    allSaintsDay: 'All Saints\' Day',
+    armisticeDay: 'Armistice Day',
+    christmasDay: 'Christmas Day',
+    goodFriday: 'Good Friday',
+    earlyMayBankHoliday: 'Early May Bank Holiday',
+    springBankHoliday: 'Spring Bank Holiday',
+    summerBankHoliday: 'Summer Bank Holiday',
+    boxingDay: 'Boxing Day',
+  },
 };

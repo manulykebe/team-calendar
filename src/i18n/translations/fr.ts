@@ -1,348 +1,480 @@
-import { format, getMonth, getDay } from "date-fns";
-import { getWeekNumber } from "../../../utils/dateUtils";
-import { X } from "lucide-react";
-import { updateAvailabilityException } from "../../../lib/api/users";
-import { useAuth } from "../../../context/AuthContext";
-import { useTranslation } from "../../../context/TranslationContext";
-import { useHolidays, isPublicHoliday } from "../../../context/HolidayContext";
-import toast from "react-hot-toast";
-import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
-import { useState, useEffect } from "react";
-import { User } from "../../../types";
+export const fr = {
+  // Common
+  common: {
+    monday: 'Lundi',
+    tuesday: 'Mardi',
+    wednesday: 'Mercredi',
+    thursday: 'Jeudi',
+    friday: 'Vendredi',
+    saturday: 'Samedi',
+    sunday: 'Dimanche',
+    save: 'Enregistrer',
+    cancel: 'Annuler',
+    delete: 'Supprimer',
+    edit: 'Modifier',
+    add: 'Ajouter',
+    close: 'Fermer',
+    loading: 'Chargement...',
+    error: 'Erreur',
+    success: 'Succès',
+    confirm: 'Confirmer',
+    yes: 'Oui',
+    no: 'Non',
+    search: 'Rechercher',
+    filter: 'Filtrer',
+    clear: 'Effacer',
+    apply: 'Appliquer',
+    reset: 'Réinitialiser',
+    back: 'Retour',
+    next: 'Suivant',
+    previous: 'Précédent',
+    first: 'Premier',
+    last: 'Dernier',
+    today: 'Aujourd\'hui',
+    export: 'Exporter',
+    import: 'Importer',
+    download: 'Télécharger',
+    upload: 'Téléverser',
+    copy: 'Copier',
+    copied: 'Copié',
+    settings: 'Paramètres',
+    language: 'Langue',
+    colleague: 'Collègue',
+    year: 'Année',
+    site: 'Site',
+    saving: 'Enregistrement...',
+    deleting: 'Suppression...',
+    startDate: 'Date de début',
+    endDate: 'Date de fin'
+  },
 
-interface AvailabilityReportProps {
-	data: {
-		year: string;
-		userId: string;
-		workWeekDays: string[];
-		dayParts: string[];
-		availability: {
-			[key: string]: {
-				am: boolean;
-				pm: boolean;
-			};
-		};
-	};
-	colleague: User;
-	onClose: () => void;
-}
+  // Authentication
+  auth: {
+    signIn: 'Se connecter',
+    signOut: 'Se déconnecter',
+    signUp: 'S\'inscrire',
+    email: 'Adresse e-mail',
+    password: 'Mot de passe',
+    site: 'Site',
+    firstName: 'Prénom',
+    lastName: 'Nom',
+    mobile: 'Mobile',
+    signInToAccount: 'Connectez-vous à votre compte',
+    invalidCredentials: 'Identifiants invalides',
+    registrationFailed: 'Échec de l\'inscription',
+    loginFailed: 'Échec de la connexion',
+    signingIn: 'Connexion en cours...',
+    loginRequired: 'Vous devez être connecté pour demander des congés',
+    loginSection: 'Mon Calendrier',
+  },
 
-export function AvailabilityReport({ data, colleague, onClose }: AvailabilityReportProps) {
-	const { token } = useAuth();
-	const { t } = useTranslation();
-	const { holidays, loadHolidays } = useHolidays();
+  // Calendar
+  calendar: {
+    calendar: 'Calendrier',
+    teamCalendar: 'Calendrier d\'équipe: AZJP',
+    goToToday: 'Aller à aujourd\'hui',
+    previousWeek: 'Semaine précédente',
+    nextWeek: 'Semaine suivante',
+    previousMonth: 'Mois précédent',
+    nextMonth: 'Mois suivant',
+    previousYear: 'Année précédente',
+    nextYear: 'Année suivante',
+    openMonthPicker: 'Ouvrir le sélecteur de mois',
+    closeMonthPicker: 'Fermer le sélecteur de mois',
+    weekNumber: 'Semaine {{number}}',
+    addEvent: 'Ajouter un événement',
+    editEvent: 'Modifier l\'événement',
+    eventDetails: 'Détails de l\'événement',
+    deleteEvent: 'Supprimer l\'événement',
+    createHoliday: 'Cliquez pour créer un congé pour la semaine {{week}} ({{startDate}} - {{endDate}})',
+    deleteHoliday: 'Cliquez pour supprimer le congé pour la semaine {{week}} ({{startDate}} - {{endDate}})',
+    available: 'Disponible',
+    unavailable: 'Indisponible',
+    weekend: 'Week-end',
+    holiday: 'Congé',
+    requestedLeave: 'Congé demandé',
+    approvedHoliday: 'Congé approuvé',
+    deniedHoliday: 'Congé refusé',
+    pendingHoliday: 'Congé en attente',
+    requestedDesiderata: 'Desiderata demandé',
+    requestedPeriod: 'Demande de période',
+    eventCreated: 'Événement créé avec succès',
+    eventUpdated: 'Événement mis à jour avec succès',
+    eventDeleted: 'Événement supprimé avec succès',
+    failedToCreateEvent: 'Échec de la création de l\'événement',
+    failedToUpdateEvent: 'Échec de la mise à jour de l\'événement',
+    failedToDeleteEvent: 'Échec de la suppression de l\'événement',
+    dateNotAvailable: 'Date non disponible',
+    onDuty: 'De garde',
+    noOnDutyStaff: 'Aucun personnel de garde assigné',
+    showMobile: 'Afficher le numéro mobile',
+  },
 
-	// Use translated day headers
-	const dayHeaders = [
-		t('days.mon'),
-		t('days.tue'),
-		t('days.wed'),
-		t('days.thu'),
-		t('days.fri'),
-		t('days.sat'),
-		t('days.sun')
-	];
+  // Events
+  events: {
+    title: 'Titre',
+    description: 'Description',
+    date: 'Date',
+    startDate: 'Date de début',
+    endDate: 'Date de fin',
+    type: 'Type',
+    status: 'Statut',
+    pending: 'En attente',
+    approved: 'Approuvé',
+    denied: 'Refusé',
+    duration: 'Durée: {{days}} jours',
+    untitledEvent: 'Événement sans titre',
+    noDescription: 'Pas de description',
+    enterTitle: 'Entrez le titre {{type}}',
+    enterDescription: 'Entrez la description {{type}}',
+    eventType: 'Type d\'événement',
+    periodStatus: 'Statut de la période',
+    holidayRequestsOpen: 'Les demandes de congés sont ouvertes ({{period}})',
+    holidayDesiderataOpen: 'Les demandes de congés et de desiderata sont ouvertes ({{period}})',
+    periodClosed: 'La période est fermée pour les demandes ({{period}})',
+    unknownStatus: 'Statut inconnu ({{period}})',
+    noEventTypesAvailable: 'Aucun type d\'événement disponible',
+    periodClosedMessage: 'Cette date est dans une période fermée. La création d\'événement n\'est pas autorisée.',
+    cascadedSystem: 'Système en cascade: Les demandes de congés ont priorité sur les desiderata',
+    saving: 'Enregistrement...',
+    deleting: 'Suppression...',
+    changesSaved: 'Modifications enregistrées avec succès',
+    failedToSave: 'Échec de l\'enregistrement des modifications',
+    modifyDates: 'Modifier les dates',
+    extendPeriod: 'Étendre aux week-ends',
+    dateModificationNote: 'Les modifications seront appliquées immédiatement après enregistrement.',
+    confirmDelete: 'Confirmer la suppression',
+    deleteWarning: 'Cette action ne peut pas être annulée.',
+    createForColleague: 'Créer un événement pour un collègue',
+    selectAtLeastOneTimeSlot: 'Veuillez sélectionner au moins un créneau horaire',
+  },
 
-	// Use translated month names
-	const months = [
-		t('months.january'),
-		t('months.february'),
-		t('months.march'),
-		t('months.april'),
-		t('months.may'),
-		t('months.june'),
-		t('months.july'),
-		t('months.august'),
-		t('months.september'),
-		t('months.october'),
-		t('months.november'),
-		t('months.december'),
-	];
+  // Users
+  users: {
+    userManagement: 'Gestion des utilisateurs',
+    addUser: 'Ajouter un utilisateur',
+    editUser: 'Modifier l\'utilisateur',
+    deleteUser: 'Supprimer l\'utilisateur',
+    firstName: 'Prénom',
+    lastName: 'Nom',
+    email: 'Email',
+    role: 'Rôle',
+    status: 'Statut',
+    admin: 'Administrateur',
+    user: 'Utilisateur',
+    active: 'Actif',
+    inactive: 'Inactif',
+    actions: 'Actions',
+    searchUsers: 'Rechercher des utilisateurs...',
+    allRoles: 'Tous les rôles',
+    allStatus: 'Tous les statuts',
+    deleteConfirmation: 'Êtes-vous sûr de vouloir supprimer {{name}} ? Cette action ne peut pas être annulée.',
+    cannotDeleteLastAdmin: 'Impossible de supprimer le dernier administrateur',
+    userCreated: 'Utilisateur créé avec succès',
+    userUpdated: 'Utilisateur mis à jour avec succès',
+    userDeleted: 'Utilisateur supprimé avec succès',
+    failedToCreateUser: 'Échec de la création de l\'utilisateur',
+    failedToUpdateUser: 'Échec de la mise à jour de l\'utilisateur',
+    failedToDeleteUser: 'Échec de la suppression de l\'utilisateur',
+    passwordRequirements: 'Le mot de passe doit comporter au moins 8 caractères et contenir au moins une lettre majuscule, un chiffre et un caractère spécial',
+    leaveBlankToKeep: '(laisser vide pour conserver l\'actuel)',
+    page: 'Page {{current}} sur {{total}}',
+    unknownUser: 'Utilisateur inconnu',
+    selectColleague: 'Sélectionner un collègue',
+  },
 
-	// Track both clicked slots and their current values
-	const [slotStates, setSlotStates] = useState<Record<string, boolean>>({});
-	const [loadingSlots, setLoadingSlots] = useState<Record<string, boolean>>(
-		{}
-	);
+  // Settings
+  settings: {
+    settings: 'Paramètres',
+    colleagues: 'Collègues',
+    admin: 'Administrateur',
+    display: 'Affichage',
+    manageUsers: 'Gérer les utilisateurs',
+    manageColleagueDisplay: 'Gérer l\'affichage des collègues',
+    subscribeToCalendar: 'S\'abonner au calendrier',
+    exportEvents: 'Exporter les événements',
+    definePeriods: 'Définir/Modifier les périodes',
+    weekStartsOn: 'La semaine commence le:',
+    showWeekNumber: 'Afficher le numéro de semaine:',
+    showWeekends: 'Afficher les week-ends',
+    left: 'Gauche',
+    right: 'Droite',
+    none: 'Aucun',
+    colleagueDisplaySettings: 'Paramètres d\'affichage des collègues',
+    abbreviation: 'Abréviation',
+    color: 'Couleur',
+    hideColleague: 'Masquer le collègue',
+    showColleague: 'Afficher le collègue',
+    editInitials: 'Modifier les initiales',
+    clickToEditInitials: 'Cliquez pour modifier les initiales',
+    failedToUpdateSettings: 'Échec de la mise à jour des paramètres',
+    orderUpdated: 'Ordre des collègues mis à jour avec succès',
+    failedToUpdateOrder: 'Échec de la mise à jour de l\'ordre des collègues',
+  },
 
-	// Load holidays for the report year
-	useEffect(() => {
-		const year = parseInt(data.year);
-		loadHolidays(year);
-	}, [data.year, loadHolidays]);
+  // Availability
+  availability: {
+    setAvailability: 'Disponibilité',
+    setAvailabilityFor: 'Disponibilité pour {{firstname}} {{lastname}}',
+    weeklySchedule: 'Planning hebdomadaire',
+    evenWeeks: 'Semaines paires',
+    oddWeeks: 'Semaines impaires',
+    everyWeek: 'Chaque semaine',
+    alternateWeeks: 'Semaines alternées',
+    repeatPattern: 'Modèle de répétition',
+    addScheduleBefore: 'Ajouter un planning avant',
+    addScheduleAfter: 'Ajouter un planning après',
+    splitSchedule: 'Diviser le planning',
+    deleteSchedule: 'Supprimer le planning',
+    extendPrecedingSchedule: 'Étendre le planning précédent',
+    extendFollowingSchedule: 'Étendre le planning suivant',
+    firstSchedule: 'Premier planning',
+    previousSchedule: 'Planning précédent',
+    nextSchedule: 'Planning suivant',
+    lastSchedule: 'Dernier planning',
+    newSchedule: 'Nouveau',
+    addNewSchedule: 'Ajouter un nouveau planning',
+    splitDate: 'Date de division',
+    endDateForCurrentSchedule: 'Date de fin pour le planning actuel',
+    newScheduleWillStart: 'Le nouveau planning commencera le {{date}}',
+    selectDateBetween: 'Sélectionnez une date entre {{start}} et {{end}} pour diviser le planning.',
+    availabilityReport: 'Rapport de disponibilité',
+    availabilityReportFor: 'Rapport de disponibilité pour {{name}} - {{year}}',
+    viewReport: 'Voir le rapport',
+    clickToToggle: 'Cliquez sur les créneaux horaires pour basculer les mises à jour individuelles. Les modifications sont enregistrées automatiquement.',
+    availabilityUpdated: 'Disponibilité mise à jour',
+    failedToUpdateAvailability: 'Échec de la mise à jour de la disponibilité',
+    morning: 'Matin',
+    afternoon: 'Après-midi',
+    am: 'AM',
+    pm: 'PM',
+    toggleAvailability: 'Basculer la disponibilité {{day}} {{period}}',
+    timeSlots: 'Créneaux horaires',
+    reportLoaded: 'Rapport chargé avec succès',
+    failedToCreateSchedule: 'Échec de la création du planning',
+    failedToUpdateSchedule: 'Échec de la mise à jour du planning',
+    failedToDeleteSchedule: 'Échec de la suppression du planning',
+  },
 
-	// Initialize slot states from data
-	useEffect(() => {
-		const initialStates: Record<string, boolean> = {};
-		Object.entries(data.availability).forEach(([date, dayData]) => {
-			["am", "pm"].forEach((part) => {
-				const slotKey = `${date}-${part}`;
-				initialStates[slotKey] = dayData[part as keyof typeof dayData];
-			});
-		});
-		setSlotStates(initialStates);
-	}, [data]);
+  // Export
+  export: {
+    exportEvents: 'Exporter les événements',
+    exportType: 'Type d\'exportation',
+    allEvents: 'Tous les événements',
+    myEventsOnly: 'Mes événements uniquement',
+    startDateOptional: 'Date de début (Optionnel)',
+    endDateOptional: 'Date de fin (Optionnel)',
+    leaveDatesEmpty: 'Laissez les dates vides pour exporter tous les événements. Si vous spécifiez une plage de dates, seuls les événements dans cette plage seront exportés.',
+    exporting: 'Exportation...',
+    preparingExport: 'Préparation de votre fichier d\'exportation...',
+    exportDownloaded: 'Fichier d\'exportation téléchargé avec succès!',
+    failedToExport: 'Échec de l\'exportation des événements. Veuillez réessayer.',
+  },
 
-	const handleTimeSlotClick = async (
-		dateStr: string,
-		part: "am" | "pm",
-		currentValue: boolean
-	) => {
-		if (!token) return;
+  // Subscription
+  subscription: {
+    calendarSubscription: 'Abonnement au calendrier',
+    subscribeToYourCalendar: 'Abonnez-vous à votre calendrier',
+    subscriptionInstructions: 'Utilisez cette URL pour vous abonner à votre calendrier dans votre application de calendrier préférée:',
+    copyUrl: 'Copier l\'URL',
+    instructionsFor: 'Instructions pour {{app}}',
+    outlook: 'Microsoft Outlook',
+    googleCalendar: 'Google Calendar',
+    appleCalendar: 'Apple Calendar',
+    otherApplications: 'Autres applications',
+    outlookInstructions: [
+      'Ouvrez Outlook Desktop ou Outlook Web',
+      'Faites un clic droit sur Calendrier dans le volet de navigation',
+      'Sélectionnez "Ajouter un calendrier" → "À partir d\'Internet"',
+      'Collez l\'URL d\'abonnement',
+      'Cliquez sur "OK" ou "Enregistrer"',
+      'Choisissez la fréquence à laquelle Outlook doit synchroniser le calendrier',
+      'Cliquez sur "Oui" pour ajouter le calendrier'
+    ],
+    googleInstructions: [
+      'Ouvrez Google Calendar dans votre navigateur',
+      'Sur le côté gauche, trouvez "Autres calendriers" et cliquez sur le bouton "+"',
+      'Sélectionnez "À partir de l\'URL" dans le menu déroulant',
+      'Collez l\'URL d\'abonnement dans le champ "URL"',
+      'Cliquez sur "Ajouter un calendrier"',
+      'Le calendrier apparaîtra sous "Autres calendriers" dans votre liste de calendriers'
+    ],
+    appleInstructions: [
+      'Ouvrez l\'application Calendrier sur votre Mac',
+      'Dans la barre de menu, sélectionnez Fichier',
+      'Choisissez "Nouvel abonnement au calendrier"',
+      'Collez l\'URL d\'abonnement',
+      'Cliquez sur "S\'abonner"',
+      'Configurez la fréquence de synchronisation et d\'autres options selon vos besoins',
+      'Cliquez sur "OK" pour terminer'
+    ],
+    appleIosInstructions: [
+      'Allez dans Réglages → Calendrier → Comptes',
+      'Appuyez sur "Ajouter un compte" → "Autre" → "Ajouter un calendrier avec abonnement"',
+      'Collez l\'URL d\'abonnement',
+      'Appuyez sur "Suivant" puis sur "Enregistrer"'
+    ],
+    otherInstructions: [
+      'Recherchez une option pour ajouter un abonnement au calendrier ou "S\'abonner au calendrier"',
+      'Lorsque vous y êtes invité, collez l\'URL d\'abonnement fournie ci-dessus',
+      'Configurez la fréquence de synchronisation si l\'option est disponible',
+      'Enregistrez ou confirmez l\'abonnement'
+    ],
+    icalNote: 'Remarque: Le calendrier utilise le format iCalendar (.ics), qui est compatible avec la plupart des applications de calendrier modernes.',
+    failedToFetchUrl: 'Échec de la récupération de l\'URL d\'abonnement',
+  },
 
-		const slotKey = `${dateStr}-${part}`;
-		const newValue = !currentValue;
+  // Periods
+  periods: {
+    periodManagement: 'Gestion des périodes',
+    addPeriod: 'Ajouter une période',
+    editPeriod: 'Modifier la période',
+    deletePeriod: 'Supprimer la période',
+    resetToDefaults: 'Réinitialiser aux valeurs par défaut',
+    saveChanges: 'Enregistrer les modifications',
+    nameLabel: 'Nom/Étiquette',
+    editingStatus: 'Statut d\'édition',
+    closed: 'Fermé',
+    openHoliday: 'Ouvert - Congés',
+    openDesiderata: 'Ouvert - Desiderata',
+    defaultClosed: 'Par défaut: Fermé',
+    enterPeriodName: 'Entrez le nom de la période',
+    updatePeriod: 'Mettre à jour la période',
+    noPeriodsForYear: 'Aucune période définie pour {{year}}. Cliquez sur "Ajouter une période" pour commencer.',
+    resetConfirmation: 'Êtes-vous sûr de vouloir réinitialiser aux périodes par défaut? Cela écrasera toutes les périodes actuelles.',
+    periodsSaved: 'Périodes enregistrées avec succès',
+    periodsReset: 'Périodes réinitialisées aux valeurs par défaut',
+    failedToSavePeriods: 'Échec de l\'enregistrement des périodes',
+    failedToResetPeriods: 'Échec de la réinitialisation des périodes',
+    failedToLoadPeriods: 'Échec du chargement des périodes',
+    validationErrors: {
+      nameRequired: 'Le nom est requis',
+      startDateRequired: 'La date de début est requise',
+      endDateRequired: 'La date de fin est requise',
+      endDateAfterStart: 'La date de fin doit être postérieure à la date de début',
+      overlappingDates: 'Les dates de la période chevauchent une période existante',
+      periodsOverlap: 'Les périodes "{{period1}}" et "{{period2}}" ont des dates qui se chevauchent',
+    },
+  },
 
-		// Update loading state
-		setLoadingSlots((prev) => ({ ...prev, [slotKey]: true }));
+  // Connection Status
+  connection: {
+    connected: 'Connecté aux mises à jour en temps réel',
+    disconnected: 'Déconnecté des mises à jour en temps réel',
+    lostConnection: 'Connexion perdue aux mises à jour en temps réel',
+    reconnecting: 'Tentative de reconnexion...',
+  },
 
-		try {
-			await updateAvailabilityException(token, data.userId, {
-				date: dateStr,
-				part,
-				value: newValue,
-			});
+  // Notifications
+  notifications: {
+    eventCreatedByColleague: 'Événement {{action}} par un collègue',
+    colleagueUpdatedAvailability: 'Un collègue a mis à jour sa disponibilité',
+    userConnected: 'Utilisateur connecté',
+    userDisconnected: 'Utilisateur déconnecté',
+    requestApproved: 'Demande approuvée avec succès',
+    requestDenied: 'Demande refusée avec succès',
+    failedToApprove: 'Échec de l\'approbation de la demande',
+    failedToDeny: 'Échec du refus de la demande',
+    updatedEvents: '{{count}} événements mis à jour',
+    failedToUpdateEvents: 'Échec de la mise à jour des événements',
+  },
 
-			// Update local state
-			setSlotStates((prev) => ({ ...prev, [slotKey]: newValue }));
+  // Admin Holiday Modal
+  adminHoliday: {
+    requestManagement: 'Gestion des demandes',
+    adminReview: 'Revue administrative',
+    employeeInformation: 'Informations sur l\'employé',
+    currentStatus: 'Statut actuel',
+    requestType: 'Type de demande',
+    dateRange: 'Plage de dates',
+    requestDetails: 'Détails de la demande',
+    submissionInfo: 'Soumis le {{date}}',
+    lastUpdated: 'Dernière mise à jour le {{date}}',
+    approveRequest: 'Approuver la demande',
+    denyRequest: 'Refuser la demande',
+    processing: 'Traitement...',
+    clickToManage: 'Cliquez pour gérer la demande de {{name}}',
+    clickToViewDetails: 'Cliquez pour voir les détails',
+  },
 
-			// Emit event to update settings
-			userSettingsEmitter.emit("availabilityChanged", {
-				userId: data.userId,
-				type: "exception",
-				data: {
-					date: dateStr,
-					part,
-					value: newValue,
-				},
-			});
+  // Version Display
+  version: {
+    systemInformation: 'Informations système',
+    frontend: 'Frontend',
+    backend: 'Backend',
+    version: 'Version:',
+    buildDate: 'Date de build:',
+    environment: 'Environnement:',
+    targetUrl: 'URL cible:',
+    status: 'Statut:',
+    uptime: 'Temps de fonctionnement:',
+    lastCheck: 'Dernière vérification:',
+    refreshHealthCheck: 'Actualiser la vérification de santé',
+    checking: 'Vérification...',
+    production: 'production',
+    development: 'développement',
+    healthy: 'en bonne santé',
+    error: 'Erreur',
+  },
 
-			toast.success(t('availability.availabilityUpdated'));
-		} catch (error) {
-			console.error(t('availability.failedToUpdateAvailability'), error);
-			toast.error(t('availability.failedToUpdateAvailability'));
-			// Don't update state on error
-		} finally {
-			setLoadingSlots((prev) => ({ ...prev, [slotKey]: false }));
-		}
-	};
+  // Days of the week (short)
+  days: {
+    sun: 'Dim',
+    mon: 'Lun',
+    tue: 'Mar',
+    wed: 'Mer',
+    thu: 'Jeu',
+    fri: 'Ven',
+    sat: 'Sam',
+  },
 
-	return (
-		<div
-			className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-			data-tsx-id="availability-report"
-		>
-			<div className="bg-white rounded-lg shadow-xl max-w-[1400px] w-full max-h-[90vh] overflow-auto">
-				<div className="sticky top-0 bg-white z-10 flex justify-between items-center p-6 border-b">
-					<h2 className="text-xl font-semibold text-zinc-900">
-						{t('availability.availabilityReportFor', {
-							name: `${colleague.firstName} ${colleague.lastName}`,
-							year: data.year
-						})}
-					</h2>
-					<button
-						onClick={onClose}
-						className="text-zinc-400 hover:text-zinc-500"
-					>
-						<X className="w-6 h-6" />
-					</button>
-				</div>
+  // Months
+  months: {
+    january: 'Janvier',
+    february: 'Février',
+    march: 'Mars',
+    april: 'Avril',
+    may: 'Mai',
+    june: 'Juin',
+    july: 'Juillet',
+    august: 'Août',
+    september: 'Septembre',
+    october: 'Octobre',
+    november: 'Novembre',
+    december: 'Décembre',
+  },
 
-				<div className="p-6">
-					<div className="w-full">
-						{/* Header row with day names */}
-						<div className="grid grid-cols-[100px_repeat(37,1fr)] border-b">
-							<div className="p-2"></div>
-							{[...Array(5)].map((_, weekIndex) =>
-								dayHeaders.map((day, i) => (
-									<div
-										key={`header-${weekIndex}-${i}`}
-										className="text-center font-medium p-2 text-xs"
-									>
-										{day}
-									</div>
-								))
-							)}
-						</div>
+  // Error messages
+  errors: {
+    somethingWentWrong: 'Une erreur s\'est produite',
+    failedToLoadData: 'Échec du chargement des données',
+    networkError: 'Erreur réseau',
+    unauthorized: 'Non autorisé',
+    forbidden: 'Interdit',
+    notFound: 'Non trouvé',
+    internalServerError: 'Erreur interne du serveur',
+    validationError: 'Erreur de validation',
+    unknownError: 'Erreur inconnue',
+  },
 
-						{/* Month rows */}
-						{months.map((monthName, monthIndex) => {
-							const firstDayOfMonth = new Date(
-								parseInt(data.year),
-								monthIndex,
-								1
-							);
-							const adjustedWeekday =
-								getMondayBasedDay(firstDayOfMonth);
-
-							return (
-								<div
-									key={monthName}
-									className="grid grid-cols-[100px_repeat(37,1fr)] border-b"
-								>
-									<div className="p-2 font-medium">
-										{monthName}
-									</div>
-									{Array(37)
-										.fill(0)
-										.map((_, index) => {
-											const dayOffset =
-												index - adjustedWeekday;
-											const currentDate = new Date(
-												firstDayOfMonth
-											);
-											currentDate.setDate(1 + dayOffset);
-
-											if (
-												getMonth(currentDate) !==
-												monthIndex
-											) {
-												return (
-													<div
-														key={index}
-														className="p-2"
-													/>
-												);
-											}
-
-											const dateStr = format(
-												currentDate,
-												"yyyy-MM-dd"
-											);
-											const dayData =
-												data.availability[dateStr];
-											const dayOfWeek =
-												getMondayBasedDay(currentDate);
-											const isWeekend = dayOfWeek >= 5; // 5=Sat, 6=Sun
-											const isHoliday = isPublicHoliday(currentDate, holidays);
-											const weekNumber =
-												getWeekNumber(currentDate);
-											const isEvenWeek =
-												weekNumber % 2 === 0;
-
-											// Determine background color based on day type
-											let bgColor = '';
-											if (isHoliday) {
-												bgColor = 'bg-red-100'; // Holiday background
-											} else if (isEvenWeek) {
-												if (isWeekend) {
-													bgColor = 'bg-zinc-100'; // Even week background
-												} else {
-													bgColor = 'bg-zinc-50'; // Regular day background
-												}
-											} else if (!isEvenWeek) {
-												if (isWeekend) {
-													bgColor = 'bg-zinc-200'; // Even week background
-												} else {
-													bgColor = 'bg-zinc-100'; // Regular day background
-												}
-											}
-
-											return (
-												<div
-													key={index}
-													className={`p-1 border-r border-zinc-100 ${bgColor}`}
-													title={format(
-														currentDate,
-														"MMMM d, yyyy"
-													)}
-												>
-													<div className="text-xs text-center">
-														{format(
-															currentDate,
-															"d"
-														)}
-													</div>
-													<div className="space-y-0.5 mt-1">
-														{data.dayParts.map(
-															(part) => {
-																const slotKey = `${dateStr}-${part}`;
-																const isLoading =
-																	loadingSlots[
-																	slotKey
-																	];
-																const currentValue =
-																	slotStates[
-																	slotKey
-																	] ??
-																	dayData?.[
-																	part as keyof typeof dayData
-																	] ??
-																	false;
-
-																return (
-																	<button
-																		key={
-																			part
-																		}
-																		onClick={() =>
-																			handleTimeSlotClick(
-																				dateStr,
-																				part as
-																				| "am"
-																				| "pm",
-																				currentValue
-																			)
-																		}
-																		className={`h-1.5 w-full transition-colors cursor-pointer ${isLoading
-																			? "bg-yellow-500"
-																			: currentValue
-																				? "bg-green-500 hover:bg-green-600"
-																				: isWeekend
-																					? "bg-zinc-300"
-																					: "bg-red-500 hover:bg-red-600"
-																			} rounded-sm`}
-																		disabled={
-																			isWeekend ||
-																			isHoliday ||
-																			isLoading
-																		}
-																		title={`${format(currentDate, "MMM d")} ${part.toUpperCase()}`}
-																	/>
-																);
-															}
-														)}
-													</div>
-												</div>
-											);
-										})}
-								</div>
-							);
-						})}
-					</div>
-
-					{/* Legend */}
-					<div className="mt-6 space-y-4">
-						<div className="flex items-center space-x-6 text-sm">
-							<div className="flex items-center space-x-2">
-								<div className="w-4 h-4 bg-green-500 rounded" />
-								<span>{t('calendar.available')}</span>
-							</div>
-							<div className="flex items-center space-x-2">
-								<div className="w-4 h-4 bg-red-500 rounded" />
-								<span>{t('calendar.unavailable')}</span>
-							</div>
-							<div className="flex items-center space-x-2">
-								<div className="w-4 h-4 bg-zinc-300 rounded" />
-								<span>{t('calendar.weekend')}</span>
-							</div>
-							<div className="flex items-center space-x-2">
-								<div className="w-4 h-4 bg-red-200 rounded" />
-								<span>{t('calendar.holiday')}</span>
-							</div>
-						</div>
-						<div className="text-sm text-zinc-600">
-							{t('availability.clickToToggle')}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-}
-
-// Helper to convert Sunday=0 to Monday=0
-const getMondayBasedDay = (date: Date): number => {
-	const day = getDay(date);
-	return day === 0 ? 6 : day - 1;
+  // Public holidays
+  publicHolidays: {
+    newYearsDay: 'Jour de l\'An',
+    easterSunday: 'Dimanche de Pâques',
+    easterMonday: 'Lundi de Pâques',
+    labourDay: 'Fête du Travail',
+    ascensionDay: 'Ascension',
+    whitSunday: 'Pentecôte',
+    whitMonday: 'Lundi de Pentecôte',
+    belgianNationalDay: 'Fête Nationale Belge',
+    assumptionDay: 'Assomption',
+    allSaintsDay: 'Toussaint',
+    armisticeDay: 'Armistice',
+    christmasDay: 'Noël',
+    goodFriday: 'Vendredi Saint',
+    earlyMayBankHoliday: 'Jour férié de début mai',
+    springBankHoliday: 'Jour férié de printemps',
+    summerBankHoliday: 'Jour férié d\'été',
+    boxingDay: 'Lendemain de Noël',
+  },
 };
