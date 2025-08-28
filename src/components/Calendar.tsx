@@ -4,11 +4,15 @@ import { EventModal } from "./EventModal";
 import { SettingsPanel } from "./settings/SettingsPanel";
 import { useTranslation } from "../context/TranslationContext";
 import { useHolidays } from "../context/HolidayContext";
-import { createEvent, updateEvent } from "../lib/api/events";
-import toast from "react-hot-toast";
 import { Event } from "../types/event";
 import { User } from "../types/user";
 import { format } from "date-fns";
+
+export function Calendar() {
+  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
+  const { token } = useAuth();
+  const { refreshData } = useApp();
+  const { t } = useTranslation();
   
   if (!currentUser) {
     return (
