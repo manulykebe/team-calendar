@@ -239,21 +239,28 @@ export function AvailabilityModal({
 			<div className="bg-white rounded-lg shadow-xl max-w-4xl w-full">
 				<div className="flex justify-between items-center p-6 border-b">
 					<div className="flex items-center space-x-4">
-						<h2 className="text-xl font-semibold text-zinc-900">
-							{t('availability.setAvailabilityFor', { firstName: selectedColleague.firstName, lastName: selectedColleague.lastName })}
-						</h2>
+						{!isAdmin && (
+							<span className="text-xl font-semibold text-zinc-900">
+								{t('availability.setAvailability')}
+							</span>
+						)}
 						{isAdmin && (
-							<select
-								value={selectedColleague.id}
-								onChange={handleColleagueChange}
-								className="ml-4 rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-							>
-								{filteredColleagues.map(c => (
-									<option key={c.id} value={c.id}>
-										{c.firstName} {c.lastName}{c.id === currentUser.id ? ' (You)' : ''}
-									</option>
-								))}
-							</select>
+							<>
+								<select
+									value={selectedColleague.id}
+									onChange={handleColleagueChange}
+									className="ml-4 rounded-md border-zinc-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								>
+									{filteredColleagues.map(c => (
+										<option key={c.id} value={c.id}>
+											{c.firstName} {c.lastName}{c.id === currentUser.id ? ' (You)' : ''}
+										</option>
+									))}
+								</select>
+								<h2 className="text-xl font-semibold text-zinc-900">
+									{t('availability.setAvailabilityFor', { firstName: selectedColleague.firstName, lastName: selectedColleague.lastName })}
+								</h2>
+							</>
 						)}
 					</div>
 					<button
@@ -400,7 +407,7 @@ export function AvailabilityModal({
 									caption={t('availability.evenWeeks')}
 									schedule={schedule}
 									onTimeSlotToggle={onTimeSlotToggle}
-									disabled={currentEntryIndex === -1 || isReadOnly}
+									disabled={currentEntryIndex === -1 || isReadOnly || !isAdmin}
 								/>
 							</div>
 						)}
@@ -419,7 +426,7 @@ export function AvailabilityModal({
 								}
 								isAlternate={repeatPattern === "evenodd"}
 								onTimeSlotToggle={onTimeSlotToggle}
-								disabled={currentEntryIndex === -1 || isReadOnly}
+								disabled={currentEntryIndex === -1 || isReadOnly || !isAdmin}
 							/>
 						</div>
 					</div>
@@ -460,39 +467,41 @@ export function AvailabilityModal({
 							<X className="w-4 h-4 mr-2" />
 							{t('common.cancel')}
 						</button>
-						<button
-							onClick={handleSave}
-							disabled={loading || currentEntryIndex === -1 || isReadOnly}
-							className={`flex items-center px-4 py-2 w-32 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600`}
-						>
-							{loading ? (
-								<span className="flex items-center">
-									<svg
-										className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-									>
-										<circle
-											className="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
-											stroke="currentColor"
-											strokeWidth="4"
-										></circle>
-										<path
-											className="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-										></path>
-									</svg>
-									{t('common.saving')}
-								</span>
-							) : (
-								t('common.save')
-							)}
-						</button>
+						{isAdmin && (
+							<button
+								onClick={handleSave}
+								disabled={loading || currentEntryIndex === -1 || isReadOnly}
+								className={`flex items-center px-4 py-2 w-32 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600`}
+							>
+								{loading ? (
+									<span className="flex items-center">
+										<svg
+											className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+										>
+											<circle
+												className="opacity-25"
+												cx="12"
+												cy="12"
+												r="10"
+												stroke="currentColor"
+												strokeWidth="4"
+											></circle>
+											<path
+												className="opacity-75"
+												fill="currentColor"
+												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+											></path>
+										</svg>
+										{t('common.saving')}
+									</span>
+								) : (
+									t('common.save')
+								)}
+							</button>
+						)}
 					</div>
 				</div>
 			</div>

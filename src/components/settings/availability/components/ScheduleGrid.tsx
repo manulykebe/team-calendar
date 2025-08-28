@@ -1,5 +1,6 @@
 import { Sun, Moon } from "lucide-react";
 import { WeeklySchedule, TimeSlot } from "../../../../types/availability";
+import { useTranslation } from "../../../../context/TranslationContext";
 
 interface ScheduleGridProps {
   caption: string;
@@ -18,6 +19,7 @@ export function ScheduleGrid({
   onTimeSlotToggle,
   disabled = false,
 }: ScheduleGridProps) {
+  const { t } = useTranslation();
   return (
     <div
       className={`grid grid-cols-6 gap-4 ${disabled ? "opacity-50" : ""}`}
@@ -26,7 +28,7 @@ export function ScheduleGrid({
       <div className="col-span-1 text-center font-medium">{caption}</div>
       {DAYS.map((day) => (
         <div key={day} className="text-center font-medium">
-          {day}
+          {t(`common.${day.toLowerCase()}`)}
         </div>
       ))}
 
@@ -42,11 +44,11 @@ export function ScheduleGrid({
               ${schedule[day]?.am
                 ? "bg-green-100 border-green-500 hover:bg-green-200"
                 : "bg-red-100 border-red-500 hover:bg-red-200"
-              } ${disabled ? "cursor-not-allowed opacity-75" : "cursor-pointer"}
+              } ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
             `}
             aria-label={`Toggle ${day} morning availability`}
           >
-            {schedule[day]?.am ? "Available" : "Unavailable"}
+            {schedule[day]?.am ? t('calendar.available') : t('calendar.unavailable')}
           </button>
         </div>
       ))}
@@ -63,11 +65,11 @@ export function ScheduleGrid({
               ${schedule[day]?.pm
                 ? "bg-green-100 border-green-500 hover:bg-green-200"
                 : "bg-red-100 border-red-500 hover:bg-red-200"
-              } ${disabled ? "cursor-not-allowed opacity-75" : "cursor-pointer"}
+              } ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
             `}
             aria-label={`Toggle ${day} afternoon availability`}
           >
-            {schedule[day]?.pm ? "Available" : "Unavailable"}
+            {schedule[day]?.pm ? t('calendar.available') : t('calendar.unavailable')}
           </button>
         </div>
       ))}

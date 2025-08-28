@@ -1,6 +1,13 @@
 export const nl = {
   // Common
   common: {
+    monday: 'Maandag',
+    tuesday: 'Dinsdag',
+    wednesday: 'Woensdag',
+    thursday: 'Donderdag',
+    friday: 'Vrijdag',
+    saturday: 'Zaterdag',
+    sunday: 'Zondag',
     save: 'Opslaan',
     cancel: 'Annuleren',
     delete: 'Verwijderen',
@@ -37,6 +44,8 @@ export const nl = {
     site: 'Site',
     saving: 'Opslaan...',
     deleting: 'Verwijderen...',
+    startDate: 'Startdatum',
+    endDate: 'Einddatum'
   },
 
   // Authentication
@@ -181,7 +190,6 @@ export const nl = {
     display: 'Weergave',
     manageUsers: 'Gebruikers beheren',
     manageColleagueDisplay: 'Collega-weergave beheren',
-    setAvailability: 'Beschikbaarheid instellen',
     changeIndividualAvailability: 'Beschikbaarheid aanpassen',
     subscribeToCalendar: 'Abonneren op kalender',
     exportEvents: 'Gebeurtenissen exporteren',
@@ -192,13 +200,6 @@ export const nl = {
     left: 'Links',
     right: 'Rechts',
     none: 'Geen',
-    monday: 'Maandag',
-    tuesday: 'Dinsdag',
-    wednesday: 'Woensdag',
-    thursday: 'Donderdag',
-    friday: 'Vrijdag',
-    saturday: 'Zaterdag',
-    sunday: 'Zondag',
     colleagueDisplaySettings: 'Collega-weergave instellingen',
     abbreviation: 'Afkorting',
     color: 'Kleur',
@@ -213,7 +214,8 @@ export const nl = {
 
   // Availability
   availability: {
-    setAvailabilityFor: 'Beschikbaarheid instellen voor {{firstname}} {{lastname}}',
+    setAvailability: 'Beschikbaarheid',
+    setAvailabilityFor: 'Beschikbaarheid voor {{firstname}} {{lastname}}',
     weeklySchedule: 'Weekschema',
     evenWeeks: 'Even weken',
     oddWeeks: 'Oneven weken',

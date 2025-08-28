@@ -136,7 +136,7 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
 								>
 									<Clock className="w-4 h-4 mr-2" />
-									{t('settings.setAvailability')}
+									{t('availability.setAvailability')}
 								</button>
 								<button
 									onClick={handleOpenSubscription}

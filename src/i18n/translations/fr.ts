@@ -1,6 +1,13 @@
 export const fr = {
   // Common
   common: {
+    monday: 'Lundi',
+    tuesday: 'Mardi',
+    wednesday: 'Mercredi',
+    thursday: 'Jeudi',
+    friday: 'Vendredi',
+    saturday: 'Samedi',
+    sunday: 'Dimanche',
     save: 'Enregistrer',
     cancel: 'Annuler',
     delete: 'Supprimer',
@@ -37,6 +44,8 @@ export const fr = {
     site: 'Site',
     saving: 'Enregistrement...',
     deleting: 'Suppression...',
+    startDate: 'Date de début',
+    endDate: 'Date de fin'
   },
 
   // Authentication
@@ -182,7 +191,6 @@ export const fr = {
     display: 'Affichage',
     manageUsers: 'Gérer les utilisateurs',
     manageColleagueDisplay: 'Gérer l\'affichage des collègues',
-    setAvailability: 'Définir la disponibilité',
     subscribeToCalendar: 'S\'abonner au calendrier',
     exportEvents: 'Exporter les événements',
     definePeriods: 'Définir/Modifier les périodes',
@@ -192,13 +200,6 @@ export const fr = {
     left: 'Gauche',
     right: 'Droite',
     none: 'Aucun',
-    monday: 'Lundi',
-    tuesday: 'Mardi',
-    wednesday: 'Mercredi',
-    thursday: 'Jeudi',
-    friday: 'Vendredi',
-    saturday: 'Samedi',
-    sunday: 'Dimanche',
     colleagueDisplaySettings: 'Paramètres d\'affichage des collègues',
     abbreviation: 'Abréviation',
     color: 'Couleur',
@@ -213,7 +214,8 @@ export const fr = {
 
   // Availability
   availability: {
-    setAvailabilityFor: 'Définir la disponibilité pour {{firstname}} {{lastname}}',
+    setAvailability: 'Disponibilité',
+    setAvailabilityFor: 'Disponibilité pour {{firstname}} {{lastname}}',
     weeklySchedule: 'Planning hebdomadaire',
     evenWeeks: 'Semaines paires',
     oddWeeks: 'Semaines impaires',

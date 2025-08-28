@@ -17,7 +17,7 @@ export function SubscriptionModal({
 	site,
 	onClose,
 }: SubscriptionModalProps) {
-	const { t, tArray } = useTranslation();
+	const { t } = useTranslation();
 	const { token } = useAuth();
 	const [subscriptionUrl, setSubscriptionUrl] = useState<string>("");
 	const [loading, setLoading] = useState(true);
@@ -89,7 +89,10 @@ export function SubscriptionModal({
 	);
 
 	const TabContent = ({ tab }: { tab: Tab }) => {
-		const instructionItems = tArray(`subscription.${tab}Instructions`);
+		const instructions = t(`subscription.${tab}Instructions`, { returnObjects: true });
+		
+		// Ensure instructions is an array before mapping
+		const instructionItems = Array.isArray(instructions) ? instructions : [];
 		
 		return (
 			<ol className="list-decimal list-inside space-y-0 ml-4">

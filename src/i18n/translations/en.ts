@@ -1,6 +1,13 @@
 export const en = {
   // Common
   common: {
+    monday: 'Monday',
+    tuesday: 'Tuesday',
+    wednesday: 'Wednesday',
+    thursday: 'Thursday',
+    friday: 'Friday',
+    saturday: 'Saturday',
+    sunday: 'Sunday',
     save: 'Save',
     cancel: 'Cancel',
     delete: 'Delete',
@@ -37,6 +44,8 @@ export const en = {
     site: 'Site',
     saving: 'Saving...',
     deleting: 'Deleting...',
+    startDate: 'Start Date',
+    endDate: 'End Date'
   },
 
   // Authentication
@@ -182,7 +191,6 @@ export const en = {
     display: 'Display',
     manageUsers: 'Manage Users',
     manageColleagueDisplay: 'Manage Colleague Display',
-    setAvailability: 'Set Availability',
     subscribeToCalendar: 'Subscribe to Calendar',
     exportEvents: 'Export Events',
     definePeriods: 'Define/Edit Periods',
@@ -192,13 +200,6 @@ export const en = {
     left: 'Left',
     right: 'Right',
     none: 'None',
-    monday: 'Monday',
-    tuesday: 'Tuesday',
-    wednesday: 'Wednesday',
-    thursday: 'Thursday',
-    friday: 'Friday',
-    saturday: 'Saturday',
-    sunday: 'Sunday',
     colleagueDisplaySettings: 'Colleague Display Settings',
     abbreviation: 'Abbreviation',
     color: 'Color',
@@ -213,7 +214,8 @@ export const en = {
 
   // Availability
   availability: {
-    setAvailabilityFor: 'Set Availability for {{firstname}} {{lastname}}',
+    setAvailability: 'Availability',
+    setAvailabilityFor: 'Availability for {{firstname}} {{lastname}}',
     weeklySchedule: 'Weekly Schedule',
     evenWeeks: 'Even Weeks',
     oddWeeks: 'Odd Weeks',
