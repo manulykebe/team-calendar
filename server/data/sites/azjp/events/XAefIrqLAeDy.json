@@ -166,5 +166,17 @@
     "status": "pending",
     "createdAt": "2025-06-30T16:06:28.061Z",
     "updatedAt": "2025-06-30T16:06:28.061Z"
+  },
+  {
+    "id": "6edf7173-a699-4d08-b30e-3847d759bcaa",
+    "userId": "XAefIrqLAeDy",
+    "type": "requestedLeave",
+    "title": "",
+    "description": "",
+    "date": "2026-01-14",
+    "endDate": "2026-01-22",
+    "status": "pending",
+    "createdAt": "2025-08-28T15:04:59.821Z",
+    "updatedAt": "2025-08-28T15:04:59.821Z"
   }
 ]
