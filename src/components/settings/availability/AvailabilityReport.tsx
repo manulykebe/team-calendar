@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { updateAvailabilityException } from "../../../lib/api/users";
 import { useAuth } from "../../../context/AuthContext";
 import { useTranslation } from "../../../context/TranslationContext";
+import { useHolidays, isPublicHoliday } from "../../../context/HolidayContext";
 import toast from "react-hot-toast";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
 import { useState, useEffect } from "react";
@@ -29,6 +30,7 @@ interface AvailabilityReportProps {
 export function AvailabilityReport({ data, colleague, onClose }: AvailabilityReportProps) {
 	const { token } = useAuth();
 	const { t } = useTranslation();
+	const { holidays, loadHolidays } = useHolidays();
 	
 	// Use translated day headers
 	const dayHeaders = [
@@ -62,6 +64,12 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 	const [loadingSlots, setLoadingSlots] = useState<Record<string, boolean>>(
 		{}
 	);
+
+	// Load holidays for the report year
+	useEffect(() => {
+		const year = parseInt(data.year);
+		loadHolidays(year);
+	}, [data.year, loadHolidays]);
 
 	// Initialize slot states from data
 	useEffect(() => {
@@ -206,18 +214,24 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 											const dayOfWeek =
 												getMondayBasedDay(currentDate);
 											const isWeekend = dayOfWeek >= 5; // 5=Sat, 6=Sun
+											const isHoliday = isPublicHoliday(currentDate, holidays);
 											const weekNumber =
 												getWeekNumber(currentDate);
 											const isEvenWeek =
 												weekNumber % 2 === 0;
+											
+											// Determine background color based on day type
+											let bgColor = '';
+											if (isHoliday) {
+												bgColor = 'bg-red-50'; // Holiday background
+											} else if (isEvenWeek) {
+												bgColor = 'bg-zinc-50'; // Even week background
+											}
+											
 											return (
 												<div
 													key={index}
-													className={`p-1 border-r border-zinc-100 ${
-														isEvenWeek
-															? "bg-zinc-50"
-															: ""
-													}`}
+													className={`p-1 border-r border-zinc-100 ${bgColor}`}
 													title={format(
 														currentDate,
 														"MMMM d, yyyy"
@@ -271,6 +285,7 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 																		} rounded-sm`}
 																		disabled={
 																			isWeekend ||
+																			isHoliday ||
 																			isLoading
 																		}
 																		title={`${format(currentDate, "MMM d")} ${part.toUpperCase()}`}
@@ -301,6 +316,10 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 							<div className="flex items-center space-x-2">
 								<div className="w-4 h-4 bg-zinc-200 rounded" />
 								<span>{t('calendar.weekend')}</span>
+							</div>
+							<div className="flex items-center space-x-2">
+								<div className="w-4 h-4 bg-red-200 rounded" />
+								<span>{t('calendar.holiday')}</span>
 							</div>
 						</div>
 						<div className="text-sm text-zinc-600">
