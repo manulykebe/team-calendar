@@ -1,170 +1,173 @@
-import {
-  CalendarIcon
-} from "lucide-react";
-import Calendar from "calendar.io";
-import { EventModal } from "./EventModal";
-import { SettingsPanel } from "./settings/SettingsPanel";
-import { ConnectionStatus } from "./common/ConnectionStatus";
-import { useCalendarState } from "../hooks/useCalendarState";
-import { useApp } from "../context/AppContext";
-import { useTranslation } from "../context/TranslationContext";
-import { format } from "date-fns";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-export function Calendar() {
-  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
-  const { t } = useTranslation();
-  
-  if (!currentUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-600">
-        {t('errors.somethingWentWrong')}
-      </div>
-    );
+/* FullCalendar custom styles */
+.fc {
+  font-family: inherit;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid #e5e7eb;
+}
+
+.fc-theme-standard td, .fc-theme-standard th {
+  border-color: #e5e7eb;
+}
+
+.fc-col-header-cell {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+.fc-daygrid-day-number {
+  color: #374151;
+  font-weight: 500;
+}
+
+.fc-day-today {
+  background-color: #dbeafe !important;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px;
+}
+
+/* Event styling */
+.fc-event-custom {
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 4px;
+}
+
+.fc-event-holiday {
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #991b1b !important;
+}
+
+.fc-event-pending {
+  opacity: 0.8;
+  border-style: dashed;
+}
+
+.fc-event-approved {
+  opacity: 1;
+}
+
+.fc-event-denied {
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+/* Toolbar styling */
+.fc-toolbar {
+  margin-bottom: 1rem;
+}
+
+.fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.fc-button-primary {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-weight: 500;
+}
+
+.fc-button-primary:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.fc-button-primary:disabled {
+  background-color: #9ca3af;
+  border-color: #9ca3af;
+}
+
+.fc-button-active {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+/* Weekend styling */
+.fc-day-sat, .fc-day-sun {
+  background-color: #f9fafb;
+}
+
+/* More events link */
+.fc-more-link {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.fc-more-link:hover {
+  color: #2563eb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
   }
   
+  .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .fc-button-group {
+    display: flex;
+  }
+}
 
-  const {
-    selectedStartDate,
-    selectedEndDate,
-    showModal,
-    selectedEvent,
-    setShowModal,
-    handleDateClick,
-    resetSelection,
-    handleCreateEvent,
-    handleEventDelete,
-  } = useCalendarState();
+/* Custom availability overlay */
+.fc-daygrid-day-frame {
+  position: relative;
+}
 
-    setCurrentMonth((prev) => subWeeks(prev, 1));
-  };
+.availability-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
 
-  const handleNextWeek = () => {
-    setCurrentMonth((prev) => addWeeks(prev, 1));
-  };
+.availability-overlay.am-unavailable::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background-color: rgba(156, 163, 175, 0.3);
+}
 
-  const handleNextMonth = () => {
-    setCurrentMonth((prev) => addMonths(prev, 1));
-  };
-
-  const handleWeekSelect = (startDate: Date, endDate: Date) => {
-    const alignedStartDate = startOfWeek(startDate, { weekStartsOn: 1 });
-    setSelectedStartDate(alignedStartDate);
-    setSelectedEndDate(endDate);
-    setShowModal(true);
-  };
-
-  // Calculate the date range for display
-  const startDisplayDate = subWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 1);
-  const endDisplayDate = subDays(addWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 3 + 1), 1);
-  const dateRange = `${format(startDisplayDate, "MMM d")} - ${format(endDisplayDate, "MMM d, yyyy")}`;
-
-  return (
-    <div className="max-w-7xl mx-auto px-2 sm:px-2 lg:px-4 py-4" data-tsx-id="calendar">
-      <ConnectionStatus />
-      
-      <div className="flex justify-between items-center mb-2">
-        <div className="flex items-center space-x-4">
-          <div className="flex justify-between items-center">
-            <div className="w-80 flex-1 items-center space-x-1">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-1">
-                  <button
-                    onClick={handleToday}
-                    className="flex items-center px-2 py-1 space-x-1 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
-                    title={t('calendar.goToToday')}
-                  >
-                    <CalendarIcon className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={handlePrevMonth}
-                    className="hover:bg-zinc-100 rounded-full"
-                    aria-label={t('calendar.previousMonth')}
-                  >
-                    <ChevronsLeft className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={handlePrevWeek}
-                    className="hover:bg-zinc-100 rounded-full"
-                    aria-label={t('calendar.previousWeek')}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                </div>
-                <span className="text-sm font-medium text-zinc-600">
-                  {dateRange}
-                </span>
-                <div className="flex items-center space-x-1">
-                  <button
-                    onClick={handleNextWeek}
-                    className="hover:bg-zinc-100 rounded-full"
-                    aria-label={t('calendar.nextWeek')}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={handleNextMonth}
-                    className="hover:bg-zinc-100 rounded-full"
-                    aria-label={t('calendar.nextMonth')}
-                  >
-                    <ChevronsRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <MonthPicker
-            currentMonth={currentMonth}
-            onDateSelect={setCurrentMonth}
-            weekStartsOn={weekStartsOn}
-          />
-        </div>
-      </div>
-
-      <div 
-        ref={containerRef}
-        className="bg-white rounded-lg shadow overflow-hidden"
-      >
-        <CalendarGrid
-          currentMonth={currentMonth}
-          events={events}
-          onDateClick={handleDateClick}
-          onDateHover={handleDateHover}
-          weekStartsOn={weekStartsOn}
-          userSettings={currentUser?.settings}
-          onEventDelete={handleEventDelete}
-          currentUser={currentUser}
-          onEventResize={handleEventResize}
-          selectedStartDate={selectedStartDate}
-          selectedEndDate={selectedEndDate}
-          hoverDate={hoverDate}
-          onWeekSelect={handleWeekSelect}
-          availabilityData={availabilityData}
-          isLoadingAvailability={isLoadingAvailability}
-        />
-      </div>
-
-      <SettingsPanel />
-
-      {showModal && (
-        <EventModal
-          date={selectedStartDate!}
-          endDate={selectedEndDate}
-          event={selectedEvent}
-          onClose={() => {
-            setShowModal(false);
-            resetSelection();
-          }}
-          onSubmit={handleCreateEvent}
-          defaultEventType={
-            selectedStartDate && selectedEndDate
-              ? "requestedLeave"
-              : undefined
-          }
-        />
-      )}
-    </div>
-  );
+.availability-overlay.pm-unavailable::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background-color: rgba(156, 163, 175, 0.3);
 }

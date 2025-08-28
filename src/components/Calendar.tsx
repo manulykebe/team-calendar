@@ -9,7 +9,7 @@ import { SettingsPanel } from "./settings/SettingsPanel";
 import { ConnectionStatus } from "./common/ConnectionStatus";
 import { useApp } from "../context/AppContext";
 import { useTranslation } from "../context/TranslationContext";
-import { useHolidays } from "../context/Holidays";
+import { useHolidays } from "../context/HolidayContext";
 import { format, parseISO } from "date-fns";
 import { Event } from "../types/event";
 import { User } from "../types/user";
@@ -34,10 +34,6 @@ export function Calendar() {
 
   // Transform events for FullCalendar
   const calendarEvents = events.map(event => {
-    const colleague = currentUser.id === event.userId 
-      ? currentUser 
-      : currentUser.settings?.colleagues?.[event.userId];
-    
     const colleagueSettings = currentUser?.settings?.colleagues?.[event.userId];
     const backgroundColor = colleagueSettings?.color || "#3788d8";
     const initials = colleagueSettings?.initials || "";
