@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef, useCallback } from "react";
 import { CalendarIcon } from "lucide-react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -5,11 +6,21 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { EventModal } from "./EventModal";
 import { SettingsPanel } from "./settings/SettingsPanel";
+import { ConnectionStatus } from "./common/ConnectionStatus";
+import { useApp } from "../context/AppContext";
 import { useTranslation } from "../context/TranslationContext";
 import { useHolidays } from "../context/HolidayContext";
 import { Event } from "../types/event";
-import { User } from "../types/user";
 import { format } from "date-fns";
+
+export function Calendar() {
+  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
+  const { t } = useTranslation();
+  const { holidays } = useHolidays();
+  const calendarRef = useRef<FullCalendar>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [showModal, setShowModal] = useState(false);
   
   if (!currentUser) {
     return (
@@ -19,19 +30,42 @@ import { format } from "date-fns";
     );
   }
 
+  // Transform events for FullCalendar
   const calendarEvents = events.map(event => {
     const colleagueSettings = currentUser?.settings?.colleagues?.[event.userId];
     const backgroundColor = colleagueSettings?.color || "#3788d8";
     const initials = colleagueSettings?.initials || "";
+    
+    // Get event title with status
     let title = event.title || getEventTypeLabel(event.type, event.status);
     if (initials && event.userId !== currentUser.id) {
+      title = `[${initials}] ${title}`;
     }
 
+    return {
       id: event.id,
       title,
       start: event.date,
+      end: event.endDate ? format(new Date(new Date(event.endDate).getTime() + 24 * 60 * 60 * 1000), 'yyyy-MM-dd') : undefined,
+      backgroundColor,
       borderColor: backgroundColor,
       textColor: getTextColor(backgroundColor),
+      extendedProps: {
+        originalEvent: event,
+        status: event.status,
+        isHoliday: ['requestedLeave', 'requestedDesiderata'].includes(event.type)
+      }
+    };
+  });
+
+  // Add holidays as background events
+  const holidayEvents = holidays.map(holiday => ({
+    id: `holiday-${holiday.date}`,
+    title: holiday.name,
+    start: holiday.date,
+    display: 'background',
+    backgroundColor: '#fef2f2',
+    extendedProps: {
       isHoliday: true
     }
   }));
