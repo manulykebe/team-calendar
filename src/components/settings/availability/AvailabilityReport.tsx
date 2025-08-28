@@ -3,6 +3,7 @@ import { getWeekNumber } from "../../../utils/dateUtils";
 import { X } from "lucide-react";
 import { updateAvailabilityException } from "../../../lib/api/users";
 import { useAuth } from "../../../context/AuthContext";
+import { useTranslation } from "../../../context/TranslationContext";
 import toast from "react-hot-toast";
 import { userSettingsEmitter } from "../../../hooks/useColleagueSettings";
 import { useState, useEffect } from "react";
@@ -27,20 +28,33 @@ interface AvailabilityReportProps {
 
 export function AvailabilityReport({ data, colleague, onClose }: AvailabilityReportProps) {
 	const { token } = useAuth();
-	const dayHeaders = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+	const { t } = useTranslation();
+	
+	// Use translated day headers
+	const dayHeaders = [
+		t('days.mon'),
+		t('days.tue'), 
+		t('days.wed'),
+		t('days.thu'),
+		t('days.fri'),
+		t('days.sat'),
+		t('days.sun')
+	];
+	
+	// Use translated month names
 	const months = [
-		"January",
-		"February",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December",
+		t('months.january'),
+		t('months.february'),
+		t('months.march'),
+		t('months.april'),
+		t('months.may'),
+		t('months.june'),
+		t('months.july'),
+		t('months.august'),
+		t('months.september'),
+		t('months.october'),
+		t('months.november'),
+		t('months.december'),
 	];
 
 	// Track both clicked slots and their current values
@@ -95,10 +109,10 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 				},
 			});
 
-			toast.success("Availability updated");
+			toast.success(t('availability.availabilityUpdated'));
 		} catch (error) {
-			console.error("Failed to update availability:", error);
-			toast.error("Failed to update availability");
+			console.error(t('availability.failedToUpdateAvailability'), error);
+			toast.error(t('availability.failedToUpdateAvailability'));
 			// Don't update state on error
 		} finally {
 			setLoadingSlots((prev) => ({ ...prev, [slotKey]: false }));
@@ -113,7 +127,10 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 			<div className="bg-white rounded-lg shadow-xl max-w-[1400px] w-full max-h-[90vh] overflow-auto">
 				<div className="sticky top-0 bg-white z-10 flex justify-between items-center p-6 border-b">
 					<h2 className="text-xl font-semibold text-zinc-900">
-						Availability Report for {colleague.firstName} {colleague.lastName} - {data.year}
+						{t('availability.availabilityReportFor', { 
+							name: `${colleague.firstName} ${colleague.lastName}`, 
+							year: data.year 
+						})}
 					</h2>
 					<button
 						onClick={onClose}
@@ -275,20 +292,19 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 						<div className="flex items-center space-x-6 text-sm">
 							<div className="flex items-center space-x-2">
 								<div className="w-4 h-4 bg-green-500 rounded" />
-								<span>Available</span>
+								<span>{t('calendar.available')}</span>
 							</div>
 							<div className="flex items-center space-x-2">
 								<div className="w-4 h-4 bg-red-500 rounded" />
-								<span>Unavailable</span>
+								<span>{t('calendar.unavailable')}</span>
 							</div>
 							<div className="flex items-center space-x-2">
 								<div className="w-4 h-4 bg-zinc-200 rounded" />
-								<span>Weekend</span>
+								<span>{t('calendar.weekend')}</span>
 							</div>
 						</div>
 						<div className="text-sm text-zinc-600">
-							Click on time slots to toggle individual updates.
-							Changes are saved automatically.
+							{t('availability.clickToToggle')}
 						</div>
 					</div>
 				</div>
