@@ -1,5 +1,8 @@
-  import { CalendarIcon } from "lucide-react";
-import Calendar from "calendar.io";
+import { CalendarIcon } from "lucide-react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 import { EventModal } from "./EventModal";
 import { SettingsPanel } from "./settings/SettingsPanel";
 import { useTranslation } from "../context/TranslationContext";
@@ -8,7 +11,6 @@ import { Event } from "../types/event";
 import { User } from "../types/user";
 import { format } from "date-fns";
   
-export default function CalendarComponent() {
   if (!currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center text-red-600">
@@ -23,18 +25,16 @@ export default function CalendarComponent() {
     const initials = colleagueSettings?.initials || "";
     let title = event.title || getEventTypeLabel(event.type, event.status);
     if (initials && event.userId !== currentUser.id) {
-      title = `${initials}: ${title}`;
     }
 
-    return {
       id: event.id,
       title,
       start: event.date,
       borderColor: backgroundColor,
       textColor: getTextColor(backgroundColor),
       isHoliday: true
-    };
-  });
+    }
+  }));
 
   // Add availability as background events
   const availabilityEvents = Object.entries(availabilityData).flatMap(([date, availability]) => {
