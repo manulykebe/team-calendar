@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { X, Download, Calendar } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { API_URL } from "../../lib/api/config";
@@ -19,6 +19,11 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
   const [endDate, setEndDate] = useState("");
   const [exportType, setExportType] = useState<"all" | "user">("all");
   const [isExporting, setIsExporting] = useState(false);
+  const [holidays] = useState([]);
+
+  const isPublicHoliday = useCallback((date: Date | string): boolean => {
+    return false;
+  }, [holidays]);
 
   const handleExport = async () => {
     if (!token) return;
@@ -73,7 +78,6 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
       // Trigger download
       document.body.appendChild(link);
       link.click();
-  const isPublicHoliday = useCallback((date: Date | string): boolean => {
       
       // Clean up the blob URL
       window.URL.revokeObjectURL(downloadUrl);
@@ -93,7 +97,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
     } finally {
       setIsExporting(false);
     }
-  }, [holidays]);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
