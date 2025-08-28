@@ -1,33 +1,28 @@
-import {
-  ChevronLeft,
-  ChevronsLeft,
-  ChevronsRight,
-  ChevronRight,
-  CalendarIcon,
-} from "lucide-react";
+import { useState, useRef, useCallback } from "react";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import { CalendarIcon } from "lucide-react";
 import { EventModal } from "./EventModal";
 import { SettingsPanel } from "./settings/SettingsPanel";
-import { CalendarGrid } from "./calendar/CalendarGrid";
-import { MonthPicker } from "./calendar/MonthPicker";
 import { ConnectionStatus } from "./common/ConnectionStatus";
-import { useCalendarState } from "../hooks/useCalendarState";
-import { useCalendarScroll } from "../hooks/useCalendarScroll";
 import { useApp } from "../context/AppContext";
 import { useTranslation } from "../context/TranslationContext";
-import {
-  subDays,
-  addWeeks,
-  subWeeks,
-  addMonths,
-  subMonths,
-  format,
-  startOfWeek,
-  isSameWeek
-} from "date-fns";
+import { useHolidays } from "../context/Holidays";
+import { format, parseISO } from "date-fns";
+import { Event } from "../types/event";
+import { User } from "../types/user";
 
 export function Calendar() {
   const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
   const { t } = useTranslation();
+  const { holidays } = useHolidays();
+  const calendarRef = useRef<FullCalendar>(null);
+  
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [showModal, setShowModal] = useState(false);
   
   if (!currentUser) {
     return (
@@ -36,177 +31,277 @@ export function Calendar() {
       </div>
     );
   }
-  
-  const weekStartsOn = currentUser?.app?.weekStartsOn || "Monday";
 
-  const {
-    selectedStartDate,
-    selectedEndDate,
-    hoverDate,
-    currentMonth,
-    showModal,
-    selectedEvent,
-    setCurrentMonth,
-    setShowModal,
-    handleDateClick,
-    handleDateHover,
-    resetSelection,
-    handleCreateEvent,
-    handleEventDelete,
-    handleEventResize,
-    setSelectedStartDate,
-    setSelectedEndDate,
-  } = useCalendarState();
+  // Transform events for FullCalendar
+  const calendarEvents = events.map(event => {
+    const colleague = currentUser.id === event.userId 
+      ? currentUser 
+      : currentUser.settings?.colleagues?.[event.userId];
+    
+    const colleagueSettings = currentUser?.settings?.colleagues?.[event.userId];
+    const backgroundColor = colleagueSettings?.color || "#3788d8";
+    const initials = colleagueSettings?.initials || "";
+    
+    // Get event title with status
+    let title = event.title || getEventTypeLabel(event.type, event.status);
+    if (initials && event.userId !== currentUser.id) {
+      title = `[${initials}] ${title}`;
+    }
 
-  // Use the calendar scroll hook
-  const { containerRef } = useCalendarScroll({
-    currentMonth,
-    setCurrentMonth,
+    return {
+      id: event.id,
+      title,
+      start: event.date,
+      end: event.endDate ? format(new Date(new Date(event.endDate).getTime() + 24 * 60 * 60 * 1000), 'yyyy-MM-dd') : undefined,
+      allDay: true,
+      backgroundColor,
+      borderColor: backgroundColor,
+      textColor: getTextColor(backgroundColor),
+      extendedProps: {
+        originalEvent: event,
+        status: event.status,
+        type: event.type,
+        userId: event.userId,
+        description: event.description
+      }
+    };
   });
 
-  const handleToday = () => {
-    const today = new Date();
-    const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Start from Monday
+  // Add holidays as events
+  const holidayEvents = holidays.map(holiday => ({
+    id: `holiday-${holiday.date}`,
+    title: holiday.name,
+    start: holiday.date,
+    allDay: true,
+    backgroundColor: '#fee2e2',
+    borderColor: '#fca5a5',
+    textColor: '#991b1b',
+    display: 'background',
+    extendedProps: {
+      isHoliday: true
+    }
+  }));
+
+  // Add availability as background events
+  const availabilityEvents = Object.entries(availabilityData).flatMap(([date, availability]) => {
+    const events = [];
     
-    // If today is already in the current visible range, no need to change
-    if (!isSameWeek(currentMonth, today, { weekStartsOn: 1 })) {
-      setCurrentMonth(weekStart);
+    if (!availability.am) {
+      events.push({
+        id: `unavailable-am-${date}`,
+        start: `${date}T00:00:00`,
+        end: `${date}T12:00:00`,
+        display: 'background',
+        backgroundColor: '#f3f4f6',
+        extendedProps: {
+          isUnavailable: true,
+          period: 'am'
+        }
+      });
+    }
+    
+    if (!availability.pm) {
+      events.push({
+        id: `unavailable-pm-${date}`,
+        start: `${date}T12:00:00`,
+        end: `${date}T23:59:59`,
+        display: 'background',
+        backgroundColor: '#f3f4f6',
+        extendedProps: {
+          isUnavailable: true,
+          period: 'pm'
+        }
+      });
+    }
+    
+    return events;
+  });
+
+  const allCalendarEvents = [...calendarEvents, ...holidayEvents, ...availabilityEvents];
+
+  const getEventTypeLabel = (eventType: string, status?: string): string => {
+    switch (eventType) {
+      case "requestedLeave":
+        switch (status) {
+          case "approved":
+            return t('calendar.approvedHoliday');
+          case "denied":
+            return t('calendar.deniedHoliday');
+          case "pending":
+            return t('calendar.pendingHoliday');
+          default:
+            return t('calendar.requestedLeave');
+        }
+      case "requestedDesiderata":
+        return t('calendar.requestedDesiderata');
+      case "requestedPeriod":
+        return t('calendar.requestedPeriod');
+      default:
+        return eventType
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase());
     }
   };
 
-  const handlePrevMonth = () => {
-    setCurrentMonth((prev) => subMonths(prev, 1));
+  const getTextColor = (backgroundColor: string): string => {
+    // Simple contrast calculation
+    const hex = backgroundColor.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return brightness > 128 ? '#000000' : '#ffffff';
   };
 
-  const handlePrevWeek = () => {
-    setCurrentMonth((prev) => subWeeks(prev, 1));
-  };
-
-  const handleNextWeek = () => {
-    setCurrentMonth((prev) => addWeeks(prev, 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentMonth((prev) => addMonths(prev, 1));
-  };
-
-  const handleWeekSelect = (startDate: Date, endDate: Date) => {
-    const alignedStartDate = startOfWeek(startDate, { weekStartsOn: 1 });
-    setSelectedStartDate(alignedStartDate);
-    setSelectedEndDate(endDate);
+  const handleDateClick = useCallback((info: any) => {
+    setSelectedDate(info.date);
+    setSelectedEvent(null);
     setShowModal(true);
+  }, []);
+
+  const handleEventClick = useCallback((info: any) => {
+    const originalEvent = info.event.extendedProps.originalEvent;
+    if (originalEvent && !info.event.extendedProps.isHoliday) {
+      setSelectedEvent(originalEvent);
+      setSelectedDate(info.event.start);
+      setShowModal(true);
+    }
+  }, []);
+
+  const handleCreateEvent = async (eventData: {
+    title: string;
+    description: string;
+    date: string;
+    endDate?: string;
+    type: string;
+    userId?: string;
+    amSelected?: boolean;
+    pmSelected?: boolean;
+  }) => {
+    // Implementation will be handled by existing event creation logic
+    // This is just the interface for the modal
   };
 
-  // Calculate the date range for display
-  const startDisplayDate = subWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 1);
-  const endDisplayDate = subDays(addWeeks(startOfWeek(currentMonth, { weekStartsOn: 1 }), 3 + 1), 1);
-  const dateRange = `${format(startDisplayDate, "MMM d")} - ${format(endDisplayDate, "MMM d, yyyy")}`;
+  const handleGoToToday = () => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (calendarApi) {
+      calendarApi.today();
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-2 sm:px-2 lg:px-4 py-4" data-tsx-id="calendar">
       <ConnectionStatus />
       
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-4">
-          <div className="flex justify-between items-center">
-            <div className="w-80 flex-1 items-center space-x-1">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-1">
-                  <button
-                    onClick={handleToday}
-                    className="flex items-center px-2 py-1 space-x-1 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
-                    title={t('calendar.goToToday')}
-                  >
-                    <CalendarIcon className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={handlePrevMonth}
-                    className="hover:bg-zinc-100 rounded-full"
-                    aria-label={t('calendar.previousMonth')}
-                  >
-                    <ChevronsLeft className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={handlePrevWeek}
-                    className="hover:bg-zinc-100 rounded-full"
-                    aria-label={t('calendar.previousWeek')}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                </div>
-                <span className="text-sm font-medium text-zinc-600">
-                  {dateRange}
-                </span>
-                <div className="flex items-center space-x-1">
-                  <button
-                    onClick={handleNextWeek}
-                    className="hover:bg-zinc-100 rounded-full"
-                    aria-label={t('calendar.nextWeek')}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={handleNextMonth}
-                    className="hover:bg-zinc-100 rounded-full"
-                    aria-label={t('calendar.nextMonth')}
-                  >
-                    <ChevronsRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <MonthPicker
-            currentMonth={currentMonth}
-            onDateSelect={setCurrentMonth}
-            weekStartsOn={weekStartsOn}
-          />
+          <button
+            onClick={handleGoToToday}
+            className="flex items-center px-3 py-2 space-x-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md border border-blue-200"
+            title={t('calendar.goToToday')}
+          >
+            <CalendarIcon className="w-4 h-4" />
+            <span>{t('common.today')}</span>
+          </button>
         </div>
       </div>
 
-      <div 
-        ref={containerRef}
-        className="bg-white rounded-lg shadow overflow-hidden"
-      >
-        <CalendarGrid
-          currentMonth={currentMonth}
-          events={events}
-          onDateClick={handleDateClick}
-          onDateHover={handleDateHover}
-          weekStartsOn={weekStartsOn}
-          userSettings={currentUser?.settings}
-          onEventDelete={handleEventDelete}
-          currentUser={currentUser}
-          onEventResize={handleEventResize}
-          selectedStartDate={selectedStartDate}
-          selectedEndDate={selectedEndDate}
-          hoverDate={hoverDate}
-          onWeekSelect={handleWeekSelect}
-          availabilityData={availabilityData}
-          isLoadingAvailability={isLoadingAvailability}
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <FullCalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          headerToolbar={{
+            left: 'prev,next',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          }}
+          events={allCalendarEvents}
+          dateClick={handleDateClick}
+          eventClick={handleEventClick}
+          selectable={true}
+          selectMirror={true}
+          dayMaxEvents={true}
+          weekends={true}
+          height="auto"
+          locale={t('common.language')}
+          firstDay={currentUser?.app?.weekStartsOn === "Sunday" ? 0 : 1}
+          eventDisplay="block"
+          displayEventTime={false}
+          eventClassNames={(arg) => {
+            const event = arg.event;
+            const classes = ['fc-event-custom'];
+            
+            if (event.extendedProps.isHoliday) {
+              classes.push('fc-event-holiday');
+            }
+            
+            if (event.extendedProps.status === 'pending') {
+              classes.push('fc-event-pending');
+            } else if (event.extendedProps.status === 'approved') {
+              classes.push('fc-event-approved');
+            } else if (event.extendedProps.status === 'denied') {
+              classes.push('fc-event-denied');
+            }
+            
+            return classes;
+          }}
+          eventContent={(arg) => {
+            const event = arg.event;
+            const isMultiDay = event.end && event.start && 
+              format(event.start, 'yyyy-MM-dd') !== format(new Date(event.end.getTime() - 1), 'yyyy-MM-dd');
+            
+            return (
+              <div className="fc-event-main-frame">
+                <div className="fc-event-title-container">
+                  <div className="fc-event-title fc-sticky">
+                    {event.title}
+                    {isMultiDay && (
+                      <span className="ml-1 text-xs opacity-75">
+                        ({Math.ceil((event.end!.getTime() - event.start!.getTime()) / (1000 * 60 * 60 * 24))}d)
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          }}
+          dayCellContent={(arg) => {
+            const availability = availabilityData[format(arg.date, 'yyyy-MM-dd')];
+            const isWeekend = arg.date.getDay() === 0 || arg.date.getDay() === 6;
+            
+            return (
+              <div className="fc-daygrid-day-number relative">
+                {arg.dayNumberText}
+                {!isLoadingAvailability && !isWeekend && availability && (
+                  <div className="absolute inset-0 pointer-events-none">
+                    {!availability.am && (
+                      <div className="absolute inset-x-0 top-0 h-1/2 bg-gray-200 opacity-30" />
+                    )}
+                    {!availability.pm && (
+                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gray-200 opacity-30" />
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          }}
         />
       </div>
 
       <SettingsPanel />
 
-      {showModal && (
+      {showModal && selectedDate && (
         <EventModal
-          date={selectedStartDate!}
-          endDate={selectedEndDate}
+          date={selectedDate}
+          endDate={null}
           event={selectedEvent}
           onClose={() => {
             setShowModal(false);
-            resetSelection();
+            setSelectedDate(null);
+            setSelectedEvent(null);
           }}
           onSubmit={handleCreateEvent}
-          defaultEventType={
-            selectedStartDate && selectedEndDate
-              ? "requestedLeave"
-              : undefined
-          }
         />
       )}
     </div>
