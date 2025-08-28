@@ -1,10 +1,11 @@
-  CalendarIcon
 import { CalendarIcon } from "lucide-react";
 import Calendar from "calendar.io";
 import { EventModal } from "./EventModal";
 import { SettingsPanel } from "./settings/SettingsPanel";
 import { useTranslation } from "../context/TranslationContext";
 import { useHolidays } from "../context/HolidayContext";
+import { createEvent, updateEvent } from "../lib/api/events";
+import toast from "react-hot-toast";
 import { Event } from "../types/event";
 import { User } from "../types/user";
 import { format } from "date-fns";
