@@ -75,7 +75,7 @@ export const nl = {
     invalidEventStatus: 'Ongeldige gebeurtenisstatus',
     eventStatusUpdated: 'Gebeurtenisstatus succesvol bijgewerkt',
     bulkUpdateSuccess: '{{count}} gebeurtenissen bijgewerkt',
-    holiday: 'Verlof ({{status}})',
+    holiday: 'Wettelijk verlof ({{status}})',
   },
 
   // Holidays

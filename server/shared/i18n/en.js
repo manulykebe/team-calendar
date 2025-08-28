@@ -75,7 +75,7 @@ export const en = {
     invalidEventStatus: 'Invalid event status',
     eventStatusUpdated: 'Event status updated successfully',
     bulkUpdateSuccess: 'Updated {{count}} events',
-    holiday: 'Holiday ({{status}})',
+    holiday: 'Banking Holiday ({{status}})',
   },
 
   // Holidays

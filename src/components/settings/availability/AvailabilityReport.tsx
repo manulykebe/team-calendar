@@ -31,18 +31,18 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 	const { token } = useAuth();
 	const { t } = useTranslation();
 	const { holidays, loadHolidays } = useHolidays();
-	
+
 	// Use translated day headers
 	const dayHeaders = [
 		t('days.mon'),
-		t('days.tue'), 
+		t('days.tue'),
 		t('days.wed'),
 		t('days.thu'),
 		t('days.fri'),
 		t('days.sat'),
 		t('days.sun')
 	];
-	
+
 	// Use translated month names
 	const months = [
 		t('months.january'),
@@ -135,9 +135,9 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 			<div className="bg-white rounded-lg shadow-xl max-w-[1400px] w-full max-h-[90vh] overflow-auto">
 				<div className="sticky top-0 bg-white z-10 flex justify-between items-center p-6 border-b">
 					<h2 className="text-xl font-semibold text-zinc-900">
-						{t('availability.availabilityReportFor', { 
-							name: `${colleague.firstName} ${colleague.lastName}`, 
-							year: data.year 
+						{t('availability.availabilityReportFor', {
+							name: `${colleague.firstName} ${colleague.lastName}`,
+							year: data.year
 						})}
 					</h2>
 					<button
@@ -219,15 +219,25 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 												getWeekNumber(currentDate);
 											const isEvenWeek =
 												weekNumber % 2 === 0;
-											
+
 											// Determine background color based on day type
 											let bgColor = '';
 											if (isHoliday) {
-												bgColor = 'bg-red-50'; // Holiday background
+												bgColor = 'bg-red-100'; // Holiday background
 											} else if (isEvenWeek) {
-												bgColor = 'bg-zinc-50'; // Even week background
+												if (isWeekend) {
+													bgColor = 'bg-zinc-100'; // Even week background
+												} else {
+													bgColor = 'bg-zinc-50'; // Regular day background
+												}
+											} else if (!isEvenWeek) {
+												if (isWeekend) {
+													bgColor = 'bg-zinc-200'; // Even week background
+												} else {
+													bgColor = 'bg-zinc-100'; // Regular day background
+												}
 											}
-											
+
 											return (
 												<div
 													key={index}
@@ -249,14 +259,14 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 																const slotKey = `${dateStr}-${part}`;
 																const isLoading =
 																	loadingSlots[
-																		slotKey
+																	slotKey
 																	];
 																const currentValue =
 																	slotStates[
-																		slotKey
+																	slotKey
 																	] ??
 																	dayData?.[
-																		part as keyof typeof dayData
+																	part as keyof typeof dayData
 																	] ??
 																	false;
 
@@ -269,20 +279,19 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 																			handleTimeSlotClick(
 																				dateStr,
 																				part as
-																					| "am"
-																					| "pm",
+																				| "am"
+																				| "pm",
 																				currentValue
 																			)
 																		}
-																		className={`h-1.5 w-full transition-colors cursor-pointer ${
-																			isLoading
-																				? "bg-yellow-500"
-																				: currentValue
-																					? "bg-green-500 hover:bg-green-600"
-																					: isWeekend
-																						? "bg-zinc-200"
-																						: "bg-red-500 hover:bg-red-600"
-																		} rounded-sm`}
+																		className={`h-1.5 w-full transition-colors cursor-pointer ${isLoading
+																			? "bg-yellow-500"
+																			: currentValue
+																				? "bg-green-500 hover:bg-green-600"
+																				: isWeekend
+																					? "bg-zinc-300"
+																					: "bg-red-500 hover:bg-red-600"
+																			} rounded-sm`}
 																		disabled={
 																			isWeekend ||
 																			isHoliday ||
@@ -314,7 +323,7 @@ export function AvailabilityReport({ data, colleague, onClose }: AvailabilityRep
 								<span>{t('calendar.unavailable')}</span>
 							</div>
 							<div className="flex items-center space-x-2">
-								<div className="w-4 h-4 bg-zinc-200 rounded" />
+								<div className="w-4 h-4 bg-zinc-300 rounded" />
 								<span>{t('calendar.weekend')}</span>
 							</div>
 							<div className="flex items-center space-x-2">
