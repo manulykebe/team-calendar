@@ -179,7 +179,7 @@ export function EventModal({
 
 		// Check if any event types are available
 		if (availableEventTypes.length === 0) {
-			setError(t('events.periodClosedMessage'));
+			setError(t('events.noEventTypesAvailable'));
 			return;
 		}
 
@@ -201,7 +201,7 @@ export function EventModal({
 			return;
 		}
 
-		const toastId = toast.loading(t('common.loading'));
+		const toastId = toast.loading(t('events.saving'));
 
 		try {
 			setLoading(true);

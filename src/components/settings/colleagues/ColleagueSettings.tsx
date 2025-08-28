@@ -114,7 +114,7 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
       });
       
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('settings.errors.updateFailed');
+      const errorMessage = err instanceof Error ? err.message : t('settings.failedToUpdateSettings');
       setError(errorMessage);
       toast.error(errorMessage);
     }
@@ -156,9 +156,9 @@ export function ColleagueSettings({ onClose }: ColleagueSettingsProps) {
         settings: newSettings
       });
       
-      toast.success(t('settings.colleagueOrderUpdated'));
+      toast.success(t('settings.orderUpdated'));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('settings.errors.orderUpdateFailed');
+      const errorMessage = err instanceof Error ? err.message : t('settings.failedToUpdateOrder');
       setError(errorMessage);
       toast.error(errorMessage);
       

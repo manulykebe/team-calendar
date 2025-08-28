@@ -206,6 +206,9 @@ export const fr = {
     showColleague: 'Afficher le collègue',
     editInitials: 'Modifier les initiales',
     clickToEditInitials: 'Cliquez pour modifier les initiales',
+    failedToUpdateSettings: 'Échec de la mise à jour des paramètres',
+    orderUpdated: 'Ordre des collègues mis à jour avec succès',
+    failedToUpdateOrder: 'Échec de la mise à jour de l\'ordre des collègues',
   },
 
   // Availability
@@ -245,6 +248,10 @@ export const fr = {
     pm: 'PM',
     toggleAvailability: 'Basculer la disponibilité {{day}} {{period}}',
     timeSlots: 'Créneaux horaires',
+    reportLoaded: 'Rapport chargé avec succès',
+    failedToCreateSchedule: 'Échec de la création du planning',
+    failedToUpdateSchedule: 'Échec de la mise à jour du planning',
+    failedToDeleteSchedule: 'Échec de la suppression du planning',
   },
 
   // Export

@@ -24,25 +24,12 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
     localStorage.setItem('language', lang);
   };
 
-  const t = (key: string, params?: Record<string, any>): string | string[] => {
+  const t = (key: string, params?: Record<string, any>): string => {
     const translation = getNestedValue(translations[language], key);
     
-    // Check if we should return objects/arrays
-    if (params?.returnObjects && Array.isArray(translation)) {
-      return translation;
-    }
-    
     if (typeof translation !== 'string') {
-      // If it's an array and returnObjects is not set, try to return it as is
-      if (Array.isArray(translation)) {
-        return translation;
-      }
-      
       // Fallback to English if translation not found
       const fallback = getNestedValue(translations.en, key);
-      if (Array.isArray(fallback)) {
-        return fallback;
-      }
       if (typeof fallback === 'string') {
         return params ? interpolate(fallback, params) : fallback;
       }
@@ -53,10 +40,28 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
     return params ? interpolate(translation, params) : translation;
   };
 
+  const tArray = (key: string, params?: Record<string, any>): string[] => {
+    const translation = getNestedValue(translations[language], key);
+    
+    if (Array.isArray(translation)) {
+      return translation;
+    }
+    
+    // Fallback to English if translation not found
+    const fallback = getNestedValue(translations.en, key);
+    if (Array.isArray(fallback)) {
+      return fallback;
+    }
+    
+    // Return array with single item if not found
+    return [typeof translation === 'string' ? translation : key];
+  };
+
   const value = {
     language,
     setLanguage,
     t,
+    tArray,
   };
 
   return (

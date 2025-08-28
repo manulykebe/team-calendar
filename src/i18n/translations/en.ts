@@ -206,6 +206,9 @@ export const en = {
     showColleague: 'Show colleague',
     editInitials: 'Edit initials',
     clickToEditInitials: 'Click to edit initials',
+    failedToUpdateSettings: 'Failed to update settings',
+    orderUpdated: 'Colleague order updated successfully',
+    failedToUpdateOrder: 'Failed to update colleague order',
   },
 
   // Availability
@@ -245,6 +248,10 @@ export const en = {
     pm: 'PM',
     toggleAvailability: 'Toggle {{day}} {{period}} availability',
     timeSlots: 'Time Slots',
+    reportLoaded: 'Report loaded successfully',
+    failedToCreateSchedule: 'Failed to create schedule',
+    failedToUpdateSchedule: 'Failed to update schedule',
+    failedToDeleteSchedule: 'Failed to delete schedule',
   },
 
   // Export

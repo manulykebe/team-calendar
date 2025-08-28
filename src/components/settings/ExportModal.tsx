@@ -73,7 +73,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
       // Trigger download
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+  const isPublicHoliday = useCallback((date: Date | string): boolean => {
       
       // Clean up the blob URL
       window.URL.revokeObjectURL(downloadUrl);
@@ -93,7 +93,7 @@ export function ExportModal({ userId, site, onClose }: ExportModalProps) {
     } finally {
       setIsExporting(false);
     }
-  };
+  }, [holidays]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">

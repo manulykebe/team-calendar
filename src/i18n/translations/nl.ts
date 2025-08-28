@@ -206,6 +206,9 @@ export const nl = {
     showColleague: 'Collega tonen',
     editInitials: 'Initialen bewerken',
     clickToEditInitials: 'Klik om initialen te bewerken',
+    failedToUpdateSettings: 'Bijwerken van instellingen mislukt',
+    orderUpdated: 'Collega-volgorde succesvol bijgewerkt',
+    failedToUpdateOrder: 'Bijwerken van collega-volgorde mislukt',
   },
 
   // Availability
@@ -245,6 +248,10 @@ export const nl = {
     pm: 'namiddag',
     toggleAvailability: '{{day}} {{period}} beschikbaarheid schakelen',
     timeSlots: 'Tijdslot',
+    reportLoaded: 'Rapport succesvol geladen',
+    failedToCreateSchedule: 'Aanmaken van schema mislukt',
+    failedToUpdateSchedule: 'Bijwerken van schema mislukt',
+    failedToDeleteSchedule: 'Verwijderen van schema mislukt',
   },
 
   // Export

@@ -5,13 +5,15 @@ export type Language = 'en' | 'fr' | 'nl';
 export interface TranslationContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string, params?: Record<string, any>) => string | string[];
+  t: (key: string, params?: Record<string, any>) => string;
+  tArray: (key: string, params?: Record<string, any>) => string[];
 }
 
 export const TranslationContext = createContext<TranslationContextType>({
   language: 'nl',
   setLanguage: () => {},
   t: (key: string) => key,
+  tArray: (key: string) => [key],
 });
 
 export const useTranslation = () => useContext(TranslationContext);

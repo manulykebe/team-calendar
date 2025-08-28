@@ -53,10 +53,7 @@ export function VersionDisplay() {
       setError(
         err instanceof Error
           ? err.message
-          : (() => {
-              const msg = t('errors.failedToLoadData');
-              return Array.isArray(msg) ? msg.join(', ') : msg;
-            })()
+          : t('errors.failedToLoadData')
       );
       setBackendHealth(null);
     } finally {

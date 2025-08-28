@@ -101,7 +101,7 @@ export function AvailabilityModal({
 	const handleViewReport = async () => {
 		if (!token) return;
 
-		const toastId = toast.loading(t('availability.loadingReport'));
+		const toastId = toast.loading(t('common.loading'));
 		try {
 			setLoading(true);
 			setError("");
@@ -113,12 +113,12 @@ export function AvailabilityModal({
 			);
 			setReportData(data);
 			setShowReport(true);
-			toast.success(t('availability.reportLoadedSuccess'), { id: toastId });
+			toast.success(t('availability.reportLoaded'), { id: toastId });
 		} catch (err) {
 			const errorMessage =
 				err instanceof Error
 					? err.message
-					: t('availability.errors.fetchReportFailed');
+					: t('availability.failedToGenerateReport');
 			setError(errorMessage);
 			toast.error(errorMessage, { id: toastId });
 		} finally {
@@ -129,7 +129,7 @@ export function AvailabilityModal({
 	const handleSave = async () => {
 		if (!token || currentEntryIndex === -1 || isReadOnly) return;
 
-		const toastId = toast.loading(t('availability.savingChanges'));
+		const toastId = toast.loading(t('common.saving'));
 		try {
 			setLoading(true);
 			setError("");
@@ -165,12 +165,12 @@ export function AvailabilityModal({
 			});
 
 			setHasChanges(true);
-			toast.success(t('availability.changesSavedSuccess'), { id: toastId });
+			toast.success(t('availability.availabilityUpdated'), { id: toastId });
 		} catch (err) {
 			const errorMessage =
 				err instanceof Error
 					? err.message
-					: t('availability.errors.saveFailed');
+					: t('availability.failedToUpdateSchedule');
 			setError(errorMessage);
 			toast.error(errorMessage, { id: toastId });
 		} finally {
