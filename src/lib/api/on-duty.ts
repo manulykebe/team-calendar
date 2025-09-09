@@ -38,19 +38,18 @@ export function isOnDutyTime(date: Date = new Date()): boolean {
 }
 
 /**
- * Get the current on-duty date based on the current time and site configuration
+ * Gets the date to use for on-duty lookup based on the current time
+ * If current time is before 8:00 AM, use previous day's date
  */
-export function getCurrentOnDutyDate(): string {
-  const now = new Date();
+export function getOnDutyDate(date: Date = new Date()): string {
+  const onDutyDate = new Date(date);
   
-  // If it's before 6 AM, consider it part of the previous day's duty
-  if (now.getHours() < 6) {
-    const yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
-    return yesterday.toISOString().split('T')[0];
+  // If it's before 8:00 AM, we're still on the previous day's duty
+  if (date.getHours() < 8) {
+    onDutyDate.setDate(onDutyDate.getDate() - 1);
   }
   
-  return now.toISOString().split('T')[0];
+  return onDutyDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 }
 
 /**
