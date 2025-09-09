@@ -14,17 +14,36 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem("token");
+    try {
+      const storedToken = localStorage.getItem("token");
+      // Validate token format (basic check)
+      if (storedToken && storedToken.length > 10) {
+        return storedToken;
+      }
+      return null;
+    } catch (error) {
+      console.warn("Failed to read token from localStorage:", error);
+      return null;
+    }
   });
 
   const login = (newToken: string) => {
-    setToken(newToken);
-    localStorage.setItem("token", newToken);
+    try {
+      setToken(newToken);
+      localStorage.setItem("token", newToken);
+    } catch (error) {
+      console.error("Failed to save token to localStorage:", error);
+    }
   };
 
   const logout = () => {
-    setToken(null);
-    localStorage.removeItem("token");
+    try {
+      setToken(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("userEmail");
+    } catch (error) {
+      console.error("Failed to clear localStorage:", error);
+    }
   };
 
   return (

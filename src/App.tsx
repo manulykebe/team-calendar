@@ -18,16 +18,16 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
   const { isLoading } = useApp();
 
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
     );
+  }
+
+  if (!token) {
+    return <Navigate to="/login" />;
   }
 
   return <div data-tsx-id="private-route">{children}</div>;
