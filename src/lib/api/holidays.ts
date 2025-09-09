@@ -1,6 +1,5 @@
 import { API_URL } from "./config";
 import { holidaysCache, getCacheKey } from "./cache";
-import { useTranslation } from "../../context/TranslationContext";
 
 export interface Holiday {
   date: string;
@@ -41,33 +40,72 @@ export async function getHolidays(
   }
 }
 
-// Helper function to translate holiday names
-export function translateHolidayName(holidayName: string): string {
-  // Map of original holiday names to translation keys
-  const { t } = useTranslation();
-  const holidayMap: Record<string, string> = {
-    // Belgian holidays
-    'New Year\'s Day': t('publicHolidays.newYearsDay'),
-    'Easter Sunday': t('publicHolidays.easterSunday'),
-    'Easter Monday': t('publicHolidays.easterMonday'),
-    'Labour Day': t('publicHolidays.labourDay'),
-    'Ascension Day': t('publicHolidays.ascensionDay'),
-    'Whit Sunday': t('publicHolidays.whitSunday'),
-    'Whit Monday': t('publicHolidays.whitMonday'),
-    'Belgian National Day': t('publicHolidays.belgianNationalDay'),
-    'Assumption Day': t('publicHolidays.assumptionDay'),
-    'All Saints\' Day': t('publicHolidays.allSaintsDay'),
-    'Armistice Day': t('publicHolidays.armisticeDay'),
-    'Christmas Day': t('publicHolidays.christmasDay'),
-
-    // UK holidays
-    'Good Friday': t('publicHolidays.goodFriday'),
-    'Early May Bank Holiday': t('publicHolidays.earlyMayBankHoliday'),
-    'Spring Bank Holiday': t('publicHolidays.springBankHoliday'),
-    'Summer Bank Holiday': t('publicHolidays.summerBankHoliday'),
-    'Boxing Day': t('publicHolidays.boxingDay'),
+// Helper function to translate holiday names - standalone function
+export function translateHolidayName(holidayName: string, language: string = 'nl'): string {
+  // Import translations directly to avoid hook dependency
+  const translations = {
+    nl: {
+      'New Year\'s Day': 'Nieuwjaarsdag',
+      'Easter Sunday': 'Paaszondag',
+      'Easter Monday': 'Paasmaandag',
+      'Labour Day': 'Dag van de Arbeid',
+      'Ascension Day': 'Hemelvaartsdag',
+      'Whit Sunday': 'Pinksteren',
+      'Whit Monday': 'Pinkstermaandag',
+      'Belgian National Day': 'Belgische Nationale Feestdag',
+      'Assumption Day': 'Maria-Tenhemelopneming',
+      'All Saints\' Day': 'Allerheiligen',
+      'Armistice Day': 'Wapenstilstand',
+      'Christmas Day': 'Kerstmis',
+      'Good Friday': 'Goede Vrijdag',
+      'Early May Bank Holiday': 'Vroege mei-feestdag',
+      'Spring Bank Holiday': 'Lentefeestdag',
+      'Summer Bank Holiday': 'Zomerfeestdag',
+      'Boxing Day': 'Tweede Kerstdag',
+    },
+    fr: {
+      'New Year\'s Day': 'Jour de l\'An',
+      'Easter Sunday': 'Dimanche de Pâques',
+      'Easter Monday': 'Lundi de Pâques',
+      'Labour Day': 'Fête du Travail',
+      'Ascension Day': 'Ascension',
+      'Whit Sunday': 'Pentecôte',
+      'Whit Monday': 'Lundi de Pentecôte',
+      'Belgian National Day': 'Fête Nationale Belge',
+      'Assumption Day': 'Assomption',
+      'All Saints\' Day': 'Toussaint',
+      'Armistice Day': 'Armistice',
+      'Christmas Day': 'Noël',
+      'Good Friday': 'Vendredi Saint',
+      'Early May Bank Holiday': 'Jour férié de début mai',
+      'Spring Bank Holiday': 'Jour férié de printemps',
+      'Summer Bank Holiday': 'Jour férié d\'été',
+      'Boxing Day': 'Lendemain de Noël',
+    },
+    en: {
+      'New Year\'s Day': 'New Year\'s Day',
+      'Easter Sunday': 'Easter Sunday',
+      'Easter Monday': 'Easter Monday',
+      'Labour Day': 'Labour Day',
+      'Ascension Day': 'Ascension Day',
+      'Whit Sunday': 'Whit Sunday',
+      'Whit Monday': 'Whit Monday',
+      'Belgian National Day': 'Belgian National Day',
+      'Assumption Day': 'Assumption Day',
+      'All Saints\' Day': 'All Saints\' Day',
+      'Armistice Day': 'Armistice Day',
+      'Christmas Day': 'Christmas Day',
+      'Good Friday': 'Good Friday',
+      'Early May Bank Holiday': 'Early May Bank Holiday',
+      'Spring Bank Holiday': 'Spring Bank Holiday',
+      'Summer Bank Holiday': 'Summer Bank Holiday',
+      'Boxing Day': 'Boxing Day',
+    }
   };
 
-  // Return the translated name if available, otherwise return the original name
-  return holidayMap[holidayName] ? t(holidayMap[holidayName]) : holidayName;
+  const holidayMap: Record<string, string> = {
+    ...(translations as any)[language] || translations.en
+  };
+
+  return holidayMap[holidayName] || holidayName;
 }

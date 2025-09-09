@@ -17,6 +17,8 @@ import { OnDutyBadge } from "./OnDutyBadge";
 import ReactDOM from "react-dom";
 import { isWeekday } from "../../utils/dateUtils";
 import { useOnDuty } from "../../hooks/useOnDuty";
+import { translateHolidayName } from "../../lib/api/holidays";
+import { useTranslation } from "../../context/TranslationContext";
 
 interface DayCellProps {
 	date: Date;
@@ -56,6 +58,7 @@ export const DayCell = memo(function DayCell({
 }: DayCellProps) {
 	const { colleagues, refreshData, availabilityData } = useApp();
 	const { holidays: globalHolidays } = useHolidays();
+	const { language } = useTranslation();
 	const [showHolidayModal, setShowHolidayModal] = useState(false);
 	const [showAdminModal, setShowAdminModal] = useState(false);
 	const [selectedHolidayEvent, setSelectedHolidayEvent] = useState<Event | null>(null);
@@ -219,11 +222,11 @@ export const DayCell = memo(function DayCell({
 						{holiday && (
 							<div
 								className="absolute text-xs inline-flex items-center text-red-600 -left-2"
-								title={holiday.name}
+								title={translateHolidayName(holiday.name, language)}
 							>
 								<Calendar className="w-3 h-3 mr-0" />
 								<span className="truncate max-w-[80px]">
-									{holiday.name}
+									{translateHolidayName(holiday.name, language)}
 								</span>
 							</div>
 						)}
