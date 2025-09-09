@@ -1,3 +1,5 @@
+import { API_URL } from "./config";
+
 export interface OnDutyStaff {
   date: string;
   userId: string;
@@ -9,7 +11,7 @@ export interface OnDutyStaff {
 }
 
 export async function getOnDutyStaff(site: string, date?: string): Promise<OnDutyStaff | null> {
-  const url = `/api/on-duty/${encodeURIComponent(site)}${date ? `?date=${encodeURIComponent(date)}` : ""}`;
+  const url = `${API_URL}/on-duty/${encodeURIComponent(site)}${date ? `?date=${encodeURIComponent(date)}` : ""}`;
   const res = await fetch(url, { credentials: "same-origin" });
 
   // 204 -> no content, treat as "no on-duty data"

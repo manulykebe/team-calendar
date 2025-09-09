@@ -22,9 +22,8 @@ export function useOnDuty(date: string, userId?: string) {
         
         // Get the site from localStorage (fallback to 'azjp')
         const site = localStorage.getItem('site') || 'azjp';
-        
         const onDutyData = await getOnDutyStaff(site, date);
-        setOnDutyUserId(onDutyData.userId);
+        setOnDutyUserId(onDutyData ? onDutyData.userId : null);
       } catch (err) {
         console.error('Failed to fetch on-duty data:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch on-duty data');
