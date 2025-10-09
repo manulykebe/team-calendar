@@ -11,7 +11,7 @@ export function ConnectionStatus() {
   const connected = isConnected();
 
   return (
-    <div className="fixed bottom-8 left-8 z-10">
+    <div className="fixed bottom-16 left-4 z-10">
       <div className="relative">
         {/* Connection Status Button */}
         <button
