@@ -135,7 +135,7 @@
       "id": "suuebRsdLhQv",
       "firstName": "Ken",
       "lastName": "Carpentier",
-      "initials": "KC",
+      "initials": "KCA",
       "email": "ken@lyke.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
@@ -253,9 +253,30 @@
         "dateFormat": "DD/MM/YYYY",
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
-      },
+      },     
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-17T11:16:40.456Z"
+    },
+    {
+      "id": "7kP4mD9rTq2V",
+      "firstName": "Anne-Laura",
+      "lastName": "Van Cauwenbergh",
+      "initials": "ALV",
+      "email": "anne-laura@lyke.be",
+      "mobile": "+32 494 11 58 25",
+      "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
+      "site": "azjp",
+      "role": "user",
+      "status": "active",
+      "app": {
+        "language": "nl",
+        "timezone": "Europe/Brussels",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm",
+        "weekStartsOn": "Monday"
+      },     
+      "createdAt": "2025-10-09T14:23:29.975Z",
+      "updatedAt": "2025-10-09T14:23:29.975Z"
     }
   ]
 }
