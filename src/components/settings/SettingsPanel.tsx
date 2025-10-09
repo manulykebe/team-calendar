@@ -7,7 +7,8 @@ import {
 	Clock,
 	Calendar,
 	Download,
-	Shield
+	Shield,
+	FileText
 } from "lucide-react";
 import { ColleagueSettings } from "./colleagues/ColleagueSettings";
 import { UserManagement } from "../users/UserManagement";
@@ -18,6 +19,7 @@ import { useUserSettings } from "./hooks/useUserSettings";
 import { DisplaySettings } from "./DisplaySettings";
 import { LanguageSettings } from "./LanguageSettings";
 import { AvailabilityModal } from "./availability/AvailabilityModal";
+import { CalendarReport } from "./availability/CalendarReport";
 import { SubscriptionModal } from "./SubscriptionModal";
 import { ExportModal } from "./ExportModal";
 import { useTranslation } from "../../context/TranslationContext";
@@ -36,6 +38,7 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 	const [showUserManagement, setShowUserManagement] = useState(false);
 	const [showPeriodManagement, setShowPeriodManagement] = useState(false);
 	const [showAvailability, setShowAvailability] = useState(false);
+	const [showCalendarReport, setShowCalendarReport] = useState(false);
 	const [showSubscription, setShowSubscription] = useState(false);
 	const [showExport, setShowExport] = useState(false);
 
@@ -53,6 +56,18 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 
 	const handleCloseAvailability = () => {
 		setShowAvailability(false);
+		setIsOpen(true);
+	};
+
+	const handleOpenCalendarReport = () => {
+		if (currentUser) {
+			setShowCalendarReport(true);
+			setIsOpen(false);
+		}
+	};
+
+	const handleCloseCalendarReport = () => {
+		setShowCalendarReport(false);
 		setIsOpen(true);
 	};
 
@@ -137,6 +152,13 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 								>
 									<Clock className="w-4 h-4 mr-2" />
 									{t('availability.setAvailability')}
+								</button>
+								<button
+									onClick={handleOpenCalendarReport}
+									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+								>
+									<FileText className="w-4 h-4 mr-2" />
+									{t('availability.viewCalendarReport')}
 								</button>
 								<button
 									onClick={handleOpenSubscription}
@@ -257,6 +279,14 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 				<AvailabilityModal
 					colleague={currentUser}
 					onClose={handleCloseAvailability}
+				/>
+			)}
+
+			{showCalendarReport && currentUser && (
+				<CalendarReport
+					colleague={currentUser}
+					year={new Date().getFullYear().toString()}
+					onClose={handleCloseCalendarReport}
 				/>
 			)}
 
