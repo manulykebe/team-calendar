@@ -118,5 +118,41 @@
     "status": "approved",
     "createdAt": "2025-06-20T16:18:58.320Z",
     "updatedAt": "2025-06-20T16:19:00.596Z"
+  },
+  {
+    "id": "f8cd7dda-2b1c-4049-a940-1cee123ed324",
+    "userId": "ZIdGWxhnRSYw",
+    "type": "requestedLeave",
+    "title": "verplichte week",
+    "description": "",
+    "date": "2026-01-17",
+    "endDate": "2026-01-25",
+    "status": "approved",
+    "createdAt": "2025-10-09T13:40:28.655Z",
+    "updatedAt": "2025-10-09T13:53:14.947Z"
+  },
+  {
+    "id": "a47398ab-6222-4a78-90db-124a09392b04",
+    "userId": "ZIdGWxhnRSYw",
+    "type": "requestedLeave",
+    "title": "",
+    "description": "",
+    "date": "2026-02-18",
+    "endDate": "2026-02-19",
+    "status": "approved",
+    "createdAt": "2025-10-09T13:40:54.318Z",
+    "updatedAt": "2025-10-09T13:54:04.170Z"
+  },
+  {
+    "id": "cb104e50-d48c-4f83-9e8b-b57de36b9e1d",
+    "userId": "ZIdGWxhnRSYw",
+    "type": "requestedLeave",
+    "title": "",
+    "description": "",
+    "date": "2026-04-11",
+    "endDate": "2026-04-19",
+    "status": "approved",
+    "createdAt": "2025-10-09T13:42:06.826Z",
+    "updatedAt": "2025-10-09T13:55:05.252Z"
   }
 ]

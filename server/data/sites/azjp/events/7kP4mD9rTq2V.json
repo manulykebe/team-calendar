@@ -1,0 +1,14 @@
+[
+  {
+    "id": "58802b5c-675c-491e-a02e-19e89d388ef9",
+    "userId": "7kP4mD9rTq2V",
+    "type": "requestedLeave",
+    "title": "verplichte week",
+    "description": "",
+    "date": "2026-03-21",
+    "endDate": "2026-03-29",
+    "status": "approved",
+    "createdAt": "2025-10-09T13:51:48.252Z",
+    "updatedAt": "2025-10-09T13:54:39.682Z"
+  }
+]
