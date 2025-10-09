@@ -45,7 +45,8 @@ export const fr = {
     saving: 'Enregistrement...',
     deleting: 'Suppression...',
     startDate: 'Date de début',
-    endDate: 'Date de fin'
+    endDate: 'Date de fin',
+    legend: 'Légende'
   },
 
   // Authentication
@@ -241,6 +242,7 @@ export const fr = {
     availabilityReport: 'Rapport de disponibilité',
     availabilityReportFor: 'Rapport de disponibilité pour {{name}} - {{year}}',
     viewReport: 'Voir le rapport',
+    viewCalendarReport: 'Rapport calendrier',
     clickToToggle: 'Cliquez sur les créneaux horaires pour basculer les mises à jour individuelles. Les modifications sont enregistrées automatiquement.',
     availabilityUpdated: 'Disponibilité mise à jour',
     failedToUpdateAvailability: 'Échec de la mise à jour de la disponibilité',

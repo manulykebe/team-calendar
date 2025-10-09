@@ -45,7 +45,8 @@ export const nl = {
     saving: 'Opslaan...',
     deleting: 'Verwijderen...',
     startDate: 'Startdatum',
-    endDate: 'Einddatum'
+    endDate: 'Einddatum',
+    legend: 'Legenda'
   },
 
   // Authentication
@@ -241,6 +242,7 @@ export const nl = {
     availabilityReport: 'Beschikbaarheidsrapport',
     availabilityReportFor: 'Beschikbaarheidsrapport voor {{name}} - {{year}}',
     viewReport: 'Rapport bekijken',
+    viewCalendarReport: 'Kalenderrapport',
     clickToToggle: 'Klik op tijdslots om individuele updates te schakelen. Wijzigingen worden automatisch opgeslagen.',
     availabilityUpdated: 'Beschikbaarheid bijgewerkt',
     failedToUpdateAvailability: 'Bijwerken van beschikbaarheid mislukt',

@@ -45,7 +45,8 @@ export const en = {
     saving: 'Saving...',
     deleting: 'Deleting...',
     startDate: 'Start Date',
-    endDate: 'End Date'
+    endDate: 'End Date',
+    legend: 'Legend'
   },
 
   // Authentication
@@ -241,6 +242,7 @@ export const en = {
     availabilityReport: 'Availability Report',
     availabilityReportFor: 'Availability Report for {{name}} - {{year}}',
     viewReport: 'View Report',
+    viewCalendarReport: 'Calendar Report',
     clickToToggle: 'Click on time slots to toggle individual updates. Changes are saved automatically.',
     availabilityUpdated: 'Availability updated',
     failedToUpdateAvailability: 'Failed to update availability',

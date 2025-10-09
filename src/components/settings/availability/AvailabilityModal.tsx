@@ -5,6 +5,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { updateUserAvailabilitySchedule } from "../../../lib/api";
 import { getAvailabilityReport } from "../../../lib/api/report";
 import { AvailabilityReport } from "./AvailabilityReport";
+import { CalendarReport } from "./CalendarReport";
 import { useAvailabilityState } from "./hooks/useAvailabilityState";
 import { useAvailabilityNavigation } from "./hooks/useAvailabilityNavigation";
 import { useScheduleNavigation } from "./hooks/useScheduleNavigation";
@@ -33,6 +34,7 @@ export function AvailabilityModal({
 	if (!token || !currentUser) return null;
 
 	const [showReport, setShowReport] = useState(false);
+	const [showCalendarReport, setShowCalendarReport] = useState(false);
 	const [reportData, setReportData] = useState<any>(null);
 	const [reportYear, setReportYear] = useState(
 		new Date().getFullYear().toString()
@@ -124,6 +126,10 @@ export function AvailabilityModal({
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const handleViewCalendarReport = () => {
+		setShowCalendarReport(true);
 	};
 
 	const handleSave = async () => {
@@ -456,6 +462,14 @@ export function AvailabilityModal({
 							<FileText className="w-4 h-4 mr-2" />
 							{t('availability.viewReport')}
 						</button>
+						<button
+							onClick={handleViewCalendarReport}
+							disabled={loading}
+							className="flex items-center px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+						>
+							<FileText className="w-4 h-4 mr-2" />
+							{t('availability.viewCalendarReport')}
+						</button>
 					</div>
 
 					<div className="flex space-x-3">
@@ -511,6 +525,14 @@ export function AvailabilityModal({
 					data={reportData}
 					colleague={selectedColleague}
 					onClose={() => setShowReport(false)}
+				/>
+			)}
+
+			{showCalendarReport && (
+				<CalendarReport
+					colleague={selectedColleague}
+					year={reportYear}
+					onClose={() => setShowCalendarReport(false)}
 				/>
 			)}
 
