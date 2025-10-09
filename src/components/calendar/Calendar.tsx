@@ -23,14 +23,14 @@ import {
   format,
   startOfWeek,
   isSameWeek,
-  getYear
+  getYear,
+  addDays
 } from "date-fns";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 export function Calendar() {
   const { currentUser, events, availabilityData, isLoading: isLoadingAvailability, loadAvailabilityForYear } = useApp();
   const { t } = useTranslation();
-  const previousYearRef = useRef<number | null>(null);
   
   if (!currentUser) {
     return (
@@ -67,15 +67,27 @@ export function Calendar() {
     setCurrentMonth,
   });
 
-  // Load availability data when the year changes
+  // Load availability data for all visible years (calendar shows 5 weeks which can span years)
   useEffect(() => {
-    const currentYear = getYear(currentMonth);
+    // Calculate the visible date range (same as calendar display logic)
+    const weekStart = startOfWeek(currentMonth, { weekStartsOn: 1 });
+    const calendarStart = subWeeks(weekStart, 1); // 1 week before
+    const calendarEnd = addDays(addWeeks(weekStart, 3), 6); // 3 weeks after + 6 days
 
-    // Only load if this is a different year than before
-    if (previousYearRef.current !== currentYear) {
-      previousYearRef.current = currentYear;
-      loadAvailabilityForYear(currentYear);
+    // Extract unique years from the visible range
+    const startYear = getYear(calendarStart);
+    const endYear = getYear(calendarEnd);
+
+    const visibleYears = new Set<number>();
+    visibleYears.add(startYear);
+    if (endYear !== startYear) {
+      visibleYears.add(endYear);
     }
+
+    // Load availability for all visible years
+    visibleYears.forEach(year => {
+      loadAvailabilityForYear(year);
+    });
   }, [currentMonth, loadAvailabilityForYear]);
 
   const handleToday = () => {
