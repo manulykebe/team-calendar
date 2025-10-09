@@ -197,7 +197,7 @@ export const DayCell = memo(function DayCell({
 		<>
 			<div
 				className={`relative p-2 transition-all duration-150
-          ${isVisuallyDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"}
+          ${isVisuallyDisabled ? "cursor-default" : "cursor-pointer"}
           ${isSelected || isEndDate ? "ring-2 ring-blue-500 bg-blue-100" : ""}
           ${isInRange ? "bg-blue-50 hover:bg-blue-100" : isVisuallyDisabled ? "" : "hover:bg-opacity-90"}
           ${isHoverEndDate ? "ring-2 ring-blue-300" : ""}
