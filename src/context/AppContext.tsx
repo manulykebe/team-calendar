@@ -16,6 +16,7 @@ interface AppState {
   isLoading: boolean;
   error: string | null;
   refreshData: () => Promise<void>;
+  loadAvailabilityForYear: (year: number) => Promise<void>;
 }
 
 const AppContext = createContext<AppState>({
@@ -26,6 +27,7 @@ const AppContext = createContext<AppState>({
   isLoading: true,
   error: null,
   refreshData: async () => {},
+  loadAvailabilityForYear: async () => {},
 });
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
@@ -36,11 +38,40 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [availabilityData, setAvailabilityData] = useState<Record<string, { am: boolean; pm: boolean }>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Track which years have been loaded to avoid duplicate requests
+  const [loadedYears, setLoadedYears] = useState<Set<number>>(new Set());
+
+  // Function to load availability data for a specific year
+  const loadAvailabilityForYear = useCallback(async (year: number) => {
+    if (!token || !currentUser || loadedYears.has(year)) {
+      return; // Already loaded or can't load
+    }
+
+    try {
+      const report = await getAvailabilityReport(
+        token,
+        currentUser.site,
+        currentUser.id,
+        year.toString()
+      );
+
+      // Merge new availability data with existing data
+      setAvailabilityData(prev => ({
+        ...prev,
+        ...report.availability
+      }));
+
+      // Mark this year as loaded
+      setLoadedYears(prev => new Set(prev).add(year));
+    } catch (error) {
+      console.warn(`Failed to load availability data for year ${year}:`, error);
+    }
+  }, [token, currentUser, loadedYears]);
 
   // Function to fetch events for all users in the site (admin view)
   const fetchAllSiteEvents = useCallback(async (users: User[], token: string) => {
     const allEvents: Event[] = [];
-    
+
     // Fetch events for each user in the site
     for (const user of users) {
       try {
@@ -51,7 +82,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             'X-User-Id': user.id, // Pass user ID to get their events
           },
         });
-        
+
         if (response.ok) {
           const userEvents = await response.json();
           allEvents.push(...userEvents);
@@ -60,7 +91,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         console.warn(`Failed to fetch events for user ${user.id}:`, error);
       }
     }
-    
+
     return allEvents;
   }, []);
 
@@ -108,21 +139,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setEvents(eventsData);
 
       // Fetch availability report for the current year
-      const year = new Date().getFullYear().toString();
-      
+      const currentYear = new Date().getFullYear();
+
       // Use a separate try-catch for availability to not fail the entire load
       try {
         const report = await getAvailabilityReport(
           token,
           user.site,
           user.id,
-          year
+          currentYear.toString()
         );
         setAvailabilityData(report.availability);
+        // Mark current year as loaded
+        setLoadedYears(new Set([currentYear]));
       } catch (availabilityError) {
         console.warn("Failed to load availability data:", availabilityError);
         // Don't fail the entire load for availability issues
         setAvailabilityData({});
+        setLoadedYears(new Set());
       }
 
     } catch (err) {
@@ -144,6 +178,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setColleagues([]);
       setEvents([]);
       setAvailabilityData({});
+      setLoadedYears(new Set());
       setIsLoading(false);
       setError(null);
     }
@@ -155,15 +190,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (!token || !currentUser) return;
 
       try {
-        // Debounce availability updates to prevent excessive API calls
-        const year = new Date().getFullYear().toString();
-        const report = await getAvailabilityReport(
-          token,
-          currentUser.site,
-          currentUser.id,
-          year
+        // When availability changes, reload all years that were previously loaded
+        const yearsToReload = Array.from(loadedYears);
+        const availabilityPromises = yearsToReload.map(year =>
+          getAvailabilityReport(
+            token,
+            currentUser.site,
+            currentUser.id,
+            year.toString()
+          )
         );
-        setAvailabilityData(report.availability);
+
+        const reports = await Promise.all(availabilityPromises);
+
+        // Merge all availability data
+        const mergedAvailability = reports.reduce((acc, report) => ({
+          ...acc,
+          ...report.availability
+        }), {});
+
+        setAvailabilityData(mergedAvailability);
       } catch (err) {
         console.error("Failed to update availability data:", err);
       }
@@ -182,7 +228,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       clearTimeout(timeoutId);
       userSettingsEmitter.off("availabilityChanged", debouncedHandler);
     };
-  }, [token, currentUser]);
+  }, [token, currentUser, loadedYears]);
 
   // Provide a way to refresh data without affecting calendar view
   const refreshData = useCallback(async () => {
@@ -232,6 +278,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     error,
     refreshData,
+    loadAvailabilityForYear,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

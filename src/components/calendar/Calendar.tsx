@@ -22,12 +22,15 @@ import {
   subMonths,
   format,
   startOfWeek,
-  isSameWeek
+  isSameWeek,
+  getYear
 } from "date-fns";
+import { useEffect, useRef } from "react";
 
 export function Calendar() {
-  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability } = useApp();
+  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability, loadAvailabilityForYear } = useApp();
   const { t } = useTranslation();
+  const previousYearRef = useRef<number | null>(null);
   
   if (!currentUser) {
     return (
@@ -63,6 +66,17 @@ export function Calendar() {
     currentMonth,
     setCurrentMonth,
   });
+
+  // Load availability data when the year changes
+  useEffect(() => {
+    const currentYear = getYear(currentMonth);
+
+    // Only load if this is a different year than before
+    if (previousYearRef.current !== currentYear) {
+      previousYearRef.current = currentYear;
+      loadAvailabilityForYear(currentYear);
+    }
+  }, [currentMonth, loadAvailabilityForYear]);
 
   const handleToday = () => {
     const today = new Date();
