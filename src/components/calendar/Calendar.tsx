@@ -74,6 +74,9 @@ export function Calendar() {
     const calendarStart = subWeeks(weekStart, 1); // 1 week before
     const calendarEnd = addDays(addWeeks(weekStart, 3), 6); // 3 weeks after + 6 days
 
+    console.log(`[Calendar] Current month changed to:`, format(currentMonth, 'MMM yyyy'));
+    console.log(`[Calendar] Visible range:`, format(calendarStart, 'yyyy-MM-dd'), 'to', format(calendarEnd, 'yyyy-MM-dd'));
+
     // Extract unique years from the visible range
     const startYear = getYear(calendarStart);
     const endYear = getYear(calendarEnd);
@@ -84,8 +87,11 @@ export function Calendar() {
       visibleYears.add(endYear);
     }
 
+    console.log(`[Calendar] Visible years:`, Array.from(visibleYears));
+
     // Load availability for all visible years
     visibleYears.forEach(year => {
+      console.log(`[Calendar] Triggering load for year:`, year);
       loadAvailabilityForYear(year);
     });
   }, [currentMonth, loadAvailabilityForYear]);

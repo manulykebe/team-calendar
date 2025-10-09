@@ -43,11 +43,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Function to load availability data for a specific year
   const loadAvailabilityForYear = useCallback(async (year: number) => {
-    if (!token || !currentUser || loadedYears.has(year)) {
-      return; // Already loaded or can't load
+    console.log(`[loadAvailabilityForYear] Called for year ${year}`);
+    console.log(`[loadAvailabilityForYear] Already loaded years:`, Array.from(loadedYears));
+
+    if (!token || !currentUser) {
+      console.log(`[loadAvailabilityForYear] Skipping: no token or currentUser`);
+      return;
+    }
+
+    if (loadedYears.has(year)) {
+      console.log(`[loadAvailabilityForYear] Year ${year} already loaded, skipping`);
+      return;
     }
 
     try {
+      console.log(`[loadAvailabilityForYear] Fetching availability for year ${year}...`);
       const report = await getAvailabilityReport(
         token,
         currentUser.site,
@@ -55,16 +65,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         year.toString()
       );
 
+      console.log(`[loadAvailabilityForYear] Received ${Object.keys(report.availability).length} dates for year ${year}`);
+      console.log(`[loadAvailabilityForYear] Sample dates:`, Object.keys(report.availability).slice(0, 5));
+
       // Merge new availability data with existing data
-      setAvailabilityData(prev => ({
-        ...prev,
-        ...report.availability
-      }));
+      setAvailabilityData(prev => {
+        const merged = {
+          ...prev,
+          ...report.availability
+        };
+        console.log(`[loadAvailabilityForYear] Total dates in availabilityData after merge:`, Object.keys(merged).length);
+        return merged;
+      });
 
       // Mark this year as loaded
       setLoadedYears(prev => new Set(prev).add(year));
+      console.log(`[loadAvailabilityForYear] Year ${year} marked as loaded`);
     } catch (error) {
-      console.warn(`Failed to load availability data for year ${year}:`, error);
+      console.error(`[loadAvailabilityForYear] Failed to load availability data for year ${year}:`, error);
     }
   }, [token, currentUser, loadedYears]);
 
