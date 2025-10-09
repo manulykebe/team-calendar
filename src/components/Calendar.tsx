@@ -31,7 +31,7 @@ import { useEffect } from "react";
 export function Calendar() {
   console.log('[Calendar] Component rendering');
 
-  const { currentUser, events, availabilityData, isLoading: isLoadingAvailability, loadAvailabilityForYear } = useApp();
+  const { currentUser, events, availabilityData, periods, isLoading: isLoadingAvailability, loadAvailabilityForYear, loadPeriodsForYear } = useApp();
   const { t } = useTranslation();
 
   console.log('[Calendar] currentUser:', currentUser?.id);
@@ -94,12 +94,13 @@ export function Calendar() {
 
     console.log(`[Calendar] Visible years:`, Array.from(visibleYears));
 
-    // Load availability for all visible years
+    // Load availability and periods for all visible years
     visibleYears.forEach(year => {
       console.log(`[Calendar] Triggering load for year:`, year);
       loadAvailabilityForYear(year);
+      loadPeriodsForYear(year);
     });
-  }, [currentMonth, loadAvailabilityForYear]);
+  }, [currentMonth, loadAvailabilityForYear, loadPeriodsForYear]);
 
   const handleToday = () => {
     const today = new Date();
@@ -224,6 +225,7 @@ export function Calendar() {
           onWeekSelect={handleWeekSelect}
           availabilityData={availabilityData}
           isLoadingAvailability={isLoadingAvailability}
+          periods={periods}
         />
       </div>
 

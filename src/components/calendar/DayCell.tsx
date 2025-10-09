@@ -6,6 +6,8 @@ import { useFilteredEvents } from "../../hooks/useFilteredEvents";
 import { useCalendarColors } from "../../hooks/useCalendarColors";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
+import { Period } from "../../types/period";
+import { getDayCellSelectability } from "../../utils/periodUtils";
 import { Holiday } from "../../lib/api/holidays";
 import { Calendar } from "lucide-react";
 import { EventDetailsModal } from "./EventDetailsModal";
@@ -39,6 +41,7 @@ interface DayCellProps {
 	hoverDate: Date | null;
 	availability?: { am: boolean; pm: boolean };
 	isLoadingAvailability: boolean;
+	periods: Period[];
 }
 
 export const DayCell = memo(function DayCell({
@@ -55,6 +58,7 @@ export const DayCell = memo(function DayCell({
 	hoverDate,
 	availability = { am: true, pm: true },
 	isLoadingAvailability,
+	periods,
 }: DayCellProps) {
 	const { colleagues, refreshData, availabilityData } = useApp();
 	const { holidays: globalHolidays } = useHolidays();
@@ -73,6 +77,11 @@ export const DayCell = memo(function DayCell({
 	const isHoliday = useMemo(() => {
 		return isPublicHoliday(date, globalHolidays) || !!holiday;
 	}, [date, globalHolidays, holiday]);
+
+	// Check period-based selectability for this date
+	const dayCellSelectability = useMemo(() => {
+		return getDayCellSelectability(date, periods);
+	}, [date, periods]);
 
 	// Memoize expensive calculations
 	const formattedDate = useMemo(() => format(date, "yyyy-MM-dd"), [date]);
@@ -139,8 +148,16 @@ export const DayCell = memo(function DayCell({
 			}
 			return;
 		}
+
+		// Check if this date is selectable based on period configuration
+		// Regular users must respect period selectability
+		if (currentUser?.role !== "admin" && !dayCellSelectability.isSelectable) {
+			// Date is not selectable - do nothing
+			return;
+		}
+
 		onDateClick(date);
-	}, [currentUserHolidayEvent, onDateClick, date, currentUser?.role]);
+	}, [currentUserHolidayEvent, onDateClick, date, currentUser?.role, dayCellSelectability]);
 
 	// Find the event owner for admin modal
 	const getEventOwner = (event: Event) => {
@@ -173,12 +190,16 @@ export const DayCell = memo(function DayCell({
 
 	const onDutyUserDetails = getOnDutyUserDetails();
 
+	// Determine if cell should be disabled visually (non-selectable for regular users)
+	const isVisuallyDisabled = currentUser?.role !== "admin" && !dayCellSelectability.isSelectable;
+
 	return (
 		<>
 			<div
-				className={`relative p-2 transition-all duration-150 cursor-pointer
+				className={`relative p-2 transition-all duration-150
+          ${isVisuallyDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"}
           ${isSelected || isEndDate ? "ring-2 ring-blue-500 bg-blue-100" : ""}
-          ${isInRange ? "bg-blue-50 hover:bg-blue-100" : "hover:bg-opacity-90"}
+          ${isInRange ? "bg-blue-50 hover:bg-blue-100" : isVisuallyDisabled ? "" : "hover:bg-opacity-90"}
           ${isHoverEndDate ? "ring-2 ring-blue-300" : ""}
           ${isSelected || isEndDate ? "z-10" : isInRange ? "z-5" : "z-0"}
 		  ${isPublicHoliday(date, globalHolidays) ? "bg-red-50" : isWeekday(date) ? "bg-white" : "bg-zinc-50"}
@@ -186,6 +207,7 @@ export const DayCell = memo(function DayCell({
 
 				onClick={handleClick}
 				data-tsx-id="day-cell"
+				title={isVisuallyDisabled ? `Period: ${dayCellSelectability.editingStatus}` : undefined}
 			>
 				{/* Availability background layers */}
 				{(!isLoadingAvailability && isWeekday(date)) ? (

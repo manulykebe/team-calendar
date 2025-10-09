@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { X, User } from "lucide-react";
 import { Event } from "../types/event";
 import { Period } from "../types/period";
+import { getAllowedEventTypeForRange } from "../utils/periodUtils";
 import { useAuth } from "../context/AuthContext";
 import { useApp } from "../context/AppContext";
 import { getPeriods } from "../lib/api/periods";
@@ -100,39 +101,20 @@ export function EventModal({
 	}, [isAdmin, currentUser]);
 
 	const getAvailableEventTypes = (dateStr: string, periods: Period[]): string[] => {
-		const targetDate = new Date(dateStr);
-		const availableTypes: string[] = [];
-
-		// Find the period that contains this date
-		const currentPeriod = periods.find(period => {
-			const periodStart = new Date(period.startDate);
-			const periodEnd = new Date(period.endDate);
-			return targetDate >= periodStart && targetDate <= periodEnd;
-		});
-
-		if (!currentPeriod) {
-			// If no period is defined, default to holiday only
-			return ["requestedLeave"];
+		// Admin can always create any event type
+		if (isAdmin) {
+			return ["requestedLeave", "requestedDesiderata"];
 		}
 
-		// Cascaded system: first Holidays, then Desiderata
-		switch (currentPeriod.editingStatus) {
-			case 'open-holiday':
-				availableTypes.push("requestedLeave");
-				break;
-			case 'open-desiderata':
-				// When desiderata is open, both holiday and desiderata are available
-				// But holiday has priority (cascaded system)
-				availableTypes.push("requestedLeave", "requestedDesiderata");
-				break;
-			case 'closed':
-			default:
-				// When closed, no event types are available for regular users
-				// Admins might still be able to create events (could be added later)
-				break;
+		// For regular users, check period-based restrictions
+		const allowedType = getAllowedEventTypeForRange(dateStr, endDate || dateStr, periods);
+
+		if (!allowedType) {
+			// No event type allowed (closed or undefined period)
+			return [];
 		}
 
-		return availableTypes;
+		return [allowedType];
 	};
 
 	const getEventTypeLabel = (eventType: string): string => {

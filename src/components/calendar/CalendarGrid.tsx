@@ -5,6 +5,7 @@ import { WeekColumn } from "./WeekColumn";
 import { getCalendarDays } from "../../utils/calendar";
 import { Event } from "../../types/event";
 import { User } from "../../types/user";
+import { Period } from "../../types/period";
 import { Holiday, getHolidays } from "../../lib/api/holidays";
 import { format } from "date-fns";
 import { getSiteData } from "../../lib/api/client";
@@ -32,6 +33,7 @@ interface CalendarGridProps {
 	onWeekSelect?: (startDate: Date, endDate: Date) => void;
 	availabilityData: Record<string, { am: boolean; pm: boolean }>;
 	isLoadingAvailability: boolean;
+	periods: Period[];
 }
 
 export function CalendarGrid({
@@ -50,6 +52,7 @@ export function CalendarGrid({
 	onWeekSelect,
 	availabilityData,
 	isLoadingAvailability,
+	periods,
 }: CalendarGridProps) {
 	const [loading, setLoading] = useState(false);
 	const { joinCalendarDate, leaveCalendarDate } = useWebSocketContext();
@@ -144,6 +147,7 @@ export function CalendarGrid({
 					hoverDate={hoverDate}
 					availability={availabilityData[formattedDate]}
 					isLoadingAvailability={isLoadingAvailability}
+					periods={periods}
 				/>
 			);
 		});
@@ -161,7 +165,8 @@ export function CalendarGrid({
 		selectedEndDate,
 		hoverDate,
 		availabilityData,
-		isLoadingAvailability
+		isLoadingAvailability,
+		periods
 	]);
 
 	return (

@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { User } from "../types/user";
 import { Event } from "../types/event";
+import { Period } from "../types/period";
 import { getUsers } from "../lib/api/users";
 import { getEvents } from "../lib/api/events";
 import { getAvailabilityReport } from "../lib/api/report";
+import { getPeriods } from "../lib/api/periods";
 import { useAuth } from "./AuthContext";
 import { userSettingsEmitter } from "../hooks/useColleagueSettings";
 import toast from "react-hot-toast";
@@ -13,10 +15,12 @@ interface AppState {
   colleagues: User[];
   events: Event[];
   availabilityData: Record<string, { am: boolean; pm: boolean }>;
+  periods: Period[];
   isLoading: boolean;
   error: string | null;
   refreshData: () => Promise<void>;
   loadAvailabilityForYear: (year: number) => Promise<void>;
+  loadPeriodsForYear: (year: number) => Promise<void>;
 }
 
 const AppContext = createContext<AppState>({
@@ -24,10 +28,12 @@ const AppContext = createContext<AppState>({
   colleagues: [],
   events: [],
   availabilityData: {},
+  periods: [],
   isLoading: true,
   error: null,
   refreshData: async () => {},
   loadAvailabilityForYear: async () => {},
+  loadPeriodsForYear: async () => {},
 });
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
@@ -36,10 +42,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [colleagues, setColleagues] = useState<User[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [availabilityData, setAvailabilityData] = useState<Record<string, { am: boolean; pm: boolean }>>({});
+  const [periods, setPeriods] = useState<Period[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   // Track which years have been loaded to avoid duplicate requests
   const [loadedYears, setLoadedYears] = useState<Set<number>>(new Set());
+  const [loadedPeriodYears, setLoadedPeriodYears] = useState<Set<number>>(new Set());
 
   // Function to load availability data for a specific year
   const loadAvailabilityForYear = useCallback(async (year: number) => {
@@ -85,6 +93,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       console.error(`[loadAvailabilityForYear] Failed to load availability data for year ${year}:`, error);
     }
   }, [token, currentUser, loadedYears]);
+
+  // Function to load periods data for a specific year
+  const loadPeriodsForYear = useCallback(async (year: number) => {
+    if (!token || !currentUser || loadedPeriodYears.has(year)) {
+      return; // Already loaded or can't load
+    }
+
+    try {
+      const periodsData = await getPeriods(token, currentUser.site, year);
+
+      // Merge new periods with existing periods, removing duplicates
+      setPeriods(prev => {
+        const existingIds = new Set(prev.map(p => p.id));
+        const newPeriods = periodsData.periods.filter(p => !existingIds.has(p.id));
+        return [...prev, ...newPeriods];
+      });
+
+      // Mark this year as loaded
+      setLoadedPeriodYears(prev => new Set(prev).add(year));
+    } catch (error) {
+      console.warn(`Failed to load periods for year ${year}:`, error);
+    }
+  }, [token, currentUser, loadedPeriodYears]);
 
   // Function to fetch events for all users in the site (admin view)
   const fetchAllSiteEvents = useCallback(async (users: User[], token: string) => {
@@ -293,10 +324,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     colleagues,
     events,
     availabilityData,
+    periods,
     isLoading,
     error,
     refreshData,
     loadAvailabilityForYear,
+    loadPeriodsForYear,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
