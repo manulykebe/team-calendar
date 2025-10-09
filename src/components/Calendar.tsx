@@ -29,9 +29,14 @@ import {
 import { useEffect } from "react";
 
 export function Calendar() {
+  console.log('[Calendar] Component rendering');
+
   const { currentUser, events, availabilityData, isLoading: isLoadingAvailability, loadAvailabilityForYear } = useApp();
   const { t } = useTranslation();
-  
+
+  console.log('[Calendar] currentUser:', currentUser?.id);
+  console.log('[Calendar] loadAvailabilityForYear:', typeof loadAvailabilityForYear);
+
   if (!currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center text-red-600">
