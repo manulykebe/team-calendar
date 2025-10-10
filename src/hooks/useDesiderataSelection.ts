@@ -1,6 +1,8 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useMemo } from 'react';
 import { Period } from '../types/period';
 import { Holiday } from '../lib/api/holidays';
+import { Event } from '../types/event';
+import { parseISO } from 'date-fns';
 import {
   calculatePeriodAvailability,
   calculatePriorityLimits,
@@ -20,6 +22,8 @@ export interface UseDesiderataSelectionProps {
   periods: Period[];
   holidays: Holiday[];
   userPriority: number;
+  events: Event[];
+  currentUserId: string;
 }
 
 export interface UseDesiderataSelectionReturn {
@@ -97,6 +101,8 @@ export function useDesiderataSelection({
   periods,
   holidays,
   userPriority = 2,
+  events,
+  currentUserId,
 }: UseDesiderataSelectionProps): UseDesiderataSelectionReturn {
   const [currentSelection, setCurrentSelection] = useState<DesiderataSelection>({
     workingDaysUsed: 0,
@@ -108,6 +114,37 @@ export function useDesiderataSelection({
   const [availability, setAvailability] = useState<DesiderataAvailability | null>(null);
   const [limits, setLimits] = useState<PriorityLimits | null>(null);
   const [panelVisible, setPanelVisible] = useState(true);
+
+  // Calculate existing selections from events in the active period
+  const existingSelections = useMemo(() => {
+    if (!activePeriod) return [];
+
+    const periodStart = parseISO(activePeriod.startDate);
+    const periodEnd = parseISO(activePeriod.endDate);
+
+    // Filter events for current user that are in this period and are desiderata types
+    const desiderataEvents = events.filter(event => {
+      if (event.userId !== currentUserId) return false;
+
+      const eventStart = parseISO(event.date);
+      const eventEnd = event.endDate ? parseISO(event.endDate) : eventStart;
+
+      // Check if event overlaps with period
+      const overlaps = eventStart <= periodEnd && eventEnd >= periodStart;
+
+      // Check if it's a desiderata type (requestedLeave, approvedHoliday, etc.)
+      const isDesiderata = ['requestedLeave', 'approvedHoliday', 'pendingHoliday'].includes(event.type);
+
+      return overlaps && isDesiderata;
+    });
+
+    // Calculate day counts for each event
+    return desiderataEvents.map(event => {
+      const start = parseISO(event.date);
+      const end = event.endDate ? parseISO(event.endDate) : start;
+      return countSelectionDays(start, end, holidays);
+    });
+  }, [activePeriod, events, currentUserId, holidays]);
 
   /**
    * Get period for a date
@@ -215,7 +252,7 @@ export function useDesiderataSelection({
     availability,
     limits,
     currentSelection,
-    existingSelections: [], // TODO: Load from saved events
+    existingSelections,
     validateNewSelection,
     applyMandatoryExtension,
     updateCurrentSelection,

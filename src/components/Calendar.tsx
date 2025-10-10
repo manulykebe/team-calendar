@@ -76,18 +76,48 @@ export function Calendar() {
     periods,
     holidays,
     userPriority: currentUser?.priority || 2,
+    events,
+    currentUserId: currentUser.id,
   });
+
+  // Helper to check if date is Friday or Thursday before holiday
+  const checkAutoExtension = (date: Date): { extend: boolean; endDate?: Date; reason?: string } => {
+    const dayOfWeek = date.getDay();
+
+    // If it's a Friday, extend to Sunday
+    if (dayOfWeek === 5) {
+      return {
+        extend: true,
+        endDate: addDays(date, 2),
+        reason: t('desiderata.autoExtendedToWeekend') || 'Selected Friday - automatically extending to Sunday',
+      };
+    }
+
+    // If it's Thursday and next day is a holiday, extend to Sunday
+    if (dayOfWeek === 4) {
+      const nextDay = addDays(date, 1);
+      if (holidays.some(h => h.date === nextDay.toISOString().split('T')[0])) {
+        return {
+          extend: true,
+          endDate: addDays(date, 3),
+          reason: t('desiderata.mandatoryExtension') || 'Selected Thursday before bank holiday - extending to Sunday',
+        };
+      }
+    }
+
+    return { extend: false };
+  };
 
   // Wrap handleDateClick to apply desiderata logic
   const handleDateClickWithDesiderata = (date: Date) => {
     // First, handle the click normally
     if (!selectedStartDate) {
       // Check if this single date should auto-extend (Friday or Thursday before holiday)
-      const extension = desiderata.applyMandatoryExtension(date, date);
-      if (extension && extension.extended) {
-        setSelectedStartDate(extension.startDate);
+      const extension = checkAutoExtension(date);
+      if (extension.extend && extension.endDate) {
+        setSelectedStartDate(date);
         setSelectedEndDate(extension.endDate);
-        desiderata.updateCurrentSelection(extension.startDate, extension.endDate);
+        desiderata.updateCurrentSelection(date, extension.endDate);
         setShowModal(true);
         toast.info(extension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
         return;
@@ -104,12 +134,18 @@ export function Calendar() {
         end = selectedStartDate;
       }
 
-      // Check for mandatory weekend extension
-      const extension = desiderata.applyMandatoryExtension(start, end);
-      if (extension && extension.extended) {
-        start = extension.startDate;
-        end = extension.endDate;
-        toast.info(extension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
+      // Check for mandatory weekend extension on start or end date
+      const startExtension = checkAutoExtension(start);
+      const endExtension = checkAutoExtension(end);
+
+      if (startExtension.extend && startExtension.endDate) {
+        end = new Date(Math.max(end.getTime(), startExtension.endDate.getTime()));
+        toast.info(startExtension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
+      }
+
+      if (endExtension.extend && endExtension.endDate) {
+        end = new Date(Math.max(end.getTime(), endExtension.endDate.getTime()));
+        toast.info(endExtension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
       }
 
       // Validate selection
