@@ -246,7 +246,7 @@ export function Calendar() {
         setSelectedEndDate(extension.endDate);
         desiderata.updateCurrentSelection(extension.startDate, extension.endDate);
         setShowModal(true);
-        toast.info(extension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
+        toast(extension.reason || t('desiderata.mandatoryExtension'), { duration: 5000, icon: 'ℹ️' });
         return;
       }
       setSelectedStartDate(date);
@@ -266,7 +266,7 @@ export function Calendar() {
       if (rangeExtension.extend) {
         start = rangeExtension.newStart;
         end = rangeExtension.newEnd;
-        toast.info(rangeExtension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
+        toast(rangeExtension.reason || t('desiderata.mandatoryExtension'), { duration: 5000, icon: 'ℹ️' });
       }
 
       // Validate selection
@@ -277,7 +277,7 @@ export function Calendar() {
       }
 
       if (validation?.warnings.length) {
-        toast.warning(validation.warnings.join('; '), { duration: 4000 });
+        toast(validation.warnings.join('; '), { duration: 4000, icon: '⚠️' });
       }
 
       setSelectedStartDate(start);
