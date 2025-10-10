@@ -5,12 +5,7 @@
 				"date": "2024-01-01",
 				"name": "New Year's Day",
 				"type": "public"
-			},
-			{
-				"date": "2026-03-23",
-				"name": "DemoDay",
-				"type": "public"
-			},			
+			},	
       {
 				"date": "2024-03-31",
 				"name": "Easter Sunday",
@@ -135,6 +130,11 @@
 				"name": "New Year's Day",
 				"type": "public"
 			},
+      {
+				"date": "2026-03-23",
+				"name": "DemoDay",
+				"type": "public"
+			},		
 			{
 				"date": "2026-04-05",
 				"name": "Easter Sunday",
