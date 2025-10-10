@@ -496,4 +496,15 @@ export const fr = {
     summerBankHoliday: 'Jour férié d\'été',
     boxingDay: 'Lendemain de Noël',
   },
+
+  // Documents
+  documents: {
+    downloadSchedule: 'Télécharger le planning de garde (PDF)',
+    downloadFailed: 'Échec du téléchargement. Veuillez réessayer.',
+    invalidFileType: 'Type de fichier invalide. Seuls les fichiers PDF sont autorisés.',
+    invalidFilename: 'Nom de fichier invalide.',
+    fileNotFound: 'Document introuvable.',
+    failedToDownload: 'Échec du téléchargement du document.',
+    failedToListDocuments: 'Échec de la récupération de la liste des documents.',
+  },
 };

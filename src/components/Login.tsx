@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { login } from "../lib/api";
-import { Calendar, Phone, LogIn, X } from "lucide-react";
+import { Calendar, Phone, LogIn, X, FileText } from "lucide-react";
 import { LoadingSpinner } from "./common/LoadingSpinner";
 import { useTranslation } from "../context/TranslationContext";
 import { getOnDutyStaff, getOnDutyDate, OnDutyStaff } from "../lib/api/on-duty";
@@ -52,6 +52,7 @@ export function Login() {
   const [onDutyStaff, setOnDutyStaff] = useState<OnDutyStaff | null>(null);
   const [showMobile, setShowMobile] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   
   // Add refs for input fields to maintain focus
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -106,13 +107,60 @@ export function Login() {
     // No need to manually set focus as the input already has it
   };
 
+  const handleDownloadSchedule = async () => {
+    try {
+      setIsDownloading(true);
+
+      // Determine the current quarter based on current month
+      const now = new Date();
+      const month = now.getMonth(); // 0-11
+      const year = now.getFullYear();
+
+      let quarter: number;
+      if (month >= 0 && month <= 2) quarter = 1; // Jan-Mar
+      else if (month >= 3 && month <= 5) quarter = 2; // Apr-Jun
+      else if (month >= 6 && month <= 8) quarter = 3; // Jul-Sep
+      else quarter = 4; // Oct-Dec
+
+      // Generate filename based on quarter
+      const quarterMonths = [
+        ['januari', 'maart'],
+        ['april', 'juni'],
+        ['juli', 'september'],
+        ['oktober', 'december']
+      ];
+
+      const [startMonth, endMonth] = quarterMonths[quarter - 1];
+      const filename = `${year} Q${quarter} - ${startMonth}-${endMonth}.pdf`;
+
+      // Construct API URL
+      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const downloadUrl = `${apiBaseUrl}/api/documents/${site}/on-duty-schedule/${encodeURIComponent(filename)}`;
+
+      // Create a temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = filename;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+    } catch (error) {
+      console.error('Failed to download schedule:', error);
+      alert(t('documents.downloadFailed') || 'Failed to download schedule. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-zinc-50"
       data-tsx-id="login"
     >
       {/* On-duty staff display */}
-      <div className="w-full max-w-md mb-8 bg-white shadow-sm rounded-lg p-4 flex items-center justify-center">
+      <div className="w-full max-w-md mb-8 bg-white shadow-sm rounded-lg p-4 relative">
         <div className="flex items-center space-x-3 min-h-[56px] w-full">
           <button
             type="button"
@@ -128,8 +176,23 @@ export function Login() {
             <p className="font-medium text-zinc-900">{onDutyStaff ? onDutyStaff.name : ""}</p>
             <p className="text-sm text-zinc-300">{onDutyStaff ? (onDutyStaff.from + ' tot ' + onDutyStaff.to) : ""}</p>
           </div>
-          {/* Popup for mobile */}
         </div>
+
+        {/* PDF Download Icon - positioned in bottom-right corner */}
+        <button
+          type="button"
+          onClick={handleDownloadSchedule}
+          disabled={isDownloading}
+          className="absolute bottom-3 right-3 p-2 rounded-full bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          title={t('documents.downloadSchedule') || 'Download on-duty schedule (PDF)'}
+          aria-label={t('documents.downloadSchedule') || 'Download on-duty schedule (PDF)'}
+        >
+          {isDownloading ? (
+            <LoadingSpinner size="sm" />
+          ) : (
+            <FileText className="h-5 w-5 text-red-600" />
+          )}
+        </button>
 
         {showMobile && onDutyStaff?.mobile && (
           <Modal onClose={() => setShowMobile(false)}>

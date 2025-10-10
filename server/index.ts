@@ -16,6 +16,7 @@ import { periodsRouter } from "./routes/periods.js";
 import { onDutyRouter } from "./routes/on-duty.js";
 import { calendarReportRouter } from "./routes/calendar-report.js";
 import { desiderataRouter } from "./routes/desiderata.js";
+import { documentsRouter } from "./routes/documents.js";
 import { initializeSocketManager } from "./websocket/socketManager.js";
 import { i18nMiddleware } from "./middleware/i18n.js";
 
@@ -69,6 +70,7 @@ app.use("/api/sites", periodsRouter);
 app.use("/api/on-duty", onDutyRouter);
 app.use("/api/calendar-report", calendarReportRouter);
 app.use("/api/desiderata", desiderataRouter);
+app.use("/api/documents", documentsRouter);
 
 // Root endpoint
 app.get("/", (req, res) => {

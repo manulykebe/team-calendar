@@ -496,4 +496,15 @@ export const nl = {
     summerBankHoliday: 'Zomerfeestdag',
     boxingDay: 'Tweede Kerstdag',
   },
+
+  // Documents
+  documents: {
+    downloadSchedule: 'Dienstrooster downloaden (PDF)',
+    downloadFailed: 'Download mislukt. Probeer het opnieuw.',
+    invalidFileType: 'Ongeldig bestandstype. Alleen PDF-bestanden zijn toegestaan.',
+    invalidFilename: 'Ongeldige bestandsnaam.',
+    fileNotFound: 'Document niet gevonden.',
+    failedToDownload: 'Downloaden van document mislukt.',
+    failedToListDocuments: 'Ophalen van documentenlijst mislukt.',
+  },
 };

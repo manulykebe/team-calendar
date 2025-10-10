@@ -496,4 +496,15 @@ export const en = {
     summerBankHoliday: 'Summer Bank Holiday',
     boxingDay: 'Boxing Day',
   },
+
+  // Documents
+  documents: {
+    downloadSchedule: 'Download on-duty schedule (PDF)',
+    downloadFailed: 'Download failed. Please try again.',
+    invalidFileType: 'Invalid file type. Only PDF files are allowed.',
+    invalidFilename: 'Invalid filename.',
+    fileNotFound: 'Document not found.',
+    failedToDownload: 'Failed to download document.',
+    failedToListDocuments: 'Failed to list documents.',
+  },
 };
