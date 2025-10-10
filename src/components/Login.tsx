@@ -6,6 +6,7 @@ import { Calendar, Phone, LogIn, X, FileText } from "lucide-react";
 import { LoadingSpinner } from "./common/LoadingSpinner";
 import { useTranslation } from "../context/TranslationContext";
 import { getOnDutyStaff, getOnDutyDate, OnDutyStaff } from "../lib/api/on-duty";
+import { API_URL } from "../lib/api/config";
 
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -133,9 +134,8 @@ export function Login() {
       const [startMonth, endMonth] = quarterMonths[quarter - 1];
       const filename = `${year} Q${quarter} - ${startMonth}-${endMonth}.pdf`;
 
-      // Construct API URL
-      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-      const downloadUrl = `${apiBaseUrl}/api/documents/${site}/on-duty-schedule/${encodeURIComponent(filename)}`;
+      // Construct API URL using the API_URL from config (already includes /api)
+      const downloadUrl = `${API_URL}/documents/${site}/on-duty-schedule/${encodeURIComponent(filename)}`;
 
       // Create a temporary link and trigger download
       const link = document.createElement('a');
