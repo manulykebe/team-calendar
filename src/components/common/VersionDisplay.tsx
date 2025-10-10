@@ -3,6 +3,7 @@ import { X, Server, Activity, Globe } from 'lucide-react';
 import versionInfo from '../../version.json';
 import { API_URL } from '../../lib/api/config';
 import { useTranslation } from '../../context/TranslationContext';
+import { ConnectionStatus } from "./ConnectionStatus";
 
 interface BackendHealth {
   status: string;
@@ -113,7 +114,11 @@ export function VersionDisplay() {
             title={`Build: ${new Date(versionInfo.buildDate).toLocaleString()}`}
           >
             v{versionInfo.version}
+
+            <ConnectionStatus />
+            
           </button>
+          
         </div>
       </div>
 
