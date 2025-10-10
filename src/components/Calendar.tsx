@@ -89,14 +89,23 @@ export function Calendar() {
   const checkAutoExtension = (date: Date): { extend: boolean; startDate?: Date; endDate?: Date; reason?: string } => {
     const dayOfWeek = date.getDay();
 
-    // Saturday or Sunday -> extend backward to Friday
-    if (dayOfWeek === 6 || dayOfWeek === 0) {
-      const daysToFriday = dayOfWeek === 6 ? 1 : 2;
+    // Saturday -> extend to Friday and Sunday (full weekend)
+    if (dayOfWeek === 6) {
       return {
         extend: true,
-        startDate: subDays(date, daysToFriday),
-        endDate: date,
-        reason: t('desiderata.autoExtendedToWeekend') || 'Selected weekend day - automatically including Friday',
+        startDate: subDays(date, 1), // Friday
+        endDate: addDays(date, 1),   // Sunday
+        reason: t('desiderata.autoExtendedToWeekend') || 'Selected Saturday - automatically extending to Friday-Sunday',
+      };
+    }
+
+    // Sunday -> extend backward to Friday (full weekend)
+    if (dayOfWeek === 0) {
+      return {
+        extend: true,
+        startDate: subDays(date, 2), // Friday
+        endDate: date,               // Sunday
+        reason: t('desiderata.autoExtendedToWeekend') || 'Selected Sunday - automatically including Friday-Sunday',
       };
     }
 
