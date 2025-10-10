@@ -185,7 +185,7 @@ export function useDesiderataSelection({
 
       // Calculate availability for period
       const periodAvailability = calculatePeriodAvailability(period, holidays);
-      const periodLimits = calculatePriorityLimits(periodAvailability, userPriority);
+      const periodLimits = calculatePriorityLimits(periodAvailability, userPriority, period);
 
       // Count current selection
       const selection = countSelectionDays(startDate, endDate, holidays);

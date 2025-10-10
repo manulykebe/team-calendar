@@ -6,6 +6,16 @@ export interface Period {
   editingStatus: 'closed' | 'open-holiday' | 'open-desiderata';
   createdAt: string;
   updatedAt: string;
+  quotas?: {
+    totalWeekends: number;
+    weekendsWithPublicHolidays: number;
+    netWeekends: number;
+    allowedWeekendDesiderata: number;
+    totalWorkingDays: number;
+    workingDaysWithPublicHolidays: number;
+    netWorkingDays: number;
+    allowedWorkingDayDesiderata: number;
+  };
 }
 
 export interface PeriodFormData {

@@ -21,6 +21,13 @@ export interface User {
     colleagueOrder?: string[];
     showWeekNumber: "none" | "left" | "right";
   };
+  desiderataUsage?: {
+    [periodId: string]: {
+      weekendsUsed: number;
+      workingDaysUsed: number;
+      lastUpdated: string;
+    };
+  };
   app?: {
     weekStartsOn: string;
     color: {

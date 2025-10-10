@@ -9,7 +9,17 @@
       "endDate": "2026-04-19",
       "editingStatus": "open-desiderata",
       "createdAt": "2025-06-12T14:42:12.728Z",
-      "updatedAt": "2025-10-09T13:22:49.798Z"
+      "updatedAt": "2025-10-09T13:22:49.798Z",
+      "quotas": {
+        "totalWeekends": 15,
+        "weekendsWithPublicHolidays": 2,
+        "netWeekends": 13,
+        "allowedWeekendDesiderata": 6,
+        "totalWorkingDays": 60,
+        "workingDaysWithPublicHolidays": 2,
+        "netWorkingDays": 58,
+        "allowedWorkingDayDesiderata": 29
+      }
     }
   ],
   "lastUpdated": "2025-10-09T22:07:10.611Z"

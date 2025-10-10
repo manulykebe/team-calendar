@@ -9,6 +9,10 @@ export interface DesiderataAvailability {
   publicHolidays: Holiday[];
   rawWorkingDays: number;
   rawWeekendDays: number;
+  totalWeekends?: number;
+  weekendsWithHolidays?: number;
+  netWeekends?: number;
+  netWorkingDays?: number;
 }
 
 export interface PriorityLimits {
@@ -137,7 +141,8 @@ export function calculatePeriodAvailability(
   const availableWorkingDays = Math.max(0, rawWorkingDays - workingDayAdjustment);
   const availableWeekendDays = Math.max(0, rawWeekendDays - weekendDayAdjustment);
 
-  return {
+  // Include server-side quotas if available
+  const result: DesiderataAvailability = {
     availableWorkingDays,
     availableWeekendDays,
     totalAvailableDays: availableWorkingDays + availableWeekendDays,
@@ -145,6 +150,16 @@ export function calculatePeriodAvailability(
     rawWorkingDays,
     rawWeekendDays,
   };
+
+  // Add quota information from period if available
+  if (period.quotas) {
+    result.totalWeekends = period.quotas.totalWeekends;
+    result.weekendsWithHolidays = period.quotas.weekendsWithPublicHolidays;
+    result.netWeekends = period.quotas.netWeekends;
+    result.netWorkingDays = period.quotas.netWorkingDays;
+  }
+
+  return result;
 }
 
 /**
@@ -235,13 +250,26 @@ export function checkMandatoryWeekendEnd(
 /**
  * STEP 5 & 6: Calculate maximum selectable days based on priority
  *
+ * If server quotas are available, use them directly.
+ * Otherwise fall back to calculated limits:
  * Priority 1: floor(available ÷ 4)
  * Priority 2+: floor(available ÷ 2)
  */
 export function calculatePriorityLimits(
   availability: DesiderataAvailability,
-  priority: number
+  priority: number,
+  period?: Period
 ): PriorityLimits {
+  // Use server-side quotas if available
+  if (period?.quotas) {
+    return {
+      maxWorkingDays: period.quotas.allowedWorkingDayDesiderata,
+      maxWeekendDays: period.quotas.allowedWeekendDesiderata,
+      priority,
+    };
+  }
+
+  // Fall back to calculated limits
   const divisor = priority === 1 ? 4 : 2;
 
   return {
@@ -306,7 +334,7 @@ export function validateSelection(
 
   // Calculate availability
   const availability = calculatePeriodAvailability(period, holidays);
-  const limits = calculatePriorityLimits(availability, priority);
+  const limits = calculatePriorityLimits(availability, priority, period);
 
   // Count current selection
   const selection = countSelectionDays(startDate, endDate, holidays);
