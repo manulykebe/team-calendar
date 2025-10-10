@@ -14,7 +14,7 @@
         "totalWeekends": 15,
         "weekendsWithPublicHolidays": 2,
         "netWeekends": 13,
-        "allowedWeekendDesiderata": 6,
+        "allowedWeekendDesiderata": 18,
         "totalWorkingDays": 60,
         "workingDaysWithPublicHolidays": 2,
         "netWorkingDays": 58,
