@@ -91,8 +91,9 @@ export function Calendar() {
     let start = date;
     let end = date;
     const reasons: string[] = [];
+    let hasWeekend = false;
 
-    // If it's a weekend or adjacent to weekends, find the full weekend block
+    // If it's a weekend, find the full weekend block
     if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) {
       // Find the Friday
       if (dayOfWeek === 6) start = subDays(date, 1); // Saturday -> Friday
@@ -103,6 +104,7 @@ export function Calendar() {
       if (dayOfWeek === 6) end = addDays(date, 1); // Saturday -> Sunday
 
       reasons.push('Weekend selected');
+      hasWeekend = true;
     }
 
     // If it's Thursday and next day (Friday) is a holiday, start from Thursday
@@ -112,47 +114,56 @@ export function Calendar() {
         start = date;
         end = addDays(date, 3); // Thursday to Sunday
         reasons.push('Thursday before bank holiday Friday');
+        hasWeekend = true;
       }
     }
 
-    // If it's a Monday holiday, extend backward to Friday
+    // If it's a Monday holiday adjacent to weekend, extend backward to Friday
     if (dayOfWeek === 1 && isHoliday(date)) {
-      start = subDays(date, 3); // Friday
-      end = date; // Monday
-      reasons.push('Monday holiday - including weekend');
+      const prevDay = subDays(date, 1); // Sunday
+      if (prevDay.getDay() === 0) { // It's Sunday
+        start = subDays(date, 3); // Friday
+        end = date; // Monday
+        reasons.push('Monday holiday adjacent to weekend');
+        hasWeekend = true;
+      }
     }
 
-    // If it's a Tuesday holiday, extend backward to Friday (include Monday)
+    // If it's a Tuesday holiday, check if Monday is also holiday
     if (dayOfWeek === 2 && isHoliday(date)) {
-      start = subDays(date, 4); // Friday
-      end = date; // Tuesday
-      reasons.push('Tuesday holiday - including weekend and Monday');
+      const monday = subDays(date, 1);
+      if (isHoliday(monday)) {
+        // Both Monday and Tuesday are holidays - include weekend
+        start = subDays(date, 4); // Friday
+        end = date; // Tuesday
+        reasons.push('Tuesday holiday following Monday holiday - including weekend');
+        hasWeekend = true;
+      }
     }
 
-    // Now check for adjacent holidays AFTER the calculated range
-    let checkDate = addDays(end, 1);
-    while (isHoliday(checkDate) || checkDate.getDay() === 6 || checkDate.getDay() === 0) {
-      end = checkDate;
-      if (isHoliday(checkDate)) {
-        reasons.push(`Including adjacent holiday ${format(checkDate, 'MMM d')}`);
+    // Only extend for adjacent holidays if we have a weekend in the range
+    if (hasWeekend) {
+      // Check for adjacent holidays AFTER the calculated range
+      let checkDate = addDays(end, 1);
+      let iterations = 0;
+      while (iterations++ < 7 && (isHoliday(checkDate) || checkDate.getDay() === 6 || checkDate.getDay() === 0)) {
+        end = checkDate;
+        if (isHoliday(checkDate)) {
+          reasons.push(`Including adjacent holiday ${format(checkDate, 'MMM d')}`);
+        }
+        checkDate = addDays(checkDate, 1);
       }
-      checkDate = addDays(checkDate, 1);
 
-      // Prevent infinite loops - stop after 7 days
-      if (checkDate.getTime() - end.getTime() > 7 * 24 * 60 * 60 * 1000) break;
-    }
-
-    // Check for adjacent holidays BEFORE the calculated range
-    checkDate = subDays(start, 1);
-    while (isHoliday(checkDate) || checkDate.getDay() === 6 || checkDate.getDay() === 0) {
-      start = checkDate;
-      if (isHoliday(checkDate)) {
-        reasons.push(`Including adjacent holiday ${format(checkDate, 'MMM d')}`);
+      // Check for adjacent holidays BEFORE the calculated range
+      checkDate = subDays(start, 1);
+      iterations = 0;
+      while (iterations++ < 7 && (isHoliday(checkDate) || checkDate.getDay() === 6 || checkDate.getDay() === 0)) {
+        start = checkDate;
+        if (isHoliday(checkDate)) {
+          reasons.push(`Including adjacent holiday ${format(checkDate, 'MMM d')}`);
+        }
+        checkDate = subDays(checkDate, 1);
       }
-      checkDate = subDays(checkDate, 1);
-
-      // Prevent infinite loops
-      if (start.getTime() - checkDate.getTime() > 7 * 24 * 60 * 60 * 1000) break;
     }
 
     // If we extended, return the range
