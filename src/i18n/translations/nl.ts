@@ -399,6 +399,21 @@ export const nl = {
     clickToViewDetails: 'Klik om details te bekijken',
   },
 
+  // Desiderata
+  desiderata: {
+    availableDays: 'Beschikbare dagen',
+    workingDays: 'Werkdagen',
+    weekendDays: 'Weekenddagen',
+    remaining: 'Resterend',
+    priority: 'Prioriteit',
+    limitExceeded: 'Selectielimiet overschreden',
+    approachingLimit: 'Naderende selectielimiet',
+    totalAvailable: 'Totaal beschikbaar',
+    publicHolidays: 'Feestdagen',
+    mandatoryExtension: 'Selectie uitgebreid vanwege verplichte weekendregels',
+    autoExtendedToWeekend: 'Selectie automatisch uitgebreid tot het weekend',
+  },
+
   // Version Display
   version: {
     systemInformation: 'Systeeminformatie',

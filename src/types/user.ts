@@ -8,6 +8,7 @@ export interface User {
   role: "admin" | "user";
   status: "active" | "inactive";
   site: string;
+  priority?: number;
   settings?: {
     colleagues?: {
       [userId: string]: {

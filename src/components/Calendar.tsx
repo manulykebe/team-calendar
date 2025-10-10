@@ -10,10 +10,14 @@ import { SettingsPanel } from "./settings/SettingsPanel";
 import { CalendarGrid } from "./calendar/CalendarGrid";
 import { MonthPicker } from "./calendar/MonthPicker";
 import { ConnectionStatus } from "./common/ConnectionStatus";
+import { DesiderataAvailabilityPanel } from "./calendar/DesiderataAvailabilityPanel";
 import { useCalendarState } from "../hooks/useCalendarState";
 import { useCalendarScroll } from "../hooks/useCalendarScroll";
+import { useDesiderataSelection } from "../hooks/useDesiderataSelection";
 import { useApp } from "../context/AppContext";
 import { useTranslation } from "../context/TranslationContext";
+import { useHolidays } from "../context/HolidayContext";
+import toast from "react-hot-toast";
 import {
   subDays,
   addWeeks,
@@ -24,7 +28,8 @@ import {
   startOfWeek,
   isSameWeek,
   getYear,
-  addDays
+  addDays,
+  parseISO
 } from "date-fns";
 import { useEffect } from "react";
 
@@ -33,6 +38,7 @@ export function Calendar() {
 
   const { currentUser, events, availabilityData, periods, isLoading: isLoadingAvailability, loadAvailabilityForYear, loadPeriodsForYear } = useApp();
   const { t } = useTranslation();
+  const { holidays } = useHolidays();
 
   console.log('[Calendar] currentUser:', currentUser?.id);
   console.log('[Calendar] loadAvailabilityForYear:', typeof loadAvailabilityForYear);
@@ -65,6 +71,59 @@ export function Calendar() {
     setSelectedStartDate,
     setSelectedEndDate,
   } = useCalendarState();
+
+  // Use desiderata selection hook
+  const desiderata = useDesiderataSelection({
+    periods,
+    holidays,
+    userPriority: currentUser?.priority || 2,
+  });
+
+  // Wrap handleDateClick to apply desiderata logic
+  const handleDateClickWithDesiderata = (date: Date) => {
+    // First, handle the click normally
+    if (!selectedStartDate) {
+      setSelectedStartDate(date);
+      setSelectedEndDate(null);
+      desiderata.updateCurrentSelection(date, null);
+    } else if (!selectedEndDate) {
+      let start = selectedStartDate;
+      let end = date;
+
+      if (date < selectedStartDate) {
+        start = date;
+        end = selectedStartDate;
+      }
+
+      // Check for mandatory weekend extension
+      const extension = desiderata.applyMandatoryExtension(start, end);
+      if (extension && extension.extended) {
+        start = extension.startDate;
+        end = extension.endDate;
+        toast.info(extension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
+      }
+
+      // Validate selection
+      const validation = desiderata.validateNewSelection(start, end);
+      if (validation && !validation.isValid) {
+        toast.error(validation.errors.join('; '), { duration: 5000 });
+        return;
+      }
+
+      if (validation?.warnings.length) {
+        toast.warning(validation.warnings.join('; '), { duration: 4000 });
+      }
+
+      setSelectedStartDate(start);
+      setSelectedEndDate(end);
+      desiderata.updateCurrentSelection(start, end);
+      setShowModal(true);
+    } else {
+      setSelectedStartDate(date);
+      setSelectedEndDate(null);
+      desiderata.updateCurrentSelection(date, null);
+    }
+  };
 
   // Use the calendar scroll hook
   const { containerRef } = useCalendarScroll({
@@ -212,7 +271,7 @@ export function Calendar() {
         <CalendarGrid
           currentMonth={currentMonth}
           events={events}
-          onDateClick={handleDateClick}
+          onDateClick={handleDateClickWithDesiderata}
           onDateHover={handleDateHover}
           weekStartsOn={weekStartsOn}
           userSettings={currentUser?.settings}
@@ -246,6 +305,17 @@ export function Calendar() {
               ? "requestedLeave"
               : undefined
           }
+        />
+      )}
+
+      {desiderata.shouldShowPanel && desiderata.availability && desiderata.limits && desiderata.activePeriod && (
+        <DesiderataAvailabilityPanel
+          availability={desiderata.availability}
+          limits={desiderata.limits}
+          currentSelection={desiderata.currentSelection}
+          existingSelections={desiderata.existingSelections}
+          periodName={`${format(parseISO(desiderata.activePeriod.startDate), 'MMM d')} - ${format(parseISO(desiderata.activePeriod.endDate), 'MMM d, yyyy')}`}
+          isVisible={true}
         />
       )}
     </div>

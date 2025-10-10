@@ -399,6 +399,21 @@ export const fr = {
     clickToViewDetails: 'Cliquez pour voir les détails',
   },
 
+  // Desiderata
+  desiderata: {
+    availableDays: 'Jours disponibles',
+    workingDays: 'Jours ouvrables',
+    weekendDays: 'Jours de week-end',
+    remaining: 'Restant',
+    priority: 'Priorité',
+    limitExceeded: 'Limite de sélection dépassée',
+    approachingLimit: 'Approche de la limite de sélection',
+    totalAvailable: 'Total disponible',
+    publicHolidays: 'Jours fériés',
+    mandatoryExtension: 'Sélection étendue en raison des règles de week-end obligatoires',
+    autoExtendedToWeekend: 'Sélection automatiquement étendue pour inclure le week-end',
+  },
+
   // Version Display
   version: {
     systemInformation: 'Informations système',
