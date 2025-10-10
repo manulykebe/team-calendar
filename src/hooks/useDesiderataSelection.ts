@@ -75,6 +75,16 @@ export interface UseDesiderataSelectionReturn {
   shouldShowPanel: boolean;
 
   /**
+   * Hide panel
+   */
+  hidePanel: () => void;
+
+  /**
+   * Show panel
+   */
+  showPanel: () => void;
+
+  /**
    * Current active period
    */
   activePeriod: Period | null;
@@ -97,6 +107,7 @@ export function useDesiderataSelection({
   const [activePeriod, setActivePeriod] = useState<Period | null>(null);
   const [availability, setAvailability] = useState<DesiderataAvailability | null>(null);
   const [limits, setLimits] = useState<PriorityLimits | null>(null);
+  const [panelVisible, setPanelVisible] = useState(true);
 
   /**
    * Get period for a date
@@ -190,7 +201,15 @@ export function useDesiderataSelection({
     [getPeriodForDate, holidays]
   );
 
-  const shouldShowPanel = activePeriod !== null && activePeriod.editingStatus === 'open-desiderata';
+  const shouldShowPanel = panelVisible && activePeriod !== null && activePeriod.editingStatus === 'open-desiderata';
+
+  const hidePanel = useCallback(() => {
+    setPanelVisible(false);
+  }, []);
+
+  const showPanel = useCallback(() => {
+    setPanelVisible(true);
+  }, []);
 
   return {
     availability,
@@ -202,6 +221,8 @@ export function useDesiderataSelection({
     updateCurrentSelection,
     getPeriodForDate,
     shouldShowPanel,
+    hidePanel,
+    showPanel,
     activePeriod,
   };
 }

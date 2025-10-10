@@ -37,6 +37,8 @@ export const fr = {
     upload: 'Téléverser',
     copy: 'Copier',
     copied: 'Copié',
+    expand: 'Développer',
+    collapse: 'Réduire',
     settings: 'Paramètres',
     language: 'Langue',
     colleague: 'Collègue',

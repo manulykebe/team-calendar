@@ -82,6 +82,16 @@ export function Calendar() {
   const handleDateClickWithDesiderata = (date: Date) => {
     // First, handle the click normally
     if (!selectedStartDate) {
+      // Check if this single date should auto-extend (Friday or Thursday before holiday)
+      const extension = desiderata.applyMandatoryExtension(date, date);
+      if (extension && extension.extended) {
+        setSelectedStartDate(extension.startDate);
+        setSelectedEndDate(extension.endDate);
+        desiderata.updateCurrentSelection(extension.startDate, extension.endDate);
+        setShowModal(true);
+        toast.info(extension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
+        return;
+      }
       setSelectedStartDate(date);
       setSelectedEndDate(null);
       desiderata.updateCurrentSelection(date, null);
@@ -315,6 +325,7 @@ export function Calendar() {
           existingSelections={desiderata.existingSelections}
           periodName={`${format(parseISO(desiderata.activePeriod.startDate), 'MMM d')} - ${format(parseISO(desiderata.activePeriod.endDate), 'MMM d, yyyy')}`}
           isVisible={true}
+          onClose={desiderata.hidePanel}
         />
       )}
     </div>

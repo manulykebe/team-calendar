@@ -385,6 +385,36 @@ export function validateSelection(
 }
 
 /**
+ * Check if a date is a Friday or Thursday before bank holiday
+ */
+function shouldAutoExtendDate(date: Date, holidays: Holiday[]): { extend: boolean; endDate?: Date; reason?: string } {
+  const dayOfWeek = getDayOfWeek(date);
+
+  // If it's a Friday, extend to Sunday
+  if (dayOfWeek === 5) {
+    return {
+      extend: true,
+      endDate: addDays(date, 2),
+      reason: 'Selected Friday - automatically extending to Sunday',
+    };
+  }
+
+  // If it's Thursday and next day is a holiday, extend to Sunday
+  if (dayOfWeek === 4) {
+    const nextDay = addDays(date, 1);
+    if (isPublicHoliday(nextDay, holidays)) {
+      return {
+        extend: true,
+        endDate: addDays(date, 3),
+        reason: 'Selected Thursday before bank holiday Friday - automatically extending to Sunday',
+      };
+    }
+  }
+
+  return { extend: false };
+}
+
+/**
  * Auto-extend selection to meet mandatory weekend requirements
  */
 export function autoExtendForMandatoryWeekend(
@@ -401,12 +431,28 @@ export function autoExtendForMandatoryWeekend(
   let extended = false;
   let reason: string | undefined;
 
+  // Check if start date itself needs auto-extension (Friday or Thursday before holiday)
+  const startExtension = shouldAutoExtendDate(startDate, holidays);
+  if (startExtension.extend && startExtension.endDate) {
+    newEnd = new Date(Math.max(newEnd.getTime(), startExtension.endDate.getTime()));
+    extended = true;
+    reason = startExtension.reason;
+  }
+
+  // Check if end date needs auto-extension
+  const endExtension = shouldAutoExtendDate(endDate, holidays);
+  if (endExtension.extend && endExtension.endDate) {
+    newEnd = new Date(Math.max(newEnd.getTime(), endExtension.endDate.getTime()));
+    extended = true;
+    reason = reason || endExtension.reason;
+  }
+
   // Check if selection overlaps with mandatory weekend start
   if (weekendStart.required && weekendStart.extendedStartDate && weekendStart.extendedEndDate) {
     const overlaps = isWithinInterval(weekendStart.extendedStartDate, {
-      start: startDate,
-      end: endDate,
-    }) || isWithinInterval(startDate, {
+      start: newStart,
+      end: newEnd,
+    }) || isWithinInterval(newStart, {
       start: weekendStart.extendedStartDate,
       end: weekendStart.extendedEndDate,
     });

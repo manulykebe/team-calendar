@@ -37,6 +37,8 @@ export const nl = {
     upload: 'Uploaden',
     copy: 'Kopiëren',
     copied: 'Gekopieerd',
+    expand: 'Uitklappen',
+    collapse: 'Inklappen',
     settings: 'Instellingen',
     language: 'Taal',
     colleague: 'Collega',

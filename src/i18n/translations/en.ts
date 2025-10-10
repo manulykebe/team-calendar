@@ -37,6 +37,8 @@ export const en = {
     upload: 'Upload',
     copy: 'Copy',
     copied: 'Copied',
+    expand: 'Expand',
+    collapse: 'Collapse',
     settings: 'Settings',
     language: 'Language',
     colleague: 'Colleague',

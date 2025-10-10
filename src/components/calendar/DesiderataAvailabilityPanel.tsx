@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Calendar, Clock, AlertCircle, Info, GripVertical } from 'lucide-react';
+import { Calendar, Clock, AlertCircle, Info, GripVertical, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useTranslation } from '../../context/TranslationContext';
 import { DesiderataAvailability, PriorityLimits, DesiderataSelection } from '../../utils/desiderataUtils';
 
@@ -26,6 +26,7 @@ export function DesiderataAvailabilityPanel({
   const [position, setPosition] = useState({ x: 20, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Calculate total usage
@@ -118,18 +119,35 @@ export function DesiderataAvailabilityPanel({
           <Calendar className="w-5 h-5" />
           <span className="font-semibold">{t('desiderata.availableDays') || 'Available Days'}</span>
         </div>
-        {onClose && (
+        <div className="flex items-center space-x-2">
           <button
-            onClick={onClose}
-            className="text-white hover:text-blue-100 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsCollapsed(!isCollapsed);
+            }}
+            className="text-white hover:text-blue-100 transition-colors p-1"
+            title={isCollapsed ? t('common.expand') || 'Expand' : t('common.collapse') || 'Collapse'}
           >
-            <span className="text-xl">&times;</span>
+            {isCollapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
           </button>
-        )}
+          {onClose && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              className="text-white hover:text-blue-100 transition-colors p-1"
+              title={t('common.close') || 'Close'}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-4">
+      {!isCollapsed && (
+        <div className="p-4 space-y-4">
         {/* Period Info */}
         <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
           <div className="flex items-center space-x-2 text-blue-800">
@@ -221,6 +239,7 @@ export function DesiderataAvailabilityPanel({
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }
