@@ -80,27 +80,45 @@ export function Calendar() {
     currentUserId: currentUser.id,
   });
 
-  // Helper to check if date is Friday or Thursday before holiday
-  const checkAutoExtension = (date: Date): { extend: boolean; endDate?: Date; reason?: string } => {
+  // Helper to check if date is a public holiday
+  const isHoliday = (date: Date): boolean => {
+    return holidays.some(h => h.date === date.toISOString().split('T')[0]);
+  };
+
+  // Helper to check auto-extension for a single date
+  const checkAutoExtension = (date: Date): { extend: boolean; startDate?: Date; endDate?: Date; reason?: string } => {
     const dayOfWeek = date.getDay();
+
+    // Saturday or Sunday -> extend backward to Friday
+    if (dayOfWeek === 6 || dayOfWeek === 0) {
+      const daysToFriday = dayOfWeek === 6 ? 1 : 2;
+      return {
+        extend: true,
+        startDate: subDays(date, daysToFriday),
+        endDate: date,
+        reason: t('desiderata.autoExtendedToWeekend') || 'Selected weekend day - automatically including Friday',
+      };
+    }
 
     // If it's a Friday, extend to Sunday
     if (dayOfWeek === 5) {
       return {
         extend: true,
+        startDate: date,
         endDate: addDays(date, 2),
         reason: t('desiderata.autoExtendedToWeekend') || 'Selected Friday - automatically extending to Sunday',
       };
     }
 
-    // If it's Thursday and next day is a holiday, extend to Sunday
+    // If it's Thursday and next day (Friday) is a holiday, extend to Sunday
     if (dayOfWeek === 4) {
       const nextDay = addDays(date, 1);
-      if (holidays.some(h => h.date === nextDay.toISOString().split('T')[0])) {
+      if (isHoliday(nextDay)) {
         return {
           extend: true,
+          startDate: date,
           endDate: addDays(date, 3),
-          reason: t('desiderata.mandatoryExtension') || 'Selected Thursday before bank holiday - extending to Sunday',
+          reason: t('desiderata.mandatoryExtension') || 'Thursday before bank holiday Friday - extending to Sunday',
         };
       }
     }
@@ -108,16 +126,72 @@ export function Calendar() {
     return { extend: false };
   };
 
+  // Helper to check if a date range needs extension due to adjacent holidays
+  const checkRangeExtension = (start: Date, end: Date): { extend: boolean; newStart: Date; newEnd: Date; reason?: string } => {
+    let newStart = start;
+    let newEnd = end;
+    let extended = false;
+    const reasons: string[] = [];
+
+    // Check if range starts on weekend - extend backward to Friday
+    const startDay = start.getDay();
+    if (startDay === 6 || startDay === 0) {
+      const daysToFriday = startDay === 6 ? 1 : 2;
+      newStart = subDays(start, daysToFriday);
+      extended = true;
+      reasons.push('Range starts on weekend - including Friday');
+    }
+
+    // Check if range ends on weekend - already should be Sunday, but check Friday
+    const endDay = end.getDay();
+    if (endDay === 5 || endDay === 6) {
+      newEnd = addDays(end, endDay === 5 ? 2 : 1); // Extend to Sunday
+      extended = true;
+      reasons.push('Range ends on Friday/Saturday - extending to Sunday');
+    }
+
+    // Check if Thursday before range start is a holiday
+    const dayBeforeStart = subDays(newStart, 1);
+    if (dayBeforeStart.getDay() === 4 && isHoliday(dayBeforeStart)) {
+      newStart = dayBeforeStart;
+      extended = true;
+      reasons.push('Thursday before period is a holiday - including in range');
+    }
+
+    // Check if Monday after range end is a holiday
+    const dayAfterEnd = addDays(newEnd, 1);
+    if (dayAfterEnd.getDay() === 1 && isHoliday(dayAfterEnd)) {
+      newEnd = dayAfterEnd;
+      extended = true;
+      reasons.push('Monday after period is a holiday - including in range');
+    }
+
+    // Check if Tuesday after range end is a holiday (include Monday as well)
+    const twoDaysAfterEnd = addDays(newEnd, 2);
+    if (twoDaysAfterEnd.getDay() === 2 && isHoliday(twoDaysAfterEnd)) {
+      newEnd = twoDaysAfterEnd;
+      extended = true;
+      reasons.push('Tuesday after period is a holiday - including Monday and Tuesday');
+    }
+
+    return {
+      extend: extended,
+      newStart,
+      newEnd,
+      reason: reasons.join('; '),
+    };
+  };
+
   // Wrap handleDateClick to apply desiderata logic
   const handleDateClickWithDesiderata = (date: Date) => {
     // First, handle the click normally
     if (!selectedStartDate) {
-      // Check if this single date should auto-extend (Friday or Thursday before holiday)
+      // Check if this single date should auto-extend
       const extension = checkAutoExtension(date);
-      if (extension.extend && extension.endDate) {
-        setSelectedStartDate(date);
+      if (extension.extend && extension.startDate && extension.endDate) {
+        setSelectedStartDate(extension.startDate);
         setSelectedEndDate(extension.endDate);
-        desiderata.updateCurrentSelection(date, extension.endDate);
+        desiderata.updateCurrentSelection(extension.startDate, extension.endDate);
         setShowModal(true);
         toast.info(extension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
         return;
@@ -134,18 +208,12 @@ export function Calendar() {
         end = selectedStartDate;
       }
 
-      // Check for mandatory weekend extension on start or end date
-      const startExtension = checkAutoExtension(start);
-      const endExtension = checkAutoExtension(end);
-
-      if (startExtension.extend && startExtension.endDate) {
-        end = new Date(Math.max(end.getTime(), startExtension.endDate.getTime()));
-        toast.info(startExtension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
-      }
-
-      if (endExtension.extend && endExtension.endDate) {
-        end = new Date(Math.max(end.getTime(), endExtension.endDate.getTime()));
-        toast.info(endExtension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
+      // Check for range extension (weekends and adjacent holidays)
+      const rangeExtension = checkRangeExtension(start, end);
+      if (rangeExtension.extend) {
+        start = rangeExtension.newStart;
+        end = rangeExtension.newEnd;
+        toast.info(rangeExtension.reason || t('desiderata.mandatoryExtension'), { duration: 5000 });
       }
 
       // Validate selection
