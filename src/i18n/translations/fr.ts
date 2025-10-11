@@ -403,7 +403,7 @@ export const fr = {
 
   // Desiderata
   desiderata: {
-    availableDays: 'Jours disponibles',
+    desiderataDays: 'Desiderata',
     workingDays: 'Jours ouvrables',
     weekendDays: 'Jours de week-end',
     remaining: 'Restant',

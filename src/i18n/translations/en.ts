@@ -403,7 +403,7 @@ export const en = {
 
   // Desiderata
   desiderata: {
-    availableDays: 'Available Days',
+    desiderataDays: 'Desiderata',
     workingDays: 'Working Days',
     weekendDays: 'Weekend Days',
     remaining: 'Remaining',

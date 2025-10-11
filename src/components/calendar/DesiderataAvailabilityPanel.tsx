@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Calendar, Clock, AlertCircle, Info, GripVertical, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Calendar, Clock, AlertCircle, Info, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useTranslation } from '../../context/TranslationContext';
 import { DesiderataAvailability, PriorityLimits, DesiderataSelection } from '../../utils/desiderataUtils';
 
@@ -113,11 +113,9 @@ export function DesiderataAvailabilityPanel({
       onMouseDown={handleMouseDown}
     >
       {/* Drag Handle */}
-      <div className="drag-handle bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3 cursor-grab active:cursor-grabbing flex items-center justify-between">
+      <div className="drag-handle bg-blue-600 px-4 py-3 cursor-grab active:cursor-grabbing flex items-center justify-between">
         <div className="flex items-center space-x-2 text-white">
-          <GripVertical className="w-5 h-5" />
-          <Calendar className="w-5 h-5" />
-          <span className="font-semibold">{t('desiderata.availableDays') || 'Available Days'}</span>
+          <span className="font-semibold">{t('desiderata.desiderataDays') || 'Desiderata'}</span>
         </div>
         <div className="flex items-center space-x-2">
           <button
@@ -153,9 +151,6 @@ export function DesiderataAvailabilityPanel({
           <div className="flex items-center space-x-2 text-blue-800">
             <Info className="w-4 h-4" />
             <span className="text-sm font-medium">{periodName}</span>
-          </div>
-          <div className="mt-2 text-xs text-blue-600">
-            {t('desiderata.priority') || 'Priority'}: <span className="font-bold">{limits.priority}</span>
           </div>
         </div>
 

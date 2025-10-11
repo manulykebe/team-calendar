@@ -2,7 +2,7 @@
 
 ## Overview
 
-The desiderata (preferred dates) request system manages employee scheduling preferences with complex date calculations, public holiday adjustments, and priority-based selection limits.
+The desiderata (preferred dates) request system manages employee scheduling preferences with complex date calculations, public holiday adjustments.
 
 ## Core Definitions
 
@@ -98,7 +98,6 @@ The system displays a draggable panel showing:
 ┌─────────────────────────────────┐
 │ 📅 Available Days               │
 │ Period: Jan 1 - Jan 31, 2025    │
-│ Priority: 2                      │
 ├─────────────────────────────────┤
 │ 🕐 Working Days:     8 / 15      │
 │ ████████░░░░░░░ 53%             │
@@ -136,18 +135,6 @@ Maximum Selectable: floor(15 ÷ 2) = 7 working days
 Available Weekend Days: 11
 Maximum Selectable: floor(11 ÷ 2) = 5 weekend days
 ```
-
-### STEP 6: Priority-Based Restrictions
-
-The system implements a two-tier priority system:
-
-#### Priority 1 (Highest Priority)
-- **Maximum working days** = floor(Available Working Days ÷ 4)
-- **Maximum weekend days** = floor(Available Weekend Days ÷ 4)
-
-#### Priority 2+ (Lower Priorities)
-- **Maximum working days** = floor(Available Working Days ÷ 2)
-- **Maximum weekend days** = floor(Available Weekend Days ÷ 2)
 
 **Example Comparison**:
 ```
