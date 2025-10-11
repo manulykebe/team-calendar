@@ -105,7 +105,7 @@ export function VersionDisplay() {
     <>
       <div className="fixed bottom-4 left-4 z-[9999] pointer-events-none">
         <div
-          className={`transition-all duration-300 ease-in-out pointer-events-auto ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-2 hover:opacity-60'
+          className={`flex items-center gap-2 transition-all duration-300 ease-in-out pointer-events-auto ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-2 hover:opacity-60'
             }`}
         >
           <button
@@ -114,11 +114,9 @@ export function VersionDisplay() {
             title={`Build: ${new Date(versionInfo.buildDate).toLocaleString()}`}
           >
             v{versionInfo.version}
-
-            <ConnectionStatus />
-            
           </button>
-          
+
+          <ConnectionStatus />
         </div>
       </div>
 
