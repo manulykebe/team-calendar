@@ -61,7 +61,6 @@ export function Calendar() {
     selectedEvent,
     setCurrentMonth,
     setShowModal,
-    handleDateClick,
     handleDateHover,
     resetSelection,
     handleCreateEvent,
@@ -460,7 +459,7 @@ export function Calendar() {
         <EventModal
           date={selectedStartDate!}
           endDate={selectedEndDate}
-          event={selectedEvent}
+          event={selectedEvent ?? undefined}
           onClose={() => {
             setShowModal(false);
             resetSelection();
