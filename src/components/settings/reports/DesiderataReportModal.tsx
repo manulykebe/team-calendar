@@ -27,103 +27,23 @@ export function DesiderataReportModal({ onClose }: DesiderataReportModalProps) {
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [userNames, setUserNames] = useState<Record<string, string>>({});
-  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load user names once token is available
   useEffect(() => {
-    if (token) {
+    if (token && user) {
       loadUserNames();
+      findAndLoadOpenDesiderataPeriod();
     }
-  }, [token]);
+  }, [token, user]);
 
-  // Load initial period on mount
   useEffect(() => {
-    if (token && user && !isInitialized) {
-      loadInitialPeriod();
+    if (token && user && year) {
+      loadPeriodsForYear(year);
     }
-  }, [token, user, isInitialized]);
+  }, [year, token, user]);
 
-  // Load periods when year changes (but not on initial mount)
-  useEffect(() => {
-    if (isInitialized && token && user) {
-      loadPeriods(year);
-    }
-  }, [year, isInitialized]);
 
-  const loadInitialPeriod = async () => {
-    try {
-      const currentYear = new Date().getFullYear();
-      const nextYear = currentYear + 1;
 
-      console.log('Loading initial period, current year:', currentYear);
-
-      // Try current year first
-      let foundYear = currentYear.toString();
-      let response = await fetch(`/api/sites/${user?.site}/periods/${currentYear}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log('Current year response status:', response.status);
-
-      let data = null;
-      if (response.ok) {
-        data = await response.json();
-        console.log('Current year periods:', data.periods);
-        const openDesiderataPeriod = data.periods?.find(
-          (p: Period) => p.editingStatus === "open-desiderata"
-        );
-
-        if (openDesiderataPeriod) {
-          console.log('Found open-desiderata period in current year:', openDesiderataPeriod);
-          setYear(foundYear);
-          setPeriods(data.periods || []);
-          setSelectedPeriod(openDesiderataPeriod.id);
-          setIsInitialized(true);
-          return;
-        }
-      }
-
-      // If not found in current year, try next year
-      console.log('Not found in current year, trying next year:', nextYear);
-      foundYear = nextYear.toString();
-      response = await fetch(`/api/sites/${user?.site}/periods/${nextYear}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log('Next year response status:', response.status);
-
-      if (response.ok) {
-        data = await response.json();
-        console.log('Next year periods:', data.periods);
-        const openDesiderataPeriod = data.periods?.find(
-          (p: Period) => p.editingStatus === "open-desiderata"
-        );
-
-        if (openDesiderataPeriod) {
-          console.log('Found open-desiderata period in next year:', openDesiderataPeriod);
-          setYear(foundYear);
-          setPeriods(data.periods || []);
-          setSelectedPeriod(openDesiderataPeriod.id);
-          setIsInitialized(true);
-          return;
-        }
-      }
-
-      // If no open-desiderata period found, default to current year's first period
-      console.log('No open-desiderata period found, loading current year periods');
-      await loadPeriods(currentYear.toString());
-      setIsInitialized(true);
-    } catch (error) {
-      console.error("Failed to load initial period:", error);
-      setIsInitialized(true);
-    }
-  };
-
-  const loadPeriods = async (targetYear: string) => {
+  const loadPeriodsForYear = async (targetYear: string) => {
     try {
       console.log('Loading periods for year:', targetYear);
       const response = await fetch(`/api/sites/${user?.site}/periods/${targetYear}`, {
