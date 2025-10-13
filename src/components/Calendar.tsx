@@ -117,28 +117,20 @@ export function Calendar() {
       }
     }
 
-    // If it's a Monday, extend backward to Friday (include previous weekend)
-    if (dayOfWeek === 1) {
+    // If it's a Monday holiday, extend backward to Friday (include previous weekend)
+    if (dayOfWeek === 1 && isHoliday(date)) {
       start = subDays(date, 3); // Friday (3 days before Monday)
       end = date; // Monday
-      if (isHoliday(date)) {
-        reasons.push('Monday holiday - including previous weekend (Friday-Monday)');
-      } else {
-        reasons.push('Monday selected - including previous weekend (Friday-Monday)');
-      }
+      reasons.push('Monday holiday - including previous weekend (Friday-Monday)');
       hasWeekend = true;
     }
 
-    // If it's a Tuesday holiday, check if Monday is also holiday
+    // If it's a Tuesday holiday, extend backward to include previous Monday and weekend
     if (dayOfWeek === 2 && isHoliday(date)) {
-      const monday = subDays(date, 1);
-      if (isHoliday(monday)) {
-        // Both Monday and Tuesday are holidays - include weekend
-        start = subDays(date, 4); // Friday
-        end = date; // Tuesday
-        reasons.push('Tuesday holiday following Monday holiday - including weekend');
-        hasWeekend = true;
-      }
+      start = subDays(date, 4); // Friday (4 days before Tuesday)
+      end = date; // Tuesday
+      reasons.push('Tuesday holiday - including previous Monday and weekend (Friday-Tuesday)');
+      hasWeekend = true;
     }
 
     // Only extend for adjacent holidays if we have a weekend in the range
@@ -203,28 +195,53 @@ export function Calendar() {
       reasons.push('Range ends on Friday/Saturday - extending to Sunday');
     }
 
-    // Scan backward from start for adjacent holidays and weekends
-    let checkDate = subDays(newStart, 1);
-    let maxIterations = 7;
-    while (maxIterations-- > 0 && (isHoliday(checkDate) || checkDate.getDay() === 6 || checkDate.getDay() === 0 || checkDate.getDay() === 5)) {
-      newStart = checkDate;
-      extended = true;
-      if (isHoliday(checkDate)) {
-        reasons.push(`Including adjacent holiday before range: ${format(checkDate, 'MMM d')}`);
+    // Check if the range includes any weekends or holidays
+    let hasWeekendOrHoliday = false;
+    let checkDay = new Date(newStart);
+    while (checkDay <= newEnd) {
+      const dayOfWeek = checkDay.getDay();
+      if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0 || isHoliday(checkDay)) {
+        hasWeekendOrHoliday = true;
+        break;
       }
-      checkDate = subDays(checkDate, 1);
+      checkDay = addDays(checkDay, 1);
     }
 
-    // Scan forward from end for adjacent holidays and weekends
-    checkDate = addDays(newEnd, 1);
-    maxIterations = 7;
-    while (maxIterations-- > 0 && (isHoliday(checkDate) || checkDate.getDay() === 6 || checkDate.getDay() === 0 || checkDate.getDay() === 1)) {
-      newEnd = checkDate;
-      extended = true;
-      if (isHoliday(checkDate)) {
-        reasons.push(`Including adjacent holiday after range: ${format(checkDate, 'MMM d')}`);
+    // Only scan for adjacent holidays/weekends if the range already includes weekends or holidays
+    if (hasWeekendOrHoliday) {
+      // Scan backward from start for adjacent holidays and weekends
+      let checkDate = subDays(newStart, 1);
+      let maxIterations = 7;
+      while (maxIterations-- > 0 && (isHoliday(checkDate) || checkDate.getDay() === 6 || checkDate.getDay() === 0 || checkDate.getDay() === 5)) {
+        newStart = checkDate;
+        extended = true;
+        if (isHoliday(checkDate)) {
+          reasons.push(`Including adjacent holiday before range: ${format(checkDate, 'MMM d')}`);
+        }
+        checkDate = subDays(checkDate, 1);
       }
-      checkDate = addDays(checkDate, 1);
+
+      // Scan forward from end for adjacent holidays and weekends
+      checkDate = addDays(newEnd, 1);
+      maxIterations = 7;
+      while (maxIterations-- > 0) {
+        const dayOfWeek = checkDate.getDay();
+        const isHolidayDate = isHoliday(checkDate);
+
+        // Include weekend days or holidays
+        // Include Monday only if it's a holiday
+        if (dayOfWeek === 6 || dayOfWeek === 0 || isHolidayDate ||
+            (dayOfWeek === 1 && isHolidayDate)) {
+          newEnd = checkDate;
+          extended = true;
+          if (isHolidayDate) {
+            reasons.push(`Including adjacent holiday after range: ${format(checkDate, 'MMM d')}`);
+          }
+          checkDate = addDays(checkDate, 1);
+        } else {
+          break;
+        }
+      }
     }
 
     return {
