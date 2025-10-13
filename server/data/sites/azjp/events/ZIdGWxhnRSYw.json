@@ -166,17 +166,5 @@
     "status": "pending",
     "createdAt": "2025-10-13T08:58:04.335Z",
     "updatedAt": "2025-10-13T08:58:04.335Z"
-  },
-  {
-    "id": "b6e09f7b-e3d9-420d-b84b-c64cb088f86b",
-    "userId": "ZIdGWxhnRSYw",
-    "type": "requestedDesiderata",
-    "title": "",
-    "description": "",
-    "date": "2026-04-03",
-    "endDate": "2026-04-06",
-    "status": "pending",
-    "createdAt": "2025-10-13T08:58:15.086Z",
-    "updatedAt": "2025-10-13T08:58:15.086Z"
   }
 ]
