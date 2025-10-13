@@ -180,18 +180,6 @@
     "updatedAt": "2025-10-09T13:54:14.173Z"
   },
   {
-    "id": "53e17d25-18b3-4251-8d32-914495332ecc",
-    "userId": "XAefIrqLAeDy",
-    "type": "requestedDesiderata",
-    "title": "",
-    "description": "",
-    "date": "2026-01-19",
-    "endDate": "2026-01-20",
-    "status": "pending",
-    "createdAt": "2025-10-13T13:32:41.040Z",
-    "updatedAt": "2025-10-13T13:32:41.040Z"
-  },
-  {
     "id": "6efcf8fc-5607-4e85-b97a-d522f3c07240",
     "userId": "XAefIrqLAeDy",
     "type": "requestedDesiderata",
