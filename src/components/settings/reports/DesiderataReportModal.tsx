@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Download, FileText } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 import { useTranslation } from "../../../context/TranslationContext";
 import { useAuth } from "../../../context/AuthContext";
 import { Modal } from "../../common/Modal";
