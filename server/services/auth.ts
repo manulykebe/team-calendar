@@ -48,11 +48,11 @@ export async function loginUser(credentials: {
   if (!credentials.email) {
     throw new Error(i18n.t('auth.emailRequired'));
   }
-  
+
   if (!credentials.password) {
     throw new Error(i18n.t('auth.passwordRequired'));
   }
-  
+
   if (!credentials.site) {
     throw new Error(i18n.t('auth.siteRequired'));
   }
@@ -69,5 +69,37 @@ export async function loginUser(credentials: {
     JWT_SECRET,
   );
 
-  return { token };
+  return { token, mustChangePassword: user.mustChangePassword };
+}
+
+export async function changeUserPassword(
+  userId: string,
+  site: string,
+  currentPassword: string,
+  newPassword: string,
+  i18n: I18n
+) {
+  const data = await readSiteData(site);
+
+  const userIndex = data.users.findIndex((u: User) => u.id === userId);
+  if (userIndex === -1) {
+    throw new Error(i18n.t('auth.userNotFound'));
+  }
+
+  const user = data.users[userIndex];
+
+  const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+  if (!isValidPassword) {
+    throw new Error(i18n.t('auth.incorrectPassword'));
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  data.users[userIndex] = {
+    ...user,
+    password: hashedPassword,
+    mustChangePassword: false,
+    updatedAt: new Date().toISOString(),
+  };
+
+  await writeSiteData(site, data);
 }

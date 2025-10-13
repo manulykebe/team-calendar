@@ -38,6 +38,11 @@ export const fr = {
     passwordRequired: 'Le mot de passe est requis',
     emailRequired: 'L\'email est requis',
     siteRequired: 'Le site est requis',
+    passwordChanged: 'Mot de passe changé avec succès',
+    passwordChangeFailed: 'Échec du changement de mot de passe',
+    passwordsRequired: 'Le mot de passe actuel et le nouveau sont requis',
+    passwordTooShort: 'Le mot de passe doit contenir au moins 6 caractères',
+    incorrectPassword: 'Le mot de passe actuel est incorrect',
   },
 
   // Users

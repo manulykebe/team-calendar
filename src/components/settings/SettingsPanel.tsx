@@ -10,7 +10,8 @@ import {
 	Shield,
 	FileText,
 	BarChart3,
-	ChevronDown
+	ChevronDown,
+	Lock
 } from "lucide-react";
 import { ColleagueSettings } from "./colleagues/ColleagueSettings";
 import { UserManagement } from "../users/UserManagement";
@@ -25,6 +26,7 @@ import { CalendarReport } from "./availability/CalendarReport";
 import { SubscriptionModal } from "./SubscriptionModal";
 import { ExportModal } from "./ExportModal";
 import { DesiderataReportModal } from "./reports/DesiderataReportModal";
+import { PasswordChangeModal } from "./PasswordChangeModal";
 import { useTranslation } from "../../context/TranslationContext";
 
 interface SettingsPanelProps {
@@ -46,6 +48,7 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 	const [showExport, setShowExport] = useState(false);
 	const [showReportsMenu, setShowReportsMenu] = useState(false);
 	const [showDesiderataReport, setShowDesiderataReport] = useState(false);
+	const [showPasswordChange, setShowPasswordChange] = useState(false);
 	const reportsMenuRef = useRef<HTMLDivElement>(null);
 
 	const handleLogout = () => {
@@ -109,6 +112,16 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 
 	const handleCloseDesiderataReport = () => {
 		setShowDesiderataReport(false);
+		setIsOpen(true);
+	};
+
+	const handleOpenPasswordChange = () => {
+		setShowPasswordChange(true);
+		setIsOpen(false);
+	};
+
+	const handleClosePasswordChange = () => {
+		setShowPasswordChange(false);
 		setIsOpen(true);
 	};
 
@@ -208,6 +221,13 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 								>
 									<Download className="w-4 h-4 mr-2" />
 									{t('settings.exportEvents')}
+								</button>
+								<button
+									onClick={handleOpenPasswordChange}
+									className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+								>
+									<Lock className="w-4 h-4 mr-2" />
+									{t('auth.changePassword')}
 								</button>
 								<div className="relative" ref={reportsMenuRef}>
 									<button
@@ -367,6 +387,12 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 			{showDesiderataReport && (
 				<DesiderataReportModal
 					onClose={handleCloseDesiderataReport}
+				/>
+			)}
+
+			{showPasswordChange && (
+				<PasswordChangeModal
+					onClose={handleClosePasswordChange}
 				/>
 			)}
 		</div>

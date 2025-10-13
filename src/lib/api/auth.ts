@@ -38,3 +38,27 @@ export async function register(userData: {
   }
   return response.json();
 }
+
+export async function changePassword(currentPassword: string, newPassword: string) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Not authenticated");
+  }
+
+  const response = await fetch(`${API_URL}/auth/change-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Password change failed" }));
+    throw new Error(error.message);
+  }
+  return response.json();
+}

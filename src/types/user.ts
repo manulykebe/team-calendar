@@ -8,6 +8,7 @@ export interface User {
   role: "admin" | "user";
   status: "active" | "inactive";
   site: string;
+  mustChangePassword?: boolean;
   priority?: number;
   settings?: {
     colleagues?: {

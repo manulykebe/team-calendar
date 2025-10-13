@@ -38,6 +38,11 @@ export const en = {
     passwordRequired: 'Password is required',
     emailRequired: 'Email is required',
     siteRequired: 'Site is required',
+    passwordChanged: 'Password changed successfully',
+    passwordChangeFailed: 'Failed to change password',
+    passwordsRequired: 'Current and new passwords are required',
+    passwordTooShort: 'Password must be at least 6 characters',
+    incorrectPassword: 'Current password is incorrect',
   },
 
   // Users

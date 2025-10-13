@@ -38,6 +38,11 @@ export const nl = {
     passwordRequired: 'Wachtwoord is vereist',
     emailRequired: 'E-mail is vereist',
     siteRequired: 'Site is vereist',
+    passwordChanged: 'Wachtwoord succesvol gewijzigd',
+    passwordChangeFailed: 'Wachtwoord wijzigen mislukt',
+    passwordsRequired: 'Huidig en nieuw wachtwoord zijn verplicht',
+    passwordTooShort: 'Wachtwoord moet minimaal 6 tekens bevatten',
+    incorrectPassword: 'Huidig wachtwoord is onjuist',
   },
 
   // Users

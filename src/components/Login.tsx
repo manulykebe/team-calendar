@@ -7,6 +7,7 @@ import { LoadingSpinner } from "./common/LoadingSpinner";
 import { useTranslation } from "../context/TranslationContext";
 import { getOnDutyStaff, getOnDutyDate, OnDutyStaff } from "../lib/api/on-duty";
 import { API_URL } from "../lib/api/config";
+import { PasswordChangeModal } from "./settings/PasswordChangeModal";
 
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -54,6 +55,8 @@ export function Login() {
   const [showMobile, setShowMobile] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [mustChangePassword, setMustChangePassword] = useState(false);
   
   // Add refs for input fields to maintain focus
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -81,15 +84,28 @@ export function Login() {
     setIsLoading(true);
 
     try {
-      const { token } = await login(email, password, site);
+      const result = await login(email, password, site);
       localStorage.setItem("userEmail", email);
-      setAuth(token);
-      navigate("/");
+      setAuth(result.token);
+
+      if (result.mustChangePassword) {
+        setMustChangePassword(true);
+        setShowLoginModal(false);
+        setShowPasswordChange(true);
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       setError(t('auth.invalidCredentials'));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handlePasswordChangeComplete = () => {
+    setShowPasswordChange(false);
+    setMustChangePassword(false);
+    navigate("/");
   };
 
   // Controlled input handlers with focus preservation
@@ -307,6 +323,13 @@ export function Login() {
           </Modal>
         )}
       </div>
+
+      {showPasswordChange && (
+        <PasswordChangeModal
+          onClose={handlePasswordChangeComplete}
+          forceChange={mustChangePassword}
+        />
+      )}
     </div>
   );
 }

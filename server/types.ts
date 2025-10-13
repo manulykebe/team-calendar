@@ -22,6 +22,7 @@ export interface User {
 	password: string;
 	site: string;
 	role: "admin" | "user";
+	mustChangePassword?: boolean;
 	createdAt: string;
 	updatedAt: string;
 	settings?: {
