@@ -4,7 +4,7 @@ import { useTranslation } from "../../../context/TranslationContext";
 import { useAuth } from "../../../context/AuthContext";
 import { Modal } from "../../common/Modal";
 import toast from "react-hot-toast";
-import * as XLSX from "xlsx";
+import * as ExcelJS from 'exceljs';
 import { getPendingDesiderata, PendingDesiderataGridItem } from "../../../lib/api/desiderata";
 
 interface DesiderataReportModalProps {
@@ -96,39 +96,71 @@ export function DesiderataReportModal({ onClose }: DesiderataReportModalProps) {
       const userIds = Object.keys(grid[0]).filter(
         (key) => key !== "date" && key !== "total"
       );
-
-      const excelData = grid.map((row: PendingDesiderataGridItem) => {
-        const excelRow: any = {
-          [t("reports.date")]: row.date,
-        };
-
-        userIds.forEach((userId) => {
-          const userName = userNames[userId] || userId;
-          const value = row[userId];
-          excelRow[userName] = typeof value === "string" && value !== "" ? "X" : "";
-        });
-
-        excelRow[t("reports.total")] = row.total;
-
-        return excelRow;
-      });
-
-      const worksheet = XLSX.utils.json_to_sheet(excelData);
-
-      const columnWidths = [
-        { wch: 12 },
-        ...userIds.map(() => ({ wch: 20 })),
-        { wch: 10 },
-      ];
-      worksheet["!cols"] = columnWidths;
-
-      const workbook = XLSX.utils.book_new();
+      
+      // Create a new workbook and worksheet
+      const workbook = new ExcelJS.Workbook();
       const periodName = periods.find((p) => p.id === selectedPeriod)?.name || selectedPeriod;
       const sheetName = `${periodName.substring(0, 25)}`;
-      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-
+      const worksheet = workbook.addWorksheet(sheetName);
+      
+      // Set up the headers
+      const headers = [
+        t("reports.date"),
+        ...userIds.map(userId => userNames[userId] || userId),
+        t("reports.total")
+      ];
+      
+      // Add headers to worksheet
+      worksheet.addRow(headers);
+      
+      // Format header row
+      const headerRow = worksheet.getRow(1);
+      headerRow.font = { bold: true };
+      headerRow.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE6E6E6' }
+        };
+        cell.border = {
+          bottom: { style: 'thin' }
+        };
+      });
+      
+      // Add data rows
+      grid.forEach((row: PendingDesiderataGridItem) => {
+        const rowData = [
+          row.date,
+          ...userIds.map(userId => {
+            const value = row[userId];
+            return typeof value === "string" && value !== "" ? "X" : "";
+          }),
+          row.total
+        ];
+        worksheet.addRow(rowData);
+      });
+      
+      // Set column widths
+      worksheet.getColumn(1).width = 12; // Date column
+      userIds.forEach((_, index) => {
+        worksheet.getColumn(index + 2).width = 20; // User columns
+      });
+      worksheet.getColumn(userIds.length + 2).width = 10; // Total column
+      
+      // Generate the Excel file
       const fileName = `Desiderata_${year}_${periodName.replace(/[^a-zA-Z0-9]/g, "_")}.xlsx`;
-      XLSX.writeFile(workbook, fileName);
+      
+      // Create a buffer and save it as a file
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create a link and trigger the download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      window.URL.revokeObjectURL(url);
 
       toast.success(t("reports.exportSuccess"));
     } catch (error) {
