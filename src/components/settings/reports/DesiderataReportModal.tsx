@@ -6,6 +6,7 @@ import { Modal } from "../../common/Modal";
 import toast from "react-hot-toast";
 import * as ExcelJS from 'exceljs';
 import { getPendingDesiderata, PendingDesiderataGridItem } from "../../../lib/api/desiderata";
+import { API_URL } from "../../../lib/api/config";
 
 interface DesiderataReportModalProps {
   onClose: () => void;
@@ -21,64 +22,93 @@ interface Period {
 
 export function DesiderataReportModal({ onClose }: DesiderataReportModalProps) {
   const { t } = useTranslation();
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [periods, setPeriods] = useState<Period[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [userNames, setUserNames] = useState<Record<string, string>>({});
+  const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
-    if (token && user) {
-      loadUserNames();
-      findAndLoadOpenDesiderataPeriod();
+    if (initialLoad) {
+      loadInitialPeriod();
+    } else {
+      loadPeriods(year);
     }
-  }, [token, user]);
+  }, [year]);
 
-  const findAndLoadOpenDesiderataPeriod = async () => {
-    const currentYear = new Date().getFullYear();
-    const yearsToCheck = [currentYear, currentYear + 1];
-
-    for (const checkYear of yearsToCheck) {
-      try {
-        const response = await fetch(`/api/sites/${user?.site}/periods/${checkYear}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          const openPeriod = data.periods?.find((p: Period) => p.editingStatus === "open-desiderata");
-
-          if (openPeriod) {
-            setYear(checkYear.toString());
-            setPeriods(data.periods || []);
-            setSelectedPeriod(openPeriod.id);
-            return;
-          }
-        }
-      } catch (error) {
-        console.error(`Error loading periods for ${checkYear}:`, error);
-      }
-    }
-
-    loadPeriodsForYear(currentYear.toString());
-  };
-
-
-  const loadPeriodsForYear = async (targetYear: string) => {
+  const loadInitialPeriod = async () => {
     try {
-      console.log('Loading periods for year:', targetYear);
-      const response = await fetch(`/api/sites/${user?.site}/periods/${targetYear}`, {
+      const currentYear = new Date().getFullYear();
+      const nextYear = currentYear + 1;
+
+      // Try current year first
+      let foundYear = currentYear.toString();
+      let response = await fetch(`${API_URL}/sites/AZJP/periods/${currentYear}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      console.log('Load periods response status:', response.status);
+      let data = null;
+      if (response.ok) {
+        data = await response.json();
+        const openDesiderataPeriod = data.periods?.find(
+          (p: Period) => p.editingStatus === "open-desiderata"
+        );
+
+        if (openDesiderataPeriod) {
+          setYear(foundYear);
+          setPeriods(data.periods || []);
+          setSelectedPeriod(openDesiderataPeriod.id);
+          setInitialLoad(false);
+          return;
+        }
+      }
+
+      // If not found in current year, try next year
+      foundYear = nextYear.toString();
+      response = await fetch(`${API_URL}/sites/AZJP/periods/${nextYear}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        data = await response.json();
+        const openDesiderataPeriod = data.periods?.find(
+          (p: Period) => p.editingStatus === "open-desiderata"
+        );
+
+        if (openDesiderataPeriod) {
+          setYear(foundYear);
+          setPeriods(data.periods || []);
+          setSelectedPeriod(openDesiderataPeriod.id);
+          setInitialLoad(false);
+          return;
+        }
+      }
+
+      // If no open-desiderata period found, default to current year's first period
+      await loadPeriods(currentYear.toString());
+      setInitialLoad(false);
+    } catch (error) {
+      console.error("Failed to load initial period:", error);
+      setInitialLoad(false);
+    }
+  };
+
+  const loadPeriods = async (targetYear: string) => {
+    try {
+      const response = await fetch(`${API_URL}/sites/AZJP/periods/${targetYear}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Loaded periods:', data.periods);
         setPeriods(data.periods || []);
 
         // Try to find open-desiderata period first
@@ -87,19 +117,12 @@ export function DesiderataReportModal({ onClose }: DesiderataReportModalProps) {
         );
 
         if (openDesiderataPeriod) {
-          console.log('Setting selected period to open-desiderata:', openDesiderataPeriod.id);
           setSelectedPeriod(openDesiderataPeriod.id);
         } else if (data.periods && data.periods.length > 0) {
-          console.log('No open-desiderata, setting first period:', data.periods[0].id);
           setSelectedPeriod(data.periods[0].id);
         } else {
-          console.log('No periods found');
           setSelectedPeriod("");
         }
-      } else {
-        console.error('Failed to load periods, status:', response.status);
-        setPeriods([]);
-        setSelectedPeriod("");
       }
     } catch (error) {
       console.error("Failed to load periods:", error);
@@ -110,7 +133,7 @@ export function DesiderataReportModal({ onClose }: DesiderataReportModalProps) {
 
   const loadUserNames = async () => {
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch(`${API_URL}/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -254,7 +277,10 @@ export function DesiderataReportModal({ onClose }: DesiderataReportModalProps) {
           </label>
           <select
             value={year}
-            onChange={(e) => setYear(e.target.value)}
+            onChange={(e) => {
+              setYear(e.target.value);
+              setInitialLoad(false);
+            }}
             className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {years.map((y) => (
