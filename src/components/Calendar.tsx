@@ -117,15 +117,16 @@ export function Calendar() {
       }
     }
 
-    // If it's a Monday holiday adjacent to weekend, extend backward to Friday
-    if (dayOfWeek === 1 && isHoliday(date)) {
-      const prevDay = subDays(date, 1); // Sunday
-      if (prevDay.getDay() === 0) { // It's Sunday
-        start = subDays(date, 3); // Friday
-        end = date; // Monday
-        reasons.push('Monday holiday adjacent to weekend');
-        hasWeekend = true;
+    // If it's a Monday, extend backward to Friday (include previous weekend)
+    if (dayOfWeek === 1) {
+      start = subDays(date, 3); // Friday (3 days before Monday)
+      end = date; // Monday
+      if (isHoliday(date)) {
+        reasons.push('Monday holiday - including previous weekend (Friday-Monday)');
+      } else {
+        reasons.push('Monday selected - including previous weekend (Friday-Monday)');
       }
+      hasWeekend = true;
     }
 
     // If it's a Tuesday holiday, check if Monday is also holiday
