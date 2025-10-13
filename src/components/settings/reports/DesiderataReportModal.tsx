@@ -35,12 +35,34 @@ export function DesiderataReportModal({ onClose }: DesiderataReportModalProps) {
     }
   }, [token, user]);
 
-  useEffect(() => {
-    if (token && user && year) {
-      loadPeriodsForYear(year);
-    }
-  }, [year, token, user]);
+  const findAndLoadOpenDesiderataPeriod = async () => {
+    const currentYear = new Date().getFullYear();
+    const yearsToCheck = [currentYear, currentYear + 1];
 
+    for (const checkYear of yearsToCheck) {
+      try {
+        const response = await fetch(`/api/sites/${user?.site}/periods/${checkYear}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const openPeriod = data.periods?.find((p: Period) => p.editingStatus === "open-desiderata");
+
+          if (openPeriod) {
+            setYear(checkYear.toString());
+            setPeriods(data.periods || []);
+            setSelectedPeriod(openPeriod.id);
+            return;
+          }
+        }
+      } catch (error) {
+        console.error(`Error loading periods for ${checkYear}:`, error);
+      }
+    }
+
+    loadPeriodsForYear(currentYear.toString());
+  };
 
 
   const loadPeriodsForYear = async (targetYear: string) => {
