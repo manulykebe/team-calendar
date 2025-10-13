@@ -269,3 +269,76 @@ export async function recalculateUserDesiderata(
     throw error;
   }
 }
+
+/**
+ * Get all pending desiderata requests for a specific period
+ */
+export async function getPendingDesiderataByPeriod(
+  site: string,
+  year: string,
+  periodId: string
+): Promise<any[]> {
+  try {
+    // Get period info
+    const periodsKey = getStorageKey(site, "periods", year);
+    const periodsDataStr = await readFile(periodsKey);
+    const periodsData = JSON.parse(periodsDataStr);
+    const period = periodsData.periods.find((p: any) => p.id === periodId);
+
+    if (!period) {
+      throw new Error(`Period ${periodId} not found for year ${year}`);
+    }
+
+    const periodStart = parseISO(period.startDate);
+    const periodEnd = parseISO(period.endDate);
+
+    // Get all users in the site
+    const siteData = await readSiteData(site);
+    const pendingRequests: any[] = [];
+
+    // Iterate through all users
+    for (const user of siteData.users) {
+      try {
+        const eventsKey = getStorageKey(site, "events", user.id);
+        let userEvents: any[] = [];
+
+        try {
+          const eventsDataStr = await readFile(eventsKey);
+          userEvents = JSON.parse(eventsDataStr);
+        } catch {
+          continue; // Skip if user has no events
+        }
+
+        // Filter for pending desiderata within the period
+        const userPendingDesiderata = userEvents.filter((e: any) => {
+          if (e.type !== 'requestedDesiderata') return false;
+          if (e.status !== 'pending') return false;
+
+          const eventStart = parseISO(e.date);
+          return eventStart >= periodStart && eventStart <= periodEnd;
+        });
+
+        // Add user info to each request
+        for (const event of userPendingDesiderata) {
+          pendingRequests.push({
+            ...event,
+            user: {
+              id: user.id,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email
+            }
+          });
+        }
+      } catch (error) {
+        console.error(`Failed to get events for user ${user.id}:`, error);
+        continue;
+      }
+    }
+
+    return pendingRequests;
+  } catch (error) {
+    console.error(`Failed to get pending desiderata for period ${periodId}:`, error);
+    throw error;
+  }
+}

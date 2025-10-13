@@ -5,6 +5,7 @@ import {
   validateDesiderataQuota,
   recalculateUserDesiderata,
   getUserDesiderataUsage,
+  getPendingDesiderataByPeriod,
 } from "../services/desiderata.js";
 import { readFile, getStorageKey } from "../services/storage.js";
 
@@ -112,6 +113,29 @@ router.post("/recalculate/:userId/:periodId", async (req: AuthRequest, res) => {
     console.error("Failed to recalculate desiderata:", error);
     res.status(500).json({
       message: error instanceof Error ? error.message : "Failed to recalculate desiderata"
+    });
+  }
+});
+
+// Get pending desiderata requests filtered by year and period
+router.get("/pending/:year/:periodId", async (req: AuthRequest, res) => {
+  try {
+    const { year, periodId } = req.params;
+    const site = req.user!.site;
+
+    const pendingRequests = await getPendingDesiderataByPeriod(site, year, periodId);
+
+    res.json({
+      site,
+      year,
+      periodId,
+      count: pendingRequests.length,
+      requests: pendingRequests
+    });
+  } catch (error) {
+    console.error("Failed to get pending desiderata:", error);
+    res.status(500).json({
+      message: error instanceof Error ? error.message : "Failed to get pending desiderata"
     });
   }
 });
