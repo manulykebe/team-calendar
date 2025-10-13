@@ -190,41 +190,5 @@
     "status": "approved",
     "createdAt": "2025-10-09T13:31:10.110Z",
     "updatedAt": "2025-10-09T13:54:14.173Z"
-  },
-  {
-    "id": "62961177-4164-46c5-a00d-a1e56fa16341",
-    "userId": "XAefIrqLAeDy",
-    "type": "requestedDesiderata",
-    "title": "",
-    "description": "",
-    "date": "2026-02-13",
-    "endDate": "2026-02-15",
-    "status": "pending",
-    "createdAt": "2025-10-13T08:46:34.345Z",
-    "updatedAt": "2025-10-13T08:46:34.345Z"
-  },
-  {
-    "id": "011ea565-2fec-44cd-9d45-59d369f4f7f5",
-    "userId": "XAefIrqLAeDy",
-    "type": "requestedDesiderata",
-    "title": "",
-    "description": "",
-    "date": "2026-03-20",
-    "endDate": "2026-03-22",
-    "status": "pending",
-    "createdAt": "2025-10-13T08:47:07.486Z",
-    "updatedAt": "2025-10-13T08:47:07.486Z"
-  },
-  {
-    "id": "9f3e3d4a-2344-4ebc-a02c-ada90a244265",
-    "userId": "XAefIrqLAeDy",
-    "type": "requestedDesiderata",
-    "title": "",
-    "description": "",
-    "date": "2026-04-03",
-    "endDate": "2026-04-07",
-    "status": "pending",
-    "createdAt": "2025-10-13T08:47:19.165Z",
-    "updatedAt": "2025-10-13T08:47:19.165Z"
   }
 ]
