@@ -197,6 +197,7 @@ export const fr = {
     subscribeToCalendar: 'S\'abonner au calendrier',
     exportEvents: 'Exporter les événements',
     definePeriods: 'Définir/Modifier les périodes',
+    reports: 'Rapports',
     weekStartsOn: 'La semaine commence le:',
     showWeekNumber: 'Afficher le numéro de semaine:',
     showWeekends: 'Afficher les week-ends',
@@ -506,5 +507,23 @@ export const fr = {
     fileNotFound: 'Document introuvable.',
     failedToDownload: 'Échec du téléchargement du document.',
     failedToListDocuments: 'Échec de la récupération de la liste des documents.',
+  },
+
+  // Reports
+  reports: {
+    desiderata: 'Desiderata',
+    desiderataReport: 'Rapport Desiderata',
+    desiderataReportDescription: 'Exporter les données desiderata vers Excel',
+    desiderataReportInstructions: 'Sélectionnez une année et une période pour générer un rapport Excel affichant les demandes desiderata de tous les membres de l\'équipe.',
+    period: 'Période',
+    date: 'Date',
+    total: 'Total',
+    selectPeriod: 'Veuillez sélectionner une période',
+    noDataAvailable: 'Aucune donnée disponible pour la période sélectionnée',
+    noPeriodsAvailable: 'Aucune période disponible',
+    exporting: 'Exportation...',
+    exportToExcel: 'Exporter vers Excel',
+    exportSuccess: 'Rapport exporté avec succès',
+    exportFailed: 'Échec de l\'exportation du rapport. Veuillez réessayer.',
   },
 };

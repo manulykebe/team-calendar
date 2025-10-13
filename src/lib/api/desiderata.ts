@@ -1,4 +1,4 @@
-import { apiClient } from "./client";
+import { API_URL } from "./config";
 
 export interface DesiderataQuotas {
   totalWeekends: number;
@@ -44,12 +44,20 @@ export async function getDesiderataQuota(
   token: string,
   periodId: string
 ): Promise<DesiderataQuotaInfo> {
-  const response = await apiClient.get(`/desiderata/quota/${periodId}`, {
+  const response = await fetch(`${API_URL}/desiderata/quota/${periodId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return response.data;
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Failed to fetch desiderata quota" }));
+    throw new Error(error.message);
+  }
+
+  return response.json();
 }
 
 /**
@@ -62,21 +70,28 @@ export async function validateDesiderata(
   endDate: string,
   excludeEventId?: string
 ): Promise<DesiderataValidation> {
-  const response = await apiClient.post(
-    "/desiderata/validate",
-    {
+  const response = await fetch(`${API_URL}/desiderata/validate`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       periodId,
       startDate,
       endDate,
       excludeEventId,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return response.data;
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Failed to validate desiderata" }));
+    throw new Error(error.message);
+  }
+
+  return response.json();
 }
 
 /**
@@ -87,13 +102,64 @@ export async function recalculateDesiderata(
   userId: string,
   periodId: string
 ): Promise<void> {
-  await apiClient.post(
-    `/desiderata/recalculate/${userId}/${periodId}`,
-    {},
+  const response = await fetch(
+    `${API_URL}/desiderata/recalculate/${userId}/${periodId}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Failed to recalculate desiderata" }));
+    throw new Error(error.message);
+  }
+}
+
+export interface PendingDesiderataGridItem {
+  date: string;
+  [userId: string]: string | number;
+  total: number;
+}
+
+export interface PendingDesiderataResponse {
+  site: string;
+  year: string;
+  periodId: string;
+  count: number;
+  requests: any[];
+  desiderata?: any[];
+  grid?: PendingDesiderataGridItem[];
+}
+
+/**
+ * Get pending desiderata for a specific year and period
+ */
+export async function getPendingDesiderata(
+  token: string,
+  year: string,
+  periodId: string
+): Promise<PendingDesiderataResponse> {
+  const response = await fetch(
+    `${API_URL}/desiderata/pending/${year}/${periodId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
   );
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Failed to fetch pending desiderata" }));
+    throw new Error(error.message);
+  }
+
+  return response.json();
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
 	Settings as SettingsIcon,
 	X,
@@ -8,7 +8,9 @@ import {
 	Calendar,
 	Download,
 	Shield,
-	FileText
+	FileText,
+	BarChart3,
+	ChevronDown
 } from "lucide-react";
 import { ColleagueSettings } from "./colleagues/ColleagueSettings";
 import { UserManagement } from "../users/UserManagement";
@@ -22,6 +24,7 @@ import { AvailabilityModal } from "./availability/AvailabilityModal";
 import { CalendarReport } from "./availability/CalendarReport";
 import { SubscriptionModal } from "./SubscriptionModal";
 import { ExportModal } from "./ExportModal";
+import { DesiderataReportModal } from "./reports/DesiderataReportModal";
 import { useTranslation } from "../../context/TranslationContext";
 
 interface SettingsPanelProps {
@@ -41,6 +44,9 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 	const [showCalendarReport, setShowCalendarReport] = useState(false);
 	const [showSubscription, setShowSubscription] = useState(false);
 	const [showExport, setShowExport] = useState(false);
+	const [showReportsMenu, setShowReportsMenu] = useState(false);
+	const [showDesiderataReport, setShowDesiderataReport] = useState(false);
+	const reportsMenuRef = useRef<HTMLDivElement>(null);
 
 	const handleLogout = () => {
 		logout();
@@ -94,6 +100,35 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 		setShowExport(false);
 		setIsOpen(true);
 	};
+
+	const handleOpenDesiderataReport = () => {
+		setShowDesiderataReport(true);
+		setShowReportsMenu(false);
+		setIsOpen(false);
+	};
+
+	const handleCloseDesiderataReport = () => {
+		setShowDesiderataReport(false);
+		setIsOpen(true);
+	};
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (reportsMenuRef.current && !reportsMenuRef.current.contains(event.target as Node)) {
+				setShowReportsMenu(false);
+			}
+		};
+
+		if (showReportsMenu) {
+			document.addEventListener("mousedown", handleClickOutside);
+		} else {
+			document.removeEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [showReportsMenu]);
 
 	const handleOpenPeriodManagement = () => {
 		if (currentUser) {
@@ -174,6 +209,29 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 									<Download className="w-4 h-4 mr-2" />
 									{t('settings.exportEvents')}
 								</button>
+								<div className="relative" ref={reportsMenuRef}>
+									<button
+										onClick={() => setShowReportsMenu(!showReportsMenu)}
+										className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-300 rounded-md hover:bg-zinc-50"
+									>
+										<div className="flex items-center">
+											<BarChart3 className="w-4 h-4 mr-2" />
+											{t('settings.reports')}
+										</div>
+										<ChevronDown className={`w-4 h-4 transition-transform ${showReportsMenu ? 'rotate-180' : ''}`} />
+									</button>
+									{showReportsMenu && (
+										<div className="absolute left-0 right-0 mt-1 bg-white border border-zinc-300 rounded-md shadow-lg z-10">
+											<button
+												onClick={handleOpenDesiderataReport}
+												className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 text-left"
+											>
+												<FileText className="w-4 h-4 mr-2" />
+												{t('reports.desiderata')}
+											</button>
+										</div>
+									)}
+								</div>
 							</div>
 						</div>
 
@@ -303,6 +361,12 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 					userId={currentUser.id}
 					site={currentUser.site}
 					onClose={handleCloseExport}
+				/>
+			)}
+
+			{showDesiderataReport && (
+				<DesiderataReportModal
+					onClose={handleCloseDesiderataReport}
 				/>
 			)}
 		</div>

@@ -197,6 +197,7 @@ export const en = {
     subscribeToCalendar: 'Subscribe to Calendar',
     exportEvents: 'Export Events',
     definePeriods: 'Define/Edit Periods',
+    reports: 'Reports',
     weekStartsOn: 'Week starts on:',
     showWeekNumber: 'Show week number:',
     showWeekends: 'Show weekends',
@@ -506,5 +507,23 @@ export const en = {
     fileNotFound: 'Document not found.',
     failedToDownload: 'Failed to download document.',
     failedToListDocuments: 'Failed to list documents.',
+  },
+
+  // Reports
+  reports: {
+    desiderata: 'Desiderata',
+    desiderataReport: 'Desiderata Report',
+    desiderataReportDescription: 'Export desiderata data to Excel',
+    desiderataReportInstructions: 'Select a year and period to generate an Excel report showing desiderata requests across all team members.',
+    period: 'Period',
+    date: 'Date',
+    total: 'Total',
+    selectPeriod: 'Please select a period',
+    noDataAvailable: 'No data available for the selected period',
+    noPeriodsAvailable: 'No periods available',
+    exporting: 'Exporting...',
+    exportToExcel: 'Export to Excel',
+    exportSuccess: 'Report exported successfully',
+    exportFailed: 'Failed to export report. Please try again.',
   },
 };

@@ -197,6 +197,7 @@ export const nl = {
     subscribeToCalendar: 'Abonneren op kalender',
     exportEvents: 'Gebeurtenissen exporteren',
     definePeriods: 'Periodes definiëren/bewerken',
+    reports: 'Rapporten',
     weekStartsOn: 'Week begint op:',
     showWeekNumber: 'Weeknummer tonen:',
     showWeekends: 'Weekenden tonen',
@@ -506,5 +507,23 @@ export const nl = {
     fileNotFound: 'Document niet gevonden.',
     failedToDownload: 'Downloaden van document mislukt.',
     failedToListDocuments: 'Ophalen van documentenlijst mislukt.',
+  },
+
+  // Reports
+  reports: {
+    desiderata: 'Desiderata',
+    desiderataReport: 'Desiderata Rapport',
+    desiderataReportDescription: 'Desiderata-gegevens exporteren naar Excel',
+    desiderataReportInstructions: 'Selecteer een jaar en periode om een Excel-rapport te genereren met desiderata-aanvragen van alle teamleden.',
+    period: 'Periode',
+    date: 'Datum',
+    total: 'Totaal',
+    selectPeriod: 'Selecteer een periode',
+    noDataAvailable: 'Geen gegevens beschikbaar voor de geselecteerde periode',
+    noPeriodsAvailable: 'Geen periodes beschikbaar',
+    exporting: 'Exporteren...',
+    exportToExcel: 'Exporteren naar Excel',
+    exportSuccess: 'Rapport succesvol geëxporteerd',
+    exportFailed: 'Exporteren van rapport mislukt. Probeer het opnieuw.',
   },
 };
