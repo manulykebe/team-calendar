@@ -1,6 +1,8 @@
 import { readFile, writeFile, getStorageKey } from "./storage.js";
 import { readSiteData, writeSiteData } from "../utils.js";
+import { buildGrid } from "./calendar-fns";
 import { parseISO, eachDayOfInterval, getDay, differenceInDays } from "date-fns";
+import _ from '../utils/lodash';
 
 export interface DesiderataUsage {
   weekendsUsed: number;
@@ -277,10 +279,10 @@ export async function getPendingDesiderataByPeriod(
   site: string,
   year: string,
   periodId: string
-): Promise<any[]> {
+): Promise<{ desiderata: any[]; grid: any[] }> {
   try {
     // Get period info
-    const periodsKey = getStorageKey(site, "periods", year);
+    const periodsKey = getStorageKey("sites", site, "periods", year + '.json');
     const periodsDataStr = await readFile(periodsKey);
     const periodsData = JSON.parse(periodsDataStr);
     const period = periodsData.periods.find((p: any) => p.id === periodId);
@@ -299,7 +301,7 @@ export async function getPendingDesiderataByPeriod(
     // Iterate through all users
     for (const user of siteData.users) {
       try {
-        const eventsKey = getStorageKey(site, "events", user.id);
+        const eventsKey = getStorageKey("sites", site, "events", user.id + '.json');
         let userEvents: any[] = [];
 
         try {
@@ -311,24 +313,25 @@ export async function getPendingDesiderataByPeriod(
 
         // Filter for pending desiderata within the period
         const userPendingDesiderata = userEvents.filter((e: any) => {
-          if (e.type !== 'requestedDesiderata') return false;
-          if (e.status !== 'pending') return false;
-
-          const eventStart = parseISO(e.date);
-          return eventStart >= periodStart && eventStart <= periodEnd;
+          return (e.type === 'requestedDesiderata' &&
+            e.status === 'pending' &&
+            parseISO(e.date) >= periodStart && parseISO(e.endDate) <= periodEnd
+          );
         });
 
         // Add user info to each request
         for (const event of userPendingDesiderata) {
           pendingRequests.push({
-            ...event,
-            user: {
-              id: user.id,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email
-            }
-          });
+            userId: user.id,
+            ..._.pick(event, ['id', 'date', 'endDate'])
+          },
+            // user: {
+            //   id: user.id,
+            //   firstName: user.firstName,
+            //   lastName: user.lastName,
+            //   email: user.email
+            // }
+          );
         }
       } catch (error) {
         console.error(`Failed to get events for user ${user.id}:`, error);
@@ -336,7 +339,13 @@ export async function getPendingDesiderataByPeriod(
       }
     }
 
-    return pendingRequests;
+    const grid = buildGrid(period, pendingRequests.map(r => ({
+      userId: r.userId,
+      date: r.date,
+      endDate: r.endDate
+    })), siteData);
+
+    return { desiderata: pendingRequests, grid: grid };
   } catch (error) {
     console.error(`Failed to get pending desiderata for period ${periodId}:`, error);
     throw error;

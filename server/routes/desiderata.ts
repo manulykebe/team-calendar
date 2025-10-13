@@ -125,13 +125,7 @@ router.get("/pending/:year/:periodId", async (req: AuthRequest, res) => {
 
     const pendingRequests = await getPendingDesiderataByPeriod(site, year, periodId);
 
-    res.json({
-      site,
-      year,
-      periodId,
-      count: pendingRequests.length,
-      requests: pendingRequests
-    });
+    res.json(pendingRequests);
   } catch (error) {
     console.error("Failed to get pending desiderata:", error);
     res.status(500).json({
