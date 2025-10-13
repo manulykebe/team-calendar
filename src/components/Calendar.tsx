@@ -131,24 +131,44 @@ export function Calendar() {
       }
     }
 
-    // Rule 5: Monday holiday -> extend Friday to Monday
+    // Rule 5: Monday holiday -> only extend if Sunday is also a holiday
     if (dayOfWeek === 1 && isHoliday(date)) {
-      return {
-        extend: true,
-        startDate: subDays(date, 3),
-        endDate: date,
-        reason: 'Selected Monday holiday - automatically including previous weekend (Friday-Monday)'
-      };
+      const sunday = subDays(date, 1);
+      if (isHoliday(sunday)) {
+        // Both Sunday and Monday are holidays -> extend to include full weekend
+        return {
+          extend: true,
+          startDate: subDays(date, 3), // Friday
+          endDate: date, // Monday
+          reason: 'Selected Monday holiday following Sunday holiday - automatically including full weekend (Friday-Monday)'
+        };
+      }
+      // Monday is holiday but Sunday is not -> no extension
+      return { extend: false };
     }
 
-    // Rule 6: Tuesday holiday -> extend Friday to Tuesday
+    // Rule 6: Tuesday holiday -> only extend if Monday is also a holiday
     if (dayOfWeek === 2 && isHoliday(date)) {
-      return {
-        extend: true,
-        startDate: subDays(date, 4),
-        endDate: date,
-        reason: 'Selected Tuesday holiday - automatically including previous Monday and weekend (Friday-Tuesday)'
-      };
+      const monday = subDays(date, 1);
+      if (isHoliday(monday)) {
+        // Both Monday and Tuesday are holidays
+        // Check if Sunday is also a holiday to determine start point
+        const sunday = subDays(date, 2);
+        if (isHoliday(sunday)) {
+          // Sunday, Monday, Tuesday are all holidays -> extend to Friday
+          return {
+            extend: true,
+            startDate: subDays(date, 4), // Friday
+            endDate: date, // Tuesday
+            reason: 'Selected Tuesday holiday following Monday and Sunday holidays - automatically including full weekend (Friday-Tuesday)'
+          };
+        } else {
+          // Only Monday and Tuesday are holidays -> no extension
+          return { extend: false };
+        }
+      }
+      // Tuesday is holiday but Monday is not -> no extension
+      return { extend: false };
     }
 
     // No auto-extension for other cases

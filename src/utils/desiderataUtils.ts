@@ -416,39 +416,15 @@ export function validateSelection(
  * Check if a date needs auto-extension based on public holiday rules
  *
  * Rules:
- * 1. Monday: No auto-extension UNLESS Monday itself is a public holiday (then include previous weekend)
- * 2. Tuesday: Include previous Monday and weekend (incl. Friday) ONLY when Tuesday is a public holiday
- * 3. Friday: Always extend to Sunday
+ * 1. Friday: Always extend to Sunday
+ * 2. Saturday: Extend to Friday-Sunday
+ * 3. Sunday: Extend to Friday-Sunday
  * 4. Thursday: Extend to Sunday if Friday is a public holiday
+ * 5. Monday: Only extend if Sunday is also a public holiday (then include Friday-Monday)
+ * 6. Tuesday: Only extend if Monday is also a public holiday AND Sunday is also a holiday (then include Friday-Tuesday)
  */
 function shouldAutoExtendDate(date: Date, holidays: Holiday[]): { extend: boolean; startDate?: Date; endDate?: Date; reason?: string } {
   const dayOfWeek = getDayOfWeek(date);
-
-  // Monday: Only extend if Monday itself is a public holiday
-  if (dayOfWeek === 1) {
-    if (isPublicHoliday(date, holidays)) {
-      return {
-        extend: true,
-        startDate: subDays(date, 3), // Friday (3 days before Monday)
-        endDate: date,
-        reason: 'Selected Monday is a public holiday - automatically including previous weekend (Friday-Monday)',
-      };
-    }
-    return { extend: false };
-  }
-
-  // Tuesday: Only extend if Tuesday itself is a public holiday
-  if (dayOfWeek === 2) {
-    if (isPublicHoliday(date, holidays)) {
-      return {
-        extend: true,
-        startDate: subDays(date, 4), // Friday (4 days before Tuesday)
-        endDate: date,
-        reason: 'Selected Tuesday is a public holiday - automatically including previous Monday and weekend (Friday-Tuesday)',
-      };
-    }
-    return { extend: false };
-  }
 
   // Friday: Always extend to Sunday
   if (dayOfWeek === 5) {
@@ -457,6 +433,26 @@ function shouldAutoExtendDate(date: Date, holidays: Holiday[]): { extend: boolea
       startDate: date,
       endDate: addDays(date, 2),
       reason: 'Selected Friday - automatically extending to Sunday',
+    };
+  }
+
+  // Saturday: Extend to Friday-Sunday
+  if (dayOfWeek === 6) {
+    return {
+      extend: true,
+      startDate: subDays(date, 1), // Friday
+      endDate: addDays(date, 1), // Sunday
+      reason: 'Selected Saturday - automatically including full weekend (Friday-Sunday)',
+    };
+  }
+
+  // Sunday: Extend to Friday-Sunday
+  if (dayOfWeek === 0) {
+    return {
+      extend: true,
+      startDate: subDays(date, 2), // Friday
+      endDate: date, // Sunday
+      reason: 'Selected Sunday - automatically including full weekend (Friday-Sunday)',
     };
   }
 
@@ -471,6 +467,41 @@ function shouldAutoExtendDate(date: Date, holidays: Holiday[]): { extend: boolea
         reason: 'Selected Thursday before bank holiday Friday - automatically extending to Sunday',
       };
     }
+  }
+
+  // Monday: Only extend if Sunday is also a public holiday
+  if (dayOfWeek === 1) {
+    if (isPublicHoliday(date, holidays)) {
+      const sunday = subDays(date, 1);
+      if (isPublicHoliday(sunday, holidays)) {
+        return {
+          extend: true,
+          startDate: subDays(date, 3), // Friday (3 days before Monday)
+          endDate: date,
+          reason: 'Selected Monday holiday following Sunday holiday - automatically including previous weekend (Friday-Monday)',
+        };
+      }
+    }
+    return { extend: false };
+  }
+
+  // Tuesday: Only extend if Monday is also a public holiday AND Sunday is also a holiday
+  if (dayOfWeek === 2) {
+    if (isPublicHoliday(date, holidays)) {
+      const monday = subDays(date, 1);
+      if (isPublicHoliday(monday, holidays)) {
+        const sunday = subDays(date, 2);
+        if (isPublicHoliday(sunday, holidays)) {
+          return {
+            extend: true,
+            startDate: subDays(date, 4), // Friday (4 days before Tuesday)
+            endDate: date,
+            reason: 'Selected Tuesday holiday following Monday and Sunday holidays - automatically including full weekend (Friday-Tuesday)',
+          };
+        }
+      }
+    }
+    return { extend: false };
   }
 
   return { extend: false };
