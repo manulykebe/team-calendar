@@ -9,6 +9,30 @@ export const authenticateToken = async (
   res: Response,
   next: () => void,
 ) => {
+  // Development mode: Allow bypassing auth with query param
+  if (process.env.NODE_ENV !== 'production' && req.query.devBypass === 'true') {
+    const testSite = (req.query.site as string) || 'azjp';
+    const testUserId = (req.query.userId as string) || 'test-user';
+
+    try {
+      const siteData = await readSiteData(testSite);
+      const user = siteData.users[0]; // Use first user for testing
+
+      if (user) {
+        req.user = {
+          id: user.id,
+          email: user.email,
+          site: testSite,
+          role: user.role,
+        };
+        console.log(`[DEV] Bypassing auth for site: ${testSite}, user: ${user.email}`);
+        return next();
+      }
+    } catch (error) {
+      console.error('[DEV] Failed to bypass auth:', error);
+    }
+  }
+
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
