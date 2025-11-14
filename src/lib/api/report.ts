@@ -34,3 +34,56 @@ export async function getAvailabilityReport(
 
   return response.json();
 }
+
+export async function getAllAvailabilityReport(
+  token: string,
+  site: string,
+  year: string,
+) {
+  const url = new URL(`${API_URL}/users/`);
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Failed to fetch all users availability" }));
+    throw new Error(error.message);
+  }
+
+  const allSiteUsers = await response.json();
+
+  // Fetch availability report for each user
+  const reports = await Promise.all(
+    allSiteUsers.map(async (user: any) => {
+      try {
+        const userReport = await getAvailabilityReport(
+          token,
+          site,
+          user.id,
+          year
+        );
+        return {
+          userId: user.id,
+          availability: userReport.availability,
+        };
+      } catch (error) {
+        console.error(`Failed to fetch report for user ${user.id}:`, error);
+        return {
+          userId: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          report: null,
+          error: error instanceof Error ? error.message : "Failed to fetch report",
+        };
+      }
+    })
+  );
+
+  return reports;
+}

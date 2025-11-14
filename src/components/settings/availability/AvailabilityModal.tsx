@@ -107,12 +107,14 @@ export function AvailabilityModal({
 		try {
 			setLoading(true);
 			setError("");
+
 			const data = await getAvailabilityReport(
 				token,
 				selectedColleague.site,
 				selectedColleague.id,
 				reportYear
 			);
+
 			setReportData(data);
 			setShowReport(true);
 			toast.success(t('availability.reportLoaded'), { id: toastId });
