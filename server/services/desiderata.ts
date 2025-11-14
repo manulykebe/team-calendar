@@ -1,6 +1,6 @@
 import { readFile, writeFile, getStorageKey } from "./storage.js";
 import { readSiteData, writeSiteData } from "../utils.js";
-import { buildGrid } from "./calendar-fns";
+import { buildGrid } from "./calendar-fns.js";
 import { parseISO, eachDayOfInterval, getDay, differenceInDays } from "date-fns";
 import _ from '../utils/lodash';
 
