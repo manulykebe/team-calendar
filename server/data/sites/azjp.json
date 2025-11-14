@@ -94,7 +94,7 @@
       "firstName": "Katrien",
       "lastName": "de Jongh",
       "initials": "KDJ",
-      "email": "katrien@lyke.be",
+      "email": "katrien.dejongh@azjportaels.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
       "site": "azjp",
@@ -108,14 +108,15 @@
         "dateFormat": "DD/MM/YYYY",
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
-      }
+      },
+      "mustChangePassword": true
     },
     {
       "id": "mKtuftErhhnO",
       "firstName": "Mieke",
       "lastName": "Smets",
       "initials": "MS",
-      "email": "mieke@lyke.be",
+      "email": "mieke.smets@azjportaels.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
       "site": "azjp",
@@ -128,6 +129,7 @@
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
       },
+      "mustChangePassword": true,
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-17T11:26:37.583Z"
     },
@@ -136,7 +138,7 @@
       "firstName": "Ken",
       "lastName": "Carpentier",
       "initials": "KCA",
-      "email": "ken@lyke.be",
+      "email": "ken.carpentier@azjportaels.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
       "site": "azjp",
@@ -149,6 +151,7 @@
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
       },
+      "mustChangePassword": true,
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-17T11:39:53.933Z"
     },
@@ -157,7 +160,7 @@
       "firstName": "Sofie",
       "lastName": "Daineffe",
       "initials": "SD",
-      "email": "sofie@lyke.be",
+      "email": "sofie.daineffe@azjportaels.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
       "site": "azjp",
@@ -170,6 +173,7 @@
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
       },
+      "mustChangePassword": true,
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-17T11:30:51.066Z"
     },
@@ -178,7 +182,7 @@
       "firstName": "Els",
       "lastName": "Vanhoutte",
       "initials": "EV",
-      "email": "els@lyke.be",
+      "email": "els.vanhoutte@azjportaels.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
       "site": "azjp",
@@ -191,6 +195,7 @@
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
       },
+      "mustChangePassword": true,
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-06-30T09:56:03.839Z"
     },
@@ -199,7 +204,7 @@
       "firstName": "Kris",
       "lastName": "Veryser",
       "initials": "KV",
-      "email": "kris@lyke.be",
+      "email": "kris.veryser@azjportaels.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
       "site": "azjp",
@@ -212,6 +217,7 @@
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
       },
+      "mustChangePassword": true,
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-16T09:32:52.343Z"
     },
@@ -220,7 +226,7 @@
       "firstName": "Hans",
       "lastName": "Gordts",
       "initials": "HG",
-      "email": "hans@lyke.be",
+      "email": "hans.gordts@azjportaels.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
       "site": "azjp",
@@ -233,6 +239,7 @@
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
       },
+      "mustChangePassword": true,
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-16T09:32:52.343Z"
     },
@@ -241,7 +248,7 @@
       "firstName": "Adil",
       "lastName": "Yassar",
       "initials": "AY",
-      "email": "adil@lyke.be",
+      "email": "adil.yassar@azjportaels.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
       "site": "azjp",
@@ -253,7 +260,8 @@
         "dateFormat": "DD/MM/YYYY",
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
-      },     
+      },
+      "mustChangePassword": true,
       "createdAt": "2025-01-04T14:23:29.975Z",
       "updatedAt": "2025-01-17T11:16:40.456Z"
     },
@@ -262,7 +270,7 @@
       "firstName": "Anne-Laura",
       "lastName": "Van Cauwenbergh",
       "initials": "ALV",
-      "email": "anne-laura@lyke.be",
+      "email": "anne-laura.vancauwenbergh@azjportaels.be",
       "mobile": "+32 494 11 58 25",
       "password": "$2a$10$BvbaUMhz8fOUmnp86t6TteqoCbJFFEh6MounIhANRAU8yU6NWOYqO",
       "site": "azjp",
@@ -274,7 +282,8 @@
         "dateFormat": "DD/MM/YYYY",
         "timeFormat": "HH:mm",
         "weekStartsOn": "Monday"
-      },     
+      },
+      "mustChangePassword": true,
       "createdAt": "2025-10-09T14:23:29.975Z",
       "updatedAt": "2025-10-09T14:23:29.975Z"
     }

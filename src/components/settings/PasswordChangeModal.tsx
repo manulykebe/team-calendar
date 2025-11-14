@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { X, Lock } from "lucide-react";
-import { Modal } from "../common/Modal";
 import { useTranslation } from "../../context/TranslationContext";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import toast from "react-hot-toast";
@@ -47,7 +46,7 @@ export function PasswordChangeModal({ onClose, forceChange = false }: PasswordCh
   };
 
   return (
-    <Modal onClose={forceChange ? undefined : onClose} size="sm">
+    <>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
           <div className="p-2 bg-blue-100 rounded-full mr-3">
@@ -163,6 +162,6 @@ export function PasswordChangeModal({ onClose, forceChange = false }: PasswordCh
           </button>
         </div>
       </form>
-    </Modal>
+      </>
   );
 }
