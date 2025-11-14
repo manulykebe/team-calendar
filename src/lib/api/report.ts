@@ -57,7 +57,6 @@ export async function getAllAvailabilityReport(
   }
 
   const allSiteUsers = await response.json();
-
   // Fetch availability report for each user
   const reports = await Promise.all(
     allSiteUsers.map(async (user: any) => {
@@ -70,6 +69,7 @@ export async function getAllAvailabilityReport(
         );
         return {
           userId: user.id,
+          initials: user.initials,
           availability: userReport.availability,
         };
       } catch (error) {
@@ -84,6 +84,56 @@ export async function getAllAvailabilityReport(
       }
     })
   );
-
+  
   return reports;
+}
+
+export async function getAllAvailabilityReportAggregated(
+  token: string,
+  site: string,
+  year: string,
+) {
+  const reports = await getAllAvailabilityReport(token, site, year);
+
+  // loop over all dates in reports, and aggregate users (joined by "/") if not availabe per am/pm
+  // result should be of the form:
+  // {
+  //   ...
+  //   date: "2023-01-02", datepart: "am", users: "JD/AS",  // users unavailable
+  //   date: "2023-01-02", datepart: "pm", users: "MW",      // users unavailable
+  //   ...
+  // }
+  const aggregated: { date: string; datepart: string; users: string }[] = [];
+
+  const dateMap: { [key: string]: { am: string[]; pm: string[] } } = {};
+
+  reports.forEach((report: any) => {
+    if (report.error || !report.availability) {
+      return;
+    }
+
+    Object.entries(report.availability).forEach(([date, availability]: [string, any]) => {
+      if (!dateMap[date]) {
+        dateMap[date] = { am: [], pm: [] };
+      }
+      if (!availability.am) {
+        dateMap[date].am.push(report.initials);
+      }
+      if (!availability.pm) {
+        dateMap[date].pm.push(report.initials);
+      }
+    });
+  });
+
+  Object.entries(dateMap).forEach(([date, availability]) => {
+    if (availability.am.length > 0) {
+      aggregated.push({ date, datepart: "am", users: availability.am.join("/") });
+    }
+    if (availability.pm.length > 0) {
+      aggregated.push({ date, datepart: "pm", users: availability.pm.join("/") });
+    }
+  });
+
+  return aggregated;
+
 }

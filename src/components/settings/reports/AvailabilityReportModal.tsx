@@ -18,6 +18,7 @@ interface DailyAvailability {
 }
 
 interface UserAvailabilityReport {
+  initials: any;
   userId: string;
   firstName?: string;
   lastName?: string;
@@ -54,7 +55,7 @@ export function AvailabilityReportModal({ onClose }: AvailabilityReportModalProp
       const worksheet = workbook.addWorksheet("Availability");
 
       // Build headers: userId, Date, Period
-      const headers = ["User ID", t("common.date"), "Period"];
+      const headers = ["User", t("common.date"), "Period", "Value"];
       worksheet.addRow(headers);
 
       const headerRow = worksheet.getRow(1);
@@ -76,9 +77,6 @@ export function AvailabilityReportModal({ onClose }: AvailabilityReportModalProp
 
       // Process each user's availability
       data.forEach((userReport: UserAvailabilityReport) => {
-        if (!userReport.availability) {
-          return;
-        }
 
         // Sort dates for consistent output
         const sortedDates = Object.keys(userReport.availability).sort();
@@ -87,22 +85,24 @@ export function AvailabilityReportModal({ onClose }: AvailabilityReportModalProp
           const dayAvailability = userReport.availability[date];
 
           // Add row for AM if available
-          if (dayAvailability.am) {
+          // if (!dayAvailability.am) {
             worksheet.addRow([
-              userReport.userId,
+              userReport.initials,
               date,
-              "am"
+              "am",
+              dayAvailability.am ? "Available" : "Unavailable"
             ]);
-          }
+          // }
 
           // Add row for PM if available
-          if (dayAvailability.pm) {
+          // if (!dayAvailability.pm) {
             worksheet.addRow([
-              userReport.userId,
+              userReport.initials,
               date,
-              "pm"
+              "pm",
+              dayAvailability.pm ? "Available" : "Unavailable"
             ]);
-          }
+          // }
         });
       });
 
