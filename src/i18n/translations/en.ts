@@ -68,6 +68,7 @@ export const en = {
     loginFailed: 'Login failed',
     signingIn: 'Signing in...',
     loginRequired: 'You must be logged in to request holidays',
+    authenticationRequired: 'You must be logged in to access this feature',
     loginSection: 'My Calendar',
     changePassword: 'Change Password',
     currentPassword: 'Current Password',

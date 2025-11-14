@@ -68,6 +68,7 @@ export const fr = {
     loginFailed: 'Échec de la connexion',
     signingIn: 'Connexion en cours...',
     loginRequired: 'Vous devez être connecté pour demander des congés',
+    authenticationRequired: 'Vous devez être connecté pour accéder à cette fonctionnalité',
     loginSection: 'Mon Calendrier',
     changePassword: 'Changer le mot de passe',
     currentPassword: 'Mot de passe actuel',

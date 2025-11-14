@@ -68,6 +68,7 @@ export const nl = {
     loginFailed: 'Inloggen mislukt',
     signingIn: 'Inloggen...',
     loginRequired: 'U moet ingelogd zijn om verlof aan te vragen',
+    authenticationRequired: 'U moet ingelogd zijn om deze functie te gebruiken',
     loginSection: 'Mijn kalender',
     changePassword: 'Wachtwoord wijzigen',
     currentPassword: 'Huidig wachtwoord',

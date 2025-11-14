@@ -34,7 +34,7 @@ export function AvailabilityReportModal({ onClose }: AvailabilityReportModalProp
 
   const exportToExcel = async () => {
     if (!token || !currentUser) {
-      toast.error(t("auth.loginRequired"));
+      toast.error(t("auth.authenticationRequired"));
       return;
     }
 
