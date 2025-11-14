@@ -1,13 +1,50 @@
 import { Router } from "express";
 import { authenticateToken } from "../middleware/auth.js";
 import { AuthRequest } from "../types.js";
-import { readUserSettings, writeUserSettings } from "../utils.js";
+import { readUserSettings, writeUserSettings, readSiteData } from "../utils.js";
 import { getSocketManager } from "../websocket/socketManager.js";
 import { z } from "zod";
 
 const router = Router();
 
 router.use(authenticateToken);
+
+// Get availability for all users in the site
+router.get("/", async (req: AuthRequest, res) => {
+	try {
+		const siteData = await readSiteData(req.user!.site);
+		const usersAvailability = [];
+
+		for (const user of siteData.users) {
+			try {
+				const settings = await readUserSettings(req.user!.site, user.id);
+				usersAvailability.push({
+					userId: user.id,
+					firstName: user.firstName,
+					lastName: user.lastName,
+					availability: settings?.availability || [],
+				});
+			} catch (error) {
+				// If user settings don't exist, include user with empty availability
+				usersAvailability.push({
+					userId: user.id,
+					firstName: user.firstName,
+					lastName: user.lastName,
+					availability: [],
+				});
+			}
+		}
+
+		res.json(usersAvailability);
+	} catch (error) {
+		res.status(500).json({
+			message:
+				error instanceof Error
+					? error.message
+					: "Failed to fetch all users availability",
+		});
+	}
+});
 
 // Validation schemas
 const timeSlotSchema = z.object({
@@ -36,7 +73,7 @@ const scheduleSchema = z.object({
 		])
 		.optional(),
 	repeatPattern: z.enum(["all", "evenodd"]),
-});
+}) as z.ZodType<any>;
 
 // Get all schedules for a user
 router.get("/:userId", async (req: AuthRequest, res) => {
@@ -60,7 +97,7 @@ router.get("/:userId", async (req: AuthRequest, res) => {
 // Add a new schedule
 router.post("/:userId/:index", async (req: AuthRequest, res) => {
 	try {
-		const schedule = scheduleSchema.parse(req.body);
+		const schedule = scheduleSchema.parse(req.body) as any;
 		const settings = await readUserSettings(
 			req.user!.site,
 			req.params.userId
@@ -104,7 +141,7 @@ router.post("/:userId/:index", async (req: AuthRequest, res) => {
 // Update a schedule
 router.put("/:userId/:index", async (req: AuthRequest, res) => {
 	try {
-		const schedule = scheduleSchema.parse(req.body);
+		const schedule = scheduleSchema.parse(req.body) as any;
 		const index = parseInt(req.params.index);
 		const settings = await readUserSettings(
 			req.user!.site,
