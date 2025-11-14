@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "typeRoots": ["./node_modules/@types", "./server/types"],
-    "types": ["node", "express", "lodash"]
+    "types": ["node", "express"]
   },
   "include": ["server/**/*"],
   "exclude": ["node_modules"]

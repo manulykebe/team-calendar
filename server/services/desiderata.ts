@@ -2,7 +2,6 @@ import { readFile, writeFile, getStorageKey } from "./storage.js";
 import { readSiteData, writeSiteData } from "../utils.js";
 import { buildGrid } from "./calendar-fns.js";
 import { parseISO, eachDayOfInterval, getDay, differenceInDays } from "date-fns";
-import _ from '../utils/lodash';
 
 export interface DesiderataUsage {
   weekendsUsed: number;
@@ -323,7 +322,9 @@ export async function getPendingDesiderataByPeriod(
         for (const event of userPendingDesiderata) {
           pendingRequests.push({
             userId: user.id,
-            ..._.pick(event, ['id', 'date', 'endDate'])
+            id: event.id,
+            date: event.date,
+            endDate: event.endDate
           },
             // user: {
             //   id: user.id,
