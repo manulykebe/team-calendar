@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Download, FileText } from "lucide-react";
 import { useTranslation } from "../../../context/TranslationContext";
 import { useAuth } from "../../../context/AuthContext";
+import { useApp } from "../../../context/AppContext";
 import { Modal } from "../../common/Modal";
 import toast from "react-hot-toast";
 import * as ExcelJS from 'exceljs';
@@ -28,7 +29,8 @@ interface UserAvailabilityReport {
 
 export function AvailabilityReportModal({ onClose }: AvailabilityReportModalProps) {
   const { t } = useTranslation();
-  const { token, currentUser } = useAuth();
+  const { token } = useAuth();
+  const { currentUser } = useApp();
   const [isLoading, setIsLoading] = useState(false);
   const [year, setYear] = useState(new Date().getFullYear().toString());
 
