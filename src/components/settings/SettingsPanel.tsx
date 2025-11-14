@@ -26,6 +26,7 @@ import { CalendarReport } from "./availability/CalendarReport";
 import { SubscriptionModal } from "./SubscriptionModal";
 import { ExportModal } from "./ExportModal";
 import { DesiderataReportModal } from "./reports/DesiderataReportModal";
+import { AvailabilityReportModal } from "./reports/AvailabilityReportModal";
 import { PasswordChangeModal } from "./PasswordChangeModal";
 import { useTranslation } from "../../context/TranslationContext";
 
@@ -48,6 +49,7 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 	const [showExport, setShowExport] = useState(false);
 	const [showReportsMenu, setShowReportsMenu] = useState(false);
 	const [showDesiderataReport, setShowDesiderataReport] = useState(false);
+	const [showAvailabilityReport, setShowAvailabilityReport] = useState(false);
 	const [showPasswordChange, setShowPasswordChange] = useState(false);
 	const reportsMenuRef = useRef<HTMLDivElement>(null);
 
@@ -112,6 +114,17 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 
 	const handleCloseDesiderataReport = () => {
 		setShowDesiderataReport(false);
+		setIsOpen(true);
+	};
+
+	const handleOpenAvailabilityReport = () => {
+		setShowAvailabilityReport(true);
+		setShowReportsMenu(false);
+		setIsOpen(false);
+	};
+
+	const handleCloseAvailabilityReport = () => {
+		setShowAvailabilityReport(false);
 		setIsOpen(true);
 	};
 
@@ -248,6 +261,13 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 											>
 												<FileText className="w-4 h-4 mr-2" />
 												{t('reports.desiderata')}
+											</button>
+											<button
+												onClick={handleOpenAvailabilityReport}
+												className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 text-left"
+											>
+												<FileText className="w-4 h-4 mr-2" />
+												{t('reports.availability')}
 											</button>
 										</div>
 									)}
@@ -393,6 +413,12 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 			{showPasswordChange && (
 				<PasswordChangeModal
 					onClose={handleClosePasswordChange}
+				/>
+			)}
+
+			{showAvailabilityReport && (
+				<AvailabilityReportModal
+					onClose={handleCloseAvailabilityReport}
 				/>
 			)}
 		</div>
