@@ -27,6 +27,7 @@ import { SubscriptionModal } from "./SubscriptionModal";
 import { ExportModal } from "./ExportModal";
 import { DesiderataReportModal } from "./reports/DesiderataReportModal";
 import { AvailabilityReportModal } from "./reports/AvailabilityReportModal";
+import { AggregatedAvailabilityReportModal } from "./reports/AggregatedAvailabilityReportModal";
 import { PasswordChangeModal } from "./PasswordChangeModal";
 import { useTranslation } from "../../context/TranslationContext";
 
@@ -50,6 +51,7 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 	const [showReportsMenu, setShowReportsMenu] = useState(false);
 	const [showDesiderataReport, setShowDesiderataReport] = useState(false);
 	const [showAvailabilityReport, setShowAvailabilityReport] = useState(false);
+	const [showAggregatedAvailabilityReport, setShowAggregatedAvailabilityReport] = useState(false);
 	const [showPasswordChange, setShowPasswordChange] = useState(false);
 	const reportsMenuRef = useRef<HTMLDivElement>(null);
 
@@ -125,6 +127,17 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 
 	const handleCloseAvailabilityReport = () => {
 		setShowAvailabilityReport(false);
+		setIsOpen(true);
+	};
+
+	const handleOpenAggregatedAvailabilityReport = () => {
+		setShowAggregatedAvailabilityReport(true);
+		setShowReportsMenu(false);
+		setIsOpen(false);
+	};
+
+	const handleCloseAggregatedAvailabilityReport = () => {
+		setShowAggregatedAvailabilityReport(false);
 		setIsOpen(true);
 	};
 
@@ -268,6 +281,13 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 											>
 												<FileText className="w-4 h-4 mr-2" />
 												{t('reports.availability')}
+											</button>
+											<button
+												onClick={handleOpenAggregatedAvailabilityReport}
+												className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 text-left"
+											>
+												<FileText className="w-4 h-4 mr-2" />
+												{t('reports.aggregatedAvailability')}
 											</button>
 										</div>
 									)}
@@ -419,6 +439,12 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 			{showAvailabilityReport && (
 				<AvailabilityReportModal
 					onClose={handleCloseAvailabilityReport}
+				/>
+			)}
+
+			{showAggregatedAvailabilityReport && (
+				<AggregatedAvailabilityReportModal
+					onClose={handleCloseAggregatedAvailabilityReport}
 				/>
 			)}
 		</div>
