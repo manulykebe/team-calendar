@@ -1,9 +1,9 @@
 {
-	"app": {
-		"color": {
-			"Tuesday": "#4575b4"
-		}
-	},
+  "app": {
+    "color": {
+      "Tuesday": "#4575b4"
+    }
+  },
   "colleagues": {
     "SjFBqPWVxUVY": {
       "color": "#a50026",
@@ -51,63 +51,64 @@
       "visible": false
     }
   },
-	"showWeekNumber": "left",
-	"colleagueOrder": [
-		"XAefIrqLAeDy",
-		"KTHpbRLreSbC",
-		"bhhMvstlpwUG",
-		"SjFBqPWVxUVY",
-		"tTRjdtgFDDRN"
-	],
-	"availability": [
-		{
-			"weeklySchedule": {
-				"Monday": {
-					"am": true,
-					"pm": true
-				},
-				"Tuesday": {
-					"am": true,
-					"pm": true
-				},
-				"Wednesday": {
-					"am": true,
-					"pm": true
-				},
-				"Thursday": {
-					"am": true,
-					"pm": true
-				},
-				"Friday": {
-					"am": true,
-					"pm": true
-				}
-			},
-			"oddWeeklySchedule": {
-				"Monday": {
-					"am": true,
-					"pm": true
-				},
-				"Tuesday": {
-					"am": true,
-					"pm": true
-				},
-				"Wednesday": {
-					"am": true,
-					"pm": true
-				},
-				"Thursday": {
-					"am": true,
-					"pm": true
-				},
-				"Friday": {
-					"am": false,
-					"pm": false
-				}
-			},
-			"startDate": "2025-01-01",
-			"repeatPattern": "evenodd"
-		}
-	],
-	"availabilityExceptions": []
+  "showWeekNumber": "left",
+  "colleagueOrder": [
+    "XAefIrqLAeDy",
+    "KTHpbRLreSbC",
+    "bhhMvstlpwUG",
+    "SjFBqPWVxUVY",
+    "tTRjdtgFDDRN"
+  ],
+  "availability": [
+    {
+      "weeklySchedule": {
+        "Monday": {
+          "am": true,
+          "pm": true
+        },
+        "Tuesday": {
+          "am": false,
+          "pm": false
+        },
+        "Wednesday": {
+          "am": true,
+          "pm": true
+        },
+        "Thursday": {
+          "am": true,
+          "pm": true
+        },
+        "Friday": {
+          "am": true,
+          "pm": true
+        }
+      },
+      "oddWeeklySchedule": {
+        "Monday": {
+          "am": true,
+          "pm": true
+        },
+        "Tuesday": {
+          "am": true,
+          "pm": true
+        },
+        "Wednesday": {
+          "am": true,
+          "pm": true
+        },
+        "Thursday": {
+          "am": true,
+          "pm": true
+        },
+        "Friday": {
+          "am": false,
+          "pm": false
+        }
+      },
+      "startDate": "2025-01-01",
+      "endDate": "",
+      "repeatPattern": "evenodd"
+    }
+  ],
+  "availabilityExceptions": []
 }

@@ -57,11 +57,10 @@ export async function getAllAvailabilityReport(
   }
 
   const allSiteUsers = await response.json();
-  debugger
   // Fetch availability report for each user
   const reports = await Promise.all(
     // filter allSiteUsers to only role <> 'admin'
-    allSiteUsers.filter((user: any) => user.role !== 'admin').filter((user: any) => user.initials !== 'ALV' && year == '2025').map(async (user: any) => {
+    allSiteUsers.filter((user: any) => user.role !== 'admin').map(async (user: any) => {
       try {
         const userReport = await getAvailabilityReport(
           token,
@@ -138,4 +137,142 @@ export async function getAllAvailabilityReportAggregated(
 
   return aggregated;
 
+}
+
+export async function getLeaveReport(
+  token: string,
+  site: string,
+  userId: string,
+  year: string,
+  startDate?: string,
+  endDate?: string,
+) {
+  const url = new URL(`${API_URL}/report/leave/${site}/${userId}/${year}`);
+  
+  // Add date filters to query parameters if provided
+  if (startDate) {
+    url.searchParams.append("startDate", startDate);
+  }
+  if (endDate) {
+    url.searchParams.append("endDate", endDate);
+  }
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Failed to fetch leave report" }));
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+export async function getAllLeaveReport(
+  token: string,
+  site: string,
+  year: string,
+) {
+  const url = new URL(`${API_URL}/users/`);
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Failed to fetch all users" }));
+    throw new Error(error.message);
+  }
+
+  const allSiteUsers = await response.json();
+  
+  // Fetch leave report for each user (excluding admins)
+  const reports = await Promise.all(
+    allSiteUsers.filter((user: any) => user.role !== 'admin').map(async (user: any) => {
+      try {
+        const userLeave = await getLeaveReport(
+          token,
+          site,
+          user.id,
+          year
+        );
+        return {
+          userId: user.id,
+          initials: user.initials,
+          leave: userLeave,
+        };
+      } catch (error) {
+        console.error(`Failed to fetch leave for user ${user.id}:`, error);
+        return {
+          userId: user.id,
+          initials: user.initials,
+          leave: [],
+          error: error instanceof Error ? error.message : "Failed to fetch leave",
+        };
+      }
+    })
+  );
+  
+  return reports;
+}
+
+export async function getAllLeaveReportAggregated(
+  token: string,
+  site: string,
+  year: string,
+) {
+  const reports = await getAllLeaveReport(token, site, year);
+
+  // Aggregate leave by date and datepart
+  const aggregated: { date: string; datepart: string; users: string }[] = [];
+  const dateMap: { [key: string]: { am: string[]; pm: string[] } } = {};
+
+  reports.forEach((report: any) => {
+    if (report.error || !report.leave || report.leave.length === 0) {
+      return;
+    }
+
+    report.leave.forEach((event: any) => {
+      const date = event.date;
+      
+      if (!dateMap[date]) {
+        dateMap[date] = { am: [], pm: [] };
+      }
+
+      // Check if it's a half-day leave
+      if (event.halfDay) {
+        if (event.halfDayPeriod === 'am') {
+          dateMap[date].am.push(report.initials);
+        } else if (event.halfDayPeriod === 'pm') {
+          dateMap[date].pm.push(report.initials);
+        }
+      } else {
+        // Full day leave
+        dateMap[date].am.push(report.initials);
+        dateMap[date].pm.push(report.initials);
+      }
+    });
+  });
+
+  Object.entries(dateMap).forEach(([date, availability]) => {
+    if (availability.am.length > 0) {
+      aggregated.push({ date, datepart: "am", users: availability.am.sort().join("/") });
+    }
+    if (availability.pm.length > 0) {
+      aggregated.push({ date, datepart: "pm", users: availability.pm.sort().join("/") });
+    }
+  });
+
+  return aggregated;
 }

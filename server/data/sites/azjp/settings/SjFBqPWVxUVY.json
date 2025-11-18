@@ -10,15 +10,15 @@
       "initials": "KDJ"
     },
     "mKtuftErhhnO": {
-      "color": "#4575b4",
+      "color": "#74add1",
       "initials": "MS"
     },
     "CxuzKGosISkk": {
-      "color": "#74add1",
+      "color": "#abd9e9",
       "initials": "SD"
     },
     "rwqJQFnAqWdn": {
-      "color": "#abd9e9",
+      "color": "#e0f3f8",
       "initials": "EV"
     },
     "ZIdGWxhnRSYw": {
@@ -36,12 +36,16 @@
     "suuebRsdLhQv": {
       "color": "#fdae61",
       "initials": ""
+    },
+    "7kP4mD9rTq2V": {
+      "color": "#4575b4",
+      "initials": ""
     }
   },
   "showWeekNumber": "left",
   "colleagueOrder": [
-    "SjFBqPWVxUVY",
     "XAefIrqLAeDy",
+    "7kP4mD9rTq2V",
     "mKtuftErhhnO",
     "CxuzKGosISkk",
     "rwqJQFnAqWdn",

@@ -191,11 +191,11 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 
 			return acc;
 		}, {});
-
-		function getDefaultAvailability(
+	
+		const getDefaultAvailability = (
 			date: Date,
 			part: "am" | "pm"
-		): boolean {
+		): boolean => {
 			const dayName = dayMap[getDay(date)];
 			const setting = availabilityArray
 				.filter((a) => {
@@ -206,9 +206,9 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 					return date >= start && date <= end;
 				})
 				.pop();
-
+	
 			if (!setting) return false;
-
+	
 			if (
 				setting.repeatPattern === "evenodd" &&
 				setting.oddWeeklySchedule
@@ -220,10 +220,10 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 						: setting.oddWeeklySchedule;
 				return schedule[dayName as keyof WeeklySchedule]?.[part] ?? false;
 			}
-
+	
 			return setting.weeklySchedule[dayName as keyof WeeklySchedule]?.[part] ?? false;
-		}
-
+		};
+	
 		res.json({
 			year,
 			userId,
@@ -239,6 +239,52 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 		console.error("Error generating availability report:", error);
 		res.status(500).json({
 			message: "Failed to generate availability report",
+			error: error instanceof Error ? error.message : "Unknown error",
+		});
+	}
+});
+
+router.get("/leave/:site/:userId/:year", async (req, res) => {
+	try {
+		const { site, userId, year } = req.params;
+		const siteData = await readSiteData(site);
+		
+		// Find user's events
+		const user = siteData.users.find((u: any) => u.id === userId);
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		// Get all user events
+		const eventsKey = `sites/${site}/events/${userId}.json`;
+		let userEvents: any[] = [];
+		try {
+			const { readFile } = await import("../services/storage.js");
+			const eventsDataStr = await readFile(eventsKey);
+			userEvents = JSON.parse(eventsDataStr);
+		} catch {
+			return res.json([]);
+		}
+
+		// Filter for approved leave requests in the specified year
+		const yearStart = parseISO(`${year}-01-01`);
+		const yearEnd = parseISO(`${year}-12-31`);
+		
+		const approvedLeave = userEvents.filter((event: any) => {
+			const eventDate = parseISO(event.date);
+			return (
+				event.type === "requestedLeave" &&
+				event.status === "approved" &&
+				eventDate >= yearStart &&
+				eventDate <= yearEnd
+			);
+		});
+
+		res.json(approvedLeave);
+	} catch (error) {
+		console.error("Error fetching approved leave:", error);
+		res.status(500).json({
+			message: "Failed to fetch approved leave",
 			error: error instanceof Error ? error.message : "Unknown error",
 		});
 	}
