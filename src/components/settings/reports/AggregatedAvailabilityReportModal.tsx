@@ -70,15 +70,17 @@ export function AggregatedAvailabilityReportModal({ onClose }: AggregatedAvailab
         return a.datepart.localeCompare(b.datepart);
       });
 
+      // ensure date is recognised as date in Excel by converting to Date object
       data.forEach((row: AggregatedReportRow) => {
         worksheet.addRow([
-          row.date,
+          new Date(row.date),
           row.datepart,
           row.users
         ]);
       });
 
       worksheet.getColumn(1).width = 15;
+      worksheet.getColumn(1).numFmt = 'yyyy-mm-dd';
       worksheet.getColumn(2).width = 10;
       worksheet.getColumn(3).width = 30;
 

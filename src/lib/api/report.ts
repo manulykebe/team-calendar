@@ -57,9 +57,11 @@ export async function getAllAvailabilityReport(
   }
 
   const allSiteUsers = await response.json();
+  debugger
   // Fetch availability report for each user
   const reports = await Promise.all(
-    allSiteUsers.map(async (user: any) => {
+    // filter allSiteUsers to only role <> 'admin'
+    allSiteUsers.filter((user: any) => user.role !== 'admin').filter((user: any) => user.initials !== 'ALV' && year == '2025').map(async (user: any) => {
       try {
         const userReport = await getAvailabilityReport(
           token,
@@ -127,10 +129,10 @@ export async function getAllAvailabilityReportAggregated(
 
   Object.entries(dateMap).forEach(([date, availability]) => {
     if (availability.am.length > 0) {
-      aggregated.push({ date, datepart: "am", users: availability.am.join("/") });
+      aggregated.push({ date, datepart: "am", users: availability.am.sort().join("/") });
     }
     if (availability.pm.length > 0) {
-      aggregated.push({ date, datepart: "pm", users: availability.pm.join("/") });
+      aggregated.push({ date, datepart: "pm", users: availability.pm.sort().join("/") });
     }
   });
 
