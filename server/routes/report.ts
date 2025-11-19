@@ -248,7 +248,7 @@ router.get("/leave/:site/:userId/:year", async (req, res) => {
 	try {
 		const { site, userId, year } = req.params;
 		const siteData = await readSiteData(site);
-		
+
 		// Find user's events
 		const user = siteData.users.find((u: any) => u.id === userId);
 		if (!user) {
@@ -266,21 +266,44 @@ router.get("/leave/:site/:userId/:year", async (req, res) => {
 			return res.json([]);
 		}
 
-		// Filter for approved leave requests in the specified year
+		// Filter for approved leave requests that overlap with the specified year
 		const yearStart = parseISO(`${year}-01-01`);
 		const yearEnd = parseISO(`${year}-12-31`);
-		
+
 		const approvedLeave = userEvents.filter((event: any) => {
-			const eventDate = parseISO(event.date);
-			return (
-				event.type === "requestedLeave" &&
-				event.status === "approved" &&
-				eventDate >= yearStart &&
-				eventDate <= yearEnd
-			);
+			if (event.type !== "requestedLeave" || event.status !== "approved") {
+				return false;
+			}
+
+			const eventStart = parseISO(event.date);
+			const eventEnd = event.endDate ? parseISO(event.endDate) : eventStart;
+
+			// Check if the event overlaps with the year range
+			return eventStart <= yearEnd && eventEnd >= yearStart;
 		});
 
-		res.json(approvedLeave);
+		// Expand multi-day events into individual days within the year range
+		const expandedLeave: any[] = [];
+		approvedLeave.forEach((event: any) => {
+			const eventStart = parseISO(event.date);
+			const eventEnd = event.endDate ? parseISO(event.endDate) : eventStart;
+
+			// Get the overlap range with the requested year
+			const rangeStart = eventStart < yearStart ? yearStart : eventStart;
+			const rangeEnd = eventEnd > yearEnd ? yearEnd : eventEnd;
+
+			// Generate all dates in the range
+			const dates = eachDayOfInterval({ start: rangeStart, end: rangeEnd });
+
+			dates.forEach((date) => {
+				expandedLeave.push({
+					...event,
+					date: format(date, "yyyy-MM-dd")
+				});
+			});
+		});
+
+		res.json(expandedLeave);
 	} catch (error) {
 		console.error("Error fetching approved leave:", error);
 		res.status(500).json({
