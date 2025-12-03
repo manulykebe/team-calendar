@@ -20,6 +20,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.732.0",
     "@hookform/resolvers": "^3.3.4",
+    "@supabase/supabase-js": "^2.86.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
