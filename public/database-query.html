@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLite Database Query Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #334155;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header p {
+            color: #bfdbfe;
+            font-size: 0.875rem;
+        }
+
+        .main-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .query-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .btn-small:hover {
+            background: #e2e8f0;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            resize: vertical;
+            transition: all 0.2s;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result-container {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .result-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-header.success {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+
+        .result-header.error {
+            background: #fef2f2;
+            border-color: #fca5a5;
+        }
+
+        .result-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .result-status.success {
+            color: #15803d;
+        }
+
+        .result-status.error {
+            color: #dc2626;
+        }
+
+        .result-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            background: #dbeafe;
+            color: #1e40af;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .result-body {
+            padding: 1.5rem;
+            max-height: 600px;
+            overflow: auto;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        thead {
+            background: #f9fafb;
+            position: sticky;
+            top: 0;
+        }
+
+        th {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: #374151;
+            border-bottom: 2px solid #d1d5db;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-family: 'Courier New', monospace;
+            white-space: nowrap;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        tbody tr:hover {
+            background: #eff6ff;
+        }
+
+        .null-value {
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .schema-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            position: sticky;
+            top: 1rem;
+        }
+
+        .schema-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .table-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-name {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-name code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: #1e40af;
+        }
+
+        .btn-query {
+            padding: 0.25rem 0.5rem;
+            background: #eff6ff;
+            color: #2563eb;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-query:hover {
+            background: #dbeafe;
+        }
+
+        .history-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .history-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover {
+            border-color: #3b82f6;
+        }
+
+        .history-query {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .tips-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-top: 2rem;
+        }
+
+        .tips-section h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .tips-section ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .tips-section li {
+            font-size: 0.875rem;
+            color: #6b7280;
+            display: flex;
+            align-items: start;
+            gap: 0.5rem;
+        }
+
+        .tips-section code {
+            background: #f1f5f9;
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: 2;
+            }
+        }
+
+        select {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            background: white;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-export:hover {
+            background: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <path d="M3 9h18"/>
+                    <path d="M9 21V9"/>
+                </svg>
+                SQLite Database Query Interface
+            </h1>
+            <p>Connected to media.db</p>
+        </div>
+
+        <div class="main-content">
+            <div class="layout">
+                <div class="query-section">
+                    <div class="input-group">
+                        <div class="input-header">
+                            <label>SQL Query</label>
+                            <div class="button-group">
+                                <button class="btn-small" onclick="toggleHistory()">
+                                    <span id="historyToggleText">Show History</span>
+                                </button>
+                                <select onchange="loadSampleQuery(this.value)">
+                                    <option value="">Sample Queries</option>
+                                    <option value="SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;">List all tables</option>
+                                    <option value="PRAGMA table_info(table_name);">Show table structure</option>
+                                    <option value="SELECT * FROM table_name LIMIT 10;">Select first 10 rows</option>
+                                    <option value="SELECT COUNT(*) as total FROM table_name;">Count all rows</option>
+                                    <option value="PRAGMA database_list;">Get database info</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <textarea
+                            id="queryInput"
+                            placeholder="Enter your SQL query here... (Ctrl+Enter to execute)"
+                            spellcheck="false"
+                        ></textarea>
+
+                        <div class="action-row">
+                            <span class="hint">Press Ctrl+Enter to execute</span>
+                            <button class="btn-primary" onclick="executeQuery()" id="executeBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                </svg>
+                                Execute Query
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="historyPanel" class="history-panel" style="display: none;">
+                        <div class="history-header">
+                            <span style="font-weight: 600;">Query History</span>
+                            <button class="btn-small" onclick="clearHistory()">Clear</button>
+                        </div>
+                        <div id="historyList"></div>
+                    </div>
+
+                    <div id="resultContainer" style="display: none;"></div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="schema-panel">
+                        <div class="schema-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"/>
+                                <rect x="14" y="3" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/>
+                                <rect x="3" y="14" width="7" height="7"/>
+                            </svg>
+                            Database Schema
+                        </div>
+                        <div id="schemaList">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-section">
+            <h2>Quick Tips</h2>
+            <ul>
+                <li>
+                    <span style="color: #2563eb; font-weight: bold;">•</span>
+                    <span>Use <code>Ctrl+Enter</code> to execute queries quickly</span>
+                </li>
+                <li>
+                    <span style="color: #2563eb; font-weight: bold;">•</span>
+                    <span>Click on table names in the schema panel to quickly query them</span>
+                </li>
+                <li>
+                    <span style="color: #2563eb; font-weight: bold;">•</span>
+                    <span>Export results to CSV or JSON format using the export buttons</span>
+                </li>
+                <li>
+                    <span style="color: #2563eb; font-weight: bold;">•</span>
+                    <span>Your last 10 queries are saved in history for quick access</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let queryHistory = JSON.parse(localStorage.getItem('dbQueryHistory') || '[]');
+
+        document.getElementById('queryInput').addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                executeQuery();
+            }
+        });
+
+        async function executeQuery() {
+            const query = document.getElementById('queryInput').value.trim();
+            if (!query) return;
+
+            const btn = document.getElementById('executeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Executing...';
+
+            try {
+                const response = await fetch('/api/db/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query }),
+                });
+
+                const result = await response.json();
+                displayResult(result);
+
+                queryHistory.unshift({
+                    query,
+                    timestamp: Date.now(),
+                    success: result.success
+                });
+                queryHistory = queryHistory.slice(0, 10);
+                localStorage.setItem('dbQueryHistory', JSON.stringify(queryHistory));
+                updateHistoryList();
+
+            } catch (error) {
+                displayResult({
+                    success: false,
+                    error: error.message || 'Network error occurred'
+                });
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Execute Query';
+            }
+        }
+
+        function displayResult(result) {
+            const container = document.getElementById('resultContainer');
+            container.style.display = 'block';
+
+            const headerClass = result.success ? 'success' : 'error';
+            const statusClass = result.success ? 'success' : 'error';
+            const statusIcon = result.success
+                ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+                : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+
+            let metaHtml = '';
+            if (result.success) {
+                metaHtml = '<div class="result-meta">';
+                if (result.rowCount !== undefined) metaHtml += `<span>Rows: ${result.rowCount}</span>`;
+                if (result.affectedRows !== undefined) metaHtml += `<span>Affected: ${result.affectedRows}</span>`;
+                if (result.executionTime !== undefined) metaHtml += `<span>Time: ${result.executionTime}ms</span>`;
+                if (result.queryType) metaHtml += `<span class="badge">${result.queryType}</span>`;
+                metaHtml += '</div>';
+            }
+
+            let exportButtons = '';
+            if (result.success && result.data && result.data.length > 0) {
+                exportButtons = `
+                    <div class="export-buttons">
+                        <button class="btn-export" onclick="exportToCSV()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            CSV
+                        </button>
+                        <button class="btn-export" onclick="exportToJSON()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            JSON
+                        </button>
+                    </div>
+                `;
+            }
+
+            let bodyContent = '';
+            if (result.error) {
+                bodyContent = `<div class="error-message">${result.error}</div>`;
+            } else if (result.data && result.data.length > 0) {
+                bodyContent = `
+                    <table>
+                        <thead>
+                            <tr>
+                                ${result.columns.map(col => `<th>${col}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${result.data.map(row => `
+                                <tr>
+                                    ${result.columns.map(col => `
+                                        <td>${row[col] === null ? '<span class="null-value">NULL</span>' : row[col]}</td>
+                                    `).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (result.success) {
+                bodyContent = `
+                    <div class="empty-state">
+                        ${statusIcon}
+                        <p style="font-weight: 500; margin-top: 0.5rem;">Query executed successfully</p>
+                        <p style="font-size: 0.875rem; margin-top: 0.25rem;">No data to display</p>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="result-container">
+                    <div class="result-header ${headerClass}">
+                        <div>
+                            <div class="result-status ${statusClass}">
+                                ${statusIcon}
+                                <span>${result.success ? 'Query Successful' : 'Query Failed'}</span>
+                            </div>
+                            ${metaHtml}
+                        </div>
+                        ${exportButtons}
+                    </div>
+                    <div class="result-body">
+                        ${bodyContent}
+                    </div>
+                </div>
+            `;
+
+            window.currentResult = result;
+        }
+
+        async function fetchSchema() {
+            try {
+                const response = await fetch('/api/db/schema');
+                const data = await response.json();
+
+                if (data.success && data.tables) {
+                    const schemaList = document.getElementById('schemaList');
+                    schemaList.innerHTML = data.tables.map(table => `
+                        <div class="table-item">
+                            <div class="table-name">
+                                <code>${table}</code>
+                                <button class="btn-query" onclick="queryTable('${table}')">Query</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to fetch schema:', error);
+                document.getElementById('schemaList').innerHTML = '<p style="color: #ef4444; font-size: 0.875rem;">Failed to load schema</p>';
+            }
+        }
+
+        function queryTable(tableName) {
+            document.getElementById('queryInput').value = `SELECT * FROM ${tableName} LIMIT 10;`;
+            document.getElementById('queryInput').focus();
+        }
+
+        function loadSampleQuery(query) {
+            if (query) {
+                document.getElementById('queryInput').value = query;
+                document.getElementById('queryInput').focus();
+            }
+        }
+
+        function toggleHistory() {
+            const panel = document.getElementById('historyPanel');
+            const text = document.getElementById('historyToggleText');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                text.textContent = 'Hide History';
+                updateHistoryList();
+            } else {
+                panel.style.display = 'none';
+                text.textContent = 'Show History';
+            }
+        }
+
+        function updateHistoryList() {
+            const list = document.getElementById('historyList');
+            if (queryHistory.length === 0) {
+                list.innerHTML = '<p style="color: #6b7280; font-size: 0.875rem;">No history yet</p>';
+                return;
+            }
+
+            list.innerHTML = queryHistory.map((item, idx) => {
+                const icon = item.success
+                    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+                    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+
+                return `
+                    <div class="history-item" onclick="loadFromHistory(${idx})">
+                        <div class="history-query">${item.query}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="history-time">${new Date(item.timestamp).toLocaleString()}</span>
+                            ${icon}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadFromHistory(index) {
+            document.getElementById('queryInput').value = queryHistory[index].query;
+            document.getElementById('queryInput').focus();
+        }
+
+        function clearHistory() {
+            queryHistory = [];
+            localStorage.removeItem('dbQueryHistory');
+            updateHistoryList();
+        }
+
+        function exportToCSV() {
+            const result = window.currentResult;
+            if (!result || !result.data || result.data.length === 0) return;
+
+            const headers = result.columns;
+            const csvContent = [
+                headers.join(','),
+                ...result.data.map(row =>
+                    headers.map(header => {
+                        const value = row[header];
+                        const stringValue = value === null ? '' : String(value);
+                        return stringValue.includes(',') ? `"${stringValue}"` : stringValue;
+                    }).join(',')
+                )
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `query-result-${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportToJSON() {
+            const result = window.currentResult;
+            if (!result || !result.data) return;
+
+            const json = JSON.stringify(result.data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `query-result-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        fetchSchema();
+        updateHistoryList();
+    </script>
+</body>
+</html>

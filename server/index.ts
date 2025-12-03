@@ -1,7 +1,12 @@
 import express from "express";
 import { createServer } from "http";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import { PORT } from "./config.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import { authRouter } from "./routes/auth.js";
 import { eventRouter } from "./routes/events.js";
 import { userRouter } from "./routes/users.js";
@@ -17,6 +22,7 @@ import { onDutyRouter } from "./routes/on-duty.js";
 import { calendarReportRouter } from "./routes/calendar-report.js";
 import { desiderataRouter } from "./routes/desiderata.js";
 import { documentsRouter } from "./routes/documents.js";
+import databaseQueryRouter from "./routes/database-query.js";
 import { initializeSocketManager } from "./websocket/socketManager.js";
 import { i18nMiddleware } from "./middleware/i18n.js";
 
@@ -43,6 +49,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Make socket manager available to routes
 app.use((req, res, next) => {
@@ -71,6 +79,7 @@ app.use("/api/on-duty", onDutyRouter);
 app.use("/api/calendar-report", calendarReportRouter);
 app.use("/api/desiderata", desiderataRouter);
 app.use("/api/documents", documentsRouter);
+app.use("/api/db", databaseQueryRouter);
 
 // Root endpoint
 app.get("/", (req, res) => {
