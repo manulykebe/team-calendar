@@ -127,6 +127,39 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 
 		const days = eachDayOfInterval({ start: rangeStart, end: rangeEnd });
 
+		// Helper function to get default availability for a date
+		const getDefaultAvailability = (
+			date: Date,
+			part: "am" | "pm"
+		): boolean => {
+			const dayName = dayMap[getDay(date)];
+			const setting = availabilityArray
+				.filter((a) => {
+					const start = parseISO(a.startDate);
+					const end = a.endDate
+						? parseISO(a.endDate)
+						: new Date(2100, 0, 1);
+					return date >= start && date <= end;
+				})
+				.pop();
+	
+			if (!setting) return false;
+	
+			if (
+				setting.repeatPattern === "evenodd" &&
+				setting.oddWeeklySchedule
+			) {
+				const weekNumber = getWeekNumber(date);
+				const schedule =
+					weekNumber % 2 === 0
+						? setting.weeklySchedule
+						: setting.oddWeeklySchedule;
+				return schedule[dayName as keyof WeeklySchedule]?.[part] ?? false;
+			}
+	
+			return setting.weeklySchedule[dayName as keyof WeeklySchedule]?.[part] ?? false;
+		};
+
 		// Calculate availability for each day
 		const availability = days.reduce<AvailabilityAccumulator>((acc, date) => {
 			const dateStr = format(date, "yyyy-MM-dd");
@@ -191,38 +224,6 @@ router.get("/availability/:site/:userId/:year", async (req, res) => {
 
 			return acc;
 		}, {});
-	
-		const getDefaultAvailability = (
-			date: Date,
-			part: "am" | "pm"
-		): boolean => {
-			const dayName = dayMap[getDay(date)];
-			const setting = availabilityArray
-				.filter((a) => {
-					const start = parseISO(a.startDate);
-					const end = a.endDate
-						? parseISO(a.endDate)
-						: new Date(2100, 0, 1);
-					return date >= start && date <= end;
-				})
-				.pop();
-	
-			if (!setting) return false;
-	
-			if (
-				setting.repeatPattern === "evenodd" &&
-				setting.oddWeeklySchedule
-			) {
-				const weekNumber = getWeekNumber(date);
-				const schedule =
-					weekNumber % 2 === 0
-						? setting.weeklySchedule
-						: setting.oddWeeklySchedule;
-				return schedule[dayName as keyof WeeklySchedule]?.[part] ?? false;
-			}
-	
-			return setting.weeklySchedule[dayName as keyof WeeklySchedule]?.[part] ?? false;
-		};
 	
 		res.json({
 			year,
