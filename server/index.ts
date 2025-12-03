@@ -17,10 +17,8 @@ import { onDutyRouter } from "./routes/on-duty.js";
 import { calendarReportRouter } from "./routes/calendar-report.js";
 import { desiderataRouter } from "./routes/desiderata.js";
 import { documentsRouter } from "./routes/documents.js";
-import reportingRouter from "./routes/reporting.js";
 import { initializeSocketManager } from "./websocket/socketManager.js";
 import { i18nMiddleware } from "./middleware/i18n.js";
-import { authenticateToken } from "./middleware/auth.js";
 
 const app = express();
 const server = createServer(app);
@@ -73,7 +71,6 @@ app.use("/api/on-duty", onDutyRouter);
 app.use("/api/calendar-report", calendarReportRouter);
 app.use("/api/desiderata", desiderataRouter);
 app.use("/api/documents", documentsRouter);
-app.use("/api/reporting", authenticateToken, reportingRouter);
 
 // Root endpoint
 app.get("/", (req, res) => {

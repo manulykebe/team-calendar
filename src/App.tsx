@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import { Calendar } from "./components/Calendar";
 import { Login } from "./components/Login";
-import { Reports } from "./components/reporting";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { AppProvider, useApp } from "./context/AppContext";
 import { WebSocketProvider } from "./context/WebSocketContext";
@@ -55,14 +54,6 @@ function App() {
                       element={
                         <PrivateRoute>
                           <Calendar />
-                        </PrivateRoute>
-                      }
-                    />
-                    <Route
-                      path="/reports"
-                      element={
-                        <PrivateRoute>
-                          <Reports />
                         </PrivateRoute>
                       }
                     />

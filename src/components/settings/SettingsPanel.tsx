@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
 	Settings as SettingsIcon,
 	X,
@@ -12,8 +11,7 @@ import {
 	FileText,
 	BarChart3,
 	ChevronDown,
-	Lock,
-	Database
+	Lock
 } from "lucide-react";
 import { ColleagueSettings } from "./colleagues/ColleagueSettings";
 import { UserManagement } from "../users/UserManagement";
@@ -41,7 +39,6 @@ interface SettingsPanelProps {
 export function SettingsPanel({ }: SettingsPanelProps) {
 	const { logout } = useAuth();
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { currentUser, updateWorkStartDay, updateWeekNumberSetting } =
 		useUserSettings();
 	const [isOpen, setIsOpen] = useState(false);
@@ -284,17 +281,6 @@ export function SettingsPanel({ }: SettingsPanelProps) {
 									</button>
 									{showReportsMenu && (
 										<div className="absolute left-0 right-0 mt-1 bg-white border border-zinc-300 rounded-md shadow-lg z-10">
-											<button
-												onClick={() => {
-													navigate('/reports');
-													setIsOpen(false);
-													setShowReportsMenu(false);
-												}}
-												className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 text-left border-b border-zinc-200"
-											>
-												<Database className="w-4 h-4 mr-2" />
-												{t('reports.queryReports') || 'Query Reports'}
-											</button>
 											<button
 												onClick={handleOpenDesiderataReport}
 												className="flex items-center w-full px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 text-left"
